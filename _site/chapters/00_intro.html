@@ -284,96 +284,94 @@ navegadores estám empezando a soportar nuevas características de esta versión
 que JavaScript es usado. Algunas Bases de Datos, como MongoDB y CouchDB, usan
 JavaScript como su lenguaje de manejo y consulta. Varias plataformas para
 programación de computadoras de escritorio y servidores, más notablemente
-el proyecto Node.js (el tema del <a href="20_node.html#node">Capítulo 20</a>) están
+el proyecto Node.js (el tema del <a href="20_node.html#node">Capítulo 20</a>), están
 haciendo disponible un entorno poderoso para la programación en JavaScript fuera
 del navegador.</p>
-<h2><a class=h_ident id="h_UmlI5uNVqn" href="#h_UmlI5uNVqn"></a>Code, and what to do with it</h2>
-<p><a class=p_ident id="p_vaDhHr+EAd" href="#p_vaDhHr+EAd"></a>Code is the text that makes up
-programs. Most chapters in this book contain quite a lot of it. In my
-experience, reading code and writing code are indispensable parts of
-learning to program, so try to not just glance over the examples. Read
-them attentively and understand them. This may be slow and confusing
-at first, but I promise that you will quickly get the hang of it. The
-same goes for the exercises. Don&#8217;t assume you understand them
-until you&#8217;ve actually written a working solution.</p>
-<p><a class=p_ident id="p_TTKKe5L9Nw" href="#p_TTKKe5L9Nw"></a>I recommend you try your solutions to exercises
-in an actual JavaScript interpreter. That way, you&#8217;ll get immediate feedback on
-whether what you are doing is working, and, I hope, you&#8217;ll be
-tempted to experiment and go beyond the exercises.</p>
-<p><a class=p_ident id="p_NCyHfLuN8B" href="#p_NCyHfLuN8B"></a>When reading this book in your browser, you can edit (and run) all
-example programs by clicking them.</p>
-<p><a class=p_ident id="p_lSuuLUcwMp" href="#p_lSuuLUcwMp"></a>If you want to run the
-programs defined in this book outside of the book&#8217;s sandbox, some care
-is required. Many examples stand on their own and should work in any
-JavaScript environment. But code in later chapters is mostly written
-for a specific environment (the browser or Node.js) and can run only
-there. In addition, many chapters define bigger programs, and the
-pieces of code that appear in them depend on each other or on external
-files. The <a href="http://eloquentjavascript.net/code">sandbox</a> on the website
-provides links to Zip files containing all of the scripts and data
-files necessary to run the code for a given chapter.</p>
-<h2><a class=h_ident id="h_QzUnm0u8/B" href="#h_QzUnm0u8/B"></a>Overview of this book</h2>
-<p><a class=p_ident id="p_Nb8pnSxfWH" href="#p_Nb8pnSxfWH"></a>This book contains roughly three parts. The first 11 chapters discuss
-the JavaScript language itself. The next eight chapters are about web
-browsers and the way JavaScript is used to program them. Finally,
-two chapters are devoted to Node.js, another environment to program
-JavaScript in.</p>
-<p><a class=p_ident id="p_vtV983SU2Q" href="#p_vtV983SU2Q"></a>Throughout the book, there are five <em>project chapters</em>, which describe
-larger example programs to give you a taste of real programming. In
-order of appearance, we will work through building an
-<a href="07_elife.html#elife">artificial life simulation</a>, a
-<a href="11_language.html#language">programming language</a>, a
-<a href="15_game.html#game">platform game</a>, a
-<a href="19_paint.html#paint">paint program</a>, and a
-<a href="21_skillsharing.html#skillsharing">dynamic website</a>.</p>
-<p><a class=p_ident id="p_tBWN2J/neE" href="#p_tBWN2J/neE"></a>The language part of the book starts with four chapters to introduce
-the basic structure of the JavaScript language. They introduce
-<a href="02_program_structure.html#program_structure">control structures</a>
-(such as the <code>while</code> word you saw in this introduction),
-<a href="03_functions.html#functions">functions</a> (writing your own
-operations), and <a href="04_data.html#data">data structures</a>. After these,
-you will be able to write simple programs. Next, Chapters
-<a href="05_higher_order.html#higher_order">5</a> and
-<a href="06_object.html#object">6</a> introduce techniques to use functions
-and objects to write more <em>abstract</em> code and thus keep complexity
-under control.</p>
-<p><a class=p_ident id="p_BQGfU79Z/i" href="#p_BQGfU79Z/i"></a>After a <a href="07_elife.html#elife">first project chapter</a>, the first
-part of the book continues with chapters on
-<a href="08_error.html#error">error handling and fixing</a>, on
-<a href="09_regexp.html#regexp">regular expressions</a> (an important tool for
-working with text data), and on
-<a href="10_modules.html#modules">modularity</a>—another weapon against
-complexity. The <a href="11_language.html#language">second project chapter</a>
-concludes the first part of the book.</p>
-<p><a class=p_ident id="p_ENnJdVvZOh" href="#p_ENnJdVvZOh"></a>The second part, Chapters <a href="12_browser.html#browser">12</a> to
-<a href="19_paint.html#paint">19</a>, describes the tools that browser
-JavaScript has access to. You&#8217;ll learn to display things on the screen
-(Chapters <a href="13_dom.html#dom">13</a> and
-<a href="16_canvas.html#canvas">16</a>), respond to user input (Chapters
-<a href="14_event.html#event">14</a> and <a href="18_forms.html#forms">18</a>), and
-communicate over the network (<a href="17_http.html#http">Chapter 17</a>).
-There are again two project chapters in this part.</p>
-<p><a class=p_ident id="p_dXulxOfRlF" href="#p_dXulxOfRlF"></a>After that, <a href="20_node.html#node">Chapter 20</a> describes Node.js, and
-<a href="21_skillsharing.html#skillsharing">Chapter 21</a> builds a simple web
-system using that tool.</p>
-<h2><a class=h_ident id="h_BqJ9mLVGGj" href="#h_BqJ9mLVGGj"></a>Typographic conventions</h2>
-<p><a class=p_ident id="p_tcuoG/QVih" href="#p_tcuoG/QVih"></a>In this book, text written in a <code>monospaced</code>
-font will represent elements of programs—sometimes
-they are self-sufficient fragments, and sometimes they just refer to
-part of a nearby program. Programs (of which you have already seen a
-few), are written as follows:</p>
+<h2><a class=h_ident id="h_NkhwsfiUTB" href="#h_NkhwsfiUTB"></a>Código, y qué hacer con él</h2>
+<p><a class=p_ident id="p_IcWVXRKHWW" href="#p_IcWVXRKHWW"></a>El código es el texto del que están
+compuestos los programas. La mayor parte de los capítulos de este libro
+contienen un montón de él. En mi experiencia, leer y escribir código son partes
+indispensables de aprender a programar, así que trata de no sólo darles una
+mirada rápida a los ejemplos. Léelos aténtamente y entiéndelos. Esto podría ser
+lento y confuso al principio, pero prometo que rápidamente le agarrarás el modo.
+Lo mismo es aplicable a los ejercicios. No asumas que los entiendes hasta
+que realemente hayas escrito una solución que funcione.</p>
+<p><a class=p_ident id="p_DaNtohWhCR" href="#p_DaNtohWhCR"></a> Te recomiendo probar tus soluciones a los ejercicios en
+un intérprete de JavaScript real. De esa forma obtendrás retroalimentación
+inmediata acerca de si lo que estás haciendo funciona, y, yo espero, serás
+tentado a experimentar e ir más allás de los ejercicios.</p>
+<p><a class=p_ident id="p_yTA5zdb1gZ" href="#p_yTA5zdb1gZ"></a>Cuando estés leyendo este libro en tu navegador, puedes editar(y correr)
+todos los programas de ejemplo haciendo click en ellos.</p>
+<p><a class=p_ident id="p_b5B1o3nNNf" href="#p_b5B1o3nNNf"></a>Si quieres correr los programas
+de este libro fuera del ambiente que se provee, hay que prestarle atención a ciertas cosas.
+Muchos ejemplos deberían trabajar por sí mismos. Pero el código de los capítulos
+más avanzados está escrito para un entorno específico (el navegador o Node.js)
+y sólo puede correr ahí. Además, muchos capítulos definen programas más grandes,
+y las partes del código que aparecen en él dependen de entre ellas o de archivos
+externos. El <a href="http://eloquentjavascript.net/code">entorno</a> en el sitio tiene
+links para descargar los archivos Zip que contienen todos los scripts y datos
+necesarios para hacer funcionar el código de cualquier capítulo.</p>
+<h2><a class=h_ident id="h_zZRUmsS5X5" href="#h_zZRUmsS5X5"></a>Vista general del libro</h2>
+<p><a class=p_ident id="p_Wuxak5+3jK" href="#p_Wuxak5+3jK"></a>Este libro está compuesto por tres aprtes. Los primeros 11 capítulos hablan de
+JavaScript en sí mismo. Los siguientes ocho son acerca de los navegadores
+web y la forma en que JavaScript es usado para programarlos. Finalmente,
+los últimos dos capítulos están dedicados a Node.js, otro entorno para
+programar en JavaScript.</p>
+<p><a class=p_ident id="p_2s+l7aA6TV" href="#p_2s+l7aA6TV"></a>A lo largo del libro hay cinco <em>capítulos de proyecto</em>, que describen programas
+de ejemplo más grandes para darte una prueba de la programación en el mundo real.
+En order de aparcición trabajaremos en
+<a href="07_elife.html#elife">simulación de vida artificial</a>, un
+<a href="11_language.html#language">lenguaje de programación</a>, un
+<a href="15_game.html#game">juego de plataforma</a>, un
+<a href="19_paint.html#paint">programa de pintura</a>, y un
+<a href="21_skillsharing.html#skillsharing">sitio dinámico</a>.</p>
+<p><a class=p_ident id="p_eAsMYrL/Ey" href="#p_eAsMYrL/Ey"></a>La parte del lenguaje del libro empieza con cuatro capítulos para presentar
+la estructura básica de JavaScript. Estos presentan
+<a href="02_program_structure.html#program_structure">estructuras de control</a>
+(como la palabra <code>while</code> que viste ene esta introducción),
+<a href="03_functions.html#functions">funciones</a> (escribir tus propias operaciones),
+y <a href="04_data.html#data">estructuras de datos</a>. Despeués de esto, serás capaz de
+escribir programas simples. Después, los capítulos
+<a href="05_higher_order.html#higher_order">5</a> y
+<a href="06_object.html#object">6</a> presentan técnicas para usar
+funciones y objetos para escribir código más <em>abstracto</em> y de esta manera
+mantener a la complejidad bajo control.</p>
+<p><a class=p_ident id="p_T2zLxztShc" href="#p_T2zLxztShc"></a>Después de <a href="07_elife.html#elife">un primer capítulo de proyecto</a>, la primera
+parte del libro continua con capítulos acerca de
+<a href="08_error.html#error">manejo y correccón de errores</a>,
+<a href="09_regexp.html#regexp">expresiones regulares</a> (una herramienta importanate
+para el manejo de datos de texto), y
+<a href="10_modules.html#modules">modularidad</a>, otra arma contra la complejidad.
+El <a href="11_language.html#language">segundo capítulo de proyecto</a> termina con la
+primera parte del libro.</p>
+<p><a class=p_ident id="p_85diCdIgH6" href="#p_85diCdIgH6"></a>En la segunda parte, los Capítulos <a href="12_browser.html#browser">12</a> a
+<a href="19_paint.html#paint">19</a>, describen las herramientas a las que JavaScript
+tiene acceso en el navegador web. Aprenderás a mostrar cosas en la pantalla
+(Capítulos <a href="13_dom.html#dom">13</a> y
+<a href="16_canvas.html#canvas">16</a>), repsonder a los datos de entrada del usuario
+(Capítulos <a href="14_event.html#event">14</a> y <a href="18_forms.html#forms">18</a>), y a comunicarte
+a través de la red (<a href="17_http.html#http">Capítulo 17</a>).
+Otra vez, hay dos proyectos en esta parte.</p>
+<p><a class=p_ident id="p_4ULBGwC8t5" href="#p_4ULBGwC8t5"></a>Después de eso, el <a href="20_node.html#node">Capítulo 20</a> describe Node.js, y el
+<a href="21_skillsharing.html#skillsharing">Capítulo 21</a> construye un sencillo sistema
+web usando esa herramienta.</p>
+<h2><a class=h_ident id="h_LbwtyFrzvg" href="#h_LbwtyFrzvg"></a>Convenciones Tipográficas</h2>
+<p><a class=p_ident id="p_JYfnu6ywFp" href="#p_JYfnu6ywFp"></a> En este libro, texto escrito en fuente <code>monoespacio</code>
+representará elementos de programas; algunas veces programas completos y otras,
+partes de programas que hayan sido definidos cerca de ahí. Los programas(de los
+  cuales has visto unos pocos), están escritos como sigue:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+dxUF296oM" href="#c_+dxUF296oM"></a><span class="cm-keyword">function</span> <span class="cm-variable">fac</span>(<span class="cm-def">n</span>) {
   <span class="cm-keyword">if</span> (<span class="cm-variable-2">n</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
     <span class="cm-keyword">return</span> <span class="cm-number">1</span>;
   <span class="cm-keyword">else</span>
     <span class="cm-keyword">return</span> <span class="cm-variable">fac</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>) <span class="cm-operator">*</span> <span class="cm-variable-2">n</span>;
 }</pre>
-<p><a class=p_ident id="p_gHBEJochZ9" href="#p_gHBEJochZ9"></a>Sometimes, in order to show the output that a program
-produces, the expected output is written after it, with two slashes
-and an arrow in front.</p>
+<p><a class=p_ident id="p_Vjsd/lngr3" href="#p_Vjsd/lngr3"></a>Algunas veces, para mostrar la salida que un programa produce,
+la salida esperada será escrita después de este, con dos diagonales y una flecha
+enfrente.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_C1hfQzBD5u" href="#c_C1hfQzBD5u"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">fac</span>(<span class="cm-number">8</span>));
 <span class="cm-comment">// → 40320</span></pre>
-<p><a class=p_ident id="p_SBvr6KXTHm" href="#p_SBvr6KXTHm"></a>Good luck!</p>
+<p><a class=p_ident id="p_CZc55wBP7L" href="#p_CZc55wBP7L"></a>Buena suerte!</p>
 <nav>
   
   <a href="index.html" title="cover">◆</a>
