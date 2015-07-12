@@ -4,8 +4,19 @@ layout: default
 
 <div class="home">
 
-  <!-- <h1 class="page-heading">Capítulos terminados</h1> -->
   <h1> Eloquent Javscript en Español</h1>
+<section>
+  <h1 class="page-heading"> Capítulos terminados </h1>
+  <p>
+    En esta sección podemos encontrar los capítulos en los que se ah avanzado.
+    No olvides hacernos saber cualquier error gramatical, de ortografía o parte difícil de entender.
+  </p>
+  <ul>
+    <a href="chapters/00_intro.html"> Intro </a>
+  </ul>
+</section>
+  
+  <h1 class="page-heading"> Noticias </h1>
   <ul class="post-list">
     {% for post in site.posts %}
       <li>
@@ -17,7 +28,4 @@ layout: default
       </li>
     {% endfor %}
   </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-
 </div>

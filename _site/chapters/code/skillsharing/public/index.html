@@ -1,0 +1,37 @@
+<!doctype html>
+
+<title>Skill Sharing</title>
+<link rel="stylesheet" href="skillsharing.css">
+
+<h1>Skill sharing</h1>
+
+<p>Your name: <input type="text" id="name"></p>
+
+<div id="talks"></div>
+
+<form id="newtalk">
+  <h3>Submit a talk</h3>
+  Title: <input type="text" style="width: 40em" name="title">
+  <br>
+  Summary: <input type="text" style="width: 40em" name="summary">
+  <button type="submit">Send</button>
+</form>
+
+<div id="template" style="display: none">
+  <div class="talk">
+    <h2>{{title}}</h2>
+    <div>by <span class="name">{{presenter}}</span></div>
+    <p>{{summary}}</p>
+    <div class="comments"></div>
+    <form>
+      <input type="text" name="comment">
+      <button type="submit">Add comment</button>
+      <button type="button" class="del">Delete talk</button>
+    </form>
+  </div>
+  <div class="comment">
+    <span class="name">{{author}}</span>: {{message}}
+  </div>
+</div>
+
+<script src="skillsharing_client.js"></script>

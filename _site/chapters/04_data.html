@@ -1,0 +1,1035 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Data Structures: Objects and Arrays :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 4;var sandboxLoadFiles = ["code/jacques_journal.js", "code/chapter/04_data.js"];</script>
+</head>
+
+<article>
+<nav>
+  <a href="03_functions.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="05_higher_order.html" title="next chapter">▶</a>
+</nav>
+
+<h1><div class=chap_num>Chapter 4</div>Data Structures: Objects and Arrays</h1>
+<blockquote>
+<p><a class=p_ident id="p_3DGxnMhaad" href="#p_3DGxnMhaad"></a>On two occasions I have been asked, ‘Pray,
+Mr. Babbage, if you put into the machine wrong figures, will the right
+answers come out?’ [...] I am not able rightly to apprehend the kind
+of confusion of ideas that could provoke such a question.</p>
+ <footer>Charles Babbage, <cite>Passages from the Life of a Philosopher (1864)</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_j/UjCN3npi" href="#p_j/UjCN3npi"></a>Numbers, Booleans, and strings are the
+bricks that data structures are built from. But you can&#8217;t make
+much of a house out of a single brick. <em>Objects</em> allow us to group
+values—including other objects—together and thus build more complex
+structures.</p>
+<p><a class=p_ident id="p_TT9r8Cr1W0" href="#p_TT9r8Cr1W0"></a>The programs we have built so far have been seriously hampered by the
+fact that they were operating only on simple data types. This chapter
+will add a basic understanding of data structures to your toolkit. By
+the end of it, you&#8217;ll know enough to start writing some useful
+programs.</p>
+<p><a class=p_ident id="p_vL8agXHSiL" href="#p_vL8agXHSiL"></a>The chapter will work through a more or less realistic programming
+example, introducing concepts as they apply to the problem at hand.
+The example code will often build on functions and variables that were
+introduced earlier in the text.</p>
+<h2><a class=h_ident id="h_NvjtahQLlw" href="#h_NvjtahQLlw"></a>The weresquirrel</h2>
+<p><a class=p_ident id="p_2uQlDOT3CH" href="#p_2uQlDOT3CH"></a>Every now and then, usually
+between eight and ten in the evening, Jacques finds himself
+transforming into a small furry rodent with a bushy tail.</p>
+<p><a class=p_ident id="p_EIDMzKWaqr" href="#p_EIDMzKWaqr"></a>On one hand, Jacques is quite glad that he doesn&#8217;t have classic
+lycanthropy. Turning into a squirrel tends to cause fewer problems
+than turning into a wolf. Instead of having to worry about
+accidentally eating the neighbor (<em>that</em> would be awkward), he worries
+about being eaten by the neighbor&#8217;s cat. After two occasions where he
+woke up on a precariously thin branch in the crown of an oak, naked
+and disoriented, he has taken to locking the doors and windows of his
+room at night and putting a few walnuts on the floor to keep himself
+busy.</p>
+<div class="image">
+  <img src="img/weresquirrel.png" alt="The weresquirrel">
+</div>
+<p><a class=p_ident id="p_mMWZqiA+i1" href="#p_mMWZqiA+i1"></a>That takes care of the cat and oak problems. But Jacques still suffers
+from his condition. The irregular occurrences of the transformation
+make him suspect that they might be triggered by something.
+For a while, he believed that it happened only on days when he
+had touched trees. So he stopped touching trees entirely and even
+avoided going near them. But the problem persisted.</p>
+<p><a class=p_ident id="p_I4RF6opRCC" href="#p_I4RF6opRCC"></a>Switching to a more scientific approach, Jacques intends
+to start keeping a daily log of everything he did that day and whether
+he changed form. With this data he hopes to narrow down the conditions
+that trigger the transformations.</p>
+<p><a class=p_ident id="p_WERwFzJu93" href="#p_WERwFzJu93"></a>The first thing he does is design a data structure to store this
+information.</p>
+<h2><a class=h_ident id="h_HjL/otjEJn" href="#h_HjL/otjEJn"></a>Data sets</h2>
+<p><a class=p_ident id="p_HFLfyQFSDp" href="#p_HFLfyQFSDp"></a>To work with a chunk of digital data, we&#8217;ll first
+have to find a way to represent it in our machine&#8217;s memory. Say,
+as a simple example, that we want to represent a collection of
+numbers: 2, 3, 5, 7, and 11.</p>
+<p><a class=p_ident id="p_cnzv4pg+Wz" href="#p_cnzv4pg+Wz"></a>We could get creative with strings—after all, strings
+can be any length, so we can put a lot of data into them—and use <code>"2 3
+5 7 11"</code> as our representation. But this is awkward. You&#8217;d have to
+somehow extract the digits and convert them back to numbers to access
+them.</p>
+<p><a class=p_ident id="p_/aFILq7bDn" href="#p_/aFILq7bDn"></a>Fortunately, JavaScript
+provides a data type specifically for storing sequences of values. It
+is called an <em>array</em> and is written as a list of values between
+square brackets, separated by commas.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WrRipN2I5z" href="#c_WrRipN2I5z"></a><span class="cm-keyword">var</span> <span class="cm-variable">listOfNumbers</span> <span class="cm-operator">=</span> [<span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">5</span>, <span class="cm-number">7</span>, <span class="cm-number">11</span>];
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listOfNumbers</span>[<span class="cm-number">1</span>]);
+<span class="cm-comment">// → 3</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listOfNumbers</span>[<span class="cm-number">1</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>]);
+<span class="cm-comment">// → 2</span></pre>
+<p><a class=p_ident id="p_xu5bhsrvS2" href="#p_xu5bhsrvS2"></a>The notation for getting
+at the elements inside an array also uses square brackets. A pair
+of square brackets immediately after an expression, with another
+expression inside of them, will look up the element in the left-hand
+expression that corresponds to the <em>index</em> given by the expression
+in the brackets.</p>
+<p id="array_indexing"><a class=p_ident id="p_i4f1iEZJFW" href="#p_i4f1iEZJFW"></a>The first index of an array is zero, not one. So the first element can
+be read with <code>listOfNumbers[0]</code>. If you don&#8217;t have a programming
+background, this convention might take some getting used to. But
+zero-based counting has a long tradition in technology, and as
+long as this convention is followed consistently (which it is, in
+JavaScript), it works well.</p>
+<h2 id="properties"><a class=h_ident id="h_vGyI2y8HA6" href="#h_vGyI2y8HA6"></a>Properties</h2>
+<p><a class=p_ident id="p_N/KiJ+p6sy" href="#p_N/KiJ+p6sy"></a>We&#8217;ve seen a few
+suspicious-looking expressions like <code>myString.length</code> (to get the
+length of a string) and <code>Math.max</code> (the maximum function) in past
+examples. These are expressions that access a <em>property</em> of some
+value. In the first case, we access the <code>length</code> property of the value
+in <code>myString</code>. In the second, we access the property named <code>max</code> in
+the <code>Math</code> object (which is a collection of mathematics-related values
+and functions).</p>
+<p><a class=p_ident id="p_dTOk+Nu/lR" href="#p_dTOk+Nu/lR"></a>Almost all JavaScript values
+have properties. The exceptions are <code>null</code> and <code>undefined</code>. If you try
+to access a property on one of these nonvalues, you get an error.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZEvFsOQLc8" href="#c_ZEvFsOQLc8"></a><span class="cm-atom">null</span>.<span class="cm-property">length</span>;
+<span class="cm-comment">// → TypeError: Cannot read property 'length' of null</span></pre>
+<p><a class=p_ident id="p_etK6gD7WXZ" href="#p_etK6gD7WXZ"></a>The two most common ways to access
+properties in JavaScript are with a dot and with square brackets. Both
+<code>value.x</code> and <code>value[x]</code> access a property on <code>value</code>—but not
+necessarily the same property. The difference is in how <code>x</code> is
+interpreted. When using a dot, the part after the dot must be a valid
+variable name, and it directly names the property. When using square
+brackets, the expression between the brackets is <em>evaluated</em> to get
+the property name. Whereas <code>value.x</code> fetches the property of <code>value</code>
+named “x”, <code>value[x]</code> tries to evaluate the expression <code>x</code> and uses
+the result as the property name.</p>
+<p><a class=p_ident id="p_tcrruPP6JD" href="#p_tcrruPP6JD"></a>So if you know that the property you are interested in is called
+“length”, you say <code>value.length</code>. If you want to extract the property
+named by the value held in the variable <code>i</code>, you say <code>value[i]</code>. And
+because property names can be any string, if you want to access a
+property named “2” or “John Doe”, you must use square brackets:
+<code>value[2]</code> or <code>value["John Doe"]</code>. This is the case even though you
+know the precise name of the property in advance, because neither “2”
+nor “John Doe” is a valid variable name and so cannot be accessed
+through dot notation.</p>
+<p><a class=p_ident id="p_d0vwHo1UJ1" href="#p_d0vwHo1UJ1"></a>The elements in an array are stored in properties. Because the
+names of these properties are numbers and we often need to get their
+name from a variable, we have to use the bracket syntax to access
+them. The <code>length</code> property of an array tells us how many elements it
+contains. This property name is a valid variable name, and we know its
+name in advance, so to find the length of an array, you typically
+write <code>array.length</code> because that is easier to write than
+<code>array["length"]</code>.</p>
+<h2 id="methods"><a class=h_ident id="h_fkrGgDyRWc" href="#h_fkrGgDyRWc"></a>Methods</h2>
+<p><a class=p_ident id="p_1Q3NM3X6G3" href="#p_1Q3NM3X6G3"></a>Both string and
+array objects contain, in addition to the <code>length</code> property, a number
+of properties that refer to function values.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Crc8UwFnzX" href="#c_Crc8UwFnzX"></a><span class="cm-keyword">var</span> <span class="cm-variable">doh</span> <span class="cm-operator">=</span> <span class="cm-string">"Doh"</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-variable">doh</span>.<span class="cm-property">toUpperCase</span>);
+<span class="cm-comment">// → function</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">doh</span>.<span class="cm-property">toUpperCase</span>());
+<span class="cm-comment">// → DOH</span></pre>
+<p><a class=p_ident id="p_EmYOwg/BO9" href="#p_EmYOwg/BO9"></a>Every string has a <code>toUpperCase</code> property. When called, it
+will return a copy of the string, in which all letters have been
+converted to uppercase. There is also <code>toLowerCase</code>. You can guess
+what that does.</p>
+<p><a class=p_ident id="p_lNzNM3PoU4" href="#p_lNzNM3PoU4"></a>Interestingly, even though the call to <code>toUpperCase</code> does
+not pass any arguments, the function somehow has access to the string
+<code>"Doh"</code>, the value whose property we called. How this works is
+described in <a href="06_object.html#obj_methods">Chapter 6</a>.</p>
+<p><a class=p_ident id="p_gvO150ZgOs" href="#p_gvO150ZgOs"></a>Properties that contain functions are generally called <em>methods</em> of
+the value they belong to. As in, “<code>toUpperCase</code> is a method of a
+string”.</p>
+<p id="array_methods"><a class=p_ident id="p_FALcpD+CSn" href="#p_FALcpD+CSn"></a>This example demonstrates
+some methods that array objects have:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Ymu7GdxtdT" href="#c_Ymu7GdxtdT"></a><span class="cm-keyword">var</span> <span class="cm-variable">mack</span> <span class="cm-operator">=</span> [];
+<span class="cm-variable">mack</span>.<span class="cm-property">push</span>(<span class="cm-string">"Mack"</span>);
+<span class="cm-variable">mack</span>.<span class="cm-property">push</span>(<span class="cm-string">"the"</span>, <span class="cm-string">"Knife"</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mack</span>);
+<span class="cm-comment">// → ["Mack", "the", "Knife"]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mack</span>.<span class="cm-property">join</span>(<span class="cm-string">" "</span>));
+<span class="cm-comment">// → Mack the Knife</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mack</span>.<span class="cm-property">pop</span>());
+<span class="cm-comment">// → Knife</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mack</span>);
+<span class="cm-comment">// → ["Mack", "the"]</span></pre>
+<p><a class=p_ident id="p_du5uQ2te7B" href="#p_du5uQ2te7B"></a>The <code>push</code> method can be used to add values to the end of an array.
+The <code>pop</code> method does the opposite: it removes the value at the end of
+the array and returns it. An array of strings can be flattened to a
+single string with the <code>join</code> method. The argument given to <code>join</code>
+determines the text that is glued between the array&#8217;s elements.</p>
+<h2><a class=h_ident id="h_cqg63Sxe3o" href="#h_cqg63Sxe3o"></a>Objects</h2>
+<p><a class=p_ident id="p_D8cm1kz0P8" href="#p_D8cm1kz0P8"></a>Back to the weresquirrel. A set of daily log
+entries can be represented as an array. But the entries do not consist
+of just a number or a string—each entry needs to store a list of
+activities and a Boolean value that indicates whether Jacques turned
+into a squirrel. Ideally, we would like to group these values together
+into a single value and then put these grouped values into an array of
+log entries.</p>
+<p><a class=p_ident id="p_aZEa6qyMum" href="#p_aZEa6qyMum"></a>Values of the type <em>object</em> are arbitrary collections of
+properties, and we can add or remove these properties as we please.
+One way to create an object is by using a curly brace notation.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pSAc4ib983" href="#c_pSAc4ib983"></a><span class="cm-keyword">var</span> <span class="cm-variable">day1</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">squirrel</span>: <span class="cm-atom">false</span>,
+  <span class="cm-property">events</span>: [<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"running"</span>,
+           <span class="cm-string">"television"</span>]
+};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">day1</span>.<span class="cm-property">squirrel</span>);
+<span class="cm-comment">// → false</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">day1</span>.<span class="cm-property">wolf</span>);
+<span class="cm-comment">// → undefined</span>
+<span class="cm-variable">day1</span>.<span class="cm-property">wolf</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">day1</span>.<span class="cm-property">wolf</span>);
+<span class="cm-comment">// → false</span></pre>
+<p><a class=p_ident id="p_hxTCt8woA9" href="#p_hxTCt8woA9"></a>Inside the
+curly braces, we can give a list of properties separated by commas.
+Each property is written as a name, followed by a colon, followed by
+an expression that provides a value for the property. Spaces and line
+breaks are not significant. When an object spans multiple lines,
+indenting it like in the previous example improves readability.
+Properties whose names are not valid variable names or valid numbers
+have to be quoted.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7B49gkBNPX" href="#c_7B49gkBNPX"></a><span class="cm-keyword">var</span> <span class="cm-variable">descriptions</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">work</span>: <span class="cm-string">"Went to work"</span>,
+  <span class="cm-string cm-property">"touched tree"</span>: <span class="cm-string">"Touched a tree"</span>
+};</pre>
+<p><a class=p_ident id="p_muKvKdGc+G" href="#p_muKvKdGc+G"></a>This means that curly braces have <em>two</em> meanings in JavaScript. At
+the start of a statement, they start a block of statements. In any
+other position, they describe an object. Fortunately, it is almost
+never useful to start a statement with a curly-brace object, and in
+typical programs, there is no ambiguity between these two uses.</p>
+<p><a class=p_ident id="p_04jR2jxhZ9" href="#p_04jR2jxhZ9"></a>Reading a property that doesn&#8217;t exist will produce the
+value <code>undefined</code>, which happens the first time we try to read the <code>wolf</code>
+property in the previous example.</p>
+<p><a class=p_ident id="p_oxubJ4TSX5" href="#p_oxubJ4TSX5"></a>It is
+possible to assign a value to a property expression with the <code>=</code>
+operator. This will replace the property&#8217;s value if it already existed
+or create a new property on the object if it didn&#8217;t.</p>
+<p><a class=p_ident id="p_FolCMJfte3" href="#p_FolCMJfte3"></a>To briefly return to
+our tentacle model of variable bindings—property bindings are
+similar. They <em>grasp</em> values, but other variables and properties might
+be holding onto those same values. You may think of objects as
+octopuses with any number of tentacles, each of which has a name
+inscribed on it.</p>
+<div class="image">
+  <img src="img/octopus-object.jpg" alt="Artist's representation of an object">
+</div>
+<p><a class=p_ident id="p_0r+HcrZzZJ" href="#p_0r+HcrZzZJ"></a>The <code>delete</code> operator cuts
+off a tentacle from such an octopus. It is a unary operator that, when
+applied to a property access expression, will remove the named
+property from the object. This is not a common thing to do, but it is
+possible.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_vYNsoXd+S5" href="#c_vYNsoXd+S5"></a><span class="cm-keyword">var</span> <span class="cm-variable">anObject</span> <span class="cm-operator">=</span> {<span class="cm-property">left</span>: <span class="cm-number">1</span>, <span class="cm-property">right</span>: <span class="cm-number">2</span>};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">anObject</span>.<span class="cm-property">left</span>);
+<span class="cm-comment">// → 1</span>
+<span class="cm-keyword">delete</span> <span class="cm-variable">anObject</span>.<span class="cm-property">left</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">anObject</span>.<span class="cm-property">left</span>);
+<span class="cm-comment">// → undefined</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"left"</span> <span class="cm-keyword">in</span> <span class="cm-variable">anObject</span>);
+<span class="cm-comment">// → false</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"right"</span> <span class="cm-keyword">in</span> <span class="cm-variable">anObject</span>);
+<span class="cm-comment">// → true</span></pre>
+<p><a class=p_ident id="p_CuN7Z7VCcF" href="#p_CuN7Z7VCcF"></a>The binary
+<code>in</code> operator, when applied to a string and an object, returns a
+Boolean value that indicates whether that object has that property.
+The difference between setting a property to <code>undefined</code> and actually
+deleting it is that, in the first case, the object still <em>has</em> the
+property (it just doesn&#8217;t have a very interesting value), whereas in
+the second case the property is no longer present and <code>in</code> will return
+<code>false</code>.</p>
+<p><a class=p_ident id="p_Rl8msr9DUz" href="#p_Rl8msr9DUz"></a>Arrays, then, are just a kind of
+object specialized for storing sequences of things. If you evaluate
+<code>typeof [1, 2]</code>, this produces <code>"object"</code>. You can see them as long,
+flat octopuses with all their arms in a neat row, labeled with
+numbers.</p>
+<div class="image">
+  <img src="img/octopus-array.jpg" alt="Artist's representation of an array">
+</div>
+<p><a class=p_ident id="p_/qn/Ibmvdm" href="#p_/qn/Ibmvdm"></a>So we can represent Jacques’
+journal as an array of objects.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_hO78QsnSY4" href="#c_hO78QsnSY4"></a><span class="cm-keyword">var</span> <span class="cm-variable">journal</span> <span class="cm-operator">=</span> [
+  {<span class="cm-property">events</span>: [<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>,
+            <span class="cm-string">"running"</span>, <span class="cm-string">"television"</span>],
+   <span class="cm-property">squirrel</span>: <span class="cm-atom">false</span>},
+  {<span class="cm-property">events</span>: [<span class="cm-string">"work"</span>, <span class="cm-string">"ice cream"</span>, <span class="cm-string">"cauliflower"</span>,
+            <span class="cm-string">"lasagna"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"brushed teeth"</span>],
+   <span class="cm-property">squirrel</span>: <span class="cm-atom">false</span>},
+  {<span class="cm-property">events</span>: [<span class="cm-string">"weekend"</span>, <span class="cm-string">"cycling"</span>, <span class="cm-string">"break"</span>,
+            <span class="cm-string">"peanuts"</span>, <span class="cm-string">"beer"</span>],
+   <span class="cm-property">squirrel</span>: <span class="cm-atom">true</span>},
+  <span class="cm-comment">/* and so on... */</span>
+];</pre>
+<h2><a class=h_ident id="h_C3n45IkMhg" href="#h_C3n45IkMhg"></a>Mutability</h2>
+<p><a class=p_ident id="p_HZ50qDRWmj" href="#p_HZ50qDRWmj"></a>We will get to actual programming <em>real</em> soon now. But first, there&#8217;s
+one last piece of theory to understand.</p>
+<p><a class=p_ident id="p_zvnMtK4gE8" href="#p_zvnMtK4gE8"></a>We&#8217;ve seen that object
+values can be modified. The types of values discussed in earlier
+chapters, such as numbers, strings, and Booleans, are all
+<em>immutable</em>—it is impossible to change an existing value of those
+types. You can combine them and derive new values from them, but when
+you take a specific string value, that value will always remain the
+same. The text inside it cannot be changed. If you have reference to a
+string that contains <code>"cat"</code>, it is not possible for other code to
+change a character in <em>that</em> string to make it spell <code>"rat"</code>.</p>
+<p><a class=p_ident id="p_pwnQ1xNUOh" href="#p_pwnQ1xNUOh"></a>With objects, on the other hand, the content of a value <em>can</em> be
+modified by changing its properties.</p>
+<p><a class=p_ident id="p_fVZ1xXAqW5" href="#p_fVZ1xXAqW5"></a>When we have two
+numbers, 120 and 120, we can consider them precisely the same number,
+whether or not they refer to the same physical bits. But with objects,
+there is a difference between having two references to the same object
+and having two different objects that contain the same properties.
+Consider the following code:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WVXvnjG5+i" href="#c_WVXvnjG5+i"></a><span class="cm-keyword">var</span> <span class="cm-variable">object1</span> <span class="cm-operator">=</span> {<span class="cm-property">value</span>: <span class="cm-number">10</span>};
+<span class="cm-keyword">var</span> <span class="cm-variable">object2</span> <span class="cm-operator">=</span> <span class="cm-variable">object1</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">object3</span> <span class="cm-operator">=</span> {<span class="cm-property">value</span>: <span class="cm-number">10</span>};
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">object1</span> <span class="cm-operator">==</span> <span class="cm-variable">object2</span>);
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">object1</span> <span class="cm-operator">==</span> <span class="cm-variable">object3</span>);
+<span class="cm-comment">// → false</span>
+
+<span class="cm-variable">object1</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-number">15</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">object2</span>.<span class="cm-property">value</span>);
+<span class="cm-comment">// → 15</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">object3</span>.<span class="cm-property">value</span>);
+<span class="cm-comment">// → 10</span></pre>
+<p><a class=p_ident id="p_RhD+qPB3F0" href="#p_RhD+qPB3F0"></a>The <code>object1</code> and
+<code>object2</code> variables grasp the <em>same</em> object, which is why changing
+<code>object1</code> also changes the value of <code>object2</code>. The variable <code>object3</code>
+points to a different object, which initially contains the same
+properties as <code>object1</code> but lives a separate life.</p>
+<p><a class=p_ident id="p_S6PAaKQoFH" href="#p_S6PAaKQoFH"></a>JavaScript&#8217;s <code>==</code> operator, when comparing objects, will
+return <code>true</code> only if both objects are precisely the same value.
+Comparing different objects will return <code>false</code>, even if they have
+identical contents. There is no “deep” comparison operation built into
+JavaScript, which looks at object&#8217;s contents, but it is possible to
+write it yourself (which will be one of the
+<a href="04_data.html#exercise_deep_compare">exercises</a> at the end of this
+chapter).</p>
+<h2><a class=h_ident id="h_+q4Ck0/tFV" href="#h_+q4Ck0/tFV"></a>The lycanthrope&#8217;s log</h2>
+<p><a class=p_ident id="p_z1vPsL0dwv" href="#p_z1vPsL0dwv"></a>So
+Jacques starts up his JavaScript interpreter and sets up the
+environment he needs to keep his journal.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_TfYH6uEY6i" href="#c_TfYH6uEY6i"></a><span class="cm-keyword">var</span> <span class="cm-variable">journal</span> <span class="cm-operator">=</span> [];
+
+<span class="cm-keyword">function</span> <span class="cm-variable">addEntry</span>(<span class="cm-def">events</span>, <span class="cm-def">didITurnIntoASquirrel</span>) {
+  <span class="cm-variable">journal</span>.<span class="cm-property">push</span>({
+    <span class="cm-property">events</span>: <span class="cm-variable-2">events</span>,
+    <span class="cm-property">squirrel</span>: <span class="cm-variable-2">didITurnIntoASquirrel</span>
+  });
+}</pre>
+<p><a class=p_ident id="p_6o6Q7TaG26" href="#p_6o6Q7TaG26"></a>And then, every evening at ten—or sometimes the next morning, after
+climbing down from the top shelf of his bookcase—he records the day.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_FvNHZMxEXr" href="#c_FvNHZMxEXr"></a><span class="cm-variable">addEntry</span>([<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"running"</span>,
+          <span class="cm-string">"television"</span>], <span class="cm-atom">false</span>);
+<span class="cm-variable">addEntry</span>([<span class="cm-string">"work"</span>, <span class="cm-string">"ice cream"</span>, <span class="cm-string">"cauliflower"</span>, <span class="cm-string">"lasagna"</span>,
+          <span class="cm-string">"touched tree"</span>, <span class="cm-string">"brushed teeth"</span>], <span class="cm-atom">false</span>);
+<span class="cm-variable">addEntry</span>([<span class="cm-string">"weekend"</span>, <span class="cm-string">"cycling"</span>, <span class="cm-string">"break"</span>, <span class="cm-string">"peanuts"</span>,
+          <span class="cm-string">"beer"</span>], <span class="cm-atom">true</span>);</pre>
+<p><a class=p_ident id="p_+Ih1dpMwEH" href="#p_+Ih1dpMwEH"></a>Once he has enough data points, he intends to compute the
+correlation between his squirrelification and each of the day&#8217;s
+events and ideally learn something useful from those correlations.</p>
+<p><a class=p_ident id="p_EedDVNQ30H" href="#p_EedDVNQ30H"></a><em>Correlation</em> is a measure of dependence between
+variables (“variables” in the statistical sense, not the
+JavaScript sense). It is usually expressed as a coefficient that
+ranges from -1 to 1. Zero correlation means the variables are not
+related, whereas a correlation of one indicates that the two are
+perfectly related—if you know one, you also know the other. Negative
+one also means that the variables are perfectly related but that they
+are opposites—when one is true, the other is false.</p>
+<p><a class=p_ident id="p_4Rv6gGntx7" href="#p_4Rv6gGntx7"></a>For binary (Boolean) variables, the <em>phi</em>
+coefficient (<em>ϕ</em>) provides a good measure of correlation and is
+relatively easy to compute. To compute <em>ϕ</em>, we need a table <em>n</em>
+that contains the number of times the various combinations of the two
+variables were observed. For example, we could take the event of
+eating pizza and put that in a table like this:</p>
+<div class="image">
+  <img src="img/pizza-squirrel.svg" alt="Eating pizza versus turning into a squirrel">
+</div>
+<p><a class=p_ident id="p_82L/EowL1c" href="#p_82L/EowL1c"></a><em>ϕ</em> can be computed using the following formula, where <em>n</em> refers to the table:</p>
+<div>
+<style scoped="scoped">sub { font-size: 60%; }</style>
+<table style="border-collapse: collapse; margin-left: 1em;"><tr>
+  <td style="vertical-align: middle"><em>ϕ</em> =</td>
+  <td style="padding-left: .5em">
+    <div style="border-bottom: 1px solid black; padding: 0 7px;">n<sub>11</sub>n<sub>00</sub> - n<sub>10</sub>n<sub>01</sub></div>
+    <div style="padding: 0 7px;">√<span style="border-top: 1px solid black; position: relative; top: 2px;">
+      <span style="position: relative; top: -4px">n<sub>1•</sub>n<sub>0•</sub>n<sub>•1</sub>n<sub>•0</sub></span>
+    </span></div>
+  </td>
+</tr></table>
+</div>
+<p><a class=p_ident id="p_WPl/XNNv2K" href="#p_WPl/XNNv2K"></a>The notation <em>n</em><sub>01</sub> indicates the
+number of measurements where the first variable (squirrelness) is false
+(0) and the second variable (pizza) is true (1). In this
+example, <em>n</em><sub>01</sub> is 9.</p>
+<p><a class=p_ident id="p_pweIXp0GRF" href="#p_pweIXp0GRF"></a>The value <em>n</em><sub>1•</sub> refers to the
+sum of all measurements where the first variable is true, which is 5
+in the example table. Likewise, <em>n</em><sub>•0</sub>
+refers to the sum of the measurements where the second variable is false.</p>
+<p><a class=p_ident id="p_ACMn7uvFzz" href="#p_ACMn7uvFzz"></a>So for the pizza table, the part
+above the division line (the dividend) would be 1×76 - 4×9 = 40, and
+the part below it (the divisor) would be the square root of
+5×85×10×80, or √340000. This
+comes out to <em>ϕ</em> ≈ 0.069, which is tiny. Eating pizza does not
+appear to have influence on the transformations.</p>
+<h2><a class=h_ident id="h_YwedOm6SqZ" href="#h_YwedOm6SqZ"></a>Computing correlation</h2>
+<p><a class=p_ident id="p_jn2nhCXEpR" href="#p_jn2nhCXEpR"></a>We can represent a
+two-by-two table in JavaScript with a four-element array (<code>[76, 9,
+4, 1]</code>). We could also use other representations, such as an array
+containing two two-element arrays (<code>[[76, 9], [4, 1]]</code>) or an object
+with property names like <code>"11"</code> and <code>"01"</code>, but the flat array is
+simple and makes the expressions that access the table pleasantly
+short. We&#8217;ll interpret the indices to the array as two-bit
+binary number, where the leftmost (most significant) digit refers
+to the squirrel variable and the rightmost (least significant) digit
+refers to the event variable. For example, the binary number <code>10</code>
+refers to the case where Jacques did turn into a squirrel, but the
+event (say, "pizza") didn&#8217;t occur. This happened four times. And since
+binary <code>10</code> is 2 in decimal notation, we will store this number at
+index 2 of the array.</p>
+<p><a class=p_ident id="p_napfsNS5sk" href="#p_napfsNS5sk"></a>This is the function that
+computes the <em>ϕ</em> coefficient from such an array:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_S1PE4hukUi" href="#c_S1PE4hukUi"></a><span class="cm-keyword">function</span> <span class="cm-variable">phi</span>(<span class="cm-def">table</span>) {
+  <span class="cm-keyword">return</span> (<span class="cm-variable-2">table</span>[<span class="cm-number">3</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">table</span>[<span class="cm-number">0</span>] <span class="cm-operator">-</span> <span class="cm-variable-2">table</span>[<span class="cm-number">2</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">table</span>[<span class="cm-number">1</span>]) <span class="cm-operator">/</span>
+    <span class="cm-variable">Math</span>.<span class="cm-property">sqrt</span>((<span class="cm-variable-2">table</span>[<span class="cm-number">2</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">table</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">1</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">table</span>[<span class="cm-number">1</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">table</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">2</span>]));
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">phi</span>([<span class="cm-number">76</span>, <span class="cm-number">9</span>, <span class="cm-number">4</span>, <span class="cm-number">1</span>]));
+<span class="cm-comment">// → 0.068599434</span></pre>
+<p><a class=p_ident id="p_25QRmcB8ci" href="#p_25QRmcB8ci"></a>This is simply a direct
+translation of the <em>ϕ</em> formula into JavaScript. <code>Math.sqrt</code> is the
+square root function, as provided by the <code>Math</code> object in a standard
+JavaScript environment. We have to sum two fields from the table to
+get fields like n<sub>1•</sub> because
+the sums of rows or columns are not stored directly in our data
+structure.</p>
+<p><a class=p_ident id="p_0u/DATumDu" href="#p_0u/DATumDu"></a>Jacques kept his journal for three months. The
+resulting data set is available in the coding sandbox for this
+chapter,
+where it is stored in the <code>JOURNAL</code> variable, and in a downloadable
+<a href="http://eloquentjavascript.net/code/jacques_journal.js">file</a>.</p>
+<p><a class=p_ident id="p_sM+4QT8FKs" href="#p_sM+4QT8FKs"></a>To extract a two-by-two
+table for a specific event from this journal, we must loop over
+all the entries and tally up how many times the event occurs in
+relation to squirrel transformations.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_eFskSRBd2j" href="#c_eFskSRBd2j"></a><span class="cm-keyword">function</span> <span class="cm-variable">hasEvent</span>(<span class="cm-def">event</span>, <span class="cm-def">entry</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">entry</span>.<span class="cm-property">events</span>.<span class="cm-property">indexOf</span>(<span class="cm-variable-2">event</span>) <span class="cm-operator">!=</span> <span class="cm-operator">-</span><span class="cm-number">1</span>;
+}
+
+<span class="cm-keyword">function</span> <span class="cm-variable">tableFor</span>(<span class="cm-def">event</span>, <span class="cm-def">journal</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">table</span> <span class="cm-operator">=</span> [<span class="cm-number">0</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>];
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">journal</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> <span class="cm-variable-2">journal</span>[<span class="cm-variable-2">i</span>], <span class="cm-def">index</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable">hasEvent</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">entry</span>)) <span class="cm-variable-2">index</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">entry</span>.<span class="cm-property">squirrel</span>) <span class="cm-variable-2">index</span> <span class="cm-operator">+=</span> <span class="cm-number">2</span>;
+    <span class="cm-variable-2">table</span>[<span class="cm-variable-2">index</span>] <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">table</span>;
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tableFor</span>(<span class="cm-string">"pizza"</span>, <span class="cm-variable">JOURNAL</span>));
+<span class="cm-comment">// → [76, 9, 4, 1]</span></pre>
+<p><a class=p_ident id="p_3pgyJn7mEy" href="#p_3pgyJn7mEy"></a>The <code>hasEvent</code> function tests
+whether an entry contains a given event. Arrays have an <code>indexOf</code>
+method that tries to find a given value (in this case, the event name)
+in the array and returns the index at which it was found or -1 if it
+wasn&#8217;t found. So if the call to <code>indexOf</code> doesn&#8217;t return -1, then we
+know the event was found in the entry.</p>
+<p><a class=p_ident id="p_6jCcm4ltfJ" href="#p_6jCcm4ltfJ"></a>The body of the loop in <code>tableFor</code> figures
+out which box in the table each journal entry falls into by checking
+whether the entry contains the specific event it&#8217;s interested in and
+whether the event happens alongside a squirrel incident. The loop then
+adds one to the number in the array that corresponds to this box on
+the table.</p>
+<p><a class=p_ident id="p_PId7X0fpkS" href="#p_PId7X0fpkS"></a>We now have the tools we need to compute individual correlations.
+The only step remaining is to find a correlation for every type of
+event that was recorded and see whether anything stands out. But how
+should we store these correlations once we compute them?</p>
+<h2><a class=h_ident id="h_mrW9RQxlGk" href="#h_mrW9RQxlGk"></a>Objects as maps</h2>
+<p><a class=p_ident id="p_IdpwDMsKm8" href="#p_IdpwDMsKm8"></a>One possible way is to store
+all the correlations in an array, using objects with <code>name</code> and
+<code>value</code> properties. But that makes looking up the correlation for a
+given event somewhat cumbersome: you&#8217;d have to loop over the whole
+array to find the object with the right <code>name</code>. We could wrap this
+lookup process in a function, but we would still be writing more code,
+and the computer would be doing more work than necessary.</p>
+<p id="object_map"><a class=p_ident id="p_cZSsd9wDlN" href="#p_cZSsd9wDlN"></a>A better way is to use object properties named after the
+event types. We can use the square bracket access notation to create
+and read the properties and can use the <code>in</code> operator to test whether
+a given property exists.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+2/ib0YcAS" href="#c_+2/ib0YcAS"></a><span class="cm-keyword">var</span> <span class="cm-variable">map</span> <span class="cm-operator">=</span> {};
+<span class="cm-keyword">function</span> <span class="cm-variable">storePhi</span>(<span class="cm-def">event</span>, <span class="cm-def">phi</span>) {
+  <span class="cm-variable">map</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">phi</span>;
+}
+
+<span class="cm-variable">storePhi</span>(<span class="cm-string">"pizza"</span>, <span class="cm-number">0.069</span>);
+<span class="cm-variable">storePhi</span>(<span class="cm-string">"touched tree"</span>, <span class="cm-operator">-</span><span class="cm-number">0.081</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"pizza"</span> <span class="cm-keyword">in</span> <span class="cm-variable">map</span>);
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">map</span>[<span class="cm-string">"touched tree"</span>]);
+<span class="cm-comment">// → -0.081</span></pre>
+<p><a class=p_ident id="p_OlrE0O0+IT" href="#p_OlrE0O0+IT"></a>A <em>map</em> is a way to go from values in one
+domain (in this case, event names) to corresponding values in another
+domain (in this case, <em>ϕ</em> coefficients).</p>
+<p><a class=p_ident id="p_Geo6ELctAH" href="#p_Geo6ELctAH"></a>There are a few potential problems with using objects like this, which
+we will discuss in <a href="06_object.html#prototypes">Chapter 6</a>, but for
+the time being, we won&#8217;t worry about those.</p>
+<p><a class=p_ident id="p_esSmj3VTX0" href="#p_esSmj3VTX0"></a>What if
+we want to find all the events for which we have stored a coefficient?
+The properties don&#8217;t form a predictable series, like they would in an
+array, so we cannot use a normal <code>for</code> loop. JavaScript provides a
+loop construct specifically for going over the properties of an
+object. It looks a little like a normal <code>for</code> loop but distinguishes
+itself by the use of the word <code>in</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_fVra/BEVfu" href="#c_fVra/BEVfu"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">map</span>)
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"The correlation for '"</span> <span class="cm-operator">+</span> <span class="cm-variable">event</span> <span class="cm-operator">+</span>
+              <span class="cm-string">"' is "</span> <span class="cm-operator">+</span> <span class="cm-variable">map</span>[<span class="cm-variable">event</span>]);
+<span class="cm-comment">// → The correlation for 'pizza' is 0.069</span>
+<span class="cm-comment">// → The correlation for 'touched tree' is -0.081</span></pre>
+<h2 id="analysis"><a class=h_ident id="h_Lg5n7mjqw/" href="#h_Lg5n7mjqw/"></a>The final analysis</h2>
+<p><a class=p_ident id="p_o0qm2V9nGm" href="#p_o0qm2V9nGm"></a>To find all the types of events that are present in the
+data set, we simply process each entry in turn and then loop over the
+events in that entry. We keep an object <code>phis</code> that has correlation
+coefficients for all the event types we have seen so far. Whenever we
+run across a type that isn&#8217;t in the <code>phis</code> object yet, we compute its
+correlation and add it to the object.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NNtQBmsHS2" href="#c_NNtQBmsHS2"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">entry</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">journal</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">entry</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">events</span> <span class="cm-operator">=</span> <span class="cm-variable-2">journal</span>[<span class="cm-variable-2">entry</span>].<span class="cm-property">events</span>;
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">events</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">event</span> <span class="cm-operator">=</span> <span class="cm-variable-2">events</span>[<span class="cm-variable-2">i</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">event</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
+        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">journal</span>));
+    }
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
+}
+
+<span class="cm-keyword">var</span> <span class="cm-variable">correlations</span> <span class="cm-operator">=</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-variable">JOURNAL</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">correlations</span>.<span class="cm-property">pizza</span>);
+<span class="cm-comment">// → 0.068599434</span></pre>
+<p><a class=p_ident id="p_XUj02Go7DR" href="#p_XUj02Go7DR"></a>Let&#8217;s see what came out.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9AY4PathBr" href="#c_9AY4PathBr"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlations</span>)
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">event</span> <span class="cm-operator">+</span> <span class="cm-string">": "</span> <span class="cm-operator">+</span> <span class="cm-variable">correlations</span>[<span class="cm-variable">event</span>]);
+<span class="cm-comment">// → carrot:   0.0140970969</span>
+<span class="cm-comment">// → exercise: 0.0685994341</span>
+<span class="cm-comment">// → weekend:  0.1371988681</span>
+<span class="cm-comment">// → bread:   -0.0757554019</span>
+<span class="cm-comment">// → pudding: -0.0648203724</span>
+<span class="cm-comment">// and so on...</span></pre>
+<p><a class=p_ident id="p_TiI6dIjE18" href="#p_TiI6dIjE18"></a>Most correlations seem to lie close to zero. Eating
+carrots, bread, or pudding apparently does not trigger
+squirrel-lycanthropy. It <em>does</em> seem to occur somewhat more often on
+weekends, however. Let&#8217;s filter the results to show only correlations
+greater than 0.1 or less than -0.1.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_TLJ4VeMVj7" href="#c_TLJ4VeMVj7"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlations</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-variable">correlation</span> <span class="cm-operator">=</span> <span class="cm-variable">correlations</span>[<span class="cm-variable">event</span>];
+  <span class="cm-keyword">if</span> (<span class="cm-variable">correlation</span> <span class="cm-operator">></span> <span class="cm-number">0.1</span> <span class="cm-operator">||</span> <span class="cm-variable">correlation</span> <span class="cm-operator">&lt;</span> <span class="cm-operator">-</span><span class="cm-number">0.1</span>)
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">event</span> <span class="cm-operator">+</span> <span class="cm-string">": "</span> <span class="cm-operator">+</span> <span class="cm-variable">correlation</span>);
+}
+<span class="cm-comment">// → weekend:        0.1371988681</span>
+<span class="cm-comment">// → brushed teeth: -0.3805211953</span>
+<span class="cm-comment">// → candy:          0.1296407447</span>
+<span class="cm-comment">// → work:          -0.1371988681</span>
+<span class="cm-comment">// → spaghetti:      0.2425356250</span>
+<span class="cm-comment">// → reading:        0.1106828054</span>
+<span class="cm-comment">// → peanuts:        0.5902679812</span></pre>
+<p><a class=p_ident id="p_V2ZEhvkhz3" href="#p_V2ZEhvkhz3"></a>A-ha! There are two factors whose correlation is clearly stronger
+than the others. Eating peanuts has a strong positive effect on
+the chance of turning into a squirrel, whereas brushing his teeth has
+a significant negative effect.</p>
+<p><a class=p_ident id="p_xpRHDuufcX" href="#p_xpRHDuufcX"></a>Interesting. Let&#8217;s try something.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_xlu1nixXWv" href="#c_xlu1nixXWv"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">JOURNAL</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-variable">entry</span> <span class="cm-operator">=</span> <span class="cm-variable">JOURNAL</span>[<span class="cm-variable">i</span>];
+  <span class="cm-keyword">if</span> (<span class="cm-variable">hasEvent</span>(<span class="cm-string">"peanuts"</span>, <span class="cm-variable">entry</span>) <span class="cm-operator">&amp;&amp;</span>
+     <span class="cm-operator">!</span><span class="cm-variable">hasEvent</span>(<span class="cm-string">"brushed teeth"</span>, <span class="cm-variable">entry</span>))
+    <span class="cm-variable">entry</span>.<span class="cm-property">events</span>.<span class="cm-property">push</span>(<span class="cm-string">"peanut teeth"</span>);
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-string">"peanut teeth"</span>, <span class="cm-variable">JOURNAL</span>)));
+<span class="cm-comment">// → 1</span></pre>
+<p><a class=p_ident id="p_WUlOiYWV3C" href="#p_WUlOiYWV3C"></a>Well, that&#8217;s unmistakable! The phenomenon occurs precisely when
+Jacques eats peanuts and fails to brush his teeth. If only he
+weren&#8217;t such a slob about dental hygiene, he&#8217;d have never even noticed
+his affliction.</p>
+<p><a class=p_ident id="p_tPNATV9wwS" href="#p_tPNATV9wwS"></a>Knowing this, Jacques simply stops eating peanuts altogether and finds
+that this completely puts an end to his transformations.</p>
+<p><a class=p_ident id="p_DXAwHKoLIY" href="#p_DXAwHKoLIY"></a>All is well with Jacques for a while. But a
+few years later, he loses his job and is eventually forced to take
+employment with a circus, where he performs as <em>The Incredible
+Squirrelman</em> by stuffing his mouth with peanut butter before every
+show. One day, fed up with this pitiful existence, Jacques fails to
+change back into his human form, hops through a crack in the circus
+tent, and vanishes into the forest. He is never seen again.</p>
+<h2><a class=h_ident id="h_GFaxee4PuU" href="#h_GFaxee4PuU"></a>Further arrayology</h2>
+<p><a class=p_ident id="p_U0+LZH9g+H" href="#p_U0+LZH9g+H"></a>Before finishing up this chapter,
+I want to introduce you to a few more object-related concepts. We&#8217;ll
+start by introducing some generally useful array methods.</p>
+<p><a class=p_ident id="p_Wl9gXY97xi" href="#p_Wl9gXY97xi"></a>We saw <code>push</code> and <code>pop</code>, which add and remove elements at the
+end of an array, <a href="04_data.html#array_methods">earlier</a> in this
+chapter. The corresponding methods for adding and removing things at
+the start of an array are called <code>unshift</code> and <code>shift</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9It3VS5zI/" href="#c_9It3VS5zI/"></a><span class="cm-keyword">var</span> <span class="cm-variable">todoList</span> <span class="cm-operator">=</span> [];
+<span class="cm-keyword">function</span> <span class="cm-variable">rememberTo</span>(<span class="cm-def">task</span>) {
+  <span class="cm-variable">todoList</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">task</span>);
+}
+<span class="cm-keyword">function</span> <span class="cm-variable">whatIsNext</span>() {
+  <span class="cm-keyword">return</span> <span class="cm-variable">todoList</span>.<span class="cm-property">shift</span>();
+}
+<span class="cm-keyword">function</span> <span class="cm-variable">urgentlyRememberTo</span>(<span class="cm-def">task</span>) {
+  <span class="cm-variable">todoList</span>.<span class="cm-property">unshift</span>(<span class="cm-variable-2">task</span>);
+}</pre>
+<p><a class=p_ident id="p_msNR9KyjFO" href="#p_msNR9KyjFO"></a>The previous program manages lists of
+tasks. You add tasks to the end of the list by calling
+<code>rememberTo("eat")</code>, and when you&#8217;re ready to do something, you call
+<code>whatIsNext()</code> to get (and remove) the front item from the list. The
+<code>urgentlyRememberTo</code> function also adds a task but adds it to the
+front instead of the back of the list.</p>
+<p><a class=p_ident id="p_V9yB5Z4xWA" href="#p_V9yB5Z4xWA"></a>The <code>indexOf</code> method has a sibling called <code>lastIndexOf</code>,
+which starts searching for the given element at the end of the array
+instead of the front.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_li2m9Gen8Q" href="#c_li2m9Gen8Q"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">2</span>, <span class="cm-number">1</span>].<span class="cm-property">indexOf</span>(<span class="cm-number">2</span>));
+<span class="cm-comment">// → 1</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">2</span>, <span class="cm-number">1</span>].<span class="cm-property">lastIndexOf</span>(<span class="cm-number">2</span>));
+<span class="cm-comment">// → 3</span></pre>
+<p><a class=p_ident id="p_hZ181L7UrW" href="#p_hZ181L7UrW"></a>Both <code>indexOf</code> and <code>lastIndexOf</code> take an optional second argument that
+indicates where to start searching from.</p>
+<p><a class=p_ident id="p_wxgx//Le/b" href="#p_wxgx//Le/b"></a>Another fundamental method
+is <code>slice</code>, which takes a start index and an end index and returns an
+array that has only the elements between those indices. The start
+index is inclusive, the end index exclusive.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_uRogoaHL4B" href="#c_uRogoaHL4B"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">0</span>, <span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>].<span class="cm-property">slice</span>(<span class="cm-number">2</span>, <span class="cm-number">4</span>));
+<span class="cm-comment">// → [2, 3]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">0</span>, <span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>].<span class="cm-property">slice</span>(<span class="cm-number">2</span>));
+<span class="cm-comment">// → [2, 3, 4]</span></pre>
+<p><a class=p_ident id="p_Z01yQe26G8" href="#p_Z01yQe26G8"></a>When the end index is not given, <code>slice</code>
+will take all of the elements after the start index. Strings also have
+a <code>slice</code> method, which has a similar effect.</p>
+<p><a class=p_ident id="p_1mS9LYSSFD" href="#p_1mS9LYSSFD"></a>The <code>concat</code> method can be used
+to glue arrays together, similar to what the <code>+</code> operator does for
+strings. The following example shows both <code>concat</code> and <code>slice</code> in
+action. It takes an array and an index, and it returns a new array
+that is a copy of the original array with the element at the given
+index removed.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ai2SwbDs5w" href="#c_ai2SwbDs5w"></a><span class="cm-keyword">function</span> <span class="cm-variable">remove</span>(<span class="cm-def">array</span>, <span class="cm-def">index</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>.<span class="cm-property">slice</span>(<span class="cm-number">0</span>, <span class="cm-variable-2">index</span>)
+    .<span class="cm-property">concat</span>(<span class="cm-variable-2">array</span>.<span class="cm-property">slice</span>(<span class="cm-variable-2">index</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>));
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">remove</span>([<span class="cm-string">"a"</span>, <span class="cm-string">"b"</span>, <span class="cm-string">"c"</span>, <span class="cm-string">"d"</span>, <span class="cm-string">"e"</span>], <span class="cm-number">2</span>));
+<span class="cm-comment">// → ["a", "b", "d", "e"]</span></pre>
+<h2><a class=h_ident id="h_mT4YQfwHp6" href="#h_mT4YQfwHp6"></a>Strings and their properties</h2>
+<p><a class=p_ident id="p_ZbMq0Cy4Fu" href="#p_ZbMq0Cy4Fu"></a>We can read properties like <code>length</code> and
+<code>toUpperCase</code> from string values. But if you try to add a new
+property, it doesn&#8217;t stick.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_kuUv1PH55x" href="#c_kuUv1PH55x"></a><span class="cm-keyword">var</span> <span class="cm-variable">myString</span> <span class="cm-operator">=</span> <span class="cm-string">"Fido"</span>;
+<span class="cm-variable">myString</span>.<span class="cm-property">myProperty</span> <span class="cm-operator">=</span> <span class="cm-string">"value"</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">myString</span>.<span class="cm-property">myProperty</span>);
+<span class="cm-comment">// → undefined</span></pre>
+<p><a class=p_ident id="p_B+oSPYAIbV" href="#p_B+oSPYAIbV"></a>Values of type string, number, and Boolean are not objects, and though
+the language doesn&#8217;t complain if you try to set new properties on
+them, it doesn&#8217;t actually store those properties. The values are
+immutable and cannot be changed.</p>
+<p><a class=p_ident id="p_8L2ib2beYN" href="#p_8L2ib2beYN"></a>But these types do have some built-in
+properties. Every string value has a number of methods. The most
+useful ones are probably <code>slice</code> and <code>indexOf</code>, which resemble the
+array methods of the same name.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_rZojswAQFV" href="#c_rZojswAQFV"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"coconuts"</span>.<span class="cm-property">slice</span>(<span class="cm-number">4</span>, <span class="cm-number">7</span>));
+<span class="cm-comment">// → nut</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"coconut"</span>.<span class="cm-property">indexOf</span>(<span class="cm-string">"u"</span>));
+<span class="cm-comment">// → 5</span></pre>
+<p><a class=p_ident id="p_RUd6q+Q4dc" href="#p_RUd6q+Q4dc"></a>One difference is that a string&#8217;s <code>indexOf</code> can take a string
+containing more than one character, whereas the corresponding array
+method looks only for a single element.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_sW/DJiLrM1" href="#c_sW/DJiLrM1"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"one two three"</span>.<span class="cm-property">indexOf</span>(<span class="cm-string">"ee"</span>));
+<span class="cm-comment">// → 11</span></pre>
+<p><a class=p_ident id="p_iSAQfJDhu8" href="#p_iSAQfJDhu8"></a>The <code>trim</code> method removes whitespace
+(spaces, newlines, tabs, and similar characters) from the start and
+end of a string.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Bm4kTTYcF2" href="#c_Bm4kTTYcF2"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"  okay \n "</span>.<span class="cm-property">trim</span>());
+<span class="cm-comment">// → okay</span></pre>
+<p><a class=p_ident id="p_J4kiFmHyRO" href="#p_J4kiFmHyRO"></a>We have already seen the string type&#8217;s
+<code>length</code> property. Accessing the individual characters in a string can
+be done with the <code>charAt</code> method but also by simply reading numeric
+properties, like you&#8217;d do for an array.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+uFPZG6blX" href="#c_+uFPZG6blX"></a><span class="cm-keyword">var</span> <span class="cm-variable">string</span> <span class="cm-operator">=</span> <span class="cm-string">"abc"</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">string</span>.<span class="cm-property">length</span>);
+<span class="cm-comment">// → 3</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">string</span>.<span class="cm-property">charAt</span>(<span class="cm-number">0</span>));
+<span class="cm-comment">// → a</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">string</span>[<span class="cm-number">1</span>]);
+<span class="cm-comment">// → b</span></pre>
+<h2 id="arguments_object"><a class=h_ident id="h_GstIcsgxyb" href="#h_GstIcsgxyb"></a>The arguments object</h2>
+<p><a class=p_ident id="p_8jQc6BP3jE" href="#p_8jQc6BP3jE"></a>Whenever a function is called, a special variable named
+<code>arguments</code> is added to the environment in which the function body
+runs. This variable refers to an object that holds all of the
+arguments passed to the function. Remember that in JavaScript you are
+allowed to pass more (or fewer) arguments to a function than the
+number of parameters the function itself declares.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_vGR3ohSBVO" href="#c_vGR3ohSBVO"></a><span class="cm-keyword">function</span> <span class="cm-variable">noArguments</span>() {}
+<span class="cm-variable">noArguments</span>(<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>); <span class="cm-comment">// This is okay</span>
+<span class="cm-keyword">function</span> <span class="cm-variable">threeArguments</span>(<span class="cm-def">a</span>, <span class="cm-def">b</span>, <span class="cm-def">c</span>) {}
+<span class="cm-variable">threeArguments</span>(); <span class="cm-comment">// And so is this</span></pre>
+<p><a class=p_ident id="p_X05+xpRc+j" href="#p_X05+xpRc+j"></a>The <code>arguments</code> object has a <code>length</code> property
+that tells us the number of arguments that were really passed to the
+function. It also has a property for each argument, named 0, 1, 2, and
+so on.</p>
+<p><a class=p_ident id="p_r7f/a3/GFP" href="#p_r7f/a3/GFP"></a>If that sounds a lot like an array to you,
+you&#8217;re right, it <em>is</em> a lot like an array. But this object,
+unfortunately, does not have any array methods (like <code>slice</code> or
+<code>indexOf</code>), so it is a little harder to use than a real array.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MLV9gPSdx9" href="#c_MLV9gPSdx9"></a><span class="cm-keyword">function</span> <span class="cm-variable">argumentCounter</span>() {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You gave me"</span>, <span class="cm-variable-2">arguments</span>.<span class="cm-property">length</span>, <span class="cm-string">"arguments."</span>);
+}
+<span class="cm-variable">argumentCounter</span>(<span class="cm-string">"Straw man"</span>, <span class="cm-string">"Tautology"</span>, <span class="cm-string">"Ad hominem"</span>);
+<span class="cm-comment">// → You gave me 3 arguments.</span></pre>
+<p><a class=p_ident id="p_MIxvg5Tzop" href="#p_MIxvg5Tzop"></a>Some functions
+can take any number of arguments, like <code>console.log</code>. These typically
+loop over the values in their <code>arguments</code> object. They can be used to
+create very pleasant interfaces. For example, remember how we created
+the entries to Jacques’ journal.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HkIRWLvq7y" href="#c_HkIRWLvq7y"></a><span class="cm-variable">addEntry</span>([<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"running"</span>,
+          <span class="cm-string">"television"</span>], <span class="cm-atom">false</span>);</pre>
+<p><a class=p_ident id="p_2WHMCXaaIn" href="#p_2WHMCXaaIn"></a>Since he is going to be calling this function a lot, we could create
+an alternative that is easier to call.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_mJiHtSVFDT" href="#c_mJiHtSVFDT"></a><span class="cm-keyword">function</span> <span class="cm-variable">addEntry</span>(<span class="cm-def">squirrel</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> {<span class="cm-property">events</span>: [], <span class="cm-property">squirrel</span>: <span class="cm-variable-2">squirrel</span>};
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">arguments</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
+    <span class="cm-variable-2">entry</span>.<span class="cm-property">events</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">arguments</span>[<span class="cm-variable-2">i</span>]);
+  <span class="cm-variable">journal</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">entry</span>);
+}
+<span class="cm-variable">addEntry</span>(<span class="cm-atom">true</span>, <span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>,
+         <span class="cm-string">"running"</span>, <span class="cm-string">"television"</span>);</pre>
+<p><a class=p_ident id="p_o3+Bq1M1pm" href="#p_o3+Bq1M1pm"></a>This version reads its first argument
+(<code>squirrel</code>) in the normal way and then goes over the rest of the
+arguments (the loop starts at index 1, skipping the first) to gather
+them into an array.</p>
+<h2><a class=h_ident id="h_C51DnYk8WZ" href="#h_C51DnYk8WZ"></a>The Math object</h2>
+<p><a class=p_ident id="p_9S5JZybGFD" href="#p_9S5JZybGFD"></a>As we&#8217;ve seen, <code>Math</code> is a grab-bag of number-related utility
+functions, such as <code>Math.max</code> (maximum), <code>Math.min</code> (minimum), and
+<code>Math.sqrt</code> (square root).</p>
+<p id="namespace_pollution"><a class=p_ident id="p_YvGRywRVYj" href="#p_YvGRywRVYj"></a>The
+<code>Math</code> object is used simply as a container to group a bunch of
+related functionality. There is only one <code>Math</code> object, and it is
+almost never useful as a value. Rather, it provides a <em>namespace</em> so
+that all these functions and values do not have to be global
+variables.</p>
+<p><a class=p_ident id="p_fGEMziAXhp" href="#p_fGEMziAXhp"></a>Having too many global variables “pollutes” the
+namespace. The more names that have been taken, the more likely you
+are to accidentally overwrite the value of some variable. For example,
+it&#8217;s not unlikely that you&#8217;ll want to name something <code>max</code> in one of
+your programs. Since JavaScript&#8217;s built-in <code>max</code> function is tucked
+safely inside the <code>Math</code> object, we don&#8217;t have to worry about
+overwriting it.</p>
+<p><a class=p_ident id="p_tEjnm+nh21" href="#p_tEjnm+nh21"></a>Many languages will stop you, or at least warn you, when you are
+defining a variable with a name that is already taken. JavaScript does
+neither, so be careful.</p>
+<p><a class=p_ident id="p_zWXQRNgLI/" href="#p_zWXQRNgLI/"></a>Back to
+the <code>Math</code> object. If you need to do trigonometry, <code>Math</code> can
+help. It contains <code>cos</code> (cosine), <code>sin</code> (sine), and <code>tan</code> (tangent),
+as well as their inverse functions, <code>acos</code>, <code>asin</code>, and <code>atan</code>, respectively. The
+number π (pi)—or at least the closest approximation that fits in a
+JavaScript number—is available as <code>Math.PI</code>. (There is an old
+programming tradition of writing the names of constant values in
+all caps.)</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2uZIZgWSsu" href="#c_2uZIZgWSsu"></a><span class="cm-keyword">function</span> <span class="cm-variable">randomPointOnCircle</span>(<span class="cm-def">radius</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">angle</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">2</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">PI</span>;
+  <span class="cm-keyword">return</span> {<span class="cm-property">x</span>: <span class="cm-variable-2">radius</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">cos</span>(<span class="cm-variable-2">angle</span>),
+          <span class="cm-property">y</span>: <span class="cm-variable-2">radius</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">sin</span>(<span class="cm-variable-2">angle</span>)};
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">randomPointOnCircle</span>(<span class="cm-number">2</span>));
+<span class="cm-comment">// → {x: 0.3667, y: 1.966}</span></pre>
+<p><a class=p_ident id="p_4kTWFGWGMm" href="#p_4kTWFGWGMm"></a>If sines and cosines are not something you are very familiar with,
+don&#8217;t worry. When they are used in this book, in
+<a href="13_dom.html#sin_cos">Chapter 13</a>, I&#8217;ll explain them.</p>
+<p><a class=p_ident id="p_a6xMq73yCc" href="#p_a6xMq73yCc"></a>The previous example
+uses <code>Math.random</code>. This is a function that returns a new
+pseudorandom number between zero (inclusive) and one (exclusive)
+every time you call it.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wJKP6sIzSp" href="#c_wJKP6sIzSp"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
+<span class="cm-comment">// → 0.36993729369714856</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
+<span class="cm-comment">// → 0.727367032552138</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
+<span class="cm-comment">// → 0.40180766698904335</span></pre>
+<p><a class=p_ident id="p_LqSZpx/sgf" href="#p_LqSZpx/sgf"></a>Though computers are
+deterministic machines—they always react the same way if given the
+same input—it is possible to have them produce numbers that appear
+random. To do this, the machine keeps a number (or a bunch of numbers)
+in its internal state. Then, every time a random number is requested,
+it performs some complicated deterministic computations on this
+internal state and returns part of the result of those computations.
+The machine also uses the outcome to change its own internal state so
+that the next “random” number produced will be different.</p>
+<p><a class=p_ident id="p_WnBKL1c/CF" href="#p_WnBKL1c/CF"></a>If we want a whole random
+number instead of a fractional one, we can use <code>Math.floor</code> (which
+rounds down to the nearest whole number) on the result of
+<code>Math.random</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_bBGTtB+AvR" href="#c_bBGTtB+AvR"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">10</span>));
+<span class="cm-comment">// → 2</span></pre>
+<p><a class=p_ident id="p_52aDRkOsyH" href="#p_52aDRkOsyH"></a>Multiplying the random number by 10 gives us a number greater than or
+equal to zero, and below 10. Since <code>Math.floor</code> rounds down, this
+expression will produce, with equal chance, any number from 0 through
+9.</p>
+<p><a class=p_ident id="p_1pKvkjRw0T" href="#p_1pKvkjRw0T"></a>There are also the
+functions <code>Math.ceil</code> (for “ceiling”, which rounds up to a whole
+number) and <code>Math.round</code> (to the nearest whole number).</p>
+<h2><a class=h_ident id="h_lRBZxXmo93" href="#h_lRBZxXmo93"></a>The global object</h2>
+<p><a class=p_ident id="p_+IF2SIC4YV" href="#p_+IF2SIC4YV"></a>The global scope, the space in which
+global variables live, can also be approached as an object in
+JavaScript. Each global variable is present as a property of this
+object. In browsers, the global scope object is stored in the
+<code>window</code> variable.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3k/DIzi9mB" href="#c_3k/DIzi9mB"></a><span class="cm-keyword">var</span> <span class="cm-variable">myVar</span> <span class="cm-operator">=</span> <span class="cm-number">10</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"myVar"</span> <span class="cm-keyword">in</span> <span class="cm-variable">window</span>);
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">window</span>.<span class="cm-property">myVar</span>);
+<span class="cm-comment">// → 10</span></pre>
+<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
+<p><a class=p_ident id="p_78ZfHX5x1B" href="#p_78ZfHX5x1B"></a>Objects and arrays (which are a specific kind of object) provide ways
+to group several values into a single value. Conceptually, this allows
+us to put a bunch of related things in a bag and run around with the
+bag, instead of trying to wrap our arms around all of the individual
+things and trying to hold on to them separately.</p>
+<p><a class=p_ident id="p_ayhyxvWlMH" href="#p_ayhyxvWlMH"></a>Most values in JavaScript have properties, the exceptions being <code>null</code>
+and <code>undefined</code>. Properties are accessed using <code>value.propName</code> or
+<code>value["propName"]</code>. Objects tend to use names for their properties
+and store more or less a fixed set of them. Arrays, on the other hand,
+usually contain varying numbers of conceptually identical values and
+use numbers (starting from 0) as the names of their properties.</p>
+<p><a class=p_ident id="p_1lcitbawCQ" href="#p_1lcitbawCQ"></a>There <em>are</em> some named properties in arrays, such as <code>length</code> and a
+number of methods. Methods are functions that live in properties and
+(usually) act on the value they are a property of.</p>
+<p><a class=p_ident id="p_ZtRACiqRCK" href="#p_ZtRACiqRCK"></a>Objects can also serve as maps, associating values with names. The <code>in</code>
+operator can be used to find out whether an object contains a property with
+a given name. The same keyword can also be used in a <code>for</code> loop
+(<code>for (var name in object)</code>) to loop over an object&#8217;s properties.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<h3><a class=h_ident id="h_8ZspxiCEC/" href="#h_8ZspxiCEC/"></a>The sum of a range</h3>
+<p><a class=p_ident id="p_fpyyiv/hm1" href="#p_fpyyiv/hm1"></a>The <a href="00_intro.html#intro">introduction</a> of this book alluded to the
+following as a nice way to compute the sum of a range of numbers:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_OULOwD7HOm" href="#c_OULOwD7HOm"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>(<span class="cm-variable">range</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));</pre>
+<p><a class=p_ident id="p_PkFb/61ecP" href="#p_PkFb/61ecP"></a>Write a <code>range</code> function that
+takes two arguments, <code>start</code> and <code>end</code>, and returns an array
+containing all the numbers from <code>start</code> up to (and including) <code>end</code>.</p>
+<p><a class=p_ident id="p_0GiJNcBSop" href="#p_0GiJNcBSop"></a>Next, write a <code>sum</code> function that takes an array of numbers and
+returns the sum of these numbers. Run the previous program and see
+whether it does indeed return 55.</p>
+<p><a class=p_ident id="p_T5lVUHvYnd" href="#p_T5lVUHvYnd"></a>As a bonus assignment, modify your <code>range</code>
+function to take an optional third argument that indicates the “step”
+value used to build up the array. If no step is given, the array
+elements go up by increments of one, corresponding to the old
+behavior. The function call <code>range(1, 10, 2)</code> should return <code>[1, 3, 5,
+7, 9]</code>. Make sure it also works with negative step values so that
+<code>range(5, 2, -1)</code> produces <code>[5, 4, 3, 2]</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2+XS3pqs4X" href="#c_2+XS3pqs4X"></a><span class="cm-comment">// Your code here.</span>
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>(<span class="cm-variable">range</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));
+<span class="cm-comment">// → 55</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">range</span>(<span class="cm-number">5</span>, <span class="cm-number">2</span>, <span class="cm-operator">-</span><span class="cm-number">1</span>));
+<span class="cm-comment">// → [5, 4, 3, 2]</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_AzWVqPrlre" href="#p_AzWVqPrlre"></a>Building up an array is most easily done by first
+initializing a variable to <code>[]</code> (a fresh, empty array) and repeatedly
+calling its <code>push</code> method to add a value. Don&#8217;t forget to return the
+array at the end of the function.</p>
+<p><a class=p_ident id="p_eu6MUPwjEb" href="#p_eu6MUPwjEb"></a>Since the end boundary is
+inclusive, you&#8217;ll need to use the <code>&lt;=</code> operator rather than simply <code>&lt;</code>
+to check for the end of your loop.</p>
+<p><a class=p_ident id="p_gp8gSa5PFL" href="#p_gp8gSa5PFL"></a>To check whether the optional step argument was
+given, either check <code>arguments.length</code> or compare the value of the
+argument to <code>undefined</code>. If it wasn&#8217;t given, simply set it to its
+default value (1) at the top of the function.</p>
+<p><a class=p_ident id="p_xfC3xdBYBn" href="#p_xfC3xdBYBn"></a>Having <code>range</code> understand negative
+step values is probably best done by writing two separate loops—one
+for counting up and one for counting down—because the comparison that
+checks whether the loop is finished needs to be <code>&gt;=</code> rather than <code>&lt;=</code>
+when counting downward.</p>
+<p><a class=p_ident id="p_kHSmZmF/0k" href="#p_kHSmZmF/0k"></a>It might also be worthwhile to use a different default step, namely,
+-1, when the end of the range is smaller than the start. That way,
+<code>range(5, 2)</code> returns something meaningful, rather than getting stuck
+in an infinite loop.</p>
+</div></div>
+<h3><a class=h_ident id="h_6xTmjj4Rf5" href="#h_6xTmjj4Rf5"></a>Reversing an array</h3>
+<p><a class=p_ident id="p_0ysB6LgssH" href="#p_0ysB6LgssH"></a>Arrays have a method <code>reverse</code>, which
+changes the array by inverting the order in which its elements appear.
+For this exercise, write two functions, <code>reverseArray</code> and
+<code>reverseArrayInPlace</code>. The first, <code>reverseArray</code>, takes an array as
+argument and produces a <em>new</em> array that has the same elements in the
+inverse order. The second, <code>reverseArrayInPlace</code>, does what the
+<code>reverse</code> method does: it modifies the array given as argument in
+order to reverse its elements. Neither may use the standard
+<code>reverse</code> method.</p>
+<p><a class=p_ident id="p_0WdqLyJAyQ" href="#p_0WdqLyJAyQ"></a>Thinking back to
+the notes about side effects and pure functions in the
+<a href="03_functions.html#pure">previous chapter</a>, which variant do you
+expect to be useful in more situations? Which one is more efficient?</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_F3JsLaIs+m" href="#c_F3JsLaIs+m"></a><span class="cm-comment">// Your code here.</span>
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">reverseArray</span>([<span class="cm-string">"A"</span>, <span class="cm-string">"B"</span>, <span class="cm-string">"C"</span>]));
+<span class="cm-comment">// → ["C", "B", "A"];</span>
+<span class="cm-keyword">var</span> <span class="cm-variable">arrayValue</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>];
+<span class="cm-variable">reverseArrayInPlace</span>(<span class="cm-variable">arrayValue</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">arrayValue</span>);
+<span class="cm-comment">// → [5, 4, 3, 2, 1]</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_pyY1QGL0wk" href="#p_pyY1QGL0wk"></a>There are two obvious ways to implement
+<code>reverseArray</code>. The first is to simply go over the input array from
+front to back and use the <code>unshift</code> method on the new array to insert
+each element at its start. The second is to loop over the input array
+backward and use the <code>push</code> method. Iterating over an array backward
+requires a (somewhat awkward) <code>for</code> specification like <code>(var i =
+array.length - 1; i &gt;= 0; i--)</code>.</p>
+<p><a class=p_ident id="p_Y08sN3Yej5" href="#p_Y08sN3Yej5"></a>Reversing the array in place is harder. You have to be careful not to
+overwrite elements that you will later need. Using <code>reverseArray</code> or
+otherwise copying the whole array (<code>array.slice(0)</code> is a good way to
+copy an array) works but is cheating.</p>
+<p><a class=p_ident id="p_hzYSkS4zzl" href="#p_hzYSkS4zzl"></a>The trick is to <em>swap</em> the first and last elements, then the
+second and second-to-last, and so on. You can do this by looping
+over half the length of the array (use <code>Math.floor</code> to round down—you
+don&#8217;t need to touch the middle element in an array with an odd
+length) and swapping the element at position <code>i</code> with the one at
+position <code>array.length - 1 - i</code>. You can use a local variable to
+briefly hold on to one of the elements, overwrite that one with its
+mirror image, and then put the value from the local variable in the
+place where the mirror image used to be.</p>
+</div></div>
+<h3 id="list"><a class=h_ident id="h_nSTX34CM1M" href="#h_nSTX34CM1M"></a>A list</h3>
+<p><a class=p_ident id="p_7AnSuS26HF" href="#p_7AnSuS26HF"></a>Objects, as generic
+blobs of values, can be used to build all sorts of data structures. A
+common data structure is the <em>list</em> (not to be confused with the
+array). A list is a nested set of objects, with the first object
+holding a reference to the second, the second to the third, and so on.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WcmR7ylTJy" href="#c_WcmR7ylTJy"></a><span class="cm-keyword">var</span> <span class="cm-variable">list</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">value</span>: <span class="cm-number">1</span>,
+  <span class="cm-property">rest</span>: {
+    <span class="cm-property">value</span>: <span class="cm-number">2</span>,
+    <span class="cm-property">rest</span>: {
+      <span class="cm-property">value</span>: <span class="cm-number">3</span>,
+      <span class="cm-property">rest</span>: <span class="cm-atom">null</span>
+    }
+  }
+};</pre>
+<p><a class=p_ident id="p_2un5u6U14Q" href="#p_2un5u6U14Q"></a>The resulting objects form a chain, like this:</p>
+<div class="image">
+  <img src="img/linked-list.svg" alt="A linked list">
+</div>
+<p><a class=p_ident id="p_NaI0fhp38z" href="#p_NaI0fhp38z"></a>A nice thing about lists is that
+they can share parts of their structure. For example, if I create two
+new values <code>{value: 0, rest: list}</code> and <code>{value: -1, rest: list}</code>
+(with <code>list</code> referring to the variable defined earlier), they are both
+independent lists, but they share the structure that makes up their
+last three elements. In addition, the original list is also still a
+valid three-element list.</p>
+<p><a class=p_ident id="p_iPlgVCeZGh" href="#p_iPlgVCeZGh"></a>Write a function <code>arrayToList</code> that builds up a data structure like
+the previous one when given <code>[1, 2, 3]</code> as argument, and write a
+<code>listToArray</code> function that produces an array from a list. Also write
+the helper functions <code>prepend</code>, which takes an element and a list and
+creates a new list that adds the element to the front of the input
+list, and <code>nth</code>, which takes a list and a number and returns the
+element at the given position in the list, or <code>undefined</code> when there
+is no such element.</p>
+<p><a class=p_ident id="p_IZMCvYT0l2" href="#p_IZMCvYT0l2"></a>If you haven&#8217;t already, also write a recursive version
+of <code>nth</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_F73m7OkLk8" href="#c_F73m7OkLk8"></a><span class="cm-comment">// Your code here.</span>
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">arrayToList</span>([<span class="cm-number">10</span>, <span class="cm-number">20</span>]));
+<span class="cm-comment">// → {value: 10, rest: {value: 20, rest: null}}</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listToArray</span>(<span class="cm-variable">arrayToList</span>([<span class="cm-number">10</span>, <span class="cm-number">20</span>, <span class="cm-number">30</span>])));
+<span class="cm-comment">// → [10, 20, 30]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">prepend</span>(<span class="cm-number">10</span>, <span class="cm-variable">prepend</span>(<span class="cm-number">20</span>, <span class="cm-atom">null</span>)));
+<span class="cm-comment">// → {value: 10, rest: {value: 20, rest: null}}</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">nth</span>(<span class="cm-variable">arrayToList</span>([<span class="cm-number">10</span>, <span class="cm-number">20</span>, <span class="cm-number">30</span>]), <span class="cm-number">1</span>));
+<span class="cm-comment">// → 20</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_gUGYq9Tjlx" href="#p_gUGYq9Tjlx"></a>Building up a list is best done
+back to front. So <code>arrayToList</code> could iterate over the array backward
+(see previous exercise) and, for each element, add an object to the
+list. You can use a local variable to hold the part of the list that
+was built so far and use a pattern like <code>list = {value: X, rest:
+list}</code> to add an element.</p>
+<p><a class=p_ident id="p_+rJULr60CD" href="#p_+rJULr60CD"></a>To run over a list (in <code>listToArray</code> and <code>nth</code>), a <code>for</code>
+loop specification like this can be used:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ozaUfY2r+R" href="#c_ozaUfY2r+R"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">node</span> <span class="cm-operator">=</span> <span class="cm-variable">list</span>; <span class="cm-variable">node</span>; <span class="cm-variable">node</span> <span class="cm-operator">=</span> <span class="cm-variable">node</span>.<span class="cm-property">rest</span>) {}</pre>
+<p><a class=p_ident id="p_LnwEAnSmsp" href="#p_LnwEAnSmsp"></a>Can you see how that works? Every iteration of the loop, <code>node</code> points
+to the current sublist, and the body can read its <code>value</code> property to
+get the current element. At the end of an iteration, <code>node</code> moves to
+the next sublist. When that is null, we have reached the end of the
+list and the loop is finished.</p>
+<p><a class=p_ident id="p_vwViRUdBme" href="#p_vwViRUdBme"></a>The recursive version of <code>nth</code> will, similarly, look at
+an ever smaller part of the “tail” of the list and at the same time
+count down the index until it reaches zero, at which point it can
+return the <code>value</code> property of the node it is looking at. To get the
+zeroeth element of a list, you simply take the <code>value</code> property of its
+head node. To get element <em>N</em> + 1, you take the <em>N</em>th element of the
+list that&#8217;s in this list&#8217;s <code>rest</code> property.</p>
+</div></div>
+<h3 id="exercise_deep_compare"><a class=h_ident id="h_IJBU+aXOIC" href="#h_IJBU+aXOIC"></a>Deep comparison</h3>
+<p><a class=p_ident id="p_xTwbRlqHNJ" href="#p_xTwbRlqHNJ"></a>The <code>==</code> operator compares objects by
+identity. But sometimes, you would prefer to compare the values of
+their actual properties.</p>
+<p><a class=p_ident id="p_gndt0hmgga" href="#p_gndt0hmgga"></a>Write a function, <code>deepEqual</code>, that takes two values and returns true
+only if they are the same value or are objects with the same
+properties whose values are also equal when compared with a recursive
+call to <code>deepEqual</code>.</p>
+<p><a class=p_ident id="p_kFIc5gkwlo" href="#p_kFIc5gkwlo"></a>To find out whether
+to compare two things by identity (use the <code>===</code> operator for that) or
+by looking at their properties, you can use the <code>typeof</code> operator. If
+it produces <code>"object"</code> for both values, you should do a deep
+comparison. But you have to take one silly exception into account: by
+a historical accident, <code>typeof null</code> also produces <code>"object"</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_JMI8a18DSU" href="#c_JMI8a18DSU"></a><span class="cm-comment">// Your code here.</span>
+
+<span class="cm-keyword">var</span> <span class="cm-variable">obj</span> <span class="cm-operator">=</span> {<span class="cm-property">here</span>: {<span class="cm-property">is</span>: <span class="cm-string">"an"</span>}, <span class="cm-property">object</span>: <span class="cm-number">2</span>};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">deepEqual</span>(<span class="cm-variable">obj</span>, <span class="cm-variable">obj</span>));
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">deepEqual</span>(<span class="cm-variable">obj</span>, {<span class="cm-property">here</span>: <span class="cm-number">1</span>, <span class="cm-property">object</span>: <span class="cm-number">2</span>}));
+<span class="cm-comment">// → false</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">deepEqual</span>(<span class="cm-variable">obj</span>, {<span class="cm-property">here</span>: {<span class="cm-property">is</span>: <span class="cm-string">"an"</span>}, <span class="cm-property">object</span>: <span class="cm-number">2</span>}));
+<span class="cm-comment">// → true</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_t3z+oosxP9" href="#p_t3z+oosxP9"></a>Your test for whether you are dealing with a
+real object will look something like <code>typeof x == "object" &amp;&amp; x !=
+null</code>. Be careful to compare properties only when <em>both</em> arguments are
+objects. In all other cases you can just immediately return the result
+of applying <code>===</code>.</p>
+<p><a class=p_ident id="p_fyoBIInROR" href="#p_fyoBIInROR"></a>Use a <code>for</code>/<code>in</code> loop to go over the
+properties. You need to test whether both objects have the same set of
+property names and whether those properties have identical values. The
+first test can be done by counting the properties in both objects and
+returning false if the numbers of properties are different. If they&#8217;re
+the same, then go over the properties of one object, and for each of
+them, verify that the other object also has the property. The values
+of the properties are compared by a recursive call to <code>deepEqual</code>.</p>
+<p><a class=p_ident id="p_ECXa1sWg6+" href="#p_ECXa1sWg6+"></a>Returning the correct value from the function is
+best done by immediately returning false when a mismatch is noticed
+and returning true at the end of the function.</p>
+</div></div>
+<nav>
+  <a href="03_functions.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="05_higher_order.html" title="next chapter">▶</a>
+</nav>
+</article>

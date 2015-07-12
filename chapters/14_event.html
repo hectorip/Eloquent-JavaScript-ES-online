@@ -1,0 +1,841 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Handling Events :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 14;</script>
+</head>
+
+<article>
+<nav>
+  <a href="13_dom.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="15_game.html" title="next chapter">▶</a>
+</nav>
+
+<h1><div class=chap_num>Chapter 14</div>Handling Events</h1>
+<blockquote>
+<p><a class=p_ident id="p_9vGtY0kynX" href="#p_9vGtY0kynX"></a>You have power over your mind—not
+outside events. Realize this, and you will find strength.</p>
+ <footer>Marcus Aurelius, <cite>Meditations</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_/DC8VWovoV" href="#p_/DC8VWovoV"></a>Some programs work with direct user input, such as mouse and
+keyboard interaction. The timing and order of such input can&#8217;t be
+predicted in advance. This requires a different approach to control
+flow than the one we have used so far.</p>
+<h2><a class=h_ident id="h_HQoLxG2r2l" href="#h_HQoLxG2r2l"></a>Event handlers</h2>
+<p><a class=p_ident id="p_4crjoEGjCE" href="#p_4crjoEGjCE"></a>Imagine an interface where the
+only way to find out whether a key on the keyboard is being pressed is to read the
+current state of that key. To be able to react to keypresses,
+you would have to constantly read the key&#8217;s state so that
+you&#8217;d catch it before it&#8217;s released again. It would be dangerous to
+perform other time-intensive computations since you might miss a
+keypress.</p>
+<p><a class=p_ident id="p_gL+2BzAZqa" href="#p_gL+2BzAZqa"></a>That is how such input was handled on primitive machines. A step
+up would be for the hardware or operating system to notice the
+keypress and put it in a queue. A program can then periodically check the
+queue for new events and react to what it finds there.</p>
+<p><a class=p_ident id="p_llZbht+m+p" href="#p_llZbht+m+p"></a>Of course, it has to remember
+to look at the queue, and to do it often, because any time between the
+key being pressed and the program noticing the event will cause the
+software to feel unresponsive. This approach is called <em>polling</em>.
+Most programmers avoid it whenever possible.</p>
+<p><a class=p_ident id="p_yR0Vf6qqc8" href="#p_yR0Vf6qqc8"></a>A better mechanism is for
+the underlying system to give our code a chance to react
+to events as they occur. Browsers do this by allowing us to register
+functions as <em>handlers</em> for specific events.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_KzXoDsn+8z" href="#c_KzXoDsn+8z"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Click this document to activate the handler.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"click"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You clicked!"</span>);
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_MOjheGCW5Y" href="#p_MOjheGCW5Y"></a>The <code>addEventListener</code>
+function registers its second argument to be called whenever the event
+described by its first argument occurs.</p>
+<h2><a class=h_ident id="h_Kx1VwAV7ei" href="#h_Kx1VwAV7ei"></a>Events and DOM nodes</h2>
+<p><a class=p_ident id="p_OFueY9yZeF" href="#p_OFueY9yZeF"></a>Each browser
+event handler is registered in a context. When you call
+<code>addEventListener</code> as shown previously, you are calling it as a method on the
+whole window because in the browser the global scope is
+equivalent to the <code>window</code> object. Every DOM element has its own
+<code>addEventListener</code> method, which allows you to listen specifically on
+that element.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_MGuoCFu2he" href="#c_MGuoCFu2he"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>Click me<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>No handler here.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">button</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"button"</span>);
+  <span class="cm-variable">button</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"click"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Button clicked."</span>);
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_dN0xA6sZi2" href="#p_dN0xA6sZi2"></a>The example attaches a handler
+to the button node. Thus, clicks on the button cause that handler to
+run, whereas clicks on the rest of the document do not.</p>
+<p><a class=p_ident id="p_baR6w+cVeA" href="#p_baR6w+cVeA"></a>Giving a node an <code>onclick</code>
+attribute has a similar effect. But a node has only one <code>onclick</code>
+attribute, so you can register only one handler per node that way. The
+<code>addEventListener</code> method allows you to add any number of handlers, so
+you can&#8217;t accidentally replace a handler that has already been
+registered.</p>
+<p><a class=p_ident id="p_/QIdzEWfHg" href="#p_/QIdzEWfHg"></a>The <code>removeEventListener</code> method,
+called with arguments similar to as <code>addEventListener</code>, removes a
+handler.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_r0IM6NVZtn" href="#c_r0IM6NVZtn"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>Act-once button<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">button</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"button"</span>);
+  <span class="cm-keyword">function</span> <span class="cm-variable">once</span>() {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Done."</span>);
+    <span class="cm-variable">button</span>.<span class="cm-property">removeEventListener</span>(<span class="cm-string">"click"</span>, <span class="cm-variable">once</span>);
+  }
+  <span class="cm-variable">button</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"click"</span>, <span class="cm-variable">once</span>);
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_Y/CadjfuHR" href="#p_Y/CadjfuHR"></a>To be able to unregister a handler function, we
+give it a name (such as <code>once</code>) so that we
+can pass it to both <code>addEventListener</code> and <code>removeEventListener</code>.</p>
+<h2><a class=h_ident id="h_0d6qd0WrDY" href="#h_0d6qd0WrDY"></a>Event objects</h2>
+<p><a class=p_ident id="p_xMV45J9tPM" href="#p_xMV45J9tPM"></a>Though we have ignored it in
+the previous examples, event handler functions are passed an argument:
+the <em>event object</em>. This object gives us additional information
+about the event. For example, if we want to know <em>which</em> mouse button was pressed, we can look at the event object&#8217;s <code>which</code> property.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_eORczkJUsy" href="#c_eORczkJUsy"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>Click me any way you want<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">button</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"button"</span>);
+  <span class="cm-variable">button</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"mousedown"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">which</span> <span class="cm-operator">==</span> <span class="cm-number">1</span>)
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Left button"</span>);
+    <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">which</span> <span class="cm-operator">==</span> <span class="cm-number">2</span>)
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Middle button"</span>);
+    <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">which</span> <span class="cm-operator">==</span> <span class="cm-number">3</span>)
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Right button"</span>);
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_6Vk6va5Rnz" href="#p_6Vk6va5Rnz"></a>The information stored in an event
+object differs per type of event. We&#8217;ll discuss various types later
+in this chapter. The object&#8217;s <code>type</code> property always holds a string
+identifying the event (for example <code>"click"</code> or <code>"mousedown"</code>).</p>
+<h2><a class=h_ident id="h_NEhx0cDpml" href="#h_NEhx0cDpml"></a>Propagation</h2>
+<p><a class=p_ident id="p_AMEe+Oabfh" href="#p_AMEe+Oabfh"></a>Event handlers registered on
+nodes with children will also receive some events that happen in the
+children. If a button inside a paragraph is clicked, event handlers on
+the paragraph will also receive the click event.</p>
+<p><a class=p_ident id="p_UBfEVzqY/E" href="#p_UBfEVzqY/E"></a>But if both the paragraph and the button have a
+handler, the more specific handler—the one on the button—gets to go
+first. The event is said to <em>propagate</em> outward, from the node where
+it happened to that node&#8217;s parent node and on to the root of the
+document. Finally, after all handlers registered on a specific node
+have had their turn, handlers registered on the whole window get a
+chance to respond to the event.</p>
+<p><a class=p_ident id="p_mgXPeV1qcP" href="#p_mgXPeV1qcP"></a>At any point, an event
+handler can call the <code>stopPropagation</code> method on the event object to
+prevent handlers “further up” from receiving the event. This can be
+useful when, for example, you have a button inside another clickable
+element and you don&#8217;t want clicks on the button to activate the outer
+element&#8217;s click behavior.</p>
+<p><a class=p_ident id="p_qKf3t2phih" href="#p_qKf3t2phih"></a>The following example registers <code>"mousedown"</code>
+handlers on both a button and the paragraph around it. When clicked
+with the right mouse button, the handler for the button calls
+<code>stopPropagation</code>, which will prevent the handler on the paragraph
+from running. When the button is clicked with another mouse button, both handlers will run.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_UbBM/GwcX6" href="#c_UbBM/GwcX6"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>A paragraph with a <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>button<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">para</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"p"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-variable">button</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"button"</span>);
+  <span class="cm-variable">para</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"mousedown"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Handler for paragraph."</span>);
+  });
+  <span class="cm-variable">button</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"mousedown"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Handler for button."</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">which</span> <span class="cm-operator">==</span> <span class="cm-number">3</span>)
+      <span class="cm-variable-2">event</span>.<span class="cm-property">stopPropagation</span>();
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_NocTrrs2K+" href="#p_NocTrrs2K+"></a>Most event objects have a
+<code>target</code> property that refers to the node where they originated. You
+can use this property to ensure that you&#8217;re not accidentally handling
+something that propagated up from a node you do not want to handle.</p>
+<p><a class=p_ident id="p_RrFjk/g1ly" href="#p_RrFjk/g1ly"></a>It is also possible to use the <code>target</code> property to cast a wide net
+for a specific type of event. For example, if you have a node
+containing a long list of buttons, it may be more convenient to
+register a single click handler on the outer node and have it use the
+<code>target</code> property to figure out whether a button was clicked, rather
+than register individual handlers on all of the buttons.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_+CJF+cvKTm" href="#c_+CJF+cvKTm"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>A<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>B<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>C<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"click"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">target</span>.<span class="cm-property">nodeName</span> <span class="cm-operator">==</span> <span class="cm-string">"BUTTON"</span>)
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Clicked"</span>, <span class="cm-variable-2">event</span>.<span class="cm-property">target</span>.<span class="cm-property">textContent</span>);
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<h2><a class=h_ident id="h_GaHJsztrot" href="#h_GaHJsztrot"></a>Default actions</h2>
+<p><a class=p_ident id="p_mNZd3hJWtB" href="#p_mNZd3hJWtB"></a>Many events
+have a default action associated with them. If you click a link,
+you will be taken to the link&#8217;s target. If you press the down arrow,
+the browser will scroll the page down. If you right-click, you&#8217;ll get
+a context menu. And so on.</p>
+<p><a class=p_ident id="p_QdllRyXgOw" href="#p_QdllRyXgOw"></a>For most types of events, the JavaScript
+event handlers are called <em>before</em> the default behavior is performed.
+If the handler doesn&#8217;t want the normal behavior to happen, typically
+because it has already taken care of handling the event, it can call
+the <code>preventDefault</code> method on the event object.</p>
+<p><a class=p_ident id="p_qt5hvvY54m" href="#p_qt5hvvY54m"></a>This can be used to implement your own keyboard
+shortcuts or context menu. It can also be used to obnoxiously
+interfere with the behavior that users expect. For example, here is a
+link that cannot be followed:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_tau6Rjumd3" href="#c_tau6Rjumd3"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">a</span> <span class="cm-attribute">href</span>=<span class="cm-string">"https://developer.mozilla.org/"</span><span class="cm-tag cm-bracket">></span>MDN<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">a</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">link</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"a"</span>);
+  <span class="cm-variable">link</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"click"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Nope."</span>);
+    <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>();
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_nc872RiHdX" href="#p_nc872RiHdX"></a>Try not to do such things unless you have a really good reason to. For
+people using your page, it can be unpleasant when the behavior
+they expect is broken.</p>
+<p><a class=p_ident id="p_KMgK6E70da" href="#p_KMgK6E70da"></a>Depending on the browser, some events can&#8217;t be intercepted. On
+Chrome, for example, keyboard shortcuts to close the current tab
+(Ctrl-W or Command-W) cannot be handled by JavaScript.</p>
+<h2><a class=h_ident id="h_974t15Z9oa" href="#h_974t15Z9oa"></a>Key events</h2>
+<p><a class=p_ident id="p_dJaRso8RxV" href="#p_dJaRso8RxV"></a>When a key on the keyboard is pressed, your browser fires a
+<code>"keydown"</code> event. When it is released, a <code>"keyup"</code> event fires.</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-focus="true"><a class=c_ident id="c_HHTiM1P8JU" href="#c_HHTiM1P8JU"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>This page turns violet when you hold the V key.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"keydown"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">keyCode</span> <span class="cm-operator">==</span> <span class="cm-number">86</span>)
+      <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">style</span>.<span class="cm-property">background</span> <span class="cm-operator">=</span> <span class="cm-string">"violet"</span>;
+  });
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"keyup"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">keyCode</span> <span class="cm-operator">==</span> <span class="cm-number">86</span>)
+      <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">style</span>.<span class="cm-property">background</span> <span class="cm-operator">=</span> <span class="cm-string">""</span>;
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_gQnz+6p78i" href="#p_gQnz+6p78i"></a>Despite its name, <code>"keydown"</code> fires not only
+when the key is physically pushed down. When a key is pressed and
+held, the event fires again every time the key <em>repeats</em>.
+Sometimes—for example if you want to increase the acceleration of a
+game character when an arrow key is pressed and decrease it again
+when the key is released—you have to be careful not to increase it
+again every time the key repeats or you&#8217;d end up with unintentionally
+huge values.</p>
+<p><a class=p_ident id="p_YN1AGK2x1E" href="#p_YN1AGK2x1E"></a>The previous example looked at the
+<code>keyCode</code> property of the event object. This is how you can identify
+which key is being pressed or released. Unfortunately, it&#8217;s not
+always obvious how to translate the numeric key code to an actual
+key.</p>
+<p><a class=p_ident id="p_y/Pr/lCtnH" href="#p_y/Pr/lCtnH"></a>For letter and number keys,
+the associated key code will be the Unicode character code
+associated with the (uppercase) letter or number printed on the key.
+The <code>charCodeAt</code> method on strings gives us a way to find this
+code.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_fxVTaBPpbk" href="#c_fxVTaBPpbk"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Violet"</span>.<span class="cm-property">charCodeAt</span>(<span class="cm-number">0</span>));
+<span class="cm-comment">// → 86</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"1"</span>.<span class="cm-property">charCodeAt</span>(<span class="cm-number">0</span>));
+<span class="cm-comment">// → 49</span></pre>
+<p><a class=p_ident id="p_HVPFsxHIiv" href="#p_HVPFsxHIiv"></a>Other keys have less predictable key codes. The best way to find
+the codes you need is usually by experimenting—register a key event
+handler that logs the key codes it gets and press the key you are
+interested in.</p>
+<p><a class=p_ident id="p_4cdQPevWxW" href="#p_4cdQPevWxW"></a>Modifier keys
+such as Shift, Ctrl, Alt, and Meta (Command on Mac) generate key
+events just like normal keys. But when looking for key combinations,
+you can also find out whether these keys are held down by looking
+at the <code>shiftKey</code>, <code>ctrlKey</code>, <code>altKey</code>, and <code>metaKey</code> properties of
+keyboard and mouse events.</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-focus="true"><a class=c_ident id="c_o9zPQGAwwa" href="#c_o9zPQGAwwa"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Press Ctrl-Space to continue.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"keydown"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">keyCode</span> <span class="cm-operator">==</span> <span class="cm-number">32</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">event</span>.<span class="cm-property">ctrlKey</span>)
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Continuing!"</span>);
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_p/+N5nU+rr" href="#p_p/+N5nU+rr"></a>The
+<code>"keydown"</code> and <code>"keyup"</code> events give you information about the
+physical key that is being pressed. But what if you are interested in
+the actual text being typed? Getting that text from key codes is
+awkward. Instead, there exists another event, <code>"keypress"</code>, which
+fires right after <code>"keydown"</code> (and repeated along with <code>"keydown"</code>
+when the key is held) but only for keys that produce character input.
+The <code>charCode</code> property in the event object contains a code that can
+be interpreted as a Unicode character code. We can use the
+<code>String.fromCharCode</code> function to turn this code into an
+actual single-character string.</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-focus="true"><a class=c_ident id="c_pIZLxVk8Ol" href="#c_pIZLxVk8Ol"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Focus this page and type something.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"keypress"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">String</span>.<span class="cm-property">fromCharCode</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">charCode</span>));
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_EHGULml9MQ" href="#p_EHGULml9MQ"></a> The DOM node where
+a key event originates depends on the element that has focus when
+the key is pressed. Normal nodes cannot have focus (unless you give
+them a <code>tabindex</code> attribute), but things such as links, buttons, and
+form fields can. We&#8217;ll come back to form fields in
+<a href="18_forms.html#forms">Chapter 18</a>. When nothing in particular has
+focus, <code>document.body</code> acts as the target node of key events.</p>
+<h2><a class=h_ident id="h_D5iwImkmyt" href="#h_D5iwImkmyt"></a>Mouse clicks</h2>
+<p><a class=p_ident id="p_zZHDVhEhYY" href="#p_zZHDVhEhYY"></a>Pressing a
+mouse button also causes a number of events to fire. The
+<code>"mousedown"</code> and <code>"mouseup"</code> events are similar to <code>"keydown"</code> and
+<code>"keyup"</code> and fire when the button is pressed and released.
+These will happen on the DOM nodes that are immediately below the
+mouse pointer when the event occurs.</p>
+<p><a class=p_ident id="p_vxFLT2fw8e" href="#p_vxFLT2fw8e"></a>After the <code>"mouseup"</code> event, a <code>"click"</code> event
+fires on the most specific node that contained both the press and the
+release of the button. For example, if I press down the mouse button
+on one paragraph and then move the pointer to another paragraph and
+release the button, the <code>"click"</code> event will happen on the element
+that contains both those paragraphs.</p>
+<p><a class=p_ident id="p_gzmmLlVcMF" href="#p_gzmmLlVcMF"></a>If two clicks happen close
+together, a <code>"dblclick"</code> (double-click) event also fires, after the
+second click event.</p>
+<p><a class=p_ident id="p_V3QuKrAk2Z" href="#p_V3QuKrAk2Z"></a>To get precise information about the place where a mouse
+event happened, you can look at its <code>pageX</code> and <code>pageY</code> properties,
+which contain the event&#8217;s coordinates (in pixels) relative to the
+top-left corner of the document.</p>
+<p id="mouse_drawing"><a class=p_ident id="p_A7YDC3hfu1" href="#p_A7YDC3hfu1"></a>The following implements a primitive drawing program. Every
+time you click the document, it adds a dot under your mouse
+pointer. See <a href="19_paint.html#paint">Chapter 19</a> for a less primitive
+drawing program.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_nEakRU/58f" href="#c_nEakRU/58f"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag">body</span> {
+    <span class="cm-property">height</span>: <span class="cm-number">200px</span>;
+    <span class="cm-property">background</span>: <span class="cm-keyword">beige</span>;
+  }
+  <span class="cm-qualifier">.dot</span> {
+    <span class="cm-property">height</span>: <span class="cm-number">8px</span>; <span class="cm-property">width</span>: <span class="cm-number">8px</span>;
+    <span class="cm-property">border-radius</span>: <span class="cm-number">4px</span>; <span class="cm-comment">/* rounds corners */</span>
+    <span class="cm-property">background</span>: <span class="cm-keyword">blue</span>;
+    <span class="cm-property">position</span>: <span class="cm-atom">absolute</span>;
+  }
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"click"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">dot</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">createElement</span>(<span class="cm-string">"div"</span>);
+    <span class="cm-variable-2">dot</span>.<span class="cm-property">className</span> <span class="cm-operator">=</span> <span class="cm-string">"dot"</span>;
+    <span class="cm-variable-2">dot</span>.<span class="cm-property">style</span>.<span class="cm-property">left</span> <span class="cm-operator">=</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">pageX</span> <span class="cm-operator">-</span> <span class="cm-number">4</span>) <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+    <span class="cm-variable-2">dot</span>.<span class="cm-property">style</span>.<span class="cm-property">top</span> <span class="cm-operator">=</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">pageY</span> <span class="cm-operator">-</span> <span class="cm-number">4</span>) <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+    <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable-2">dot</span>);
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_qAqiJ6l3wp" href="#p_qAqiJ6l3wp"></a>The <code>clientX</code> and <code>clientY</code> properties are
+similar to <code>pageX</code> and <code>pageY</code> but relative to the part of the
+document that is currently scrolled into view. These can be useful
+when comparing mouse coordinates with the coordinates returned by
+<code>getBoundingClientRect</code>, which also returns viewport-relative
+coordinates.</p>
+<h2><a class=h_ident id="h_XojjiOmg7v" href="#h_XojjiOmg7v"></a>Mouse motion</h2>
+<p><a class=p_ident id="p_Yjy/EtP24n" href="#p_Yjy/EtP24n"></a>Every time the mouse pointer moves, a
+<code>"mousemove"</code> event fires. This event can be used to track the
+position of the mouse. A common situation in which this is useful is
+when implementing some form of mouse-dragging functionality.</p>
+<p><a class=p_ident id="p_Z1h4BQYT0/" href="#p_Z1h4BQYT0/"></a>As an example, the following program displays a
+bar and sets up event handlers so that dragging to the left or right
+on this bar makes it narrower or wider:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_m6nbicg7BJ" href="#c_m6nbicg7BJ"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Drag the bar to change its width:<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">style</span>=<span class="cm-string">"background: orange; width: 60px; height: 20px"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">lastX</span>; <span class="cm-comment">// Tracks the last observed mouse X position</span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">rect</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"div"</span>);
+  <span class="cm-variable">rect</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"mousedown"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">which</span> <span class="cm-operator">==</span> <span class="cm-number">1</span>) {
+      <span class="cm-variable">lastX</span> <span class="cm-operator">=</span> <span class="cm-variable-2">event</span>.<span class="cm-property">pageX</span>;
+      <span class="cm-variable">addEventListener</span>(<span class="cm-string">"mousemove"</span>, <span class="cm-variable">moved</span>);
+      <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>(); <span class="cm-comment">// Prevent selection</span>
+    }
+  });
+
+  <span class="cm-keyword">function</span> <span class="cm-variable">buttonPressed</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">buttons</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span>)
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">event</span>.<span class="cm-property">which</span> <span class="cm-operator">!=</span> <span class="cm-number">0</span>;
+    <span class="cm-keyword">else</span>
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">event</span>.<span class="cm-property">buttons</span> <span class="cm-operator">!=</span> <span class="cm-number">0</span>;
+  }
+  <span class="cm-keyword">function</span> <span class="cm-variable">moved</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">buttonPressed</span>(<span class="cm-variable-2">event</span>)) {
+      <span class="cm-variable">removeEventListener</span>(<span class="cm-string">"mousemove"</span>, <span class="cm-variable">moved</span>);
+    } <span class="cm-keyword">else</span> {
+      <span class="cm-keyword">var</span> <span class="cm-def">dist</span> <span class="cm-operator">=</span> <span class="cm-variable-2">event</span>.<span class="cm-property">pageX</span> <span class="cm-operator">-</span> <span class="cm-variable">lastX</span>;
+      <span class="cm-keyword">var</span> <span class="cm-def">newWidth</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">max</span>(<span class="cm-number">10</span>, <span class="cm-variable">rect</span>.<span class="cm-property">offsetWidth</span> <span class="cm-operator">+</span> <span class="cm-variable-2">dist</span>);
+      <span class="cm-variable">rect</span>.<span class="cm-property">style</span>.<span class="cm-property">width</span> <span class="cm-operator">=</span> <span class="cm-variable-2">newWidth</span> <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+      <span class="cm-variable">lastX</span> <span class="cm-operator">=</span> <span class="cm-variable-2">event</span>.<span class="cm-property">pageX</span>;
+    }
+  }
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_OkAFTS9SkH" href="#p_OkAFTS9SkH"></a>Note that the <code>"mousemove"</code>
+handler is registered on the whole window. Even if the mouse goes
+outside of the bar during resizing, we still want to update its size
+and stop dragging when the mouse is released.</p>
+<p><a class=p_ident id="p_fndkFYbayW" href="#p_fndkFYbayW"></a>We must stop resizing the
+bar when the mouse button is released. Unfortunately, not all browsers
+give <code>"mousemove"</code> events a meaningful <code>which</code> property. There is a
+standard property called <code>buttons</code>, which provides similar
+information, but that is also not supported on all browsers.
+Fortunately, all major browsers support either <code>buttons</code> or <code>which</code>,
+so the <code>buttonPressed</code> function in the example first tries <code>buttons</code>,
+and falls back to <code>which</code> when that isn&#8217;t available.</p>
+<p><a class=p_ident id="p_H543iFvHsm" href="#p_H543iFvHsm"></a>Whenever the mouse pointer
+enters or leaves a node, a <code>"mouseover"</code> or <code>"mouseout"</code> event
+fires. These two events can be used, among other things, to create
+hover effects, showing or styling something when the mouse is over
+a given element.</p>
+<p><a class=p_ident id="p_5IESlahWDS" href="#p_5IESlahWDS"></a>Unfortunately, creating such an effect is not
+as simple as starting the effect on <code>"mouseover"</code> and ending it on
+<code>"mouseout"</code>. When the mouse moves from a node onto one of its
+children, <code>"mouseout"</code> fires on the parent node, though the mouse
+did not actually leave the node&#8217;s extent. To make things worse, these
+events propagate just like other events, and thus you will also
+receive <code>"mouseout"</code> events when the mouse leaves one of the child nodes of the node on which the handler is registered.</p>
+<p><a class=p_ident id="p_WkAAgbH7zo" href="#p_WkAAgbH7zo"></a>To work around this problem, we can use the <code>relatedTarget</code>
+property of the event objects created for these events. It tells us,
+in the case of <code>"mouseover"</code>, what element the pointer was over
+before and, in the case of <code>"mouseout"</code>, what element it is going to.
+We want to change our hover effect only when the <code>relatedTarget</code> is
+outside of our target node. Only in that case does this event actually
+represent a <em>crossing over</em> from outside to inside the node (or the
+other way around).</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_TaoImM2eVz" href="#c_TaoImM2eVz"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Hover over this <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">strong</span><span class="cm-tag cm-bracket">></span>paragraph<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">strong</span><span class="cm-tag cm-bracket">></span>.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">para</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"p"</span>);
+  <span class="cm-keyword">function</span> <span class="cm-variable">isInside</span>(<span class="cm-def">node</span>, <span class="cm-def">target</span>) {
+    <span class="cm-keyword">for</span> (; <span class="cm-variable-2">node</span> <span class="cm-operator">!=</span> <span class="cm-atom">null</span>; <span class="cm-variable-2">node</span> <span class="cm-operator">=</span> <span class="cm-variable-2">node</span>.<span class="cm-property">parentNode</span>)
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">node</span> <span class="cm-operator">==</span> <span class="cm-variable-2">target</span>) <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+  }
+  <span class="cm-variable">para</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"mouseover"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">isInside</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">relatedTarget</span>, <span class="cm-variable">para</span>))
+      <span class="cm-variable">para</span>.<span class="cm-property">style</span>.<span class="cm-property">color</span> <span class="cm-operator">=</span> <span class="cm-string">"red"</span>;
+  });
+  <span class="cm-variable">para</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"mouseout"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">isInside</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">relatedTarget</span>, <span class="cm-variable">para</span>))
+      <span class="cm-variable">para</span>.<span class="cm-property">style</span>.<span class="cm-property">color</span> <span class="cm-operator">=</span> <span class="cm-string">""</span>;
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_QTE0dpHOFx" href="#p_QTE0dpHOFx"></a>The <code>isInside</code> function follows the given node&#8217;s parent links until it
+either reaches the top of the document (when <code>node</code> becomes null) or
+finds the parent we are looking for.</p>
+<p><a class=p_ident id="p_ujj+9rrIE3" href="#p_ujj+9rrIE3"></a>I should add that a hover effect like this can be much more easily
+achieved using the CSS <em>pseudoselector</em> <code>:hover</code>, as the next
+example shows. But when your hover effect involves doing something
+more complicated than changing a style on the target node, you must use the trick
+with <code>"mouseover"</code> and <code>"mouseout"</code> events.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_ekyIyKuAIw" href="#c_ekyIyKuAIw"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag">p</span>:<span class="cm-variable-3">hover</span> { <span class="cm-property">color</span>: <span class="cm-keyword">red</span> }
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Hover over this <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">strong</span><span class="cm-tag cm-bracket">></span>paragraph<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">strong</span><span class="cm-tag cm-bracket">></span>.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span></pre>
+<h2><a class=h_ident id="h_xGSp7W5DAZ" href="#h_xGSp7W5DAZ"></a>Scroll events</h2>
+<p><a class=p_ident id="p_QhFs2TfUWV" href="#p_QhFs2TfUWV"></a>Whenever an
+element is scrolled, a <code>"scroll"</code> event fires on it. This has
+various uses, such as knowing what the user is currently looking at
+(for disabling off-screen animations or sending spy reports to
+your evil headquarters) or showing some indication of progress (by
+highlighting part of a table of contents or showing a page number).</p>
+<p><a class=p_ident id="p_koAfRfBrN2" href="#p_koAfRfBrN2"></a>The following example draws a progress bar in the top-right corner of
+the document and updates it to fill up as you scroll down:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_/JAGIqqr4X" href="#c_/JAGIqqr4X"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-qualifier">.progress</span> {
+    <span class="cm-property">border</span>: <span class="cm-number">1px</span> <span class="cm-atom">solid</span> <span class="cm-keyword">blue</span>;
+    <span class="cm-property">width</span>: <span class="cm-number">100px</span>;
+    <span class="cm-property">position</span>: <span class="cm-atom">fixed</span>;
+    <span class="cm-property">top</span>: <span class="cm-number">10px</span>; <span class="cm-property">right</span>: <span class="cm-number">10px</span>;
+  }
+  <span class="cm-qualifier">.progress</span> > <span class="cm-tag">div</span> {
+    <span class="cm-property">height</span>: <span class="cm-number">12px</span>;
+    <span class="cm-property">background</span>: <span class="cm-keyword">blue</span>;
+    <span class="cm-property">width</span>: <span class="cm-number">0%</span>;
+  }
+  <span class="cm-tag">body</span> {
+    <span class="cm-property">height</span>: <span class="cm-number">2000px</span>;
+  }
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"progress"</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Scroll me...<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">bar</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">".progress div"</span>);
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"scroll"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">var</span> <span class="cm-def">max</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">scrollHeight</span> <span class="cm-operator">-</span> <span class="cm-variable">innerHeight</span>;
+    <span class="cm-keyword">var</span> <span class="cm-def">percent</span> <span class="cm-operator">=</span> (<span class="cm-variable">pageYOffset</span> <span class="cm-operator">/</span> <span class="cm-variable-2">max</span>) <span class="cm-operator">*</span> <span class="cm-number">100</span>;
+    <span class="cm-variable">bar</span>.<span class="cm-property">style</span>.<span class="cm-property">width</span> <span class="cm-operator">=</span> <span class="cm-variable-2">percent</span> <span class="cm-operator">+</span> <span class="cm-string">"%"</span>;
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_J92IjzNbC5" href="#p_J92IjzNbC5"></a>Giving an element
+a <code>position</code> of <code>fixed</code> acts much like an <code>absolute</code> position but
+also prevents it from scrolling along with the rest of the document.
+The effect is to make our progress bar stay in its corner. Inside
+it is another element, which is resized to indicate the current
+progress. We use <code>%</code>, rather than <code>px</code>, as a unit when setting the
+width so that the element is sized relative to the whole bar.</p>
+<p><a class=p_ident id="p_Q5ZDL6Y/Rx" href="#p_Q5ZDL6Y/Rx"></a>The global <code>innerHeight</code> variable gives us the height of
+the window, which we have to subtract from the total scrollable
+height—you can&#8217;t keep scrolling when you hit the bottom of the
+document. (There&#8217;s also an <code>innerWidth</code> to go along with
+<code>innerHeight</code>.) By dividing <code>pageYOffset</code>, the current scroll
+position, by the maximum scroll position and multiplying by 100,
+we get the percentage for the progress bar.</p>
+<p><a class=p_ident id="p_0tTa0Fp6S+" href="#p_0tTa0Fp6S+"></a>Calling <code>preventDefault</code> on a scroll event
+does not prevent the scrolling from happening. In fact, the event
+handler is called only <em>after</em> the scrolling takes place.</p>
+<h2><a class=h_ident id="h_NoKd+BgJRm" href="#h_NoKd+BgJRm"></a>Focus events</h2>
+<p><a class=p_ident id="p_r6SF152VBY" href="#p_r6SF152VBY"></a>When an element
+gains focus, the browser fires a <code>"focus"</code> event on it. When it
+loses focus, a <code>"blur"</code> event fires.</p>
+<p><a class=p_ident id="p_rU6XEBvIwF" href="#p_rU6XEBvIwF"></a>Unlike the events discussed earlier, these two
+events do not propagate. A handler on a parent element is not notified
+when a child element gains or loses focus.</p>
+<p><a class=p_ident id="p_XbY3zpvUvn" href="#p_XbY3zpvUvn"></a>The following example
+displays help text for the text field that currently has
+focus:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_Z4ZnolMxZ9" href="#c_Z4ZnolMxZ9"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Name: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">data-help</span>=<span class="cm-string">"Your full name"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Age: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">data-help</span>=<span class="cm-string">"Age in years"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span> <span class="cm-attribute">id</span>=<span class="cm-string">"help"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">help</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#help"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-variable">fields</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelectorAll</span>(<span class="cm-string">"input"</span>);
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">fields</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
+    <span class="cm-variable">fields</span>[<span class="cm-variable">i</span>].<span class="cm-property">addEventListener</span>(<span class="cm-string">"focus"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">text</span> <span class="cm-operator">=</span> <span class="cm-variable-2">event</span>.<span class="cm-property">target</span>.<span class="cm-property">getAttribute</span>(<span class="cm-string">"data-help"</span>);
+      <span class="cm-variable">help</span>.<span class="cm-property">textContent</span> <span class="cm-operator">=</span> <span class="cm-variable-2">text</span>;
+    });
+    <span class="cm-variable">fields</span>[<span class="cm-variable">i</span>].<span class="cm-property">addEventListener</span>(<span class="cm-string">"blur"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+      <span class="cm-variable">help</span>.<span class="cm-property">textContent</span> <span class="cm-operator">=</span> <span class="cm-string">""</span>;
+    });
+  }
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_5HyY0t9dpU" href="#p_5HyY0t9dpU"></a>The window object will receive
+<code>"focus"</code> and <code>"blur"</code> events when the user moves from or to the
+browser tab or window in which the document is shown.</p>
+<h2><a class=h_ident id="h_NmV8RP8lpt" href="#h_NmV8RP8lpt"></a>Load event</h2>
+<p><a class=p_ident id="p_NarSNA3PKB" href="#p_NarSNA3PKB"></a>When a page finishes loading,
+the <code>"load"</code> event fires on the window and the document body
+objects. This is often used to schedule initialization actions
+that require the whole document to have been built. Remember that
+the content of <code>&lt;script&gt;</code> tags is run immediately when the tag is
+encountered. This is often too soon, such as when the script needs
+to do something with parts of the document that appear after the
+<code>&lt;script&gt;</code> tag.</p>
+<p><a class=p_ident id="p_hCgodGiFEt" href="#p_hCgodGiFEt"></a>Elements such as images
+and script tags that load an external file also have a <code>"load"</code> event
+that indicates the files they reference were loaded. Like the
+focus-related events, loading events do not propagate.</p>
+<p><a class=p_ident id="p_nu8/BUQa7r" href="#p_nu8/BUQa7r"></a>When a page is closed or navigated away from (for example by
+following a link), a <code>"beforeunload"</code> event fires. The main use of
+this event is to prevent the user from accidentally losing work by
+closing a document. Preventing the page from unloading is not, as you
+might expect, done with the <code>preventDefault</code> method. Instead, it is
+done by returning a string from the handler. The string will be used
+in a dialog that asks the user if they want to stay on the page or
+leave it. This mechanism ensures that a user is able to leave the
+page, even if it is running a malicious script that would prefer to
+keep them there forever in order to force them to look at dodgy
+weight loss ads.</p>
+<h2 id="timeline"><a class=h_ident id="h_cj44kRfk/h" href="#h_cj44kRfk/h"></a>Script execution timeline</h2>
+<p><a class=p_ident id="p_m898wVhAww" href="#p_m898wVhAww"></a>There are various
+things that can cause a script to start executing. Reading a
+<code>&lt;script&gt;</code> tag is one such thing. An event firing is another.
+<a href="13_dom.html#animationFrame">Chapter 13</a> discussed the
+<code>requestAnimationFrame</code> function, which schedules a function to be
+called before the next page redraw. That is yet another way in which a
+script can start running.</p>
+<p><a class=p_ident id="p_3Ya6RuV22D" href="#p_3Ya6RuV22D"></a>It is important to
+understand that even though events can fire at any time, no two
+scripts in a single document ever run at the same moment. If a script
+is already running, event handlers and pieces of code scheduled in
+other ways have to wait for their turn. This is the reason why a
+document will freeze when a script runs for a long time. The browser
+cannot react to clicks and other events inside the document because
+it can&#8217;t run event handlers until the current script finishes running.</p>
+<p><a class=p_ident id="p_qOcAjNuS8p" href="#p_qOcAjNuS8p"></a>Some programming environments do
+allow multiple <em>threads of execution</em> to run at the same time.
+Doing multiple things at the same time can be used to make a program
+faster. But when you have multiple actors touching the same parts of
+the system at the same time, thinking about a program becomes at least
+an order of magnitude harder.</p>
+<p><a class=p_ident id="p_omeCxjcdIQ" href="#p_omeCxjcdIQ"></a>The fact that JavaScript programs do only one thing at a time makes
+our lives easier. For cases where you <em>really</em> do want to do some
+time-consuming thing in the background without freezing the page,
+browsers provide something called <em>web workers</em>. A worker is an
+isolated JavaScript environment that runs alongside the main
+program for a document and can communicate with it only by sending
+and receiving messages.</p>
+<p><a class=p_ident id="p_dXLk5WXFTx" href="#p_dXLk5WXFTx"></a>Assume we have the following code in a file called <code>code/squareworker.js</code>:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_W+YwrW4zDz" href="#c_W+YwrW4zDz"></a><span class="cm-variable">addEventListener</span>(<span class="cm-string">"message"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+  <span class="cm-variable">postMessage</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">data</span> <span class="cm-operator">*</span> <span class="cm-variable-2">event</span>.<span class="cm-property">data</span>);
+});</pre>
+<p><a class=p_ident id="p_3bETV2ub20" href="#p_3bETV2ub20"></a>Imagine that squaring a number is a heavy, long-running computation
+that we want to perform in a background thread. This code spawns a
+worker, sends it a few messages, and outputs the responses.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_p9YbRbVPlS" href="#c_p9YbRbVPlS"></a><span class="cm-keyword">var</span> <span class="cm-variable">squareWorker</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Worker</span>(<span class="cm-string">"code/squareworker.js"</span>);
+<span class="cm-variable">squareWorker</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"message"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"The worker responded:"</span>, <span class="cm-variable-2">event</span>.<span class="cm-property">data</span>);
+});
+<span class="cm-variable">squareWorker</span>.<span class="cm-property">postMessage</span>(<span class="cm-number">10</span>);
+<span class="cm-variable">squareWorker</span>.<span class="cm-property">postMessage</span>(<span class="cm-number">24</span>);</pre>
+<p><a class=p_ident id="p_Stp8nkaZHV" href="#p_Stp8nkaZHV"></a>The <code>postMessage</code> function
+sends a message, which will cause a <code>"message"</code> event to fire in the
+receiver. The script that created the worker sends and receives
+messages through the <code>Worker</code> object, whereas the worker talks to the
+script that created it by sending and listening directly on its
+global scope—which is a <em>new</em> global scope, not shared with the
+original script.</p>
+<h2><a class=h_ident id="h_WCvdQCKgu8" href="#h_WCvdQCKgu8"></a>Setting timers</h2>
+<p><a class=p_ident id="p_5YmF46Q06c" href="#p_5YmF46Q06c"></a>The <code>setTimeout</code> function is
+similar to <code>requestAnimationFrame</code>. It schedules another function to
+be called later. But instead of calling the function at the next
+redraw, it waits for a given amount of milliseconds. This page
+turns from blue to yellow after two seconds:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_pPMIwB3Xm+" href="#c_pPMIwB3Xm+"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">style</span>.<span class="cm-property">background</span> <span class="cm-operator">=</span> <span class="cm-string">"blue"</span>;
+  <span class="cm-variable">setTimeout</span>(<span class="cm-keyword">function</span>() {
+    <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">style</span>.<span class="cm-property">background</span> <span class="cm-operator">=</span> <span class="cm-string">"yellow"</span>;
+  }, <span class="cm-number">2000</span>);
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_de3VjAL+lV" href="#p_de3VjAL+lV"></a>Sometimes you need to cancel a function you
+have scheduled. This is done by storing the value returned by
+<code>setTimeout</code> and calling <code>clearTimeout</code> on it.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_GKrnZf5KuZ" href="#c_GKrnZf5KuZ"></a><span class="cm-keyword">var</span> <span class="cm-variable">bombTimer</span> <span class="cm-operator">=</span> <span class="cm-variable">setTimeout</span>(<span class="cm-keyword">function</span>() {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"BOOM!"</span>);
+}, <span class="cm-number">500</span>);
+
+<span class="cm-keyword">if</span> (<span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">&lt;</span> <span class="cm-number">0.5</span>) { <span class="cm-comment">// 50% chance</span>
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Defused."</span>);
+  <span class="cm-variable">clearTimeout</span>(<span class="cm-variable">bombTimer</span>);
+}</pre>
+<p><a class=p_ident id="p_c/F+71/NPg" href="#p_c/F+71/NPg"></a>The <code>cancelAnimationFrame</code> function works in the same way
+as <code>clearTimeout</code>—calling it on a value returned by
+<code>requestAnimationFrame</code> will cancel that frame (assuming it hasn&#8217;t
+already been called).</p>
+<p><a class=p_ident id="p_MTqUUpmFIN" href="#p_MTqUUpmFIN"></a>A similar set of functions, <code>setInterval</code>
+and <code>clearInterval</code> are used to set timers that should repeat every <em>X</em>
+milliseconds.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_woAViW3Ypf" href="#c_woAViW3Ypf"></a><span class="cm-keyword">var</span> <span class="cm-variable">ticks</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">clock</span> <span class="cm-operator">=</span> <span class="cm-variable">setInterval</span>(<span class="cm-keyword">function</span>() {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"tick"</span>, <span class="cm-variable">ticks</span><span class="cm-operator">++</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable">ticks</span> <span class="cm-operator">==</span> <span class="cm-number">10</span>) {
+    <span class="cm-variable">clearInterval</span>(<span class="cm-variable">clock</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"stop."</span>);
+  }
+}, <span class="cm-number">200</span>);</pre>
+<h2><a class=h_ident id="h_AOVmaqj10I" href="#h_AOVmaqj10I"></a>Debouncing</h2>
+<p><a class=p_ident id="p_I3Osg2AlyQ" href="#p_I3Osg2AlyQ"></a>Some types of events have the potential to fire
+rapidly, many times in a row (the <code>"mousemove"</code> and <code>"scroll"</code> events,
+for example). When handling such events, you must be careful not to do
+anything too time-consuming or your handler will take up so much time
+that interaction with the document starts to feel slow and choppy.</p>
+<p><a class=p_ident id="p_CvRYtJPZwz" href="#p_CvRYtJPZwz"></a>If you do need to do something nontrivial in
+such a handler, you can use <code>setTimeout</code> to make sure you are not
+doing it too often. This is usually called <em>debouncing</em> the event.
+There are several slightly different approaches to this.</p>
+<p><a class=p_ident id="p_8qDwbjQg0l" href="#p_8qDwbjQg0l"></a>In the first example, we want to do something when the user
+has typed something, but we don&#8217;t want to do it immediately for every
+key event. When they are typing quickly, we just want to wait
+until a pause occurs. Instead of immediately performing an action in
+the event handler, we set a timeout instead. We also clear the
+previous timeout (if any) so that when events occur close together
+(closer than our timeout delay), the timeout from the previous event
+will be canceled.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_ykMNnQNrSH" href="#c_ykMNnQNrSH"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">textarea</span><span class="cm-tag cm-bracket">></span>Type something here...<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">textarea</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">textarea</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"textarea"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-variable">timeout</span>;
+  <span class="cm-variable">textarea</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"keydown"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">clearTimeout</span>(<span class="cm-variable">timeout</span>);
+    <span class="cm-variable">timeout</span> <span class="cm-operator">=</span> <span class="cm-variable">setTimeout</span>(<span class="cm-keyword">function</span>() {
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You stopped typing."</span>);
+    }, <span class="cm-number">500</span>);
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_55az3iLtsc" href="#p_55az3iLtsc"></a>Giving an undefined value to <code>clearTimeout</code> or
+calling it on a timeout that has already fired has no effect. Thus, we
+don&#8217;t have to be careful about when to call it, and we simply do so
+for every event.</p>
+<p><a class=p_ident id="p_GisH+i+4tv" href="#p_GisH+i+4tv"></a>We can use a slightly different pattern if we
+want to space responses so that they&#8217;re separated by at least a
+certain length of time but want to fire them <em>during</em> a series of
+events, not just afterward. For example, we might want to respond to
+<code>"mousemove"</code> events by showing the current coordinates of the mouse,
+but only every 250 milliseconds.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_59G6TKpjOY" href="#c_59G6TKpjOY"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">function</span> <span class="cm-variable">displayCoords</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">textContent</span> <span class="cm-operator">=</span>
+      <span class="cm-string">"Mouse at "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">event</span>.<span class="cm-property">pageX</span> <span class="cm-operator">+</span> <span class="cm-string">", "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">event</span>.<span class="cm-property">pageY</span>;
+  }
+
+  <span class="cm-keyword">var</span> <span class="cm-variable">scheduled</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>, <span class="cm-variable">lastEvent</span>;
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"mousemove"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable">lastEvent</span> <span class="cm-operator">=</span> <span class="cm-variable-2">event</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">scheduled</span>) {
+      <span class="cm-variable">scheduled</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>;
+      <span class="cm-variable">setTimeout</span>(<span class="cm-keyword">function</span>() {
+        <span class="cm-variable">scheduled</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+        <span class="cm-variable">displayCoords</span>(<span class="cm-variable">lastEvent</span>);
+      }, <span class="cm-number">250</span>);
+    }
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
+<p><a class=p_ident id="p_bKLVanKSm7" href="#p_bKLVanKSm7"></a>Event handlers make it possible to detect and react to events we have
+no direct control over. The <code>addEventListener</code> method is used to
+register such a handler.</p>
+<p><a class=p_ident id="p_pT/A7mXxlh" href="#p_pT/A7mXxlh"></a>Each event has a type (<code>"keydown"</code>, <code>"focus"</code>, and so on) that identifies
+it. Most events are called on a specific DOM element and then
+<em>propagate</em> to that element&#8217;s ancestors, allowing handlers associated
+with those elements to handle them.</p>
+<p><a class=p_ident id="p_jK5bk5CuMw" href="#p_jK5bk5CuMw"></a>When an event handler is called, it is passed an event object with
+additional information about the event. This object also has methods
+that allow us to stop further propagation (<code>stopPropagation</code>) and
+prevent the browser&#8217;s default handling of the event
+(<code>preventDefault</code>).</p>
+<p><a class=p_ident id="p_8R4tiRRH3a" href="#p_8R4tiRRH3a"></a>Pressing a key fires <code>"keydown"</code>, <code>"keypress"</code>, and <code>"keyup"</code> events.
+Pressing a mouse button fires <code>"mousedown"</code>, <code>"mouseup"</code>, and
+<code>"click"</code> events. Moving the mouse fires <code>"mousemove"</code> and possibly
+<code>"mouseenter"</code> and <code>"mouseout"</code> events.</p>
+<p><a class=p_ident id="p_zwo0vgzm7O" href="#p_zwo0vgzm7O"></a>Scrolling can be detected with the <code>"scroll"</code> event, and focus changes
+can be detected with the <code>"focus"</code> and <code>"blur"</code> events. When the document finishes
+loading, a <code>"load"</code> event fires on the window.</p>
+<p><a class=p_ident id="p_0zJSMPD1MF" href="#p_0zJSMPD1MF"></a>Only one piece of JavaScript program can run at a time. Thus, event
+handlers and other scheduled scripts have to wait until other scripts
+finish before they get their turn.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<h3><a class=h_ident id="h_Lhbs8f7VGD" href="#h_Lhbs8f7VGD"></a>Censored keyboard</h3>
+<p><a class=p_ident id="p_EvVPidig6g" href="#p_EvVPidig6g"></a>Between 1928
+and 2013, Turkish law forbade the use of the letters <em>Q</em>, <em>W</em>, and <em>X</em>
+in official documents. This was part of a wider initiative to stifle
+Kurdish culture—those letters occur in the language used by Kurdish
+people but not in Istanbul Turkish.</p>
+<p><a class=p_ident id="p_TZAfuJye+C" href="#p_TZAfuJye+C"></a>As an exercise in doing ridiculous
+things with technology, I&#8217;m asking you to program a text field (an
+<code>&lt;input type="text"&gt;</code> tag) that these letters cannot be typed into.</p>
+<p><a class=p_ident id="p_cs0DibmEsI" href="#p_cs0DibmEsI"></a>(Do not worry about copy and paste and other such
+loopholes.)</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_6U7kyA+bbA" href="#c_6U7kyA+bbA"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">field</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"input"</span>);
+  <span class="cm-comment">// Your code here.</span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_YBoRLaAVI/" href="#p_YBoRLaAVI/"></a>The solution to this
+exercise involves preventing the default behavior of key events.
+You can handle either <code>"keypress"</code> or <code>"keydown"</code>. If either of them
+has <code>preventDefault</code> called on it, the letter will not appear.</p>
+<p><a class=p_ident id="p_/Pq3qIWZcN" href="#p_/Pq3qIWZcN"></a>Identifying the letter typed requires
+looking at the <code>keyCode</code> or <code>charCode</code> property and comparing that
+with the codes for the letters you want to filter. In <code>"keydown"</code>, you
+do not have to worry about lowercase and uppercase letters, since it
+identifies only  the key pressed. If you decide to handle <code>"keypress"</code>
+instead, which identifies the actual character typed, you have to make
+sure you test for both cases. One way to do that would be this:</p>
+<pre>/[qwx]/i.test(String.fromCharCode(event.charCode))</pre>
+</div></div>
+<h3><a class=h_ident id="h_NOgRH0Y9st" href="#h_NOgRH0Y9st"></a>Mouse trail</h3>
+<p><a class=p_ident id="p_j4+NSbR+hs" href="#p_j4+NSbR+hs"></a>In JavaScript&#8217;s early days,
+which was the high time of gaudy home pages with lots of animated
+images, people came up with some truly inspiring ways to use the
+language.</p>
+<p><a class=p_ident id="p_ZseDCwl6/C" href="#p_ZseDCwl6/C"></a>One of these was the “mouse trail”—a series of images that would
+follow the mouse pointer as you moved it across the page.</p>
+<p><a class=p_ident id="p_0yy1fiF5Gm" href="#p_0yy1fiF5Gm"></a>In this exercise, I
+want you to implement a mouse trail. Use absolutely positioned <code>&lt;div&gt;</code>
+elements with a fixed size and background color (refer to the
+<a href="14_event.html#mouse_drawing">code</a> in the “Mouse Clicks”
+section for an example). Create a bunch of such elements and, when the
+mouse moves, display them in the wake of the mouse pointer.</p>
+<p><a class=p_ident id="p_5jL8mAUnIQ" href="#p_5jL8mAUnIQ"></a>There are various possible approaches here. You
+can make your solution as simple or as complex as you want. A simple
+solution to start with is to keep a fixed number of trail elements and
+cycle through them, moving the next one to the mouse&#8217;s current
+position every time a <code>"mousemove"</code> event occurs.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_0LLgPO3WFn" href="#c_0LLgPO3WFn"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-qualifier">.trail</span> { <span class="cm-comment">/* className for the trail elements */</span>
+    <span class="cm-property">position</span>: <span class="cm-atom">absolute</span>;
+    <span class="cm-property">height</span>: <span class="cm-number">6px</span>; <span class="cm-property">width</span>: <span class="cm-number">6px</span>;
+    <span class="cm-property">border-radius</span>: <span class="cm-number">3px</span>;
+    <span class="cm-property">background</span>: <span class="cm-keyword">teal</span>;
+  }
+  <span class="cm-tag">body</span> {
+    <span class="cm-property">height</span>: <span class="cm-number">300px</span>;
+  }
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">style</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-comment">// Your code here.</span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_JMiSkEOEr3" href="#p_JMiSkEOEr3"></a>Creating the elements is best done in a
+loop. Append them to the document to make them show up. To be
+able to access them later to change their position, store the trail
+elements in an array.</p>
+<p><a class=p_ident id="p_seJm6U8e4t" href="#p_seJm6U8e4t"></a>Cycling through them can be done by keeping a counter variable and adding 1 to it every time the <code>"mousemove"</code> event
+fires. The remainder operator (<code>% 10</code>) can then be used to get a valid
+array index to pick the element you want to position during a given
+event.</p>
+<p><a class=p_ident id="p_cJRZn+Vuv9" href="#p_cJRZn+Vuv9"></a>Another
+interesting effect can be achieved by modeling a simple physics
+system. Use the <code>"mousemove"</code> event only to update a pair of variables
+that track the mouse position. Then use <code>requestAnimationFrame</code> to
+simulate the trailing elements being attracted to the position of the
+mouse pointer. At every animation step, update their position based on
+their position relative to the pointer (and, optionally, a speed that
+is stored for each element). Figuring out a good way to do this is up
+to you.</p>
+</div></div>
+<h3><a class=h_ident id="h_Kk1WKx2anJ" href="#h_Kk1WKx2anJ"></a>Tabs</h3>
+<p><a class=p_ident id="p_Ktj5JZEPdu" href="#p_Ktj5JZEPdu"></a>A tabbed interface is a common design
+pattern. It allows you to select an interface panel by choosing from
+a number of tabs “sticking out” above an element.</p>
+<p><a class=p_ident id="p_rh5X8kUE8g" href="#p_rh5X8kUE8g"></a>In this exercise you&#8217;ll implement a simple tabbed
+interface. Write a function, <code>asTabs</code>, that takes a DOM node and
+creates a tabbed interface showing the child elements of that node. It
+should insert a list of <code>&lt;button&gt;</code> elements at the top of the node,
+one for each child element, containing text retrieved from the
+<code>data-tabname</code> attribute of the child. All but one of the original
+children should be hidden (given a <code>display</code> style of <code>none</code>), and the
+currently visible node can be selected by clicking the buttons.</p>
+<p><a class=p_ident id="p_744xb2mKFr" href="#p_744xb2mKFr"></a>When it works, extend it to also style the currently active button
+differently.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_X/67xebmzu" href="#c_X/67xebmzu"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">id</span>=<span class="cm-string">"wrapper"</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">data-tabname</span>=<span class="cm-string">"one"</span><span class="cm-tag cm-bracket">></span>Tab one<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">data-tabname</span>=<span class="cm-string">"two"</span><span class="cm-tag cm-bracket">></span>Tab two<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">data-tabname</span>=<span class="cm-string">"three"</span><span class="cm-tag cm-bracket">></span>Tab three<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">function</span> <span class="cm-variable">asTabs</span>(<span class="cm-def">node</span>) {
+    <span class="cm-comment">// Your code here.</span>
+  }
+  <span class="cm-variable">asTabs</span>(<span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#wrapper"</span>));
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_Y9FsMe+LUL" href="#p_Y9FsMe+LUL"></a>One pitfall you&#8217;ll
+probably run into is that you can&#8217;t directly use the node&#8217;s
+<code>childNodes</code> property as a collection of tab nodes. For one thing,
+when you add the buttons, they will also become child nodes and end
+up in this object because it is live. For another, the text nodes
+created for the whitespace between the nodes are also in there
+and should not get their own tabs.</p>
+<p><a class=p_ident id="p_gEjwEtLy8/" href="#p_gEjwEtLy8/"></a>To work around this, start
+by building up a real array of all the children in the wrapper that
+have a <code>nodeType</code> of 1.</p>
+<p><a class=p_ident id="p_trFuWDXdya" href="#p_trFuWDXdya"></a>When registering event handlers on
+the buttons, the handler functions will need to know which tab element
+is associated with the button. If they are created in a normal loop,
+you can access the loop index variable from inside the function, but
+it won&#8217;t give you the correct number because that variable will have
+been further changed by the loop.</p>
+<p><a class=p_ident id="p_G/6v+erUw4" href="#p_G/6v+erUw4"></a>A simple workaround
+is to use the <code>forEach</code> method and create the handler functions from
+inside the function passed to <code>forEach</code>. The loop index, which is
+passed as a second argument to that function, will be a normal local
+variable there and won&#8217;t be overwritten by further iterations.</p>
+</div></div>
+<nav>
+  <a href="13_dom.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="15_game.html" title="next chapter">▶</a>
+</nav>
+</article>

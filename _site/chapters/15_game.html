@@ -1,0 +1,1006 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Project: A Platform Game :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 15;var sandboxLoadFiles = ["code/chapter/15_game.js", "code/game_levels.js"];</script>
+</head>
+
+<article>
+<nav>
+  <a href="14_event.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="16_canvas.html" title="next chapter">▶</a>
+</nav>
+
+<h1><div class=chap_num>Chapter 15</div>Project: A Platform Game</h1>
+<blockquote>
+<p><a class=p_ident id="p_kUA7+lr6ay" href="#p_kUA7+lr6ay"></a>All reality is a game.</p>
+ <footer>Iain Banks, <cite>The Player of Games</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_LHKzmIPa3c" href="#p_LHKzmIPa3c"></a>My initial
+fascination with computers, like that of many kids, originated with
+computer games. I was drawn into the tiny computer-simulated
+worlds that I could manipulate and in which stories (sort of)
+unfolded—more, I suppose, because of the way I could project my
+imagination into them than because of the possibilities they
+actually offered.</p>
+<p><a class=p_ident id="p_oGz9+U3nKJ" href="#p_oGz9+U3nKJ"></a>I wouldn&#8217;t wish a career in game programming on anyone. Much like
+the music industry, the discrepancy between the many eager
+young people wanting to work in it and the actual demand for such
+people creates a rather unhealthy environment. But writing games for
+fun is amusing.</p>
+<p><a class=p_ident id="p_j3t+HvGbaT" href="#p_j3t+HvGbaT"></a>This chapter will walk through
+the implementation of a simple platform game. Platform games (or
+“jump and run” games) are games that expect the player to move a
+figure through a world, which is often two-dimensional and viewed
+from the side, and do lots of jumping onto and over things.</p>
+<h2><a class=h_ident id="h_lMtTRzata0" href="#h_lMtTRzata0"></a>The game</h2>
+<p><a class=p_ident id="p_C38xTPlNF8" href="#p_C38xTPlNF8"></a>Our
+game will be roughly based on
+<a href="http://www.lessmilk.com/games/10">Dark Blue</a> by Thomas Palef. I chose this game
+because it is both entertaining and minimalist, and because it can be built
+without too much code. It looks like this:</p>
+<div class="image">
+  <img src="img/darkblue.png" alt="The game Dark Blue">
+</div>
+<p><a class=p_ident id="p_mIXBfsCnQQ" href="#p_mIXBfsCnQQ"></a>The dark box represents the player, whose
+task is to collect the yellow boxes (coins) while avoiding the red
+stuff (lava?). A level is completed when all coins have been
+collected.</p>
+<p><a class=p_ident id="p_g71I1Gdo7w" href="#p_g71I1Gdo7w"></a>The player can walk around with the left
+and right arrow keys and jump with the up arrow. Jumping is a
+specialty of this game character. It can reach several times its own
+height and is able to change direction in midair. This may not be
+entirely realistic, but it helps give the player the feeling of being
+in direct control of the onscreen avatar.</p>
+<p><a class=p_ident id="p_or+OtPnSO1" href="#p_or+OtPnSO1"></a>The game consists of a fixed
+background, laid out like a grid, with the moving elements
+overlaid on that background. Each field on the grid is either empty,
+solid, or lava. The moving elements are the player, coins, and
+certain pieces of lava. Unlike the artificial life simulation from
+<a href="07_elife.html#elife">Chapter 7</a>, the positions of these elements
+are not constrained to the grid—their coordinates may be fractional,
+allowing smooth motion.</p>
+<h2><a class=h_ident id="h_hLFu/U4fE5" href="#h_hLFu/U4fE5"></a>The technology</h2>
+<p><a class=p_ident id="p_w6B1L26QOc" href="#p_w6B1L26QOc"></a>We will use the browser DOM
+to display the game, and we&#8217;ll read user input by handling key events.</p>
+<p><a class=p_ident id="p_wha4Kv9EnE" href="#p_wha4Kv9EnE"></a>The screen- and keyboard-related code is only a
+tiny part of the work we need to do to build this game. Since
+everything looks like colored boxes, drawing is uncomplicated: we
+create DOM elements and use styling to give them a background color,
+size, and position.</p>
+<p><a class=p_ident id="p_5a/S/bF/ru" href="#p_5a/S/bF/ru"></a>We can represent the background as a table since it
+is an unchanging grid of squares. The free-moving elements can be
+overlaid on top of that, using absolutely positioned elements.</p>
+<p><a class=p_ident id="p_kmznnwbiqx" href="#p_kmznnwbiqx"></a>In games and other programs that have to animate
+graphics and respond to user input without noticeable delay,
+efficiency is important. Although the DOM was not originally
+designed for high-performance graphics, it is actually better at this
+than you would expect. You saw some animations in
+<a href="13_dom.html#animation">Chapter 13</a>. On a modern machine, a simple
+game like this performs well, even if we don&#8217;t think about
+optimization much.</p>
+<p><a class=p_ident id="p_wN87+E1mRv" href="#p_wN87+E1mRv"></a>In the <a href="16_canvas.html#canvas">next chapter</a>, we will
+explore another browser technology, the <code>&lt;canvas&gt;</code> tag, which
+provides a more traditional way to draw graphics, working in terms of
+shapes and pixels rather than DOM elements.</p>
+<h2><a class=h_ident id="h_7UfwmBGLOk" href="#h_7UfwmBGLOk"></a>Levels</h2>
+<p><a class=p_ident id="p_qtbcbQFDkK" href="#p_qtbcbQFDkK"></a>In <a href="07_elife.html#plan">Chapter 7</a> we used arrays
+of strings to describe a two-dimensional grid. We can do the same
+here. It will allow us to design levels without first building a
+level editor.</p>
+<p><a class=p_ident id="p_Y3dxlqZNOr" href="#p_Y3dxlqZNOr"></a>A simple level would look like this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ydbtOFWK2H" href="#c_ydbtOFWK2H"></a><span class="cm-keyword">var</span> <span class="cm-variable">simpleLevelPlan</span> <span class="cm-operator">=</span> [
+  <span class="cm-string">"                      "</span>,
+  <span class="cm-string">"                      "</span>,
+  <span class="cm-string">"  x              = x  "</span>,
+  <span class="cm-string">"  x         o o    x  "</span>,
+  <span class="cm-string">"  x @      xxxxx   x  "</span>,
+  <span class="cm-string">"  xxxxx            x  "</span>,
+  <span class="cm-string">"      x!!!!!!!!!!!!x  "</span>,
+  <span class="cm-string">"      xxxxxxxxxxxxxx  "</span>,
+  <span class="cm-string">"                      "</span>
+];</pre>
+<p><a class=p_ident id="p_/+8Bj7dHhI" href="#p_/+8Bj7dHhI"></a>Both the fixed grid and the moving elements are included in the
+plan. The <code>x</code> characters stand for walls, the space characters for empty
+space, and the exclamation marks represent fixed, nonmoving lava tiles.</p>
+<p><a class=p_ident id="p_lnXaKIc8yw" href="#p_lnXaKIc8yw"></a>The <code>@</code> defines the place where the player starts. Every <code>o</code> is a
+coin, and the equal sign (<code>=</code>) stands for a block of lava
+that moves back and forth horizontally. Note that the grid for
+these positions will be set to contain empty space, and another data
+structure is used to track the position of such moving elements.</p>
+<p><a class=p_ident id="p_3Abhc0fnza" href="#p_3Abhc0fnza"></a>We&#8217;ll support two other kinds of moving lava: the
+pipe character (<code>|</code>) for vertically moving blobs, and <code>v</code> for
+<em>dripping</em> lava—vertically moving lava that doesn&#8217;t bounce back and
+forth but only moves down, jumping back to its start position when it
+hits the floor.</p>
+<p><a class=p_ident id="p_JSlRu3lL/0" href="#p_JSlRu3lL/0"></a>A whole game consists of multiple levels that the
+player must complete. A level is completed when all coins
+have been collected. If the player touches
+lava, the current level is restored to its starting position, and
+the player may try again.</p>
+<h2 id="level"><a class=h_ident id="h_DeVC1tufta" href="#h_DeVC1tufta"></a>Reading a level</h2>
+<p><a class=p_ident id="p_+Eovnn74MN" href="#p_+Eovnn74MN"></a>The following constructor builds a level
+object. Its argument should be the array of strings that define the
+level.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_PTlscRwogG" href="#c_PTlscRwogG"></a><span class="cm-keyword">function</span> <span class="cm-variable">Level</span>(<span class="cm-def">plan</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">width</span> <span class="cm-operator">=</span> <span class="cm-variable-2">plan</span>[<span class="cm-number">0</span>].<span class="cm-property">length</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">height</span> <span class="cm-operator">=</span> <span class="cm-variable-2">plan</span>.<span class="cm-property">length</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span> <span class="cm-operator">=</span> [];
+  <span class="cm-keyword">this</span>.<span class="cm-property">actors</span> <span class="cm-operator">=</span> [];
+
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">y</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">y</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">height</span>; <span class="cm-variable-2">y</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">line</span> <span class="cm-operator">=</span> <span class="cm-variable-2">plan</span>[<span class="cm-variable-2">y</span>], <span class="cm-def">gridLine</span> <span class="cm-operator">=</span> [];
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">x</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">x</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">width</span>; <span class="cm-variable-2">x</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">ch</span> <span class="cm-operator">=</span> <span class="cm-variable-2">line</span>[<span class="cm-variable-2">x</span>], <span class="cm-def">fieldType</span> <span class="cm-operator">=</span> <span class="cm-atom">null</span>;
+      <span class="cm-keyword">var</span> <span class="cm-def">Actor</span> <span class="cm-operator">=</span> <span class="cm-variable">actorChars</span>[<span class="cm-variable-2">ch</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">Actor</span>)
+        <span class="cm-keyword">this</span>.<span class="cm-property">actors</span>.<span class="cm-property">push</span>(<span class="cm-keyword">new</span> <span class="cm-variable-2">Actor</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-variable-2">x</span>, <span class="cm-variable-2">y</span>), <span class="cm-variable-2">ch</span>));
+      <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">ch</span> <span class="cm-operator">==</span> <span class="cm-string">"x"</span>)
+        <span class="cm-variable-2">fieldType</span> <span class="cm-operator">=</span> <span class="cm-string">"wall"</span>;
+      <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">ch</span> <span class="cm-operator">==</span> <span class="cm-string">"!"</span>)
+        <span class="cm-variable-2">fieldType</span> <span class="cm-operator">=</span> <span class="cm-string">"lava"</span>;
+      <span class="cm-variable-2">gridLine</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">fieldType</span>);
+    }
+    <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">gridLine</span>);
+  }
+
+  <span class="cm-keyword">this</span>.<span class="cm-property">player</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">actors</span>.<span class="cm-property">filter</span>(<span class="cm-keyword">function</span>(<span class="cm-def">actor</span>) {
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">type</span> <span class="cm-operator">==</span> <span class="cm-string">"player"</span>;
+  })[<span class="cm-number">0</span>];
+  <span class="cm-keyword">this</span>.<span class="cm-property">status</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">finishDelay</span> <span class="cm-operator">=</span> <span class="cm-atom">null</span>;
+}</pre>
+<p><a class=p_ident id="p_ZIIJavICol" href="#p_ZIIJavICol"></a>For brevity, the code does not check for malformed
+input. It assumes that you&#8217;ve given it a proper level plan, complete
+with a player start position and other essentials.</p>
+<p><a class=p_ident id="p_x/twI7oWfP" href="#p_x/twI7oWfP"></a>A level stores its width and height, along with two
+arrays—one for the grid and one for the <em>actors</em>, which are the dynamic
+elements. The grid is represented as an array of arrays, where each of
+the inner arrays represents a horizontal line and each square
+contains either null, for empty squares, or a string indicating the
+type of the square—<code>"wall"</code> or <code>"lava"</code>.</p>
+<p><a class=p_ident id="p_lk9TyBu+V9" href="#p_lk9TyBu+V9"></a>The actors array holds objects that track the current position and
+state of the dynamic elements in the level. Each of these is
+expected to have a <code>pos</code> property that gives its position (the
+coordinates of its top-left corner), a <code>size</code> property that gives its
+size, and a <code>type</code> property that holds a string identifying the
+element (<code>"lava"</code>, <code>"coin"</code>, or <code>"player"</code>).</p>
+<p><a class=p_ident id="p_CHBpIMO/+A" href="#p_CHBpIMO/+A"></a>After building the grid, we use the <code>filter</code> method
+to find the player actor object, which we store in a property of the
+level. The <code>status</code> property tracks whether the player has won or
+lost. When this happens, <code>finishDelay</code> is used to keep the level active
+for a short period of time so that a simple animation can be
+shown. (Immediately resetting or advancing the level would look
+cheap.) This method can be used to find out whether a level is
+finished:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_5Zb+6efnJo" href="#c_5Zb+6efnJo"></a><span class="cm-variable">Level</span>.<span class="cm-property">prototype</span>.<span class="cm-property">isFinished</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">status</span> <span class="cm-operator">!=</span> <span class="cm-atom">null</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-keyword">this</span>.<span class="cm-property">finishDelay</span> <span class="cm-operator">&lt;</span> <span class="cm-number">0</span>;
+};</pre>
+<h2><a class=h_ident id="h_pw0251T7gn" href="#h_pw0251T7gn"></a>Actors</h2>
+<p><a class=p_ident id="p_E0kVEhfjBl" href="#p_E0kVEhfjBl"></a><a id="vector"></a> To store the position and
+size of an actor, we will return to our trusty <code>Vector</code> type, which
+groups an x-coordinate and a y-coordinate into an object.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_/G1xAMXuR9" href="#c_/G1xAMXuR9"></a><span class="cm-keyword">function</span> <span class="cm-variable">Vector</span>(<span class="cm-def">x</span>, <span class="cm-def">y</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">x</span> <span class="cm-operator">=</span> <span class="cm-variable-2">x</span>; <span class="cm-keyword">this</span>.<span class="cm-property">y</span> <span class="cm-operator">=</span> <span class="cm-variable-2">y</span>;
+}
+<span class="cm-variable">Vector</span>.<span class="cm-property">prototype</span>.<span class="cm-property">plus</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">other</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-keyword">this</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">other</span>.<span class="cm-property">x</span>, <span class="cm-keyword">this</span>.<span class="cm-property">y</span> <span class="cm-operator">+</span> <span class="cm-variable-2">other</span>.<span class="cm-property">y</span>);
+};
+<span class="cm-variable">Vector</span>.<span class="cm-property">prototype</span>.<span class="cm-property">times</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">factor</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-keyword">this</span>.<span class="cm-property">x</span> <span class="cm-operator">*</span> <span class="cm-variable-2">factor</span>, <span class="cm-keyword">this</span>.<span class="cm-property">y</span> <span class="cm-operator">*</span> <span class="cm-variable-2">factor</span>);
+};</pre>
+<p><a class=p_ident id="p_YBJ9X5jC/P" href="#p_YBJ9X5jC/P"></a>The <code>times</code> method scales a
+vector by a given amount. It will be useful when we need to multiply a
+speed vector by a time interval to get the distance traveled during
+that time.</p>
+<p><a class=p_ident id="p_ZUYAD4nQKB" href="#p_ZUYAD4nQKB"></a>In the previous section, the <code>actorChars</code> object was used by
+the <code>Level</code> constructor to associate characters with constructor
+functions. The object looks like this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_yAQDMv58Ql" href="#c_yAQDMv58Ql"></a><span class="cm-keyword">var</span> <span class="cm-variable">actorChars</span> <span class="cm-operator">=</span> {
+  <span class="cm-string cm-property">"@"</span>: <span class="cm-variable">Player</span>,
+  <span class="cm-string cm-property">"o"</span>: <span class="cm-variable">Coin</span>,
+  <span class="cm-string cm-property">"="</span>: <span class="cm-variable">Lava</span>, <span class="cm-string cm-property">"|"</span>: <span class="cm-variable">Lava</span>, <span class="cm-string cm-property">"v"</span>: <span class="cm-variable">Lava</span>
+};</pre>
+<p><a class=p_ident id="p_Ezz8Z00Wak" href="#p_Ezz8Z00Wak"></a>Three characters map to <code>Lava</code>. The <code>Level</code>
+constructor passes the actor&#8217;s source character as the second argument to
+the constructor, and the <code>Lava</code> constructor uses that to adjust its
+behavior (bouncing horizontally, bouncing vertically, or dripping).</p>
+<p><a class=p_ident id="p_9z5NweLFob" href="#p_9z5NweLFob"></a>The player type is built with the
+following constructor. It has a property <code>speed</code> that stores its current
+speed, which will help simulate momentum and gravity.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_GHc17EeS05" href="#c_GHc17EeS05"></a><span class="cm-keyword">function</span> <span class="cm-variable">Player</span>(<span class="cm-def">pos</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">pos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">pos</span>.<span class="cm-property">plus</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0</span>, <span class="cm-operator">-</span><span class="cm-number">0.5</span>));
+  <span class="cm-keyword">this</span>.<span class="cm-property">size</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0.8</span>, <span class="cm-number">1.5</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">speed</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0</span>, <span class="cm-number">0</span>);
+}
+<span class="cm-variable">Player</span>.<span class="cm-property">prototype</span>.<span class="cm-property">type</span> <span class="cm-operator">=</span> <span class="cm-string">"player"</span>;</pre>
+<p><a class=p_ident id="p_KwI14wjzqB" href="#p_KwI14wjzqB"></a>Because a player is one-and-a-half squares high, its initial position
+is set to be half a square above the position where the <code>@</code> character
+appeared. This way, its bottom aligns with the bottom of the square
+it appeared in.</p>
+<p><a class=p_ident id="p_tERSi4X6Me" href="#p_tERSi4X6Me"></a>When constructing a dynamic <code>Lava</code>
+object, we need to initialize the object differently depending on the
+character it is based on. Dynamic lava moves along at its given speed
+until it hits an obstacle. At that point, if it has a <code>repeatPos</code>
+property, it will jump back to its start position (dripping). If it
+does not, it will invert its speed and continue in the other direction
+(bouncing). The constructor only sets up the necessary properties. The
+method that does the actual moving will be written
+<a href="15_game.html#actors">later</a>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_PTqOmT7FMn" href="#c_PTqOmT7FMn"></a><span class="cm-keyword">function</span> <span class="cm-variable">Lava</span>(<span class="cm-def">pos</span>, <span class="cm-def">ch</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">pos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">pos</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">size</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">1</span>, <span class="cm-number">1</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">ch</span> <span class="cm-operator">==</span> <span class="cm-string">"="</span>) {
+    <span class="cm-keyword">this</span>.<span class="cm-property">speed</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">2</span>, <span class="cm-number">0</span>);
+  } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">ch</span> <span class="cm-operator">==</span> <span class="cm-string">"|"</span>) {
+    <span class="cm-keyword">this</span>.<span class="cm-property">speed</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0</span>, <span class="cm-number">2</span>);
+  } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">ch</span> <span class="cm-operator">==</span> <span class="cm-string">"v"</span>) {
+    <span class="cm-keyword">this</span>.<span class="cm-property">speed</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0</span>, <span class="cm-number">3</span>);
+    <span class="cm-keyword">this</span>.<span class="cm-property">repeatPos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">pos</span>;
+  }
+}
+<span class="cm-variable">Lava</span>.<span class="cm-property">prototype</span>.<span class="cm-property">type</span> <span class="cm-operator">=</span> <span class="cm-string">"lava"</span>;</pre>
+<p><a class=p_ident id="p_h6fsluS1sx" href="#p_h6fsluS1sx"></a><code>Coin</code> actors are simple. They mostly
+just sit in their place. But to liven up the game a little, they are
+given a “wobble”, a slight vertical motion back and forth. To track
+this, a coin object stores a base position as well as a <code>wobble</code>
+property that tracks the phase of the bouncing motion. Together,
+these determine the coin&#8217;s actual position (stored in the <code>pos</code>
+property).</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_SwVUgnkT5j" href="#c_SwVUgnkT5j"></a><span class="cm-keyword">function</span> <span class="cm-variable">Coin</span>(<span class="cm-def">pos</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">basePos</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">pos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">pos</span>.<span class="cm-property">plus</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0.2</span>, <span class="cm-number">0.1</span>));
+  <span class="cm-keyword">this</span>.<span class="cm-property">size</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0.6</span>, <span class="cm-number">0.6</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">wobble</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">PI</span> <span class="cm-operator">*</span> <span class="cm-number">2</span>;
+}
+<span class="cm-variable">Coin</span>.<span class="cm-property">prototype</span>.<span class="cm-property">type</span> <span class="cm-operator">=</span> <span class="cm-string">"coin"</span>;</pre>
+<p><a class=p_ident id="p_sinZPrR05b" href="#p_sinZPrR05b"></a>In
+<a href="13_dom.html#sin_cos">Chapter 13</a>, we saw that <code>Math.sin</code> gives us
+the y-coordinate of a point on a circle. That coordinate goes back and
+forth in a smooth wave form as we move along the circle, which makes
+the sine function useful for modeling a wavy motion.</p>
+<p><a class=p_ident id="p_gQCua74XOk" href="#p_gQCua74XOk"></a>To avoid a situation where all
+coins move up and down synchronously, the starting phase of each coin
+is randomized. The <em>phase</em> of <code>Math.sin</code>'s wave, the width of a wave
+it produces, is 2π. We multiply the value returned by <code>Math.random</code>
+by that number to give the coin a random starting position on the wave.</p>
+<p><a class=p_ident id="p_q4rwQ9GT76" href="#p_q4rwQ9GT76"></a>We have now written all the parts needed to represent the state of a level.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+UfzWNonW2" href="#c_+UfzWNonW2"></a><span class="cm-keyword">var</span> <span class="cm-variable">simpleLevel</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Level</span>(<span class="cm-variable">simpleLevelPlan</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">simpleLevel</span>.<span class="cm-property">width</span>, <span class="cm-string">"by"</span>, <span class="cm-variable">simpleLevel</span>.<span class="cm-property">height</span>);
+<span class="cm-comment">// → 22 by 9</span></pre>
+<p><a class=p_ident id="p_lCdOTin0mI" href="#p_lCdOTin0mI"></a>The task ahead is to display such levels on the screen and to model
+time and motion inside them.</p>
+<h2><a class=h_ident id="h_uCRd57RG2L" href="#h_uCRd57RG2L"></a>Encapsulation as a burden</h2>
+<p><a class=p_ident id="p_M65QHGE4qM" href="#p_M65QHGE4qM"></a>Most of the
+code in this chapter does not worry about encapsulation for
+two reasons. First, encapsulation takes extra effort. It makes
+programs bigger and requires additional concepts and interfaces to be
+introduced. Since there is only so much code you can throw at a reader
+before their eyes glaze over, I&#8217;ve made an effort to keep the program
+small.</p>
+<p><a class=p_ident id="p_xjLloHI+Wv" href="#p_xjLloHI+Wv"></a>Second, the various elements in this game are so
+closely tied together that if the behavior of one of them changed, it
+is unlikely that any of the others would be able to stay the same.
+Interfaces between the elements would end up encoding a lot of
+assumptions about the way the game works. This makes them a lot less
+effective—whenever you change one part of the system, you still have
+to worry about the way it impacts the other parts because their
+interfaces wouldn&#8217;t cover the new situation.</p>
+<p><a class=p_ident id="p_JXDPJBULIv" href="#p_JXDPJBULIv"></a>Some <em>cutting points</em> in a system lend themselves well to separation
+through rigorous interfaces, but others don&#8217;t. Trying to encapsulate
+something that isn&#8217;t a suitable boundary is a sure way to waste a lot
+of energy. When you are making this mistake, you&#8217;ll usually notice
+that your interfaces are getting awkwardly large and detailed and
+that they need to be modified often, as the program evolves.</p>
+<p><a class=p_ident id="p_Eajw41C5DX" href="#p_Eajw41C5DX"></a>There is one thing that
+we <em>will</em> encapsulate in this chapter, and that is the drawing
+subsystem. The reason for this is that we will display the same
+game in a different way in the <a href="16_canvas.html#canvasdisplay">next
+chapter</a>. By putting the drawing behind an interface, we can simply
+load the same game program there and plug in a new display
+module.</p>
+<h2 id="domdisplay"><a class=h_ident id="h_neNgUMdlHQ" href="#h_neNgUMdlHQ"></a>Drawing</h2>
+<p><a class=p_ident id="p_bjlUPfTgQP" href="#p_bjlUPfTgQP"></a>The encapsulation of the drawing code is done
+by defining a <em>display</em> object, which displays a given level.
+The display type we define in this chapter is called <code>DOMDisplay</code>
+because it uses simple DOM elements to show the level.</p>
+<p><a class=p_ident id="p_iqZAywSomZ" href="#p_iqZAywSomZ"></a>We will be using a style sheet to set the
+actual colors and other fixed properties of the elements that make up
+the game. It would also be possible to directly assign to the
+elements’ <code>style</code> property when we create them, but that would produce
+more verbose programs.</p>
+<p><a class=p_ident id="p_cp0ecVNl6a" href="#p_cp0ecVNl6a"></a>The following helper function provides a short way to
+create an element and give it a class:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qgpBj12JLo" href="#c_qgpBj12JLo"></a><span class="cm-keyword">function</span> <span class="cm-variable">elt</span>(<span class="cm-def">name</span>, <span class="cm-def">className</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">elt</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">createElement</span>(<span class="cm-variable-2">name</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">className</span>) <span class="cm-variable-2">elt</span>.<span class="cm-property">className</span> <span class="cm-operator">=</span> <span class="cm-variable-2">className</span>;
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">elt</span>;
+}</pre>
+<p><a class=p_ident id="p_Xjpq/reXQf" href="#p_Xjpq/reXQf"></a>A display is created by giving it a parent element to which it should
+append itself and a level object.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NXRRW4iUHo" href="#c_NXRRW4iUHo"></a><span class="cm-keyword">function</span> <span class="cm-variable">DOMDisplay</span>(<span class="cm-def">parent</span>, <span class="cm-def">level</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span> <span class="cm-operator">=</span> <span class="cm-variable-2">parent</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable">elt</span>(<span class="cm-string">"div"</span>, <span class="cm-string">"game"</span>));
+  <span class="cm-keyword">this</span>.<span class="cm-property">level</span> <span class="cm-operator">=</span> <span class="cm-variable-2">level</span>;
+
+  <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">appendChild</span>(<span class="cm-keyword">this</span>.<span class="cm-property">drawBackground</span>());
+  <span class="cm-keyword">this</span>.<span class="cm-property">actorLayer</span> <span class="cm-operator">=</span> <span class="cm-atom">null</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">drawFrame</span>();
+}</pre>
+<p><a class=p_ident id="p_ma7b253RBp" href="#p_ma7b253RBp"></a>We used the fact that <code>appendChild</code> returns
+the appended element to create the wrapper element and store it in the
+<code>wrap</code> property in a single statement.</p>
+<p><a class=p_ident id="p_IMKo7SUQR3" href="#p_IMKo7SUQR3"></a>The level&#8217;s background, which never changes, is drawn
+once. The actors are redrawn every time the display is updated. The
+<code>actorLayer</code> property will be used by <code>drawFrame</code> to track the element
+that holds the actors so that they can be easily removed and
+replaced.</p>
+<p><a class=p_ident id="p_si3+n3Lijy" href="#p_si3+n3Lijy"></a>Our coordinates and sizes are
+tracked in units relative to the grid size, where a size or
+distance of 1 means 1 grid unit. When setting pixel sizes, we
+will have to scale these coordinates up—everything in the game would be ridiculously
+small at a single pixel per square. The <code>scale</code> variable gives the
+number of pixels that a single unit takes up on the screen.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3gR9dTLD4N" href="#c_3gR9dTLD4N"></a><span class="cm-keyword">var</span> <span class="cm-variable">scale</span> <span class="cm-operator">=</span> <span class="cm-number">20</span>;
+
+<span class="cm-variable">DOMDisplay</span>.<span class="cm-property">prototype</span>.<span class="cm-property">drawBackground</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">var</span> <span class="cm-def">table</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"table"</span>, <span class="cm-string">"background"</span>);
+  <span class="cm-variable-2">table</span>.<span class="cm-property">style</span>.<span class="cm-property">width</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">level</span>.<span class="cm-property">width</span> <span class="cm-operator">*</span> <span class="cm-variable">scale</span> <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">level</span>.<span class="cm-property">grid</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">row</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">rowElt</span> <span class="cm-operator">=</span> <span class="cm-variable-2">table</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable">elt</span>(<span class="cm-string">"tr"</span>));
+    <span class="cm-variable-2">rowElt</span>.<span class="cm-property">style</span>.<span class="cm-property">height</span> <span class="cm-operator">=</span> <span class="cm-variable">scale</span> <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+    <span class="cm-variable-2">row</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">type</span>) {
+      <span class="cm-variable-2">rowElt</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable">elt</span>(<span class="cm-string">"td"</span>, <span class="cm-variable-2">type</span>));
+    });
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">table</span>;
+};</pre>
+<p id="game_css"><a class=p_ident id="p_d+zoai4uXa" href="#p_d+zoai4uXa"></a>As mentioned earlier, the
+background is drawn as a <code>&lt;table&gt;</code> element. This nicely corresponds to
+the structure of the <code>grid</code> property in the level—each row of the grid
+is turned into a table row (<code>&lt;tr&gt;</code> element). The strings in the grid
+are used as class names for the table cell (<code>&lt;td&gt;</code>) elements. The
+following CSS helps the resulting table look like the background we
+want:</p>
+<pre data-language="text/css" class="snippet cm-s-default"><a class=c_ident id="c_j52CagBKSp" href="#c_j52CagBKSp"></a><span class="cm-qualifier">.background</span>    { <span class="cm-property">background</span>: <span class="cm-atom">rgb</span>(<span class="cm-number">52</span>, <span class="cm-number">166</span>, <span class="cm-number">251</span>);
+                 <span class="cm-property">table-layout</span>: <span class="cm-atom">fixed</span>;
+                 <span class="cm-property">border-spacing</span>: <span class="cm-number">0</span>;              }
+<span class="cm-qualifier">.background</span> <span class="cm-tag">td</span> { <span class="cm-property">padding</span>: <span class="cm-number">0</span>;                     }
+<span class="cm-qualifier">.lava</span>          { <span class="cm-property">background</span>: <span class="cm-atom">rgb</span>(<span class="cm-number">255</span>, <span class="cm-number">100</span>, <span class="cm-number">100</span>); }
+<span class="cm-qualifier">.wall</span>          { <span class="cm-property">background</span>: <span class="cm-keyword">white</span>;              }</pre>
+<p><a class=p_ident id="p_Fm4CLmRVL5" href="#p_Fm4CLmRVL5"></a>Some of these (<code>table-layout</code>, <code>border-spacing</code>,
+and <code>padding</code>) are simply used to suppress unwanted default behavior.
+We don&#8217;t want the layout of the table to depend upon the contents
+of its cells, and we don&#8217;t want space between the table cells or
+padding inside them.</p>
+<p><a class=p_ident id="p_wtigqOBUxT" href="#p_wtigqOBUxT"></a>The <code>background</code> rule
+sets the background color. CSS allows colors to be specified both as
+words (<code>white</code>) and with a format such as <code>rgb(R, G, B)</code>, where the red,
+green, and blue components of the color are separated into three
+numbers from 0 to 255. So, in <code>rgb(52, 166, 251)</code>, the red component is
+52, green is 166, and blue is 251. Since the blue component is the
+largest, the resulting color will be bluish. You can see that in the
+<code>.lava</code> rule, the first number (red) is the largest.</p>
+<p><a class=p_ident id="p_EGE24ax3xh" href="#p_EGE24ax3xh"></a>We draw each actor by creating a DOM element for it and
+setting that element&#8217;s position and size based on the actor&#8217;s properties. The
+values have to be multiplied by <code>scale</code> to go from game units to
+pixels.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_dh+IKCYnTO" href="#c_dh+IKCYnTO"></a><span class="cm-variable">DOMDisplay</span>.<span class="cm-property">prototype</span>.<span class="cm-property">drawActors</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">var</span> <span class="cm-def">wrap</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"div"</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">level</span>.<span class="cm-property">actors</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">actor</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">rect</span> <span class="cm-operator">=</span> <span class="cm-variable-2">wrap</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable">elt</span>(<span class="cm-string">"div"</span>,
+                                    <span class="cm-string">"actor "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">type</span>));
+    <span class="cm-variable-2">rect</span>.<span class="cm-property">style</span>.<span class="cm-property">width</span> <span class="cm-operator">=</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">size</span>.<span class="cm-property">x</span> <span class="cm-operator">*</span> <span class="cm-variable">scale</span> <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+    <span class="cm-variable-2">rect</span>.<span class="cm-property">style</span>.<span class="cm-property">height</span> <span class="cm-operator">=</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">size</span>.<span class="cm-property">y</span> <span class="cm-operator">*</span> <span class="cm-variable">scale</span> <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+    <span class="cm-variable-2">rect</span>.<span class="cm-property">style</span>.<span class="cm-property">left</span> <span class="cm-operator">=</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">pos</span>.<span class="cm-property">x</span> <span class="cm-operator">*</span> <span class="cm-variable">scale</span> <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+    <span class="cm-variable-2">rect</span>.<span class="cm-property">style</span>.<span class="cm-property">top</span> <span class="cm-operator">=</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">pos</span>.<span class="cm-property">y</span> <span class="cm-operator">*</span> <span class="cm-variable">scale</span> <span class="cm-operator">+</span> <span class="cm-string">"px"</span>;
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">wrap</span>;
+};</pre>
+<p><a class=p_ident id="p_N1paxjwHY8" href="#p_N1paxjwHY8"></a>To give an element more than one
+class, we separate the class names by spaces. In the
+CSS code shown next, the <code>actor</code> class gives the actors their
+absolute position. Their type name is used as an extra class to give
+them a color. We don&#8217;t have to define the <code>lava</code> class again because we reuse
+the class for the lava grid squares which we defined earlier.</p>
+<pre data-language="text/css" class="snippet cm-s-default"><a class=c_ident id="c_gIfxpyXJhS" href="#c_gIfxpyXJhS"></a><span class="cm-qualifier">.actor</span>  { <span class="cm-property">position</span>: <span class="cm-atom">absolute</span>;            }
+<span class="cm-qualifier">.coin</span>   { <span class="cm-property">background</span>: <span class="cm-atom">rgb</span>(<span class="cm-number">241</span>, <span class="cm-number">229</span>, <span class="cm-number">89</span>); }
+<span class="cm-qualifier">.player</span> { <span class="cm-property">background</span>: <span class="cm-atom">rgb</span>(<span class="cm-number">64</span>, <span class="cm-number">64</span>, <span class="cm-number">64</span>);   }</pre>
+<p><a class=p_ident id="p_ee+EdXi5xG" href="#p_ee+EdXi5xG"></a>When it updates the
+display, the <code>drawFrame</code> method first removes the old actor graphics,
+if any, and then redraws them in their new positions. It may be
+tempting to try to reuse the DOM elements for actors, but to make
+that work, we would need a lot of additional information flow between
+the display code and the simulation code. We&#8217;d need to associate
+actors with DOM elements, and the drawing code must remove
+elements when their actors vanish. Since there will typically be only
+a handful of actors in the game, redrawing all of them is not
+expensive.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qkPcdGO1jk" href="#c_qkPcdGO1jk"></a><span class="cm-variable">DOMDisplay</span>.<span class="cm-property">prototype</span>.<span class="cm-property">drawFrame</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">actorLayer</span>)
+    <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">removeChild</span>(<span class="cm-keyword">this</span>.<span class="cm-property">actorLayer</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">actorLayer</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">appendChild</span>(<span class="cm-keyword">this</span>.<span class="cm-property">drawActors</span>());
+  <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">className</span> <span class="cm-operator">=</span> <span class="cm-string">"game "</span> <span class="cm-operator">+</span> (<span class="cm-keyword">this</span>.<span class="cm-property">level</span>.<span class="cm-property">status</span> <span class="cm-operator">||</span> <span class="cm-string">""</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">scrollPlayerIntoView</span>();
+};</pre>
+<p><a class=p_ident id="p_sZEoSNaFbo" href="#p_sZEoSNaFbo"></a>By adding the level&#8217;s
+current status as a class name to the wrapper, we can style the player
+actor slightly differently when the game is won or lost by adding a
+CSS rule that takes effect only  when the player has an ancestor element with a given class.</p>
+<pre data-language="text/css" class="snippet cm-s-default"><a class=c_ident id="c_r6Td1FPyF0" href="#c_r6Td1FPyF0"></a><span class="cm-qualifier">.lost</span> <span class="cm-qualifier">.player</span> {
+  <span class="cm-property">background</span>: <span class="cm-atom">rgb</span>(<span class="cm-number">160</span>, <span class="cm-number">64</span>, <span class="cm-number">64</span>);
+}
+<span class="cm-qualifier">.won</span> <span class="cm-qualifier">.player</span> {
+  <span class="cm-property">box-shadow</span>: <span class="cm-number">-4px</span> <span class="cm-number">-7px</span> <span class="cm-number">8px</span> <span class="cm-keyword">white</span>, <span class="cm-number">4px</span> <span class="cm-number">-7px</span> <span class="cm-number">8px</span> <span class="cm-keyword">white</span>;
+}</pre>
+<p><a class=p_ident id="p_Ta1z3iQqo1" href="#p_Ta1z3iQqo1"></a>After touching lava, the
+player&#8217;s color turns dark red, suggesting scorching. When the last
+coin has been collected, we use two blurred white box shadows, one to the top
+left and one to the top right, to create a white halo effect.</p>
+<p id="viewport"><a class=p_ident id="p_hU1RuMZZhL" href="#p_hU1RuMZZhL"></a>We can&#8217;t assume that
+levels always fit in the viewport. That is why the
+<code>scrollPlayerIntoView</code> call is needed—it ensures that if the level is
+protruding outside the viewport, we scroll that viewport to make
+sure the player is near its center. The following CSS gives the
+game&#8217;s wrapping DOM element a maximum size and ensures that
+anything that sticks out of the element&#8217;s box is not visible. We also give the outer element a relative
+position so that the actors inside it are positioned relative to
+the level&#8217;s top-left corner.</p>
+<pre data-language="text/css" class="snippet cm-s-default"><a class=c_ident id="c_BblQSzixfX" href="#c_BblQSzixfX"></a><span class="cm-qualifier">.game</span> {
+  <span class="cm-property">overflow</span>: <span class="cm-atom">hidden</span>;
+  <span class="cm-property">max-width</span>: <span class="cm-number">600px</span>;
+  <span class="cm-property">max-height</span>: <span class="cm-number">450px</span>;
+  <span class="cm-property">position</span>: <span class="cm-atom">relative</span>;
+}</pre>
+<p><a class=p_ident id="p_1/wCuAnu9B" href="#p_1/wCuAnu9B"></a>In the <code>scrollPlayerIntoView</code> method, we find the
+player&#8217;s position and update the wrapping element&#8217;s scroll position.
+We change the scroll position by manipulating that element&#8217;s <code>scrollLeft</code>
+and <code>scrollTop</code> properties when the player is too close to the edge.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_JpSyU0Vlxc" href="#c_JpSyU0Vlxc"></a><span class="cm-variable">DOMDisplay</span>.<span class="cm-property">prototype</span>.<span class="cm-property">scrollPlayerIntoView</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">var</span> <span class="cm-def">width</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">clientWidth</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">height</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">clientHeight</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">margin</span> <span class="cm-operator">=</span> <span class="cm-variable-2">width</span> <span class="cm-operator">/</span> <span class="cm-number">3</span>;
+
+  <span class="cm-comment">// The viewport</span>
+  <span class="cm-keyword">var</span> <span class="cm-def">left</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">scrollLeft</span>, <span class="cm-def">right</span> <span class="cm-operator">=</span> <span class="cm-variable-2">left</span> <span class="cm-operator">+</span> <span class="cm-variable-2">width</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">top</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">scrollTop</span>, <span class="cm-def">bottom</span> <span class="cm-operator">=</span> <span class="cm-variable-2">top</span> <span class="cm-operator">+</span> <span class="cm-variable-2">height</span>;
+
+  <span class="cm-keyword">var</span> <span class="cm-def">player</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">level</span>.<span class="cm-property">player</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">center</span> <span class="cm-operator">=</span> <span class="cm-variable-2">player</span>.<span class="cm-property">pos</span>.<span class="cm-property">plus</span>(<span class="cm-variable-2">player</span>.<span class="cm-property">size</span>.<span class="cm-property">times</span>(<span class="cm-number">0.5</span>))
+                 .<span class="cm-property">times</span>(<span class="cm-variable">scale</span>);
+
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">center</span>.<span class="cm-property">x</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">left</span> <span class="cm-operator">+</span> <span class="cm-variable-2">margin</span>)
+    <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">scrollLeft</span> <span class="cm-operator">=</span> <span class="cm-variable-2">center</span>.<span class="cm-property">x</span> <span class="cm-operator">-</span> <span class="cm-variable-2">margin</span>;
+  <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">center</span>.<span class="cm-property">x</span> <span class="cm-operator">></span> <span class="cm-variable-2">right</span> <span class="cm-operator">-</span> <span class="cm-variable-2">margin</span>)
+    <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">scrollLeft</span> <span class="cm-operator">=</span> <span class="cm-variable-2">center</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">margin</span> <span class="cm-operator">-</span> <span class="cm-variable-2">width</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">center</span>.<span class="cm-property">y</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">top</span> <span class="cm-operator">+</span> <span class="cm-variable-2">margin</span>)
+    <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">scrollTop</span> <span class="cm-operator">=</span> <span class="cm-variable-2">center</span>.<span class="cm-property">y</span> <span class="cm-operator">-</span> <span class="cm-variable-2">margin</span>;
+  <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">center</span>.<span class="cm-property">y</span> <span class="cm-operator">></span> <span class="cm-variable-2">bottom</span> <span class="cm-operator">-</span> <span class="cm-variable-2">margin</span>)
+    <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">scrollTop</span> <span class="cm-operator">=</span> <span class="cm-variable-2">center</span>.<span class="cm-property">y</span> <span class="cm-operator">+</span> <span class="cm-variable-2">margin</span> <span class="cm-operator">-</span> <span class="cm-variable-2">height</span>;
+};</pre>
+<p><a class=p_ident id="p_3qHzB4KoD+" href="#p_3qHzB4KoD+"></a>The way the player&#8217;s
+center is found shows how the methods on our <code>Vector</code> type allow
+computations with objects to be written in a readable way. To
+find the actor&#8217;s center, we add its position (its top-left corner) and
+half its size. That is the center in level coordinates, but we need it
+in pixel coordinates, so we then multiply the resulting vector by our
+display scale.</p>
+<p><a class=p_ident id="p_nyYhuiyn32" href="#p_nyYhuiyn32"></a>Next, a series of checks verify that the player
+position isn&#8217;t outside of the allowed range. Note that sometimes this
+will set nonsense scroll coordinates, below zero or beyond the
+element&#8217;s scrollable area. This is okay—the DOM will constrain them to
+sane values. Setting <code>scrollLeft</code> to -10 will cause it to become 0.</p>
+<p><a class=p_ident id="p_MFibm1pU7d" href="#p_MFibm1pU7d"></a>It would have been slightly simpler to always try to scroll the player
+to the center of the viewport. But this creates a rather jarring
+effect. As you are jumping, the view will constantly shift up and
+down. It is more pleasant to have a “neutral” area in the middle of
+the screen where you can move around without causing any scrolling.</p>
+<p><a class=p_ident id="p_5o/NVpkfaU" href="#p_5o/NVpkfaU"></a>Finally, we&#8217;ll need a way to clear a displayed level,
+to be used when the game moves to the next level or resets a level.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MTWKiFt3b3" href="#c_MTWKiFt3b3"></a><span class="cm-variable">DOMDisplay</span>.<span class="cm-property">prototype</span>.<span class="cm-property">clear</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>.<span class="cm-property">parentNode</span>.<span class="cm-property">removeChild</span>(<span class="cm-keyword">this</span>.<span class="cm-property">wrap</span>);
+};</pre>
+<p><a class=p_ident id="p_LSD2j1d23Y" href="#p_LSD2j1d23Y"></a>We are now able to display our tiny level.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_RY/T0/6wz3" href="#c_RY/T0/6wz3"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"css/game.css"</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">simpleLevel</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Level</span>(<span class="cm-variable">simpleLevelPlan</span>);
+  <span class="cm-keyword">var</span> <span class="cm-variable">display</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">DOMDisplay</span>(<span class="cm-variable">document</span>.<span class="cm-property">body</span>, <span class="cm-variable">simpleLevel</span>);
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_CLn8fpSTCw" href="#p_CLn8fpSTCw"></a>The <code>&lt;link&gt;</code> tag, when used
+with <code>rel="stylesheet"</code>, is a way to load a CSS file into a page. The
+file <code>game.css</code> contains the styles necessary for our game.</p>
+<h2><a class=h_ident id="h_zX4xC7JBQU" href="#h_zX4xC7JBQU"></a>Motion and collision</h2>
+<p><a class=p_ident id="p_VZl40vezkA" href="#p_VZl40vezkA"></a>Now we&#8217;re at the point where we can start
+adding motion—the most interesting aspect of the game. The basic
+approach, taken by most games like this, is to split time into
+small steps and, for each step, move the actors by a distance
+corresponding to their speed (distance moved per second) multiplied by
+the size of the time step (in seconds).</p>
+<p><a class=p_ident id="p_+a3yt6NY8z" href="#p_+a3yt6NY8z"></a>That is easy. The difficult
+part is dealing with the interactions between the elements. When the
+player hits a wall or floor, they should not simply move through it.
+The game must notice when a given motion causes an object to hit
+another object and respond accordingly. For walls, the motion must be
+stopped. For coins, the coin must be collected, and so on.</p>
+<p><a class=p_ident id="p_AidQCfGku0" href="#p_AidQCfGku0"></a>Solving this for the general case is a big task. You can find
+libraries, usually called <em>physics engines</em>, that simulate
+interaction between physical objects in two or three dimensions.
+We&#8217;ll take a more modest approach in this chapter, handling only
+collisions between rectangular objects and handling them in a rather simplistic
+way.</p>
+<p><a class=p_ident id="p_qnEGluIxK3" href="#p_qnEGluIxK3"></a>Before moving
+the player or a block of lava, we test whether the motion
+would take it inside of a nonempty part of the background. If it
+does, we simply cancel the motion altogether. The response to such a
+collision depends on the type of actor—the player will stop, whereas a
+lava block will bounce back.</p>
+<p><a class=p_ident id="p_Y/iDVnt+Uc" href="#p_Y/iDVnt+Uc"></a>This approach requires our time steps to be
+rather small since it will cause motion to stop before the objects
+actually touch. If the time steps (and thus the motion steps) are too
+big, the player would end up hovering a noticeable distance above the
+ground. Another approach, arguably better but more complicated, would
+be to find the exact collision spot and move there. We will take the
+simple approach and hide its problems by ensuring the animation
+proceeds in small steps.</p>
+<p><a class=p_ident id="p_mgrJ3S203s" href="#p_mgrJ3S203s"></a>This
+method tells us whether a rectangle (specified by a position and a
+size) overlaps with any nonempty space on the background grid:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_uIS9dqP9so" href="#c_uIS9dqP9so"></a><span class="cm-variable">Level</span>.<span class="cm-property">prototype</span>.<span class="cm-property">obstacleAt</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">pos</span>, <span class="cm-def">size</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">xStart</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable-2">pos</span>.<span class="cm-property">x</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">xEnd</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">ceil</span>(<span class="cm-variable-2">pos</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">size</span>.<span class="cm-property">x</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">yStart</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable-2">pos</span>.<span class="cm-property">y</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">yEnd</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">ceil</span>(<span class="cm-variable-2">pos</span>.<span class="cm-property">y</span> <span class="cm-operator">+</span> <span class="cm-variable-2">size</span>.<span class="cm-property">y</span>);
+
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">xStart</span> <span class="cm-operator">&lt;</span> <span class="cm-number">0</span> <span class="cm-operator">||</span> <span class="cm-variable-2">xEnd</span> <span class="cm-operator">></span> <span class="cm-keyword">this</span>.<span class="cm-property">width</span> <span class="cm-operator">||</span> <span class="cm-variable-2">yStart</span> <span class="cm-operator">&lt;</span> <span class="cm-number">0</span>)
+    <span class="cm-keyword">return</span> <span class="cm-string">"wall"</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">yEnd</span> <span class="cm-operator">></span> <span class="cm-keyword">this</span>.<span class="cm-property">height</span>)
+    <span class="cm-keyword">return</span> <span class="cm-string">"lava"</span>;
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">y</span> <span class="cm-operator">=</span> <span class="cm-variable-2">yStart</span>; <span class="cm-variable-2">y</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">yEnd</span>; <span class="cm-variable-2">y</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">x</span> <span class="cm-operator">=</span> <span class="cm-variable-2">xStart</span>; <span class="cm-variable-2">x</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">xEnd</span>; <span class="cm-variable-2">x</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">fieldType</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>[<span class="cm-variable-2">y</span>][<span class="cm-variable-2">x</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">fieldType</span>) <span class="cm-keyword">return</span> <span class="cm-variable-2">fieldType</span>;
+    }
+  }
+};</pre>
+<p><a class=p_ident id="p_PToDD5K9+0" href="#p_PToDD5K9+0"></a>This method computes the set
+of grid squares that the body overlaps with by using <code>Math.floor</code>
+and <code>Math.ceil</code> on the body&#8217;s coordinates. Remember that grid squares
+are 1×1 units in size. By rounding the sides of a box up and
+down, we get the range of background squares that the box touches.</p>
+<div class="image">
+  <img src="img/game-grid.svg" alt="Finding collisions on a grid">
+</div>
+<p><a class=p_ident id="p_MZ2cPIh/k/" href="#p_MZ2cPIh/k/"></a>If the body sticks out of the level, we always return <code>"wall"</code> for the
+sides and top and <code>"lava"</code> for the bottom. This ensures that the
+player dies when falling out of the world. When the body is fully
+inside the grid, we loop over the block of grid squares found by
+rounding the coordinates and return the content of the first
+nonempty square we find.</p>
+<p><a class=p_ident id="p_oAeaIvbuEY" href="#p_oAeaIvbuEY"></a>Collisions between the
+player and other dynamic actors (coins, moving lava) are
+handled <em>after</em> the player moved. When the motion has taken the player
+into another actor, the appropriate effect—collecting a coin or
+dying—is activated.</p>
+<p><a class=p_ident id="p_9zGn/O3Wbz" href="#p_9zGn/O3Wbz"></a>This method scans the array of actors,
+looking for an actor that overlaps the one given as an argument:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WU18TYQa9n" href="#c_WU18TYQa9n"></a><span class="cm-variable">Level</span>.<span class="cm-property">prototype</span>.<span class="cm-property">actorAt</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">actor</span>) {
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">actors</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">other</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">actors</span>[<span class="cm-variable-2">i</span>];
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">other</span> <span class="cm-operator">!=</span> <span class="cm-variable-2">actor</span> <span class="cm-operator">&amp;&amp;</span>
+        <span class="cm-variable-2">actor</span>.<span class="cm-property">pos</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">size</span>.<span class="cm-property">x</span> <span class="cm-operator">></span> <span class="cm-variable-2">other</span>.<span class="cm-property">pos</span>.<span class="cm-property">x</span> <span class="cm-operator">&amp;&amp;</span>
+        <span class="cm-variable-2">actor</span>.<span class="cm-property">pos</span>.<span class="cm-property">x</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">other</span>.<span class="cm-property">pos</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">other</span>.<span class="cm-property">size</span>.<span class="cm-property">x</span> <span class="cm-operator">&amp;&amp;</span>
+        <span class="cm-variable-2">actor</span>.<span class="cm-property">pos</span>.<span class="cm-property">y</span> <span class="cm-operator">+</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">size</span>.<span class="cm-property">y</span> <span class="cm-operator">></span> <span class="cm-variable-2">other</span>.<span class="cm-property">pos</span>.<span class="cm-property">y</span> <span class="cm-operator">&amp;&amp;</span>
+        <span class="cm-variable-2">actor</span>.<span class="cm-property">pos</span>.<span class="cm-property">y</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">other</span>.<span class="cm-property">pos</span>.<span class="cm-property">y</span> <span class="cm-operator">+</span> <span class="cm-variable-2">other</span>.<span class="cm-property">size</span>.<span class="cm-property">y</span>)
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">other</span>;
+  }
+};</pre>
+<h2 id="actors"><a class=h_ident id="h_CK9RMsBUn4" href="#h_CK9RMsBUn4"></a>Actors and actions</h2>
+<p><a class=p_ident id="p_HatfNTrDd5" href="#p_HatfNTrDd5"></a>The <code>animate</code> method
+on the <code>Level</code> type gives all actors in the level a chance to move.
+Its <code>step</code> argument is the time step in seconds. The <code>keys</code> object
+contains information about the arrow keys the player has pressed.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qGNXH1TwL8" href="#c_qGNXH1TwL8"></a><span class="cm-keyword">var</span> <span class="cm-variable">maxStep</span> <span class="cm-operator">=</span> <span class="cm-number">0.05</span>;
+
+<span class="cm-variable">Level</span>.<span class="cm-property">prototype</span>.<span class="cm-property">animate</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">step</span>, <span class="cm-def">keys</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">status</span> <span class="cm-operator">!=</span> <span class="cm-atom">null</span>)
+    <span class="cm-keyword">this</span>.<span class="cm-property">finishDelay</span> <span class="cm-operator">-=</span> <span class="cm-variable-2">step</span>;
+
+  <span class="cm-keyword">while</span> (<span class="cm-variable-2">step</span> <span class="cm-operator">></span> <span class="cm-number">0</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">thisStep</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">min</span>(<span class="cm-variable-2">step</span>, <span class="cm-variable">maxStep</span>);
+    <span class="cm-keyword">this</span>.<span class="cm-property">actors</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">actor</span>) {
+      <span class="cm-variable-2">actor</span>.<span class="cm-property">act</span>(<span class="cm-variable-2">thisStep</span>, <span class="cm-keyword">this</span>, <span class="cm-variable-2">keys</span>);
+    }, <span class="cm-keyword">this</span>);
+    <span class="cm-variable-2">step</span> <span class="cm-operator">-=</span> <span class="cm-variable-2">thisStep</span>;
+  }
+};</pre>
+<p><a class=p_ident id="p_3CL3X0Momn" href="#p_3CL3X0Momn"></a>When the level&#8217;s <code>status</code> property has a
+non-null value (which is the case when the player has won or lost), we
+must count down the <code>finishDelay</code> property, which tracks the time
+between the point where winning or losing happens and the point where
+we want to stop showing the level.</p>
+<p><a class=p_ident id="p_1RlyY9ZKcW" href="#p_1RlyY9ZKcW"></a>The <code>while</code> loop cuts the time
+step we are animating into suitably small pieces. It ensures that no
+step larger than <code>maxStep</code> is taken. For example, a <code>step</code> of 0.12
+second would be cut into two steps of 0.05 seconds and one step of 0.02.</p>
+<p><a class=p_ident id="p_AiCSiwkX6Y" href="#p_AiCSiwkX6Y"></a>Actor objects have an <code>act</code>
+method, which takes as arguments the time step, the level object, and
+the <code>keys</code> object. Here is one, for the <code>Lava</code> actor type,
+which ignores the <code>keys</code> object:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_y3oz8d4Sdf" href="#c_y3oz8d4Sdf"></a><span class="cm-variable">Lava</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">step</span>, <span class="cm-def">level</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">newPos</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">pos</span>.<span class="cm-property">plus</span>(<span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">times</span>(<span class="cm-variable-2">step</span>));
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">level</span>.<span class="cm-property">obstacleAt</span>(<span class="cm-variable-2">newPos</span>, <span class="cm-keyword">this</span>.<span class="cm-property">size</span>))
+    <span class="cm-keyword">this</span>.<span class="cm-property">pos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">newPos</span>;
+  <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">repeatPos</span>)
+    <span class="cm-keyword">this</span>.<span class="cm-property">pos</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">repeatPos</span>;
+  <span class="cm-keyword">else</span>
+    <span class="cm-keyword">this</span>.<span class="cm-property">speed</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">times</span>(<span class="cm-operator">-</span><span class="cm-number">1</span>);
+};</pre>
+<p><a class=p_ident id="p_hQ66AcUb17" href="#p_hQ66AcUb17"></a>It computes a new position by adding the product of the
+time step and its current speed to its old position. If no
+obstacle blocks that new position, it moves there. If there is an
+obstacle, the behavior depends on the type of the lava
+block—dripping lava has a <code>repeatPos</code> property, to which it jumps back
+when it hits something. Bouncing lava simply inverts its speed
+(multiplies it by -1) in order to start moving in the other direction.</p>
+<p><a class=p_ident id="p_1RXQ29sidv" href="#p_1RXQ29sidv"></a>Coins use their <code>act</code> method to
+wobble. They ignore collisions since they are simply wobbling around
+inside of their own square, and collisions with the player will be
+handled by the <em>player</em>'s <code>act</code> method.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_CVksWY2lbJ" href="#c_CVksWY2lbJ"></a><span class="cm-keyword">var</span> <span class="cm-variable">wobbleSpeed</span> <span class="cm-operator">=</span> <span class="cm-number">8</span>, <span class="cm-variable">wobbleDist</span> <span class="cm-operator">=</span> <span class="cm-number">0.07</span>;
+
+<span class="cm-variable">Coin</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">step</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">wobble</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">step</span> <span class="cm-operator">*</span> <span class="cm-variable">wobbleSpeed</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">wobblePos</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">sin</span>(<span class="cm-keyword">this</span>.<span class="cm-property">wobble</span>) <span class="cm-operator">*</span> <span class="cm-variable">wobbleDist</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">pos</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">basePos</span>.<span class="cm-property">plus</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0</span>, <span class="cm-variable-2">wobblePos</span>));
+};</pre>
+<p><a class=p_ident id="p_aXWUL4a4Y+" href="#p_aXWUL4a4Y+"></a>The <code>wobble</code> property is
+updated to track time and then used as an argument to <code>Math.sin</code> to
+create a wave, which is used to compute a new position.</p>
+<p><a class=p_ident id="p_7eSdIMS/wV" href="#p_7eSdIMS/wV"></a>That leaves the player
+itself. Player motion is handled separately per axis because
+hitting the floor should not prevent horizontal motion, and hitting a
+wall should not stop falling or jumping motion. This method implements
+the horizontal part:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Fx/WuBkAiY" href="#c_Fx/WuBkAiY"></a><span class="cm-keyword">var</span> <span class="cm-variable">playerXSpeed</span> <span class="cm-operator">=</span> <span class="cm-number">7</span>;
+
+<span class="cm-variable">Player</span>.<span class="cm-property">prototype</span>.<span class="cm-property">moveX</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">step</span>, <span class="cm-def">level</span>, <span class="cm-def">keys</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">x</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">keys</span>.<span class="cm-property">left</span>) <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">x</span> <span class="cm-operator">-=</span> <span class="cm-variable">playerXSpeed</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">keys</span>.<span class="cm-property">right</span>) <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">x</span> <span class="cm-operator">+=</span> <span class="cm-variable">playerXSpeed</span>;
+
+  <span class="cm-keyword">var</span> <span class="cm-def">motion</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">x</span> <span class="cm-operator">*</span> <span class="cm-variable-2">step</span>, <span class="cm-number">0</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">newPos</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">pos</span>.<span class="cm-property">plus</span>(<span class="cm-variable-2">motion</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">obstacle</span> <span class="cm-operator">=</span> <span class="cm-variable-2">level</span>.<span class="cm-property">obstacleAt</span>(<span class="cm-variable-2">newPos</span>, <span class="cm-keyword">this</span>.<span class="cm-property">size</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">obstacle</span>)
+    <span class="cm-variable-2">level</span>.<span class="cm-property">playerTouched</span>(<span class="cm-variable-2">obstacle</span>);
+  <span class="cm-keyword">else</span>
+    <span class="cm-keyword">this</span>.<span class="cm-property">pos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">newPos</span>;
+};</pre>
+<p><a class=p_ident id="p_Tdw21cw9Dq" href="#p_Tdw21cw9Dq"></a>The horizontal motion is computed based on the state
+of the left and right arrow keys. When a motion causes the player to
+hit something, the level&#8217;s <code>playerTouched</code> method, which handles
+things like dying in lava and collecting coins, is called.
+Otherwise, the object updates its position.</p>
+<p><a class=p_ident id="p_du3894nYAV" href="#p_du3894nYAV"></a>Vertical motion works in a similar way but has to simulate
+jumping and gravity.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_G4ZeyHb3zj" href="#c_G4ZeyHb3zj"></a><span class="cm-keyword">var</span> <span class="cm-variable">gravity</span> <span class="cm-operator">=</span> <span class="cm-number">30</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">jumpSpeed</span> <span class="cm-operator">=</span> <span class="cm-number">17</span>;
+
+<span class="cm-variable">Player</span>.<span class="cm-property">prototype</span>.<span class="cm-property">moveY</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">step</span>, <span class="cm-def">level</span>, <span class="cm-def">keys</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">y</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">step</span> <span class="cm-operator">*</span> <span class="cm-variable">gravity</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">motion</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">0</span>, <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">y</span> <span class="cm-operator">*</span> <span class="cm-variable-2">step</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">newPos</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">pos</span>.<span class="cm-property">plus</span>(<span class="cm-variable-2">motion</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">obstacle</span> <span class="cm-operator">=</span> <span class="cm-variable-2">level</span>.<span class="cm-property">obstacleAt</span>(<span class="cm-variable-2">newPos</span>, <span class="cm-keyword">this</span>.<span class="cm-property">size</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">obstacle</span>) {
+    <span class="cm-variable-2">level</span>.<span class="cm-property">playerTouched</span>(<span class="cm-variable-2">obstacle</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">keys</span>.<span class="cm-property">up</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">y</span> <span class="cm-operator">></span> <span class="cm-number">0</span>)
+      <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">y</span> <span class="cm-operator">=</span> <span class="cm-operator">-</span><span class="cm-variable">jumpSpeed</span>;
+    <span class="cm-keyword">else</span>
+      <span class="cm-keyword">this</span>.<span class="cm-property">speed</span>.<span class="cm-property">y</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+  } <span class="cm-keyword">else</span> {
+    <span class="cm-keyword">this</span>.<span class="cm-property">pos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">newPos</span>;
+  }
+};</pre>
+<p><a class=p_ident id="p_n3f+aTx4m7" href="#p_n3f+aTx4m7"></a>At the start of the method, the player
+is accelerated vertically to account for gravity. The gravity,
+jumping speed, and pretty much all other constants in this
+game have been set by trial and error. I tested various values
+until I found a combination I liked.</p>
+<p><a class=p_ident id="p_Vtbh5elQbX" href="#p_Vtbh5elQbX"></a>Next, we check for
+obstacles again. If we hit an obstacle, there are two possible
+outcomes. When the up arrow is pressed <em>and</em> we are moving down
+(meaning the thing we hit is below us), the speed is set to a
+relatively large, negative value. This causes the player to jump. If
+that is not the case, we simply bumped into something, and the speed
+is reset to zero.</p>
+<p><a class=p_ident id="p_YCAh/Cx+MG" href="#p_YCAh/Cx+MG"></a>The actual <code>act</code> method looks like this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_xxPyq2OH/6" href="#c_xxPyq2OH/6"></a><span class="cm-variable">Player</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">step</span>, <span class="cm-def">level</span>, <span class="cm-def">keys</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">moveX</span>(<span class="cm-variable-2">step</span>, <span class="cm-variable-2">level</span>, <span class="cm-variable-2">keys</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">moveY</span>(<span class="cm-variable-2">step</span>, <span class="cm-variable-2">level</span>, <span class="cm-variable-2">keys</span>);
+
+  <span class="cm-keyword">var</span> <span class="cm-def">otherActor</span> <span class="cm-operator">=</span> <span class="cm-variable-2">level</span>.<span class="cm-property">actorAt</span>(<span class="cm-keyword">this</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">otherActor</span>)
+    <span class="cm-variable-2">level</span>.<span class="cm-property">playerTouched</span>(<span class="cm-variable-2">otherActor</span>.<span class="cm-property">type</span>, <span class="cm-variable-2">otherActor</span>);
+
+  <span class="cm-comment">// Losing animation</span>
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">level</span>.<span class="cm-property">status</span> <span class="cm-operator">==</span> <span class="cm-string">"lost"</span>) {
+    <span class="cm-keyword">this</span>.<span class="cm-property">pos</span>.<span class="cm-property">y</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">step</span>;
+    <span class="cm-keyword">this</span>.<span class="cm-property">size</span>.<span class="cm-property">y</span> <span class="cm-operator">-=</span> <span class="cm-variable-2">step</span>;
+  }
+};</pre>
+<p><a class=p_ident id="p_4WJ+6ygCcZ" href="#p_4WJ+6ygCcZ"></a>After moving, the method checks for other actors that the
+player is colliding with and again calls <code>playerTouched</code> when it
+finds one. This time, it passes the actor object as the second argument
+because if the other actor is a coin, <code>playerTouched</code> needs to
+know <em>which</em> coin is being collected.</p>
+<p><a class=p_ident id="p_ZvTlzr2mKf" href="#p_ZvTlzr2mKf"></a>Finally, when the player dies (touches lava), we set up
+a little animation that causes them to “shrink” or “sink” down by
+reducing the height of the player object.</p>
+<p><a class=p_ident id="p_ax6pc274qT" href="#p_ax6pc274qT"></a>And here is the method that handles
+collisions between the player and other objects:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2WmUjFnyOX" href="#c_2WmUjFnyOX"></a><span class="cm-variable">Level</span>.<span class="cm-property">prototype</span>.<span class="cm-property">playerTouched</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">type</span>, <span class="cm-def">actor</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">type</span> <span class="cm-operator">==</span> <span class="cm-string">"lava"</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-keyword">this</span>.<span class="cm-property">status</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span>) {
+    <span class="cm-keyword">this</span>.<span class="cm-property">status</span> <span class="cm-operator">=</span> <span class="cm-string">"lost"</span>;
+    <span class="cm-keyword">this</span>.<span class="cm-property">finishDelay</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+  } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">type</span> <span class="cm-operator">==</span> <span class="cm-string">"coin"</span>) {
+    <span class="cm-keyword">this</span>.<span class="cm-property">actors</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">actors</span>.<span class="cm-property">filter</span>(<span class="cm-keyword">function</span>(<span class="cm-def">other</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">other</span> <span class="cm-operator">!=</span> <span class="cm-variable-2">actor</span>;
+    });
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-keyword">this</span>.<span class="cm-property">actors</span>.<span class="cm-property">some</span>(<span class="cm-keyword">function</span>(<span class="cm-def">actor</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">actor</span>.<span class="cm-property">type</span> <span class="cm-operator">==</span> <span class="cm-string">"coin"</span>;
+    })) {
+      <span class="cm-keyword">this</span>.<span class="cm-property">status</span> <span class="cm-operator">=</span> <span class="cm-string">"won"</span>;
+      <span class="cm-keyword">this</span>.<span class="cm-property">finishDelay</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+    }
+  }
+};</pre>
+<p><a class=p_ident id="p_2TZ51jE0Cq" href="#p_2TZ51jE0Cq"></a>When lava is touched, the game&#8217;s status is set to <code>"lost"</code>. When a
+coin is touched, that coin is removed from the array of actors,
+and if it was the last one, the game&#8217;s status is set to <code>"won"</code>.</p>
+<p><a class=p_ident id="p_Tb0QFBJu6P" href="#p_Tb0QFBJu6P"></a>This gives us a level that can actually be animated. All that is
+missing now is the code that <em>drives</em> the animation.</p>
+<h2><a class=h_ident id="h_zKch6Si/SS" href="#h_zKch6Si/SS"></a>Tracking keys</h2>
+<p><a class=p_ident id="p_6qSDIbEzkh" href="#p_6qSDIbEzkh"></a>For a game like this, we do not want keys to take
+effect once per keypress. Rather, we want their effect (moving the player
+figure) to continue happening as long as they are pressed.</p>
+<p><a class=p_ident id="p_kKDop4NY9B" href="#p_kKDop4NY9B"></a>We need to set up a key handler that stores
+the current state of the left, right, and up arrow keys. We will also want
+to call <code>preventDefault</code> for those keys so that they don&#8217;t end up
+scrolling the page.</p>
+<p><a class=p_ident id="p_oH4kiTyM1E" href="#p_oH4kiTyM1E"></a>The following function, when given
+an object with key codes as property names and key names as values,
+will return an object that tracks the current position of those keys.
+It registers event handlers for <code>"keydown"</code> and <code>"keyup"</code> events and,
+when the key code in the event is present in the set of codes that it
+is tracking, updates the object.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_cppQQkFO50" href="#c_cppQQkFO50"></a><span class="cm-keyword">var</span> <span class="cm-variable">arrowCodes</span> <span class="cm-operator">=</span> {<span class="cm-number cm-property">37</span>: <span class="cm-string">"left"</span>, <span class="cm-number cm-property">38</span>: <span class="cm-string">"up"</span>, <span class="cm-number cm-property">39</span>: <span class="cm-string">"right"</span>};
+
+<span class="cm-keyword">function</span> <span class="cm-variable">trackKeys</span>(<span class="cm-def">codes</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">pressed</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-atom">null</span>);
+  <span class="cm-keyword">function</span> <span class="cm-def">handler</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">codes</span>.<span class="cm-property">hasOwnProperty</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">keyCode</span>)) {
+      <span class="cm-keyword">var</span> <span class="cm-def">down</span> <span class="cm-operator">=</span> <span class="cm-variable-2">event</span>.<span class="cm-property">type</span> <span class="cm-operator">==</span> <span class="cm-string">"keydown"</span>;
+      <span class="cm-variable-2">pressed</span>[<span class="cm-variable-2">codes</span>[<span class="cm-variable-2">event</span>.<span class="cm-property">keyCode</span>]] <span class="cm-operator">=</span> <span class="cm-variable-2">down</span>;
+      <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>();
+    }
+  }
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"keydown"</span>, <span class="cm-variable-2">handler</span>);
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"keyup"</span>, <span class="cm-variable-2">handler</span>);
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">pressed</span>;
+}</pre>
+<p><a class=p_ident id="p_ijH6rqUGtM" href="#p_ijH6rqUGtM"></a>Note how the same handler function
+is used for both event types. It looks at the event object&#8217;s <code>type</code>
+property to determine whether the key state should be updated to true
+(<code>"keydown"</code>) or false (<code>"keyup"</code>).</p>
+<h2 id="runAnimation"><a class=h_ident id="h_/jwYTlYjAy" href="#h_/jwYTlYjAy"></a>Running the game</h2>
+<p><a class=p_ident id="p_3fS5a/SYfz" href="#p_3fS5a/SYfz"></a>The
+<code>requestAnimationFrame</code> function, which we saw in
+<a href="13_dom.html#animationFrame">Chapter 13</a>, provides a good way to
+animate a game. But its interface is quite primitive—using it requires
+us to track the time at which our function was called the last time
+around and call <code>requestAnimationFrame</code> again after every frame.</p>
+<p><a class=p_ident id="p_6blpyw8yI3" href="#p_6blpyw8yI3"></a>Let&#8217;s define a helper function that
+wraps those boring parts in a convenient interface and allows us to
+simply call <code>runAnimation</code>, giving it a function that expects a time
+difference as an argument and draws a single frame. When the frame
+function returns the value <code>false</code>, the animation stops.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1AHi38WBun" href="#c_1AHi38WBun"></a><span class="cm-keyword">function</span> <span class="cm-variable">runAnimation</span>(<span class="cm-def">frameFunc</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">lastTime</span> <span class="cm-operator">=</span> <span class="cm-atom">null</span>;
+  <span class="cm-keyword">function</span> <span class="cm-def">frame</span>(<span class="cm-def">time</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">stop</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">lastTime</span> <span class="cm-operator">!=</span> <span class="cm-atom">null</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">timeStep</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">min</span>(<span class="cm-variable-2">time</span> <span class="cm-operator">-</span> <span class="cm-variable-2">lastTime</span>, <span class="cm-number">100</span>) <span class="cm-operator">/</span> <span class="cm-number">1000</span>;
+      <span class="cm-variable-2">stop</span> <span class="cm-operator">=</span> <span class="cm-variable-2">frameFunc</span>(<span class="cm-variable-2">timeStep</span>) <span class="cm-operator">===</span> <span class="cm-atom">false</span>;
+    }
+    <span class="cm-variable-2">lastTime</span> <span class="cm-operator">=</span> <span class="cm-variable-2">time</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">stop</span>)
+      <span class="cm-variable">requestAnimationFrame</span>(<span class="cm-variable-2">frame</span>);
+  }
+  <span class="cm-variable">requestAnimationFrame</span>(<span class="cm-variable-2">frame</span>);
+}</pre>
+<p><a class=p_ident id="p_qaBaJbkLcb" href="#p_qaBaJbkLcb"></a>I have set a maximum frame step of 100
+milliseconds (one-tenth of a second). When the browser tab or window
+with our page is hidden, <code>requestAnimationFrame</code> calls will be
+suspended until the tab or window is shown again. In this case, the difference
+between <code>lastTime</code> and <code>time</code> will be the entire time in which the
+page was hidden. Advancing the game by that much in a single step will
+look silly and might be a lot of work (remember the time-splitting in
+the <a href="15_game.html#actors"><code>animate</code> method</a>).</p>
+<p><a class=p_ident id="p_jKakPLUmwL" href="#p_jKakPLUmwL"></a>The function also converts the time steps to seconds, which are an
+easier quantity to think about than milliseconds.</p>
+<p><a class=p_ident id="p_e8mbmQ7w8j" href="#p_e8mbmQ7w8j"></a>The <code>runLevel</code> function
+takes a <code>Level</code> object, a constructor for a display, and,
+optionally, a function. It displays the level (in <code>document.body</code>) and
+lets the user play through it. When the level is finished (lost or
+won), <code>runLevel</code> clears the display, stops the animation, and, if an
+<code>andThen</code> function was given, calls that function with the level&#8217;s status.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_x5O5o5qg7u" href="#c_x5O5o5qg7u"></a><span class="cm-keyword">var</span> <span class="cm-variable">arrows</span> <span class="cm-operator">=</span> <span class="cm-variable">trackKeys</span>(<span class="cm-variable">arrowCodes</span>);
+
+<span class="cm-keyword">function</span> <span class="cm-variable">runLevel</span>(<span class="cm-def">level</span>, <span class="cm-def">Display</span>, <span class="cm-def">andThen</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">display</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable-2">Display</span>(<span class="cm-variable">document</span>.<span class="cm-property">body</span>, <span class="cm-variable-2">level</span>);
+  <span class="cm-variable">runAnimation</span>(<span class="cm-keyword">function</span>(<span class="cm-def">step</span>) {
+    <span class="cm-variable-2">level</span>.<span class="cm-property">animate</span>(<span class="cm-variable-2">step</span>, <span class="cm-variable">arrows</span>);
+    <span class="cm-variable-2">display</span>.<span class="cm-property">drawFrame</span>(<span class="cm-variable-2">step</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">level</span>.<span class="cm-property">isFinished</span>()) {
+      <span class="cm-variable-2">display</span>.<span class="cm-property">clear</span>();
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">andThen</span>)
+        <span class="cm-variable-2">andThen</span>(<span class="cm-variable-2">level</span>.<span class="cm-property">status</span>);
+      <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+    }
+  });
+}</pre>
+<p><a class=p_ident id="p_eyKzVe0sIB" href="#p_eyKzVe0sIB"></a>A game is a sequence of levels. Whenever the
+player dies, the current level is restarted. When a level is
+completed, we move on to the next level. This can be expressed by the
+following function, which takes an array of level plans (arrays of
+strings) and a display constructor:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ok+t8qqv5E" href="#c_ok+t8qqv5E"></a><span class="cm-keyword">function</span> <span class="cm-variable">runGame</span>(<span class="cm-def">plans</span>, <span class="cm-def">Display</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">startLevel</span>(<span class="cm-def">n</span>) {
+    <span class="cm-variable">runLevel</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Level</span>(<span class="cm-variable-2">plans</span>[<span class="cm-variable-2">n</span>]), <span class="cm-variable-2">Display</span>, <span class="cm-keyword">function</span>(<span class="cm-def">status</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">status</span> <span class="cm-operator">==</span> <span class="cm-string">"lost"</span>)
+        <span class="cm-variable-2">startLevel</span>(<span class="cm-variable-2">n</span>);
+      <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">n</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">plans</span>.<span class="cm-property">length</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>)
+        <span class="cm-variable-2">startLevel</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>);
+      <span class="cm-keyword">else</span>
+        <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You win!"</span>);
+    });
+  }
+  <span class="cm-variable-2">startLevel</span>(<span class="cm-number">0</span>);
+}</pre>
+<p><a class=p_ident id="p_Btjn/eg/VT" href="#p_Btjn/eg/VT"></a>These functions show
+a peculiar style of programming. Both <code>runAnimation</code> and <code>runLevel</code>
+are higher-order functions but are not in the style we saw in
+<a href="05_higher_order.html#higher_order">Chapter 5</a>. The function
+argument is used to arrange things to happen at some time in the
+future, and neither of the functions returns anything useful. Their
+task is, in a way, to schedule actions. Wrapping these actions in
+functions gives us a way to store them as a value so that they can be
+called at the right moment.</p>
+<p><a class=p_ident id="p_HC69jX9E3n" href="#p_HC69jX9E3n"></a>This programming
+style is usually called <em>asynchronous</em> programming. Event handling is
+also an instance of this style, and we will see much more of it when working
+with tasks that can take an arbitrary amount of time, such as
+network requests in <a href="17_http.html#http">Chapter 17</a> and input
+and output in general in <a href="20_node.html#node">Chapter 20</a>.</p>
+<p><a class=p_ident id="p_/6dLhjN2fB" href="#p_/6dLhjN2fB"></a>There is a set of
+level plans available in the <code>GAME_LEVELS</code> variable .
+This page feeds them to <code>runGame</code>, starting an actual game:</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-sandbox="null" data-focus="true"><a class=c_ident id="c_gt8VjDAEg8" href="#c_gt8VjDAEg8"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"css/game.css"</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-variable">runGame</span>(<span class="cm-variable">GAME_LEVELS</span>, <span class="cm-variable">DOMDisplay</span>);
+  <span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_MkrZ67rFcA" href="#p_MkrZ67rFcA"></a>See if you can beat those. I had quite a lot of fun building them.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<h3><a class=h_ident id="h_tFsh86eaJC" href="#h_tFsh86eaJC"></a>Game over</h3>
+<p><a class=p_ident id="p_JkKGPYeFzA" href="#p_JkKGPYeFzA"></a>It&#8217;s traditional for platform games
+to have the player start with a limited number of <em>lives</em> and
+subtract one life each time they die. When the player is out of lives, the game
+restarts from the beginning.</p>
+<p><a class=p_ident id="p_oYENd6hUVn" href="#p_oYENd6hUVn"></a>Adjust <code>runGame</code> to implement lives. Have the
+player start with three.</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-focus="true"><a class=c_ident id="c_rB2X2oyycK" href="#c_rB2X2oyycK"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"css/game.css"</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-comment">// The old runGame function. Modify it...</span>
+  <span class="cm-keyword">function</span> <span class="cm-variable">runGame</span>(<span class="cm-def">plans</span>, <span class="cm-def">Display</span>) {
+    <span class="cm-keyword">function</span> <span class="cm-def">startLevel</span>(<span class="cm-def">n</span>) {
+      <span class="cm-variable">runLevel</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Level</span>(<span class="cm-variable-2">plans</span>[<span class="cm-variable-2">n</span>]), <span class="cm-variable-2">Display</span>, <span class="cm-keyword">function</span>(<span class="cm-def">status</span>) {
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">status</span> <span class="cm-operator">==</span> <span class="cm-string">"lost"</span>)
+          <span class="cm-variable-2">startLevel</span>(<span class="cm-variable-2">n</span>);
+        <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">n</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">plans</span>.<span class="cm-property">length</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>)
+          <span class="cm-variable-2">startLevel</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>);
+        <span class="cm-keyword">else</span>
+          <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You win!"</span>);
+      });
+    }
+    <span class="cm-variable-2">startLevel</span>(<span class="cm-number">0</span>);
+  }
+  <span class="cm-variable">runGame</span>(<span class="cm-variable">GAME_LEVELS</span>, <span class="cm-variable">DOMDisplay</span>);
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_n7botbYRDO" href="#p_n7botbYRDO"></a>The most obvious solution
+would be to make <code>lives</code> a variable that lives in <code>runGame</code> and is
+thus visible to the <code>startLevel</code> closure.</p>
+<p><a class=p_ident id="p_PlMiAVziM0" href="#p_PlMiAVziM0"></a>Another approach, which fits nicely with the spirit of the rest of the
+function, would be to add a second parameter to <code>startLevel</code> that
+gives the number of lives. When the whole state of a system is stored
+in the arguments to a function, calling that function provides an
+elegant way to transition to a new state.</p>
+<p><a class=p_ident id="p_2xJcBQOfjW" href="#p_2xJcBQOfjW"></a>In any case, when a level is lost, there should now be two
+possible state transitions. If that was the last life, we go back to
+level zero with the starting amount of lives. If not, we repeat the
+current level with one less life remaining.</p>
+</div></div>
+<h3><a class=h_ident id="h_cNfzuXtVqI" href="#h_cNfzuXtVqI"></a>Pausing the game</h3>
+<p><a class=p_ident id="p_GkkSB/bDtt" href="#p_GkkSB/bDtt"></a>Make it possible
+to pause (suspend) and unpause the game by pressing the Esc key.</p>
+<p><a class=p_ident id="p_FpramcVlTZ" href="#p_FpramcVlTZ"></a>This can be done by
+changing the <code>runLevel</code> function to use another keyboard event
+handler and interrupting or resuming the animation whenever the
+Esc key is hit.</p>
+<p><a class=p_ident id="p_vlGSY83Wnl" href="#p_vlGSY83Wnl"></a>The <code>runAnimation</code> interface may not look
+like it is suitable for this at first glance, but it is, if you
+rearrange the way <code>runLevel</code> calls it.</p>
+<p><a class=p_ident id="p_0zF8rh7TLp" href="#p_0zF8rh7TLp"></a>When you have that
+working, there is something else you could try. The way we have been
+registering keyboard event handlers is somewhat problematic. The
+<code>arrows</code> object is currently a global variable, and its event handlers
+are kept around even when no game is running. You could say they <em>leak</em> out of
+our system. Extend <code>trackKeys</code> to provide a way to
+unregister its handlers, and then change <code>runLevel</code> to register its
+handlers when it starts and unregister them again when it is
+finished.</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-focus="true"><a class=c_ident id="c_Yc5WbvNGlk" href="#c_Yc5WbvNGlk"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"css/game.css"</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-comment">// The old runLevel function. Modify this...</span>
+  <span class="cm-keyword">function</span> <span class="cm-variable">runLevel</span>(<span class="cm-def">level</span>, <span class="cm-def">Display</span>, <span class="cm-def">andThen</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">display</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable-2">Display</span>(<span class="cm-variable">document</span>.<span class="cm-property">body</span>, <span class="cm-variable-2">level</span>);
+    <span class="cm-variable">runAnimation</span>(<span class="cm-keyword">function</span>(<span class="cm-def">step</span>) {
+      <span class="cm-variable-2">level</span>.<span class="cm-property">animate</span>(<span class="cm-variable-2">step</span>, <span class="cm-variable">arrows</span>);
+      <span class="cm-variable-2">display</span>.<span class="cm-property">drawFrame</span>(<span class="cm-variable-2">step</span>);
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">level</span>.<span class="cm-property">isFinished</span>()) {
+        <span class="cm-variable-2">display</span>.<span class="cm-property">clear</span>();
+        <span class="cm-keyword">if</span> (<span class="cm-variable-2">andThen</span>)
+          <span class="cm-variable-2">andThen</span>(<span class="cm-variable-2">level</span>.<span class="cm-property">status</span>);
+        <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+      }
+    });
+  }
+  <span class="cm-variable">runGame</span>(<span class="cm-variable">GAME_LEVELS</span>, <span class="cm-variable">DOMDisplay</span>);
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_83gTFxcRTB" href="#p_83gTFxcRTB"></a>An animation can be interrupted by
+returning <code>false</code> from the function given to <code>runAnimation</code>. It can be
+continued by calling <code>runAnimation</code> again.</p>
+<p><a class=p_ident id="p_m7CtgKwkDs" href="#p_m7CtgKwkDs"></a>To communicate that the animation should be
+interrupted to the function passed to <code>runAnimation</code> so that it can
+return <code>false</code>, you can use a variable that both the event handler and
+that function have access to.</p>
+<p><a class=p_ident id="p_FDlbFLVUQ7" href="#p_FDlbFLVUQ7"></a>When finding a way to unregister the handlers registered by
+<code>trackKeys</code>, remember that the <em>exact</em> same function value that was
+passed to <code>addEventListener</code> must be passed to <code>removeEventListener</code>
+to successfully remove a handler. Thus, the <code>handler</code> function value
+created in <code>trackKeys</code> must be available to the code that unregisters
+the handlers.</p>
+<p><a class=p_ident id="p_mn/dvab7i4" href="#p_mn/dvab7i4"></a>You can add a property to the object returned by <code>trackKeys</code>,
+containing either that function value or a method that handles the
+unregistering directly.</p>
+</div></div>
+<nav>
+  <a href="14_event.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="16_canvas.html" title="next chapter">▶</a>
+</nav>
+</article>

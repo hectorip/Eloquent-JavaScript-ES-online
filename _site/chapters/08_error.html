@@ -1,0 +1,642 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Bugs and Error Handling :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 8;var sandboxLoadFiles = ["code/chapter/08_error.js"];</script>
+</head>
+
+<article>
+<nav>
+  <a href="07_elife.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="09_regexp.html" title="next chapter">▶</a>
+</nav>
+
+<h1><div class=chap_num>Chapter 8</div>Bugs and Error Handling</h1>
+<blockquote>
+<p><a class=p_ident id="p_tsWlII94Rs" href="#p_tsWlII94Rs"></a>Debugging is
+twice as hard as writing the code in the first place. Therefore, if
+you write the code as cleverly as possible, you are, by definition,
+not smart enough to debug it.</p>
+ <footer>Brian Kernighan and P.J. Plauger, <cite>The Elements of Programming Style</cite></footer>
+</blockquote>
+<blockquote>
+<p><a class=p_ident id="p_KRfkqUrtHi" href="#p_KRfkqUrtHi"></a>Yuan-Ma had written a small program that used many global variables
+and shoddy shortcuts. Reading it, a student asked, ‘You warned us
+against these techniques, yet I find them in your program. How can
+this be?’ The master said, ‘There is no need to fetch a water hose
+when the house is not on fire.’</p>
+ <footer>Master Yuan-Ma, <cite>The Book of Programming</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_yOWLCBc/o3" href="#p_yOWLCBc/o3"></a>A program is crystallized thought.
+Sometimes those thoughts are confused. Other times, mistakes are
+introduced when converting thought into code. Either way, the result
+is a flawed program.</p>
+<p><a class=p_ident id="p_+XOm2skE5P" href="#p_+XOm2skE5P"></a>Flaws in a program are usually called bugs.
+Bugs can be programmer errors or problems in other systems that the
+program interacts with. Some bugs are immediately apparent, while
+others are subtle and might remain hidden in a system for years.</p>
+<p><a class=p_ident id="p_S3De4NHpy4" href="#p_S3De4NHpy4"></a>Often, problems surface only when a program encounters a situation
+that the programmer didn&#8217;t originally consider. Sometimes such
+situations are unavoidable. When the user is asked to input their age
+and types <em>orange</em>, this puts our program in a difficult position. The
+situation has to be anticipated and handled somehow.</p>
+<h2><a class=h_ident id="h_0dUgeA9t6O" href="#h_0dUgeA9t6O"></a>Programmer mistakes</h2>
+<p><a class=p_ident id="p_4nGvSb/+db" href="#p_4nGvSb/+db"></a>When it comes to programmer mistakes, our
+aim is simple. We want to find them and fix them. Such mistakes can
+range from simple typos that cause the computer to complain as
+soon as it lays eyes on our program to subtle mistakes in our
+understanding of the way the program operates, causing incorrect
+outcomes only in specific situations. Bugs of the latter type can
+take weeks to diagnose.</p>
+<p><a class=p_ident id="p_uZJEWof1D2" href="#p_uZJEWof1D2"></a>The degree to which languages
+help you find such mistakes varies. Unsurprisingly, JavaScript is at
+the “hardly helps at all” end of that scale. Some languages want to
+know the types of all your variables and expressions before even
+running a program and will tell you right away when a type is used in
+an inconsistent way. JavaScript considers types only when actually
+running the program, and even then, it allows you to do some clearly
+nonsensical things without complaint, such as <code>x = true * "monkey"</code>.</p>
+<p><a class=p_ident id="p_o9bRfOflvH" href="#p_o9bRfOflvH"></a>There are some things that JavaScript does complain about,
+though. Writing a program that is not syntactically valid will
+immediately trigger an error. Other things, such as calling something
+that&#8217;s not a function or looking up a property on an undefined
+value, will cause an error to be reported when the program is running
+and encounters the nonsensical action.</p>
+<p><a class=p_ident id="p_M/fMASXkeH" href="#p_M/fMASXkeH"></a>But often, your nonsense computation will simply
+produce a <code>NaN</code> (not a number) or undefined value. And the program
+happily continues, convinced that it&#8217;s doing something meaningful. The
+mistake will manifest itself only later, after the bogus value has
+traveled though several functions. It might not trigger an error at
+all but silently cause the program&#8217;s output to be wrong. Finding the
+source of such problems can be difficult.</p>
+<p><a class=p_ident id="p_D4KIEMyl44" href="#p_D4KIEMyl44"></a>The process of finding mistakes—bugs—in programs is
+called <em>debugging</em>.</p>
+<h2><a class=h_ident id="h_u1jlTq3i42" href="#h_u1jlTq3i42"></a>Strict mode</h2>
+<p><a class=p_ident id="p_NMLSAIO3JD" href="#p_NMLSAIO3JD"></a>JavaScript can be made a
+<em>little</em> more strict by enabling <em>strict mode</em>. This is done by
+putting the string <code>"use strict"</code> at the top of a file or a function
+body. Here&#8217;s an example:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7TmM5Y4/79" href="#c_7TmM5Y4/79"></a><span class="cm-keyword">function</span> <span class="cm-variable">canYouSpotTheProblem</span>() {
+  <span class="cm-string">"use strict"</span>;
+  <span class="cm-keyword">for</span> (<span class="cm-variable">counter</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">counter</span> <span class="cm-operator">&lt;</span> <span class="cm-number">10</span>; <span class="cm-variable">counter</span><span class="cm-operator">++</span>)
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Happy happy"</span>);
+}
+
+<span class="cm-variable">canYouSpotTheProblem</span>();
+<span class="cm-comment">// → ReferenceError: counter is not defined</span></pre>
+<p><a class=p_ident id="p_4X4yfdyK1S" href="#p_4X4yfdyK1S"></a>Normally, when you forget to put
+<code>var</code> in front of your variable, as with <code>counter</code> in the example,
+JavaScript quietly creates a global variable and uses that. In strict
+mode, however, an error is reported instead. This is very helpful.
+It should be noted, though, that this doesn&#8217;t work when the variable
+in question already exists as a global variable, but only when
+assigning to it would have created it.</p>
+<p><a class=p_ident id="p_mPx7xB5UKb" href="#p_mPx7xB5UKb"></a>Another
+change in strict mode is that the <code>this</code> binding holds the value
+<code>undefined</code> in functions that are not called as methods. When
+making such a call outside of strict mode, <code>this</code> refers to the global
+scope object. So if you accidentally call a method or constructor
+incorrectly in strict mode, JavaScript will produce an error as soon
+as it tries to read something from <code>this</code>, rather than happily working
+with the global object, creating and reading global variables.</p>
+<p><a class=p_ident id="p_eZSU5aTSD4" href="#p_eZSU5aTSD4"></a>For example, consider the following code, which calls a
+constructor without the <code>new</code> keyword so that its <code>this</code> will
+<em>not</em> refer to a newly constructed object:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_nwYSC8mqrC" href="#c_nwYSC8mqrC"></a><span class="cm-keyword">function</span> <span class="cm-variable">Person</span>(<span class="cm-def">name</span>) { <span class="cm-keyword">this</span>.<span class="cm-property">name</span> <span class="cm-operator">=</span> <span class="cm-variable-2">name</span>; }
+<span class="cm-keyword">var</span> <span class="cm-variable">ferdinand</span> <span class="cm-operator">=</span> <span class="cm-variable">Person</span>(<span class="cm-string">"Ferdinand"</span>); <span class="cm-comment">// oops</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">name</span>);
+<span class="cm-comment">// → Ferdinand</span></pre>
+<p><a class=p_ident id="p_NNFpkpZKdP" href="#p_NNFpkpZKdP"></a>So the bogus call to <code>Person</code> succeeded but returned an
+undefined value and created the global variable <code>name</code>. In strict
+mode, the result is different.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_PbQ5fvPb6m" href="#c_PbQ5fvPb6m"></a><span class="cm-string">"use strict"</span>;
+<span class="cm-keyword">function</span> <span class="cm-variable">Person</span>(<span class="cm-def">name</span>) { <span class="cm-keyword">this</span>.<span class="cm-property">name</span> <span class="cm-operator">=</span> <span class="cm-variable-2">name</span>; }
+<span class="cm-comment">// Oops, forgot 'new'</span>
+<span class="cm-keyword">var</span> <span class="cm-variable">ferdinand</span> <span class="cm-operator">=</span> <span class="cm-variable">Person</span>(<span class="cm-string">"Ferdinand"</span>);
+<span class="cm-comment">// → TypeError: Cannot set property 'name' of undefined</span></pre>
+<p><a class=p_ident id="p_0eYPyoGi1l" href="#p_0eYPyoGi1l"></a>We are immediately told that something is wrong. This is helpful.</p>
+<p><a class=p_ident id="p_qlYTT6nRD4" href="#p_qlYTT6nRD4"></a>Strict mode
+does a few more things. It disallows giving a function multiple
+parameters with the same name and removes certain problematic
+language features entirely (such as the <code>with</code> statement, which is so
+misguided it is not further discussed in this book).</p>
+<p><a class=p_ident id="p_kIUErMqROW" href="#p_kIUErMqROW"></a>In short, putting a <code>"use strict"</code> at the top of your
+program rarely hurts and might help you spot a problem.</p>
+<h2><a class=h_ident id="h_CCCzKyBrc1" href="#h_CCCzKyBrc1"></a>Testing</h2>
+<p><a class=p_ident id="p_cfHj2WfM1O" href="#p_cfHj2WfM1O"></a>If the language is not going to do
+much to help us find mistakes, we&#8217;ll have to find them the hard way:
+by running the program and seeing whether it does the right thing.</p>
+<p><a class=p_ident id="p_21E0ZgauWA" href="#p_21E0ZgauWA"></a>Doing this by hand, again and again, is a sure way to drive yourself
+insane. Fortunately, it is often possible to write a second program
+that automates testing your actual program.</p>
+<p><a class=p_ident id="p_rx8TfcyB0X" href="#p_rx8TfcyB0X"></a>As an example, we once again use the <code>Vector</code> type.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_mciWzOsKpc" href="#c_mciWzOsKpc"></a><span class="cm-keyword">function</span> <span class="cm-variable">Vector</span>(<span class="cm-def">x</span>, <span class="cm-def">y</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">x</span> <span class="cm-operator">=</span> <span class="cm-variable-2">x</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">y</span> <span class="cm-operator">=</span> <span class="cm-variable-2">y</span>;
+}
+<span class="cm-variable">Vector</span>.<span class="cm-property">prototype</span>.<span class="cm-property">plus</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">other</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-keyword">this</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">other</span>.<span class="cm-property">x</span>, <span class="cm-keyword">this</span>.<span class="cm-property">y</span> <span class="cm-operator">+</span> <span class="cm-variable-2">other</span>.<span class="cm-property">y</span>);
+};</pre>
+<p><a class=p_ident id="p_HDs3GnqA5b" href="#p_HDs3GnqA5b"></a>We will write a program to check that our implementation of <code>Vector</code>
+works as intended. Then, every time we change the implementation, we
+follow up by running the test program so that we can be reasonably
+confident that we didn&#8217;t break anything. When we add extra
+functionality (for example, a new method) to the <code>Vector</code> type, we also
+add tests for the new feature.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_vkn23Pa06p" href="#c_vkn23Pa06p"></a><span class="cm-keyword">function</span> <span class="cm-variable">testVector</span>() {
+  <span class="cm-keyword">var</span> <span class="cm-def">p1</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">10</span>, <span class="cm-number">20</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">p2</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-operator">-</span><span class="cm-number">10</span>, <span class="cm-number">5</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">p3</span> <span class="cm-operator">=</span> <span class="cm-variable-2">p1</span>.<span class="cm-property">plus</span>(<span class="cm-variable-2">p2</span>);
+
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">p1</span>.<span class="cm-property">x</span> <span class="cm-operator">!==</span> <span class="cm-number">10</span>) <span class="cm-keyword">return</span> <span class="cm-string">"fail: x property"</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">p1</span>.<span class="cm-property">y</span> <span class="cm-operator">!==</span> <span class="cm-number">20</span>) <span class="cm-keyword">return</span> <span class="cm-string">"fail: y property"</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">p2</span>.<span class="cm-property">x</span> <span class="cm-operator">!==</span> <span class="cm-operator">-</span><span class="cm-number">10</span>) <span class="cm-keyword">return</span> <span class="cm-string">"fail: negative x property"</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">p3</span>.<span class="cm-property">x</span> <span class="cm-operator">!==</span> <span class="cm-number">0</span>) <span class="cm-keyword">return</span> <span class="cm-string">"fail: x from plus"</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">p3</span>.<span class="cm-property">y</span> <span class="cm-operator">!==</span> <span class="cm-number">25</span>) <span class="cm-keyword">return</span> <span class="cm-string">"fail: y from plus"</span>;
+  <span class="cm-keyword">return</span> <span class="cm-string">"everything ok"</span>;
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">testVector</span>());
+<span class="cm-comment">// → everything ok</span></pre>
+<p><a class=p_ident id="p_ugbmGkfrN+" href="#p_ugbmGkfrN+"></a>Writing tests like this tends to produce rather repetitive,
+awkward code. Fortunately, there exist pieces of software that help
+you build and run collections of tests (<em>test suites</em>) by providing a
+language (in the form of functions and methods) suited to expressing
+tests and by outputting informative information when a test fails. These
+are called <em>testing frameworks</em>.</p>
+<h2><a class=h_ident id="h_iVsnyIAWUT" href="#h_iVsnyIAWUT"></a>Debugging</h2>
+<p><a class=p_ident id="p_5mME8LB07m" href="#p_5mME8LB07m"></a>Once you notice that there is something wrong with your
+program because it misbehaves or produces errors, the next step is to
+figure out <em>what</em> the problem is.</p>
+<p><a class=p_ident id="p_CJKevweHV6" href="#p_CJKevweHV6"></a>Sometimes it is obvious. The error message will point at a
+specific line of your program, and if you look at the error
+description and that line of code, you can often see the problem.</p>
+<p><a class=p_ident id="p_U2MGlMiUv1" href="#p_U2MGlMiUv1"></a>But not always. Sometimes the line that triggered
+the problem is simply the first place where a bogus value produced
+elsewhere gets used in an invalid way. And sometimes there is no error
+message at all—just an invalid result. If you have been solving the
+exercises in the earlier chapters, you will probably have already
+experienced such situations.</p>
+<p><a class=p_ident id="p_rsq5hJyXKX" href="#p_rsq5hJyXKX"></a>The following example program
+tries to convert a whole number to a string in any base (decimal,
+binary, and so on) by repeatedly picking out the last digit and then
+dividing the number to get rid of this digit. But the insane output
+that it currently produces suggests that it has a bug.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HEq/v/nQeW" href="#c_HEq/v/nQeW"></a><span class="cm-keyword">function</span> <span class="cm-variable">numberToString</span>(<span class="cm-def">n</span>, <span class="cm-def">base</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">result</span> <span class="cm-operator">=</span> <span class="cm-string">""</span>, <span class="cm-def">sign</span> <span class="cm-operator">=</span> <span class="cm-string">""</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">n</span> <span class="cm-operator">&lt;</span> <span class="cm-number">0</span>) {
+    <span class="cm-variable-2">sign</span> <span class="cm-operator">=</span> <span class="cm-string">"-"</span>;
+    <span class="cm-variable-2">n</span> <span class="cm-operator">=</span> <span class="cm-operator">-</span><span class="cm-variable-2">n</span>;
+  }
+  <span class="cm-keyword">do</span> {
+    <span class="cm-variable-2">result</span> <span class="cm-operator">=</span> <span class="cm-variable">String</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">%</span> <span class="cm-variable-2">base</span>) <span class="cm-operator">+</span> <span class="cm-variable-2">result</span>;
+    <span class="cm-variable-2">n</span> <span class="cm-operator">/=</span> <span class="cm-variable-2">base</span>;
+  } <span class="cm-keyword">while</span> (<span class="cm-variable-2">n</span> <span class="cm-operator">></span> <span class="cm-number">0</span>);
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">sign</span> <span class="cm-operator">+</span> <span class="cm-variable-2">result</span>;
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">numberToString</span>(<span class="cm-number">13</span>, <span class="cm-number">10</span>));
+<span class="cm-comment">// → 1.5e-3231.3e-3221.3e-3211.3e-3201.3e-3191.3e-3181.3…</span></pre>
+<p><a class=p_ident id="p_RAeAoBjrC7" href="#p_RAeAoBjrC7"></a>Even if you see the problem already, pretend for a
+moment that you don&#8217;t. We know that our program is malfunctioning, and
+we want to find out why.</p>
+<p><a class=p_ident id="p_2OJsjnmKOW" href="#p_2OJsjnmKOW"></a>This is where you must resist the urge to start
+making random changes to the code. Instead, <em>think</em>. Analyze what is
+happening and come up with a theory of why it might be happening.
+Then, make additional observations to test this theory—or, if you
+don&#8217;t yet have a theory, make additional observations that might help
+you come up with one.</p>
+<p><a class=p_ident id="p_HuAniqpAd5" href="#p_HuAniqpAd5"></a>Putting a few
+strategic <code>console.log</code> calls into the program is a good way to get
+additional information about what the program is doing. In this case,
+we want <code>n</code> to take the values <code>13</code>, <code>1</code>, and then <code>0</code>. Let&#8217;s write
+out its value at the start of the loop.</p>
+<pre>13
+1.3
+0.13
+0.013
+…
+1.5e-323</pre>
+<p><a class=p_ident id="p_I+PNN6aJ0e" href="#p_I+PNN6aJ0e"></a><em>Right</em>. Dividing 13 by 10 does not produce a whole
+number. Instead of <code>n /= base</code>, what we actually want is <code>n =
+Math.floor(n / base)</code> so that the number is properly “shifted” to the
+right.</p>
+<p><a class=p_ident id="p_E0PMYRZC2c" href="#p_E0PMYRZC2c"></a>An
+alternative to using <code>console.log</code> is to use the <em>debugger</em>
+capabilities of your browser. Modern browsers come with the ability to
+set a <em>breakpoint</em> on a specific line of your code. This will cause
+the execution of the program to pause every time the line with the
+breakpoint is reached and allow you to inspect the values of
+variables at that point. I won&#8217;t go into details here since debuggers
+differ from browser to browser, but look in your browser&#8217;s developer
+tools and search the Web for more information. Another way to set a
+breakpoint is to include a <code>debugger</code> statement (consisting of simply
+that keyword) in your program. If the developer tools of your
+browser are active, the program will pause whenever it reaches that
+statement, and you will be able to inspect its state.</p>
+<h2><a class=h_ident id="h_iwwPbaBjJD" href="#h_iwwPbaBjJD"></a>Error propagation</h2>
+<p><a class=p_ident id="p_KL47zNa+D/" href="#p_KL47zNa+D/"></a>Not all problems can be prevented
+by the programmer, unfortunately. If your program communicates with
+the outside world in any way, there is a chance that the input it gets
+will be invalid or that other systems that it tries to talk to are
+broken or unreachable.</p>
+<p><a class=p_ident id="p_OUzzwpY/Dj" href="#p_OUzzwpY/Dj"></a>Simple programs, or programs that run only under
+your supervision, can afford to just give up when such a problem
+occurs. You&#8217;ll look into the problem and try again. “Real”
+applications, on the other hand, are expected to not simply crash.
+Sometimes the right thing to do is take the bad input in stride and
+continue running. In other cases, it is better to report to the user
+what went wrong and then give up. But in either situation, the program
+has to actively do something in response to the problem.</p>
+<p><a class=p_ident id="p_ZrDi3JVFsJ" href="#p_ZrDi3JVFsJ"></a>Say you have a function
+<code>promptInteger</code> that asks the user for a whole number and returns it.
+What should it return if the user inputs <em>orange</em>?</p>
+<p><a class=p_ident id="p_tL4eC00B0P" href="#p_tL4eC00B0P"></a>One option is to make it return a special value. Common
+choices for such values are <code>null</code> and <code>undefined</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_bwVY9M+AHx" href="#c_bwVY9M+AHx"></a><span class="cm-keyword">function</span> <span class="cm-variable">promptNumber</span>(<span class="cm-def">question</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">result</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-variable-2">question</span>, <span class="cm-string">""</span>));
+  <span class="cm-keyword">if</span> (<span class="cm-variable">isNaN</span>(<span class="cm-variable-2">result</span>)) <span class="cm-keyword">return</span> <span class="cm-atom">null</span>;
+  <span class="cm-keyword">else</span> <span class="cm-keyword">return</span> <span class="cm-variable-2">result</span>;
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">promptNumber</span>(<span class="cm-string">"How many trees do you see?"</span>));</pre>
+<p><a class=p_ident id="p_kf1B4tj0HJ" href="#p_kf1B4tj0HJ"></a>This is a sound strategy. Now any code that calls <code>promptNumber</code> must
+check whether an actual number was read and, failing that, must
+somehow recover—maybe by asking again or by filling in a default
+value. Or it could again return a special value to <em>its</em> caller to
+indicate that it failed to do what it was asked.</p>
+<p><a class=p_ident id="p_0FyKlwlFr6" href="#p_0FyKlwlFr6"></a>In many situations, mostly when errors are
+common and the caller should be explicitly taking them into account,
+returning a special value is a perfectly fine way to indicate an
+error. It does, however, have its downsides. First, what if the
+function can already return every possible kind of value? For such a
+function, it is hard to find a special value that can be distinguished
+from a valid result.</p>
+<p><a class=p_ident id="p_+E9fllIVBt" href="#p_+E9fllIVBt"></a>The second issue with
+returning special values is that it can lead to some very cluttered
+code. If a piece of code calls <code>promptNumber</code> 10 times, it has to
+check 10 times whether <code>null</code> was returned. And if its response to
+finding <code>null</code> is to simply return <code>null</code> itself, the caller will in
+turn have to check for it, and so on.</p>
+<h2><a class=h_ident id="h_zT3755/aOp" href="#h_zT3755/aOp"></a>Exceptions</h2>
+<p><a class=p_ident id="p_ZBsTKhGA4i" href="#p_ZBsTKhGA4i"></a>When a function cannot proceed normally, what we
+would <em>like</em> to do is just stop what we are doing and immediately jump
+back to a place that knows how to handle the problem. This is what
+<em>exception handling</em> does.</p>
+<p><a class=p_ident id="p_kjXcPy8jGf" href="#p_kjXcPy8jGf"></a>Exceptions are a mechanism that make it possible for code that
+runs into a problem to <em>raise</em> (or <em>throw</em>) an exception, which is
+simply a value. Raising an exception somewhat resembles a
+super-charged return from a function: it jumps out of not just the
+current function but also out of its callers, all the way down to the
+first call that started the current execution. This is called
+<em>unwinding the stack</em>. You may remember the stack of function
+calls that was mentioned in <a href="03_functions.html#stack">Chapter 3</a>.
+An exception zooms down this stack, throwing away all the call
+contexts it encounters.</p>
+<p><a class=p_ident id="p_nQYTvbifx9" href="#p_nQYTvbifx9"></a>If exceptions
+always zoomed right down to the bottom of the stack, they would not be
+of much use. They would just provide a novel way to blow up your
+program. Their power lies in the fact that you can set “obstacles”
+along the stack to <em>catch</em> the exception as it is zooming down. Then
+you can do something with it, after which the program continues
+running at the point where the exception was caught.</p>
+<p><a class=p_ident id="p_8dgVjcjpX6" href="#p_8dgVjcjpX6"></a>Here&#8217;s an example:</p>
+<pre id="look" data-language="javascript" class="snippet cm-s-default"><span class="cm-keyword">function</span> <span class="cm-variable">promptDirection</span>(<span class="cm-def">question</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">result</span> <span class="cm-operator">=</span> <span class="cm-variable">prompt</span>(<span class="cm-variable-2">question</span>, <span class="cm-string">""</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">result</span>.<span class="cm-property">toLowerCase</span>() <span class="cm-operator">==</span> <span class="cm-string">"left"</span>) <span class="cm-keyword">return</span> <span class="cm-string">"L"</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">result</span>.<span class="cm-property">toLowerCase</span>() <span class="cm-operator">==</span> <span class="cm-string">"right"</span>) <span class="cm-keyword">return</span> <span class="cm-string">"R"</span>;
+  <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-string">"Invalid direction: "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">result</span>);
+}
+
+<span class="cm-keyword">function</span> <span class="cm-variable">look</span>() {
+  <span class="cm-keyword">if</span> (<span class="cm-variable">promptDirection</span>(<span class="cm-string">"Which way?"</span>) <span class="cm-operator">==</span> <span class="cm-string">"L"</span>)
+    <span class="cm-keyword">return</span> <span class="cm-string">"a house"</span>;
+  <span class="cm-keyword">else</span>
+    <span class="cm-keyword">return</span> <span class="cm-string">"two angry bears"</span>;
+}
+
+<span class="cm-keyword">try</span> {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You see"</span>, <span class="cm-variable">look</span>());
+} <span class="cm-keyword">catch</span> (<span class="cm-def">error</span>) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Something went wrong: "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">error</span>);
+}</pre>
+<p><a class=p_ident id="p_3fhf6E/ppr" href="#p_3fhf6E/ppr"></a>The <code>throw</code> keyword is used to raise an
+exception. Catching one is done by wrapping a piece of code in a <code>try</code>
+block, followed by the keyword <code>catch</code>. When the code in the <code>try</code>
+block causes an exception to be raised, the <code>catch</code> block is
+evaluated. The variable name (in parentheses) after <code>catch</code> will be
+bound to the exception value. After the <code>catch</code> block finishes—or if
+the <code>try</code> block finishes without problems—control proceeds beneath the
+entire <code>try/catch</code> statement.</p>
+<p><a class=p_ident id="p_0m/weWGs2g" href="#p_0m/weWGs2g"></a>In this case, we used the <code>Error</code> constructor to create
+our exception value. This is a standard JavaScript constructor
+that creates an object with a <code>message</code> property. In modern JavaScript
+environments, instances of this constructor also gather information
+about the call stack that existed when the exception was created, a
+so-called <em>stack trace</em>. This information is stored in the <code>stack</code>
+property and can be helpful when trying to debug a problem: it
+tells us the precise function where the problem occurred and which
+other functions led up to the call that failed.</p>
+<p><a class=p_ident id="p_BYCPINQ0h5" href="#p_BYCPINQ0h5"></a>Note that the function <code>look</code> completely
+ignores the possibility that <code>promptDirection</code> might go wrong. This is
+the big advantage of exceptions—error-handling code is necessary only
+at the point where the error occurs and at the point where it is
+handled. The functions in between can forget all about it.</p>
+<p><a class=p_ident id="p_deFX/IC34y" href="#p_deFX/IC34y"></a>Well, almost...</p>
+<h2><a class=h_ident id="h_cgoP7o2fe9" href="#h_cgoP7o2fe9"></a>Cleaning up after exceptions</h2>
+<p><a class=p_ident id="p_qnJkou8oDN" href="#p_qnJkou8oDN"></a>Consider the following situation: a
+function, <code>withContext</code>, wants to make sure that, during its
+execution, the top-level variable <code>context</code> holds a specific context
+value. After it finishes, it restores this variable to its old value.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_FkbwqXEJ6U" href="#c_FkbwqXEJ6U"></a><span class="cm-keyword">var</span> <span class="cm-variable">context</span> <span class="cm-operator">=</span> <span class="cm-atom">null</span>;
+
+<span class="cm-keyword">function</span> <span class="cm-variable">withContext</span>(<span class="cm-def">newContext</span>, <span class="cm-def">body</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">oldContext</span> <span class="cm-operator">=</span> <span class="cm-variable">context</span>;
+  <span class="cm-variable">context</span> <span class="cm-operator">=</span> <span class="cm-variable-2">newContext</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">result</span> <span class="cm-operator">=</span> <span class="cm-variable-2">body</span>();
+  <span class="cm-variable">context</span> <span class="cm-operator">=</span> <span class="cm-variable-2">oldContext</span>;
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">result</span>;
+}</pre>
+<p><a class=p_ident id="p_695isCQEpS" href="#p_695isCQEpS"></a>What if <code>body</code> raises an exception? In that case, the call to
+<code>withContext</code> will be thrown off the stack by the exception, and
+<code>context</code> will never be set back to its old value.</p>
+<p><a class=p_ident id="p_tSD0hfdZ/H" href="#p_tSD0hfdZ/H"></a>There is one more
+feature that <code>try</code> statements have. They may be followed by a
+<code>finally</code> block either instead of or in addition to a <code>catch</code>
+block. A <code>finally</code> block means “No matter <em>what</em> happens, run this
+code after trying to run the code in the <code>try</code> block”. If a function
+has to clean something up, the cleanup code should usually be put into
+a <code>finally</code> block.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1Nrg8ROQ4a" href="#c_1Nrg8ROQ4a"></a><span class="cm-keyword">function</span> <span class="cm-variable">withContext</span>(<span class="cm-def">newContext</span>, <span class="cm-def">body</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">oldContext</span> <span class="cm-operator">=</span> <span class="cm-variable">context</span>;
+  <span class="cm-variable">context</span> <span class="cm-operator">=</span> <span class="cm-variable-2">newContext</span>;
+  <span class="cm-keyword">try</span> {
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">body</span>();
+  } <span class="cm-keyword">finally</span> {
+    <span class="cm-variable">context</span> <span class="cm-operator">=</span> <span class="cm-variable-2">oldContext</span>;
+  }
+}</pre>
+<p><a class=p_ident id="p_exXm7BGc3g" href="#p_exXm7BGc3g"></a>Note that we no longer have to store the
+result of <code>body</code> (which we want to return) in a variable. Even if we
+return directly from the <code>try</code> block, the <code>finally</code> block will be run.
+Now we can do this and be safe:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qwC+WbODdS" href="#c_qwC+WbODdS"></a><span class="cm-keyword">try</span> {
+  <span class="cm-variable">withContext</span>(<span class="cm-number">5</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">if</span> (<span class="cm-variable">context</span> <span class="cm-operator">&lt;</span> <span class="cm-number">10</span>)
+      <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-string">"Not enough context!"</span>);
+  });
+} <span class="cm-keyword">catch</span> (<span class="cm-def">e</span>) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Ignoring: "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">e</span>);
+}
+<span class="cm-comment">// → Ignoring: Error: Not enough context!</span>
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">context</span>);
+<span class="cm-comment">// → null</span></pre>
+<p><a class=p_ident id="p_Ri/W5NdtT2" href="#p_Ri/W5NdtT2"></a>Even though the function called from <code>withContext</code> exploded,
+<code>withContext</code> itself still properly cleaned up the <code>context</code> variable.</p>
+<h2><a class=h_ident id="h_vfoJqEDazI" href="#h_vfoJqEDazI"></a>Selective catching</h2>
+<p><a class=p_ident id="p_cXjPLkgsqi" href="#p_cXjPLkgsqi"></a>When an
+exception makes it all the way to the bottom of the stack without
+being caught, it gets handled by the environment. What this means
+differs between environments. In browsers, a description of the error
+typically gets written to the JavaScript console (reachable through
+the browser&#8217;s Tools or Developer menu).</p>
+<p><a class=p_ident id="p_9JOlpepKZE" href="#p_9JOlpepKZE"></a>For programmer mistakes or problems
+that the program cannot possibly handle, just letting the error go
+through is often okay. An unhandled exception is a reasonable way to
+signal a broken program, and the JavaScript console will, on modern
+browsers, provide you with some information about which function calls
+were on the stack when the problem occurred.</p>
+<p><a class=p_ident id="p_6cLdy7IIUS" href="#p_6cLdy7IIUS"></a>For problems that are <em>expected</em> to happen during
+routine use, crashing with an unhandled exception is not a very
+friendly response.</p>
+<p><a class=p_ident id="p_SFNa748bl0" href="#p_SFNa748bl0"></a>Invalid uses of the language, such as referencing a nonexistent
+variable, looking up a property on <code>null</code>, or calling something
+that&#8217;s not a function, will also result in exceptions being raised.
+Such exceptions can be caught just like your own exceptions.</p>
+<p><a class=p_ident id="p_hqHJot1Va+" href="#p_hqHJot1Va+"></a>When a <code>catch</code> body is entered, all we know is that
+<em>something</em> in our <code>try</code> body caused an exception. But we don&#8217;t know
+<em>what</em>, or <em>which</em> exception it caused.</p>
+<p><a class=p_ident id="p_4Cpd4Xhmxf" href="#p_4Cpd4Xhmxf"></a>JavaScript (in a rather glaring omission)
+doesn&#8217;t provide direct support for selectively catching exceptions:
+either you catch them all or you don&#8217;t catch any. This makes it very
+easy to <em>assume</em> that the exception you get is the one you were
+thinking about when you wrote the <code>catch</code> block.</p>
+<p><a class=p_ident id="p_O9bj9nd33p" href="#p_O9bj9nd33p"></a>But it might not be. Some other
+assumption might be violated, or you might have introduced a bug
+somewhere that is causing an exception. Here is an example, which
+<em>attempts</em> to keep on calling <code>promptDirection</code> until it gets a valid
+answer:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_W3CuGyc2mc" href="#c_W3CuGyc2mc"></a><span class="cm-keyword">for</span> (;;) {
+  <span class="cm-keyword">try</span> {
+    <span class="cm-keyword">var</span> <span class="cm-variable">dir</span> <span class="cm-operator">=</span> <span class="cm-variable">promtDirection</span>(<span class="cm-string">"Where?"</span>); <span class="cm-comment">// ← typo!</span>
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You chose "</span>, <span class="cm-variable">dir</span>);
+    <span class="cm-keyword">break</span>;
+  } <span class="cm-keyword">catch</span> (<span class="cm-def">e</span>) {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Not a valid direction. Try again."</span>);
+  }
+}</pre>
+<p><a class=p_ident id="p_UMh66pw2z8" href="#p_UMh66pw2z8"></a>The
+<code>for (;;)</code> construct is a way to intentionally create a loop that
+doesn&#8217;t terminate on its own. We break out of the loop only when a
+valid direction is given. <em>But</em> we misspelled <code>promptDirection</code>,
+which will result in an “undefined variable” error. Because the
+<code>catch</code> block completely ignores its exception value (<code>e</code>), assuming
+it knows what the problem is, it wrongly treats the variable error as
+indicating bad input. Not only does this cause an infinite loop, but
+it also “buries” the useful error message about the misspelled
+variable.</p>
+<p><a class=p_ident id="p_hk/lwBIhah" href="#p_hk/lwBIhah"></a>As a general rule, don&#8217;t blanket-catch exceptions unless it is for the
+purpose of “routing” them somewhere—for example, over the network to
+tell another system that our program crashed. And even then, think
+carefully about how you might be hiding information.</p>
+<p><a class=p_ident id="p_FVrgLfvNOk" href="#p_FVrgLfvNOk"></a>So we want to catch a <em>specific</em> kind of
+exception. We can do this by checking in the <code>catch</code> block whether the
+exception we got is the one we are interested in and by rethrowing it
+otherwise. But how do we recognize an exception?</p>
+<p><a class=p_ident id="p_eWVtoGEmaf" href="#p_eWVtoGEmaf"></a>Of course, we could match its <code>message</code> property against the error
+message we happen to expect. But that&#8217;s a shaky way to write code—we&#8217;d
+be using information that&#8217;s intended for human consumption (the
+message) to make a programmatic decision. As soon as someone changes
+(or translates) the message, the code will stop working.</p>
+<p><a class=p_ident id="p_6OoqTlWc8i" href="#p_6OoqTlWc8i"></a>Rather, let&#8217;s define a new
+type of error and use <code>instanceof</code> to identify it.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZtibWk6KwK" href="#c_ZtibWk6KwK"></a><span class="cm-keyword">function</span> <span class="cm-variable">InputError</span>(<span class="cm-def">message</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">message</span> <span class="cm-operator">=</span> <span class="cm-variable-2">message</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">stack</span> <span class="cm-operator">=</span> (<span class="cm-keyword">new</span> <span class="cm-variable">Error</span>()).<span class="cm-property">stack</span>;
+}
+<span class="cm-variable">InputError</span>.<span class="cm-property">prototype</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-variable">Error</span>.<span class="cm-property">prototype</span>);
+<span class="cm-variable">InputError</span>.<span class="cm-property">prototype</span>.<span class="cm-property">name</span> <span class="cm-operator">=</span> <span class="cm-string">"InputError"</span>;</pre>
+<p><a class=p_ident id="p_ckH3IH2NQq" href="#p_ckH3IH2NQq"></a>The prototype is made to derive
+from <code>Error.prototype</code> so that <code>instanceof Error</code> will also return
+true for <code>InputError</code> objects. It&#8217;s also given a <code>name</code> property
+since the standard error types (<code>Error</code>, <code>SyntaxError</code>,
+<code>ReferenceError</code>, and so on) also have such a property.</p>
+<p><a class=p_ident id="p_BO+BABkFZf" href="#p_BO+BABkFZf"></a>The assignment to the <code>stack</code> property tries to give
+this object a somewhat useful stack trace, on platforms that
+support it, by creating a regular error object and then using that
+object&#8217;s <code>stack</code> property as its own.</p>
+<p><a class=p_ident id="p_3NvX0v0g0n" href="#p_3NvX0v0g0n"></a>Now <code>promptDirection</code> can throw such an
+error.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_sIDbifSyff" href="#c_sIDbifSyff"></a><span class="cm-keyword">function</span> <span class="cm-variable">promptDirection</span>(<span class="cm-def">question</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">result</span> <span class="cm-operator">=</span> <span class="cm-variable">prompt</span>(<span class="cm-variable-2">question</span>, <span class="cm-string">""</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">result</span>.<span class="cm-property">toLowerCase</span>() <span class="cm-operator">==</span> <span class="cm-string">"left"</span>) <span class="cm-keyword">return</span> <span class="cm-string">"L"</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">result</span>.<span class="cm-property">toLowerCase</span>() <span class="cm-operator">==</span> <span class="cm-string">"right"</span>) <span class="cm-keyword">return</span> <span class="cm-string">"R"</span>;
+  <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">InputError</span>(<span class="cm-string">"Invalid direction: "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">result</span>);
+}</pre>
+<p><a class=p_ident id="p_dtouAk0YL3" href="#p_dtouAk0YL3"></a>And the loop can catch it more carefully.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_tTVsZNAA73" href="#c_tTVsZNAA73"></a><span class="cm-keyword">for</span> (;;) {
+  <span class="cm-keyword">try</span> {
+    <span class="cm-keyword">var</span> <span class="cm-variable">dir</span> <span class="cm-operator">=</span> <span class="cm-variable">promptDirection</span>(<span class="cm-string">"Where?"</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You chose "</span>, <span class="cm-variable">dir</span>);
+    <span class="cm-keyword">break</span>;
+  } <span class="cm-keyword">catch</span> (<span class="cm-def">e</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">e</span> <span class="cm-keyword">instanceof</span> <span class="cm-variable">InputError</span>)
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Not a valid direction. Try again."</span>);
+    <span class="cm-keyword">else</span>
+      <span class="cm-keyword">throw</span> <span class="cm-variable-2">e</span>;
+  }
+}</pre>
+<p><a class=p_ident id="p_N4ExnmZrQ/" href="#p_N4ExnmZrQ/"></a>This will catch only instances of <code>InputError</code> and let
+unrelated exceptions through. If you reintroduce the typo, the
+undefined variable error will be properly reported.</p>
+<h2><a class=h_ident id="h_Sb9V3BEus1" href="#h_Sb9V3BEus1"></a>Assertions</h2>
+<p><a class=p_ident id="p_CLUBrkFgp7" href="#p_CLUBrkFgp7"></a><em>Assertions</em> are a
+tool to do basic sanity checking for programmer errors. Consider this
+helper function, <code>assert</code>:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_EMQnc6zgG7" href="#c_EMQnc6zgG7"></a><span class="cm-keyword">function</span> <span class="cm-variable">AssertionFailed</span>(<span class="cm-def">message</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">message</span> <span class="cm-operator">=</span> <span class="cm-variable-2">message</span>;
+}
+<span class="cm-variable">AssertionFailed</span>.<span class="cm-property">prototype</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-variable">Error</span>.<span class="cm-property">prototype</span>);
+
+<span class="cm-keyword">function</span> <span class="cm-variable">assert</span>(<span class="cm-def">test</span>, <span class="cm-def">message</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">test</span>)
+    <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">AssertionFailed</span>(<span class="cm-variable-2">message</span>);
+}
+
+<span class="cm-keyword">function</span> <span class="cm-variable">lastElement</span>(<span class="cm-def">array</span>) {
+  <span class="cm-variable">assert</span>(<span class="cm-variable-2">array</span>.<span class="cm-property">length</span> <span class="cm-operator">></span> <span class="cm-number">0</span>, <span class="cm-string">"empty array in lastElement"</span>);
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>[<span class="cm-variable-2">array</span>.<span class="cm-property">length</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>];
+}</pre>
+<p><a class=p_ident id="p_j1ruFSflzn" href="#p_j1ruFSflzn"></a>This provides a
+compact way to enforce expectations, helpfully blowing up the program
+if the stated condition does not hold. For instance, the <code>lastElement</code>
+function, which fetches the last element from an array, would return
+<code>undefined</code> on empty arrays if the assertion was omitted. Fetching the
+last element from an empty array does not make much sense, so it is
+almost certainly a programmer error to do so.</p>
+<p><a class=p_ident id="p_wmVVstENIA" href="#p_wmVVstENIA"></a>Assertions are a way to make sure
+mistakes cause failures at the point of the mistake, rather than
+silently producing nonsense values that may go on to cause trouble in
+an unrelated part of the system.</p>
+<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
+<p><a class=p_ident id="p_rD8/ab0/w4" href="#p_rD8/ab0/w4"></a>Mistakes and bad input are facts of life. Bugs in programs need to be
+found and fixed. They can become easier to notice by having automated
+test suites and adding assertions to your programs.</p>
+<p><a class=p_ident id="p_6/bb/yZogT" href="#p_6/bb/yZogT"></a>Problems caused by factors outside the program&#8217;s control should
+usually be handled gracefully. Sometimes, when the problem can be
+handled locally, special return values are a sane way to track them.
+Otherwise, exceptions are preferable.</p>
+<p><a class=p_ident id="p_ZJkq9NFh8W" href="#p_ZJkq9NFh8W"></a>Throwing an exception causes the call stack to be unwound until the
+next enclosing <code>try/catch</code> block or until the bottom of the stack.
+The exception value will be given to the <code>catch</code> block that catches
+it, which should verify that it is actually the expected kind of
+exception and then do something with it. To deal with the
+unpredictable control flow caused by exceptions, <code>finally</code> blocks can
+be used to ensure a piece of code is <em>always</em> run when a block
+finishes.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<h3><a class=h_ident id="h_n1zYouiAfX" href="#h_n1zYouiAfX"></a>Retry</h3>
+<p><a class=p_ident id="p_oAuWXajIJA" href="#p_oAuWXajIJA"></a>Say you have a function <code>primitiveMultiply</code> that, in 50 percent of
+cases, multiplies two numbers, and in the other 50 percent, raises an
+exception of type <code>MultiplicatorUnitFailure</code>. Write a function that
+wraps this clunky function and just keeps trying until a call
+succeeds, after which it returns the result.</p>
+<p><a class=p_ident id="p_FfNd4pOv0L" href="#p_FfNd4pOv0L"></a>Make sure you handle only  the exceptions you
+are trying to handle.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_bmw/1BwsAf" href="#c_bmw/1BwsAf"></a><span class="cm-keyword">function</span> <span class="cm-variable">MultiplicatorUnitFailure</span>() {}
+
+<span class="cm-keyword">function</span> <span class="cm-variable">primitiveMultiply</span>(<span class="cm-def">a</span>, <span class="cm-def">b</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">&lt;</span> <span class="cm-number">0.5</span>)
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">a</span> <span class="cm-operator">*</span> <span class="cm-variable-2">b</span>;
+  <span class="cm-keyword">else</span>
+    <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">MultiplicatorUnitFailure</span>();
+}
+
+<span class="cm-keyword">function</span> <span class="cm-variable">reliableMultiply</span>(<span class="cm-def">a</span>, <span class="cm-def">b</span>) {
+  <span class="cm-comment">// Your code here.</span>
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">reliableMultiply</span>(<span class="cm-number">8</span>, <span class="cm-number">8</span>));
+<span class="cm-comment">// → 64</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_ChowJFeR1F" href="#p_ChowJFeR1F"></a>The call to <code>primitiveMultiply</code> should
+obviously happen in a <code>try</code> block. The corresponding <code>catch</code> block
+should rethrow the exception when it is not an instance of
+<code>MultiplicatorUnitFailure</code> and ensure the call is retried when it is.</p>
+<p><a class=p_ident id="p_c2MPH2Cr0C" href="#p_c2MPH2Cr0C"></a>To do the retrying, you can either use a loop that breaks only when a
+call succeeds—as in the <a href="08_error.html#look"><code>look</code> example</a>
+earlier in this chapter—or use recursion and hope you don&#8217;t get a
+string of failures so long that it overflows the stack (which is a
+pretty safe bet).</p>
+</div></div>
+<h3><a class=h_ident id="h_iGlwnUbkRs" href="#h_iGlwnUbkRs"></a>The locked box</h3>
+<p><a class=p_ident id="p_uGznOGuYh8" href="#p_uGznOGuYh8"></a>Consider the following (rather contrived)
+object:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_T6SjLRzJPl" href="#c_T6SjLRzJPl"></a><span class="cm-keyword">var</span> <span class="cm-variable">box</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">locked</span>: <span class="cm-atom">true</span>,
+  <span class="cm-property">unlock</span>: <span class="cm-keyword">function</span>() { <span class="cm-keyword">this</span>.<span class="cm-property">locked</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>; },
+  <span class="cm-property">lock</span>: <span class="cm-keyword">function</span>() { <span class="cm-keyword">this</span>.<span class="cm-property">locked</span> <span class="cm-operator">=</span> <span class="cm-atom">true</span>;  },
+  <span class="cm-property">_content</span>: [],
+  <span class="cm-property">get</span> <span class="cm-property">content</span>() {
+    <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">locked</span>) <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-string">"Locked!"</span>);
+    <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">_content</span>;
+  }
+};</pre>
+<p><a class=p_ident id="p_26mfxczF32" href="#p_26mfxczF32"></a>It is a box with a
+lock. Inside is an array, but you can get at it only  when the box is
+unlocked. Directly accessing the <code>_content</code> property is not allowed.</p>
+<p><a class=p_ident id="p_KI+tJ+amDX" href="#p_KI+tJ+amDX"></a>Write a function called
+<code>withBoxUnlocked</code> that takes a function value as argument, unlocks the
+box, runs the function, and then ensures that the box is locked again
+before returning, regardless of whether the argument function returned
+normally or threw an exception.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_i/512CgQyd" href="#c_i/512CgQyd"></a><span class="cm-keyword">function</span> <span class="cm-variable">withBoxUnlocked</span>(<span class="cm-def">body</span>) {
+  <span class="cm-comment">// Your code here.</span>
+}
+
+<span class="cm-variable">withBoxUnlocked</span>(<span class="cm-keyword">function</span>() {
+  <span class="cm-variable">box</span>.<span class="cm-property">content</span>.<span class="cm-property">push</span>(<span class="cm-string">"gold piece"</span>);
+});
+
+<span class="cm-keyword">try</span> {
+  <span class="cm-variable">withBoxUnlocked</span>(<span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-string">"Pirates on the horizon! Abort!"</span>);
+  });
+} <span class="cm-keyword">catch</span> (<span class="cm-def">e</span>) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Error raised:"</span>, <span class="cm-variable-2">e</span>);
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">box</span>.<span class="cm-property">locked</span>);
+<span class="cm-comment">// → true</span></pre>
+<p><a class=p_ident id="p_X5dxXtnN4l" href="#p_X5dxXtnN4l"></a>For extra points, make sure that if you call <code>withBoxUnlocked</code> when
+the box is already unlocked, the box stays unlocked.</p>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_4MxgD1VcbV" href="#p_4MxgD1VcbV"></a>This
+exercise calls for a <code>finally</code> block, as you probably guessed. Your
+function should first unlock the box and then call the argument function
+from inside a <code>try</code> body. The <code>finally</code> block after it should lock the
+box again.</p>
+<p><a class=p_ident id="p_PvZL0oQnMG" href="#p_PvZL0oQnMG"></a>To make sure we don&#8217;t lock the box when it wasn&#8217;t already locked,
+check its lock at the start of the function and unlock and lock
+it only  when it started out locked.</p>
+</div></div>
+<nav>
+  <a href="07_elife.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="09_regexp.html" title="next chapter">▶</a>
+</nav>
+</article>

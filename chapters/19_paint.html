@@ -1,0 +1,747 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Project: A Paint Program :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 19;var sandboxLoadFiles = ["code/chapter/19_paint.js"];</script>
+</head>
+
+<article>
+<nav>
+  <a href="18_forms.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="20_node.html" title="next chapter">▶</a>
+</nav>
+
+<h1><div class=chap_num>Chapter 19</div>Project: A Paint Program</h1>
+<blockquote>
+<p><a class=p_ident id="p_YcWG8HTlFz" href="#p_YcWG8HTlFz"></a>I look at the many colors before me. I look at
+my blank canvas. Then, I try to apply colors like words that shape
+poems, like notes that shape music.</p>
+ <footer>Joan Miro</footer>
+</blockquote>
+<p><a class=p_ident id="p_4VGZtxD2xS" href="#p_4VGZtxD2xS"></a>The material from the previous chapters gives you all the
+elements you need to build a simple web application. In this
+chapter, we will do just that.</p>
+<p><a class=p_ident id="p_1emWaHj7VO" href="#p_1emWaHj7VO"></a>Our application will be a web-based drawing program, along
+the lines of Microsoft Paint. You can use it to open image
+files, scribble on them with your mouse, and save them. This
+is what it will look like:</p>
+<div class="image">
+  <img src="img/paint.png" alt="A simple paint program">
+</div>
+<p><a class=p_ident id="p_oDwL9FxPW8" href="#p_oDwL9FxPW8"></a>Painting on a computer is great. You don&#8217;t need to worry about
+materials, skill, or talent. You just start smearing.</p>
+<h2><a class=h_ident id="h_h4HWFf13vp" href="#h_h4HWFf13vp"></a>Implementation</h2>
+<p><a class=p_ident id="p_JoMqYLSjLp" href="#p_JoMqYLSjLp"></a>The
+interface for the paint program shows a big <code>&lt;canvas&gt;</code> element on top,
+with a number of form fields below it. The user draws on the
+picture by selecting a tool from a <code>&lt;select&gt;</code> field and then
+clicking or dragging across the canvas. There are tools for
+drawing lines, erasing parts of the picture, adding text, and so on.</p>
+<p><a class=p_ident id="p_f2FunmZ+W/" href="#p_f2FunmZ+W/"></a>Clicking the canvas will hand off the
+<code>"mousedown"</code> event to the currently selected tool, which can handle
+it in whichever way it chooses. The line drawing tool, for
+example, will listen for <code>"mousemove"</code> events until the mouse button
+is released and draw lines along the mouse&#8217;s path using the current
+color and brush size.</p>
+<p><a class=p_ident id="p_SidGjlM9I+" href="#p_SidGjlM9I+"></a>Color and brush size are selected with
+additional form fields. These are hooked up to update the canvas
+drawing context&#8217;s <code>fillStyle</code>, <code>strokeStyle</code>, and <code>lineWidth</code> whenever
+they are changed.</p>
+<p><a class=p_ident id="p_ARTBoP4NDe" href="#p_ARTBoP4NDe"></a>You can load an image into the program in two ways. The
+first uses a file field, where the user can select a file on their own
+file system. The second asks for a URL and will fetch an
+image from the Web.</p>
+<p><a class=p_ident id="p_7b82pMSl8A" href="#p_7b82pMSl8A"></a>Images are saved in a somewhat atypical way. The
+save link at the right side points at the current image. It
+can be followed, shared, or saved. I will explain how this is achieved
+in a moment.</p>
+<h2><a class=h_ident id="h_9CGBdyKskt" href="#h_9CGBdyKskt"></a>Building the DOM</h2>
+<p><a class=p_ident id="p_sqg53vjc6x" href="#p_sqg53vjc6x"></a>Our program&#8217;s interface is built from more than 30 DOM elements. We
+need to construct these somehow.</p>
+<p><a class=p_ident id="p_BwXcOEgv2v" href="#p_BwXcOEgv2v"></a>HTML is the
+most obvious format for defining complex DOM structures. But
+separating the program into a piece of HTML and a script is made
+difficult by the fact that many of the DOM elements need event
+handlers or have to be touched by the script in some other way. Thus,
+our script would have to make lots of <code>querySelector</code> (or similar)
+calls in order to find the DOM elements that it needs to act on.</p>
+<p><a class=p_ident id="p_hwJVTRpgY3" href="#p_hwJVTRpgY3"></a>It would be nice if the DOM structure for each part of our
+interface is defined close to the JavaScript code that drives it.
+Thus, I&#8217;ve chosen to do all creation of DOM nodes in JavaScript. As we
+saw in <a href="13_dom.html#standard">Chapter 13</a>, the built-in interface
+for building up a DOM structure is horrendously verbose. If we are
+going to do a lot of DOM construction, we need a helper function.</p>
+<p><a class=p_ident id="p_7sINQE+0xU" href="#p_7sINQE+0xU"></a>This helper function is an extended version of the
+<code>elt</code> function from <a href="13_dom.html#elt">Chapter 13</a>. It creates an
+element with the given name and attributes and appends all
+further arguments it gets as child nodes, automatically converting
+strings to text nodes.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_adN9+1mjk9" href="#c_adN9+1mjk9"></a><span class="cm-keyword">function</span> <span class="cm-variable">elt</span>(<span class="cm-def">name</span>, <span class="cm-def">attributes</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">node</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">createElement</span>(<span class="cm-variable-2">name</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">attributes</span>) {
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">attr</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">attributes</span>)
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">attributes</span>.<span class="cm-property">hasOwnProperty</span>(<span class="cm-variable-2">attr</span>))
+        <span class="cm-variable-2">node</span>.<span class="cm-property">setAttribute</span>(<span class="cm-variable-2">attr</span>, <span class="cm-variable-2">attributes</span>[<span class="cm-variable-2">attr</span>]);
+  }
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">arguments</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">child</span> <span class="cm-operator">=</span> <span class="cm-variable-2">arguments</span>[<span class="cm-variable-2">i</span>];
+    <span class="cm-keyword">if</span> (<span class="cm-keyword">typeof</span> <span class="cm-variable-2">child</span> <span class="cm-operator">==</span> <span class="cm-string">"string"</span>)
+      <span class="cm-variable-2">child</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">createTextNode</span>(<span class="cm-variable-2">child</span>);
+    <span class="cm-variable-2">node</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable-2">child</span>);
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">node</span>;
+}</pre>
+<p><a class=p_ident id="p_ulZXM8Og9d" href="#p_ulZXM8Og9d"></a>This allows us to create elements easily, without making our source
+code as long and dull as a corporate end-user agreement.</p>
+<h2><a class=h_ident id="h_feJq2F1dmk" href="#h_feJq2F1dmk"></a>The foundation</h2>
+<p><a class=p_ident id="p_fc9fUQEVHE" href="#p_fc9fUQEVHE"></a>The core of our program
+is the <code>createPaint</code> function, which appends the paint interface to
+the DOM element it is given as an argument. Because we want to build our
+program piece by piece, we define an object called <code>controls</code>, which will
+hold functions to initialize the various controls below the image.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_8HViSwekFi" href="#c_8HViSwekFi"></a><span class="cm-keyword">var</span> <span class="cm-variable">controls</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-atom">null</span>);
+
+<span class="cm-keyword">function</span> <span class="cm-variable">createPaint</span>(<span class="cm-def">parent</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">canvas</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"canvas"</span>, {<span class="cm-property">width</span>: <span class="cm-number">500</span>, <span class="cm-property">height</span>: <span class="cm-number">300</span>});
+  <span class="cm-keyword">var</span> <span class="cm-def">cx</span> <span class="cm-operator">=</span> <span class="cm-variable-2">canvas</span>.<span class="cm-property">getContext</span>(<span class="cm-string">"2d"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">toolbar</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"div"</span>, {<span class="cm-property">class</span>: <span class="cm-string">"toolbar"</span>});
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">name</span> <span class="cm-keyword">in</span> <span class="cm-variable">controls</span>)
+    <span class="cm-variable-2">toolbar</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable">controls</span>[<span class="cm-variable-2">name</span>](<span class="cm-variable-2">cx</span>));
+
+  <span class="cm-keyword">var</span> <span class="cm-def">panel</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"div"</span>, {<span class="cm-property">class</span>: <span class="cm-string">"picturepanel"</span>}, <span class="cm-variable-2">canvas</span>);
+  <span class="cm-variable-2">parent</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable">elt</span>(<span class="cm-string">"div"</span>, <span class="cm-atom">null</span>, <span class="cm-variable-2">panel</span>, <span class="cm-variable-2">toolbar</span>));
+}</pre>
+<p><a class=p_ident id="p_vEXvH0x+Tb" href="#p_vEXvH0x+Tb"></a>Each control has access to the canvas
+drawing context and, through that context&#8217;s <code>canvas</code> property, to the
+<code>&lt;canvas&gt;</code> element. Most of the program&#8217;s state lives in this
+canvas—it contains the current picture as well as the selected color
+(in its <code>fillStyle</code> property) and brush size (in its <code>lineWidth</code>
+property).</p>
+<p><a class=p_ident id="p_p0cg1HO335" href="#p_p0cg1HO335"></a>We wrap the canvas and the controls in
+<code>&lt;div&gt;</code> elements with classes so we can add some styling, such as
+a gray border around the picture.</p>
+<h2><a class=h_ident id="h_dgOsN5kwO8" href="#h_dgOsN5kwO8"></a>Tool selection</h2>
+<p><a class=p_ident id="p_g0nRLu/Vl9" href="#p_g0nRLu/Vl9"></a>The first control we add is the <code>&lt;select&gt;</code> element that
+allows the user to pick a drawing tool. As with <code>controls</code>, we
+will use an object to collect the various tools so that we do not
+have to hard-code them all in one place and can add more tools later.
+This object associates the names of the tools with the function that
+should be called when they are selected and the canvas is clicked.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_6ReIFCisw3" href="#c_6ReIFCisw3"></a><span class="cm-keyword">var</span> <span class="cm-variable">tools</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-atom">null</span>);
+
+<span class="cm-variable">controls</span>.<span class="cm-property">tool</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">cx</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">select</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"select"</span>);
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">name</span> <span class="cm-keyword">in</span> <span class="cm-variable">tools</span>)
+    <span class="cm-variable-2">select</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable">elt</span>(<span class="cm-string">"option"</span>, <span class="cm-atom">null</span>, <span class="cm-variable-2">name</span>));
+
+  <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"mousedown"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">which</span> <span class="cm-operator">==</span> <span class="cm-number">1</span>) {
+      <span class="cm-variable">tools</span>[<span class="cm-variable-2">select</span>.<span class="cm-property">value</span>](<span class="cm-variable-2">event</span>, <span class="cm-variable-2">cx</span>);
+      <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>();
+    }
+  });
+
+  <span class="cm-keyword">return</span> <span class="cm-variable">elt</span>(<span class="cm-string">"span"</span>, <span class="cm-atom">null</span>, <span class="cm-string">"Tool: "</span>, <span class="cm-variable-2">select</span>);
+};</pre>
+<p><a class=p_ident id="p_8di1zX3Jlb" href="#p_8di1zX3Jlb"></a>The tool field is populated with
+<code>&lt;option&gt;</code> elements for all tools that have been defined, and a
+<code>"mousedown"</code> handler on the canvas element takes care of calling the
+function for the current tool, passing it both the event object
+and the drawing context as arguments. It also calls
+<code>preventDefault</code> so that holding the mouse button and dragging does
+not cause the browser to select parts of the page.</p>
+<p><a class=p_ident id="p_C/kPVzLbL1" href="#p_C/kPVzLbL1"></a>The most basic
+tool is the line tool, which allows the user to draw lines with
+the mouse. To put the line ends in the right place, we
+need to be able to find the canvas-relative coordinates that a
+given mouse event corresponds to. The <code>getBoundingClientRect</code> method,
+briefly mentioned in <a href="13_dom.html#boundingRect">Chapter 13</a>, can
+help us here. It tells us where an element is shown, relative to the
+top-left corner of the screen. The <code>clientX</code> and <code>clientY</code> properties
+on mouse events are also relative to this corner, so we can subtract
+the top-left corner of the canvas from them to get a position relative
+to that corner.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_y+L1e9IlNG" href="#c_y+L1e9IlNG"></a><span class="cm-keyword">function</span> <span class="cm-variable">relativePos</span>(<span class="cm-def">event</span>, <span class="cm-def">element</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">rect</span> <span class="cm-operator">=</span> <span class="cm-variable-2">element</span>.<span class="cm-property">getBoundingClientRect</span>();
+  <span class="cm-keyword">return</span> {<span class="cm-property">x</span>: <span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">clientX</span> <span class="cm-operator">-</span> <span class="cm-variable-2">rect</span>.<span class="cm-property">left</span>),
+          <span class="cm-property">y</span>: <span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable-2">event</span>.<span class="cm-property">clientY</span> <span class="cm-operator">-</span> <span class="cm-variable-2">rect</span>.<span class="cm-property">top</span>)};
+}</pre>
+<p><a class=p_ident id="p_GsfGlWhhEu" href="#p_GsfGlWhhEu"></a>Several of the drawing tools need to listen for
+<code>"mousemove"</code> events as long as the mouse button is held down. The
+<code>trackDrag</code> function takes care of the event registration and
+unregistration for such situations.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_bAQGH1X5W9" href="#c_bAQGH1X5W9"></a><span class="cm-keyword">function</span> <span class="cm-variable">trackDrag</span>(<span class="cm-def">onMove</span>, <span class="cm-def">onEnd</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">end</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable">removeEventListener</span>(<span class="cm-string">"mousemove"</span>, <span class="cm-variable-2">onMove</span>);
+    <span class="cm-variable">removeEventListener</span>(<span class="cm-string">"mouseup"</span>, <span class="cm-variable-2">end</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">onEnd</span>)
+      <span class="cm-variable-2">onEnd</span>(<span class="cm-variable-2">event</span>);
+  }
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"mousemove"</span>, <span class="cm-variable-2">onMove</span>);
+  <span class="cm-variable">addEventListener</span>(<span class="cm-string">"mouseup"</span>, <span class="cm-variable-2">end</span>);
+}</pre>
+<p><a class=p_ident id="p_wDVSXmBYxk" href="#p_wDVSXmBYxk"></a>This function takes two arguments. One is a function to call for each
+<code>"mousemove"</code> event, and the other is a function to call when the
+mouse button is released. Either argument can be omitted when it
+is not needed.</p>
+<p><a class=p_ident id="p_QF1cI/MERi" href="#p_QF1cI/MERi"></a>The line tool uses these two helpers to do the actual
+drawing.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_zQjCDnLrcv" href="#c_zQjCDnLrcv"></a><span class="cm-variable">tools</span>.<span class="cm-property">Line</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">event</span>, <span class="cm-def">cx</span>, <span class="cm-def">onEnd</span>) {
+  <span class="cm-variable-2">cx</span>.<span class="cm-property">lineCap</span> <span class="cm-operator">=</span> <span class="cm-string">"round"</span>;
+
+  <span class="cm-keyword">var</span> <span class="cm-def">pos</span> <span class="cm-operator">=</span> <span class="cm-variable">relativePos</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>);
+  <span class="cm-variable">trackDrag</span>(<span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">beginPath</span>();
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">moveTo</span>(<span class="cm-variable-2">pos</span>.<span class="cm-property">x</span>, <span class="cm-variable-2">pos</span>.<span class="cm-property">y</span>);
+    <span class="cm-variable-2">pos</span> <span class="cm-operator">=</span> <span class="cm-variable">relativePos</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>);
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">lineTo</span>(<span class="cm-variable-2">pos</span>.<span class="cm-property">x</span>, <span class="cm-variable-2">pos</span>.<span class="cm-property">y</span>);
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">stroke</span>();
+  }, <span class="cm-variable-2">onEnd</span>);
+};</pre>
+<p><a class=p_ident id="p_WgxKzx/dih" href="#p_WgxKzx/dih"></a>The function starts by setting the drawing
+context&#8217;s <code>lineCap</code> property to <code>"round"</code>, which causes both ends of
+a stroked path to be round rather than the default square form.
+This is a trick to make sure that multiple separate lines, drawn in
+response to separate events, look like a single, coherent line. With
+bigger line widths, you will see gaps at corners if you use the default flat
+line caps.</p>
+<p><a class=p_ident id="p_AQy4O9XOrj" href="#p_AQy4O9XOrj"></a>Then, for every <code>"mousemove"</code> event that occurs as long as
+the mouse button is down, a simple line segment is drawn between the
+mouse&#8217;s old and new position, using whatever <code>strokeStyle</code> and
+<code>lineWidth</code> happen to be currently set.</p>
+<p><a class=p_ident id="p_LdZL7msldK" href="#p_LdZL7msldK"></a>The <code>onEnd</code> argument to <code>tools.Line</code> is simply passed
+through to <code>trackDrag</code>. The normal way to run tools won&#8217;t pass a third
+argument, so when using the line tool, that argument will hold
+<code>undefined</code>, and nothing happens at the end of the mouse drag. The
+argument is there to allow us to implement the erase tool on top of
+the line tool with very little additional code.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_A8FTE3sfhc" href="#c_A8FTE3sfhc"></a><span class="cm-variable">tools</span>.<span class="cm-property">Erase</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">event</span>, <span class="cm-def">cx</span>) {
+  <span class="cm-variable-2">cx</span>.<span class="cm-property">globalCompositeOperation</span> <span class="cm-operator">=</span> <span class="cm-string">"destination-out"</span>;
+  <span class="cm-variable">tools</span>.<span class="cm-property">Line</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">cx</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">globalCompositeOperation</span> <span class="cm-operator">=</span> <span class="cm-string">"source-over"</span>;
+  });
+};</pre>
+<p><a class=p_ident id="p_0Apcf0lbn3" href="#p_0Apcf0lbn3"></a>The <code>globalCompositeOperation</code> property influences the way
+drawing operations on a canvas change the color of the pixels they
+touch. By default, the property&#8217;s value is <code>"source-over"</code>, which means that the drawn
+color is overlaid on the existing color at that spot. If the color is
+opaque, it will simply replace the old color, but if it is
+partially transparent, the two will be mixed.</p>
+<p><a class=p_ident id="p_+Ckjs7EFIj" href="#p_+Ckjs7EFIj"></a>The erase tool sets <code>globalCompositeOperation</code> to
+<code>"destination-out"</code>, which has the effect of erasing the pixels we
+touch, making them transparent again.</p>
+<p><a class=p_ident id="p_RRoUPpuAjO" href="#p_RRoUPpuAjO"></a>That gives us two tools in our paint program. We can draw
+black lines a single pixel wide (the default <code>strokeStyle</code> and
+<code>lineWidth</code> for a canvas) and erase them again. It is a working,
+albeit rather limited, paint program.</p>
+<h2><a class=h_ident id="h_lIikGuI/QG" href="#h_lIikGuI/QG"></a>Color and brush size</h2>
+<p><a class=p_ident id="p_STY3nzP377" href="#p_STY3nzP377"></a>Assuming that users will want to draw in
+colors other than black and use different brush sizes, let&#8217;s
+add controls for those two settings.</p>
+<p><a class=p_ident id="p_Iq68Mq2ClK" href="#p_Iq68Mq2ClK"></a>In
+<a href="18_forms.html#forms">Chapter 18</a>, I discussed a number of
+different form fields. Color fields were not among those.
+Traditionally, browsers don&#8217;t have built-in support for color
+pickers, but in the past few years, a number of new form field types have
+been standardized. One of those is <code>&lt;input type="color"&gt;</code>. Others
+include <code>"date"</code>, <code>"email"</code>, <code>"url"</code>, and <code>"number"</code>. Not all
+browsers support them yet—at the time of writing, no version of
+Internet Explorer supports color fields. The default type of
+an <code>&lt;input&gt;</code> tag is <code>"text"</code>, and when an unsupported type is used,
+browsers will treat it as a text field. This means that Internet
+Explorer users running our paint program will have to type in the name
+of the color they want, rather than select it from a convenient
+widget.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_876pZkfMUC" href="#c_876pZkfMUC"></a><span class="cm-variable">controls</span>.<span class="cm-property">color</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">cx</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">input</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"input"</span>, {<span class="cm-property">type</span>: <span class="cm-string">"color"</span>});
+  <span class="cm-variable-2">input</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">fillStyle</span> <span class="cm-operator">=</span> <span class="cm-variable-2">input</span>.<span class="cm-property">value</span>;
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">strokeStyle</span> <span class="cm-operator">=</span> <span class="cm-variable-2">input</span>.<span class="cm-property">value</span>;
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable">elt</span>(<span class="cm-string">"span"</span>, <span class="cm-atom">null</span>, <span class="cm-string">"Color: "</span>, <span class="cm-variable-2">input</span>);
+};</pre>
+<p><a class=p_ident id="p_nNIuUTzgwz" href="#p_nNIuUTzgwz"></a>Whenever the value of the color field changes, the drawing
+context&#8217;s <code>fillStyle</code> and <code>strokeStyle</code> are updated to hold the new
+value.</p>
+<p><a class=p_ident id="p_C0Hqixv9pV" href="#p_C0Hqixv9pV"></a>The field for configuring the brush size works similarly.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_cTEY1f58II" href="#c_cTEY1f58II"></a><span class="cm-variable">controls</span>.<span class="cm-property">brushSize</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">cx</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">select</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"select"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">sizes</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">5</span>, <span class="cm-number">8</span>, <span class="cm-number">12</span>, <span class="cm-number">25</span>, <span class="cm-number">35</span>, <span class="cm-number">50</span>, <span class="cm-number">75</span>, <span class="cm-number">100</span>];
+  <span class="cm-variable-2">sizes</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">size</span>) {
+    <span class="cm-variable-2">select</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable">elt</span>(<span class="cm-string">"option"</span>, {<span class="cm-property">value</span>: <span class="cm-variable-2">size</span>},
+                           <span class="cm-variable-2">size</span> <span class="cm-operator">+</span> <span class="cm-string">" pixels"</span>));
+  });
+  <span class="cm-variable-2">select</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">lineWidth</span> <span class="cm-operator">=</span> <span class="cm-variable-2">select</span>.<span class="cm-property">value</span>;
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable">elt</span>(<span class="cm-string">"span"</span>, <span class="cm-atom">null</span>, <span class="cm-string">"Brush size: "</span>, <span class="cm-variable-2">select</span>);
+};</pre>
+<p><a class=p_ident id="p_qOGqGx5+Pr" href="#p_qOGqGx5+Pr"></a>The code generates options from an array of brush
+sizes, and again ensures that the canvas’ <code>lineWidth</code> is updated when
+a brush size is chosen.</p>
+<h2><a class=h_ident id="h_NpxTTfNE7h" href="#h_NpxTTfNE7h"></a>Saving</h2>
+<p><a class=p_ident id="p_7TUivCYbPO" href="#p_7TUivCYbPO"></a>To explain the implementation of the save link, I
+must first tell you about <em>data URLs</em>. A data URL is a URL
+with <em>data:</em> as its protocol. Unlike regular <em>http:</em> and <em>https:</em>
+URLs, data URLs don&#8217;t point at a resource but rather contain the entire
+resource in them. This is a data URL containing a
+simple HTML document:</p>
+<pre>data:text/html,&lt;h1 style="color:red"&gt;Hello!&lt;/h1&gt;</pre>
+<p><a class=p_ident id="p_eWZrRGYvaj" href="#p_eWZrRGYvaj"></a>Data URLs are useful for various tasks, such as including small
+images directly in a style sheet file. They also allow us to link
+to files that we created on the client side, in the browser, without
+first moving them to some server.</p>
+<p><a class=p_ident id="p_Wcu43CMIZj" href="#p_Wcu43CMIZj"></a>Canvas elements have a convenient method, called <code>toDataURL</code>,
+which will return a data URL that contains the picture on the canvas
+as an image file. We don&#8217;t want to update our save link every time
+the picture is changed, however. For big pictures, that involves moving
+quite a lot of data into a link and would be noticeably slow.
+Instead, we rig the link to update its <code>href</code> attribute whenever it is
+focused with the keyboard or the mouse is moved over it.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_azFCqdr7Bk" href="#c_azFCqdr7Bk"></a><span class="cm-variable">controls</span>.<span class="cm-property">save</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">cx</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">link</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"a"</span>, {<span class="cm-property">href</span>: <span class="cm-string">"/"</span>}, <span class="cm-string">"Save"</span>);
+  <span class="cm-keyword">function</span> <span class="cm-def">update</span>() {
+    <span class="cm-keyword">try</span> {
+      <span class="cm-variable-2">link</span>.<span class="cm-property">href</span> <span class="cm-operator">=</span> <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>.<span class="cm-property">toDataURL</span>();
+    } <span class="cm-keyword">catch</span> (<span class="cm-def">e</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">e</span> <span class="cm-keyword">instanceof</span> <span class="cm-variable">SecurityError</span>)
+        <span class="cm-variable-2">link</span>.<span class="cm-property">href</span> <span class="cm-operator">=</span> <span class="cm-string">"javascript:alert("</span> <span class="cm-operator">+</span>
+          <span class="cm-variable">JSON</span>.<span class="cm-property">stringify</span>(<span class="cm-string">"Can't save: "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">e</span>.<span class="cm-property">toString</span>()) <span class="cm-operator">+</span> <span class="cm-string">")"</span>;
+      <span class="cm-keyword">else</span>
+        <span class="cm-keyword">throw</span> <span class="cm-variable-2">e</span>;
+    }
+  }
+  <span class="cm-variable-2">link</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"mouseover"</span>, <span class="cm-variable-2">update</span>);
+  <span class="cm-variable-2">link</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"focus"</span>, <span class="cm-variable-2">update</span>);
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">link</span>;
+};</pre>
+<p><a class=p_ident id="p_FK9LTdpkC3" href="#p_FK9LTdpkC3"></a>Thus, the link just
+quietly sits there, pointing at the wrong thing, but when the user
+approaches it, it magically updates itself to point at the current
+picture.</p>
+<p><a class=p_ident id="p_fvaHWlCaUS" href="#p_fvaHWlCaUS"></a>If you load a big image, some browsers will choke on the
+giant data URLs that this produces. For small pictures, this
+approach works without problem.</p>
+<p><a class=p_ident id="p_yj2JNpVbGr" href="#p_yj2JNpVbGr"></a>But here we once
+again run into the subtleties of browser sandboxing. When an
+image is loaded from a URL on another domain, if the server&#8217;s
+response doesn&#8217;t include a header that tells the browser the
+resource may be used from other domains (see
+<a href="17_http.html#http_sandbox">Chapter 17</a>), then the canvas will
+contain information that the <em>user</em> may look at but that the
+<em>script</em> may not.</p>
+<p><a class=p_ident id="p_P2fyJXYkeA" href="#p_P2fyJXYkeA"></a>We may have requested a picture that contains
+private information (for example, a graph showing the user&#8217;s bank
+account balance) using the user&#8217;s session. If scripts could get
+information out of that picture, they could snoop on the user in
+undesirable ways.</p>
+<p><a class=p_ident id="p_OHFwilBG6F" href="#p_OHFwilBG6F"></a>To prevent these kinds of information
+leaks, browsers will mark a canvas as <em>tainted</em> when an image
+that the script may not see is drawn onto it. Pixel data, including
+data URLs, may not be extracted from a tainted canvas. You can write
+to it, but you can no longer read it.</p>
+<p><a class=p_ident id="p_40OvqfoZJr" href="#p_40OvqfoZJr"></a>This is why we need the
+<code>try/catch</code> statement in the <code>update</code> function for the save link.
+When the canvas has become tainted, calling <code>toDataURL</code> will raise an
+exception that is an instance of <code>SecurityError</code>. When that happens, we
+set the link to point at yet another kind of URL, using the
+<em>javascript:</em> protocol. Such links simply execute the script given
+after the colon when they are followed so that the link will show an
+<code>alert</code> window informing the user of the problem when it is clicked.</p>
+<h2><a class=h_ident id="h_iQAMmIQaWl" href="#h_iQAMmIQaWl"></a>Loading image files</h2>
+<p><a class=p_ident id="p_3vrUSpPAL9" href="#p_3vrUSpPAL9"></a>The final two
+controls are used to load images from local files and from URLs.
+We&#8217;ll need the following helper function, which tries to load an image
+file from a URL and replace the contents of the canvas with it:</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_pOA1CgtG03" href="#c_pOA1CgtG03"></a><span class="cm-keyword">function</span> <span class="cm-variable">loadImageURL</span>(<span class="cm-def">cx</span>, <span class="cm-def">url</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">image</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">createElement</span>(<span class="cm-string">"img"</span>);
+  <span class="cm-variable-2">image</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"load"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">var</span> <span class="cm-def">color</span> <span class="cm-operator">=</span> <span class="cm-variable-2">cx</span>.<span class="cm-property">fillStyle</span>, <span class="cm-def">size</span> <span class="cm-operator">=</span> <span class="cm-variable-2">cx</span>.<span class="cm-property">lineWidth</span>;
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>.<span class="cm-property">width</span> <span class="cm-operator">=</span> <span class="cm-variable-2">image</span>.<span class="cm-property">width</span>;
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>.<span class="cm-property">height</span> <span class="cm-operator">=</span> <span class="cm-variable-2">image</span>.<span class="cm-property">height</span>;
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">drawImage</span>(<span class="cm-variable-2">image</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>);
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">fillStyle</span> <span class="cm-operator">=</span> <span class="cm-variable-2">color</span>;
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">strokeStyle</span> <span class="cm-operator">=</span> <span class="cm-variable-2">color</span>;
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">lineWidth</span> <span class="cm-operator">=</span> <span class="cm-variable-2">size</span>;
+  });
+  <span class="cm-variable-2">image</span>.<span class="cm-property">src</span> <span class="cm-operator">=</span> <span class="cm-variable-2">url</span>;
+}</pre>
+<p><a class=p_ident id="p_fxJmZUi/g3" href="#p_fxJmZUi/g3"></a>We want to change the
+size of the canvas to precisely fit the image. For some reason,
+changing the size of a canvas will cause its drawing context to forget
+configuration properties such as <code>fillStyle</code> and <code>lineWidth</code>, so the
+function saves those and restores them after it has updated the canvas
+size.</p>
+<p><a class=p_ident id="p_BRkDNREP7P" href="#p_BRkDNREP7P"></a>The control for loading
+a local file uses the <code>FileReader</code> technique from
+<a href="18_forms.html#filereader">Chapter 18</a>. Apart from the <code>readAsText</code>
+method we used there, such reader objects also have a method called
+<code>readAsDataURL</code>, which is exactly what we need here. We load the
+file that the user chose as a data URL and pass it to
+<code>loadImageURL</code> to put it into the canvas.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_lXjE/XfP0W" href="#c_lXjE/XfP0W"></a><span class="cm-variable">controls</span>.<span class="cm-property">openFile</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">cx</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">input</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"input"</span>, {<span class="cm-property">type</span>: <span class="cm-string">"file"</span>});
+  <span class="cm-variable-2">input</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">input</span>.<span class="cm-property">files</span>.<span class="cm-property">length</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>) <span class="cm-keyword">return</span>;
+    <span class="cm-keyword">var</span> <span class="cm-def">reader</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">FileReader</span>();
+    <span class="cm-variable-2">reader</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"load"</span>, <span class="cm-keyword">function</span>() {
+      <span class="cm-variable">loadImageURL</span>(<span class="cm-variable-2">cx</span>, <span class="cm-variable-2">reader</span>.<span class="cm-property">result</span>);
+    });
+    <span class="cm-variable-2">reader</span>.<span class="cm-property">readAsDataURL</span>(<span class="cm-variable-2">input</span>.<span class="cm-property">files</span>[<span class="cm-number">0</span>]);
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable">elt</span>(<span class="cm-string">"div"</span>, <span class="cm-atom">null</span>, <span class="cm-string">"Open file: "</span>, <span class="cm-variable-2">input</span>);
+};</pre>
+<p><a class=p_ident id="p_3cQw/osn6v" href="#p_3cQw/osn6v"></a>Loading a file from a URL is even simpler. But with a text field, it is less clear when the user has finished writing the URL,
+so we can&#8217;t simply listen for <code>"change"</code> events. Instead, we will wrap
+the field in a form and respond when the form is submitted, either
+because the user pressed Enter or because they clicked the load
+button.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_XY31yVKH8e" href="#c_XY31yVKH8e"></a><span class="cm-variable">controls</span>.<span class="cm-property">openURL</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">cx</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">input</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"input"</span>, {<span class="cm-property">type</span>: <span class="cm-string">"text"</span>});
+  <span class="cm-keyword">var</span> <span class="cm-def">form</span> <span class="cm-operator">=</span> <span class="cm-variable">elt</span>(<span class="cm-string">"form"</span>, <span class="cm-atom">null</span>,
+                 <span class="cm-string">"Open URL: "</span>, <span class="cm-variable-2">input</span>,
+                 <span class="cm-variable">elt</span>(<span class="cm-string">"button"</span>, {<span class="cm-property">type</span>: <span class="cm-string">"submit"</span>}, <span class="cm-string">"load"</span>));
+  <span class="cm-variable-2">form</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"submit"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>();
+    <span class="cm-variable">loadImageURL</span>(<span class="cm-variable-2">cx</span>, <span class="cm-variable-2">input</span>.<span class="cm-property">value</span>);
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">form</span>;
+};</pre>
+<p><a class=p_ident id="p_kU0DSJWhbC" href="#p_kU0DSJWhbC"></a>We have now defined all the controls that our simple paint program
+needs, but it could still use a few more tools.</p>
+<h2><a class=h_ident id="h_COOrE3GQwB" href="#h_COOrE3GQwB"></a>Finishing up</h2>
+<p><a class=p_ident id="p_eRxkqfyNnx" href="#p_eRxkqfyNnx"></a>We can easily add a text tool that
+uses <code>prompt</code> to ask the user which string it should draw.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_8/T9PP3cBg" href="#c_8/T9PP3cBg"></a><span class="cm-variable">tools</span>.<span class="cm-property">Text</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">event</span>, <span class="cm-def">cx</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">text</span> <span class="cm-operator">=</span> <span class="cm-variable">prompt</span>(<span class="cm-string">"Text:"</span>, <span class="cm-string">""</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">text</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">pos</span> <span class="cm-operator">=</span> <span class="cm-variable">relativePos</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>);
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">font</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">max</span>(<span class="cm-number">7</span>, <span class="cm-variable-2">cx</span>.<span class="cm-property">lineWidth</span>) <span class="cm-operator">+</span> <span class="cm-string">"px sans-serif"</span>;
+    <span class="cm-variable-2">cx</span>.<span class="cm-property">fillText</span>(<span class="cm-variable-2">text</span>, <span class="cm-variable-2">pos</span>.<span class="cm-property">x</span>, <span class="cm-variable-2">pos</span>.<span class="cm-property">y</span>);
+  }
+};</pre>
+<p><a class=p_ident id="p_L3dnKFwhJy" href="#p_L3dnKFwhJy"></a>You could add extra fields for the font size and the
+font, but for simplicity&#8217;s sake, we always use a sans-serif font and
+base the font size on the current brush size. The minimum size is 7
+pixels because text smaller than that is unreadable.</p>
+<p><a class=p_ident id="p_rTc/MzJCFC" href="#p_rTc/MzJCFC"></a>Another indispensable tool
+for drawing amateurish computer graphics is the spray paint tool.
+This one draws dots in random locations under the brush as long as
+the mouse is held down, creating denser or less dense speckling
+based on how fast or slow the mouse moves.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_MPtJObrL+v" href="#c_MPtJObrL+v"></a><span class="cm-variable">tools</span>.<span class="cm-property">Spray</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">event</span>, <span class="cm-def">cx</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">radius</span> <span class="cm-operator">=</span> <span class="cm-variable-2">cx</span>.<span class="cm-property">lineWidth</span> <span class="cm-operator">/</span> <span class="cm-number">2</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">area</span> <span class="cm-operator">=</span> <span class="cm-variable-2">radius</span> <span class="cm-operator">*</span> <span class="cm-variable-2">radius</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">PI</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">dotsPerTick</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">ceil</span>(<span class="cm-variable-2">area</span> <span class="cm-operator">/</span> <span class="cm-number">30</span>);
+
+  <span class="cm-keyword">var</span> <span class="cm-def">currentPos</span> <span class="cm-operator">=</span> <span class="cm-variable">relativePos</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">spray</span> <span class="cm-operator">=</span> <span class="cm-variable">setInterval</span>(<span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">dotsPerTick</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">offset</span> <span class="cm-operator">=</span> <span class="cm-variable">randomPointInRadius</span>(<span class="cm-variable-2">radius</span>);
+      <span class="cm-variable-2">cx</span>.<span class="cm-property">fillRect</span>(<span class="cm-variable-2">currentPos</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">offset</span>.<span class="cm-property">x</span>,
+                  <span class="cm-variable-2">currentPos</span>.<span class="cm-property">y</span> <span class="cm-operator">+</span> <span class="cm-variable-2">offset</span>.<span class="cm-property">y</span>, <span class="cm-number">1</span>, <span class="cm-number">1</span>);
+    }
+  }, <span class="cm-number">25</span>);
+  <span class="cm-variable">trackDrag</span>(<span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable-2">currentPos</span> <span class="cm-operator">=</span> <span class="cm-variable">relativePos</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">cx</span>.<span class="cm-property">canvas</span>);
+  }, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">clearInterval</span>(<span class="cm-variable-2">spray</span>);
+  });
+};</pre>
+<p><a class=p_ident id="p_PC1+gUob8b" href="#p_PC1+gUob8b"></a>The spray tool uses
+<code>setInterval</code> to spit out colored dots every 25 milliseconds as long
+as the mouse button is held down. The <code>trackDrag</code> function is used to
+keep <code>currentPos</code> pointing at the current mouse position and to turn
+off the interval when the mouse button is released.</p>
+<p><a class=p_ident id="p_CRD18th69E" href="#p_CRD18th69E"></a>To determine how many dots to draw every time the interval fires, the
+function computes the area of the current brush and divides that
+by 30. To find a random position under the brush, the <code>randomPointInRadius</code>
+function is used.</p>
+<pre data-language="javascript" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_yPBoJqnTXO" href="#c_yPBoJqnTXO"></a><span class="cm-keyword">function</span> <span class="cm-variable">randomPointInRadius</span>(<span class="cm-def">radius</span>) {
+  <span class="cm-keyword">for</span> (;;) {
+    <span class="cm-keyword">var</span> <span class="cm-def">x</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">2</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>;
+    <span class="cm-keyword">var</span> <span class="cm-def">y</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">2</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">x</span> <span class="cm-operator">*</span> <span class="cm-variable-2">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">y</span> <span class="cm-operator">*</span> <span class="cm-variable-2">y</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">1</span>)
+      <span class="cm-keyword">return</span> {<span class="cm-property">x</span>: <span class="cm-variable-2">x</span> <span class="cm-operator">*</span> <span class="cm-variable-2">radius</span>, <span class="cm-property">y</span>: <span class="cm-variable-2">y</span> <span class="cm-operator">*</span> <span class="cm-variable-2">radius</span>};
+  }
+}</pre>
+<p><a class=p_ident id="p_bpIPMJAN/Q" href="#p_bpIPMJAN/Q"></a>This function generates points in the square between (-1,-1)
+and (1,1). Using the Pythagorean theorem, it tests whether the generated point lies within a circle
+of radius 1. As soon as the function finds such a point, it returns the point
+multiplied by the <code>radius</code> argument.</p>
+<p><a class=p_ident id="p_8ATK7SQccV" href="#p_8ATK7SQccV"></a>The loop
+is necessary for a uniform distribution of dots. The straightforward way
+of generating a random point within a circle would be to use a random angle and distance and
+call <code>Math.sin</code> and <code>Math.cos</code> to create the corresponding point. But with that method,
+the dots are more likely to appear near the center of the circle.
+There are other ways around that, but they&#8217;re more complicated than the previous loop.</p>
+<p><a class=p_ident id="p_Tj66LpaWji" href="#p_Tj66LpaWji"></a>We now have a functioning paint program. Run the code below to try it.</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-sandbox="paint"><a class=c_ident id="c_pD0giwc4AL" href="#c_pD0giwc4AL"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"css/paint.css"</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span><span class="cm-variable">createPaint</span>(<span class="cm-variable">document</span>.<span class="cm-property">body</span>);<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span></pre>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<p><a class=p_ident id="p_We+KsAI00v" href="#p_We+KsAI00v"></a>There is still plenty of room for improvement in this program. Let&#8217;s
+add a few more features as exercises.</p>
+<h3><a class=h_ident id="h_AXnJJyTV3X" href="#h_AXnJJyTV3X"></a>Rectangles</h3>
+<p><a class=p_ident id="p_4pYKvTwVL6" href="#p_4pYKvTwVL6"></a>Define a tool
+called <code>Rectangle</code> that fills a rectangle (see the <code>fillRect</code> method
+from <a href="16_canvas.html#fill_stroke">Chapter 16</a>) with the current
+color. The rectangle should span from the point where the user pressed
+the mouse button to the point where they released it. Note that
+the latter might be above or to the left of the former.</p>
+<p><a class=p_ident id="p_FZYD7EtH2K" href="#p_FZYD7EtH2K"></a>Once it works, you&#8217;ll notice that it is somewhat
+jarring to not see the rectangle as you are dragging the mouse to
+select its size. Can you come up with a way to show some kind of
+rectangle during the dragging, without actually drawing to the canvas
+until the mouse button is released?</p>
+<p><a class=p_ident id="p_XS+oeSzbgP" href="#p_XS+oeSzbgP"></a>If nothing comes to mind, think back to the <code>position:
+absolute</code> style discussed in
+<a href="13_dom.html#animation">Chapter 13</a>, which can be used to overlay a
+node on the rest of the document. The <code>pageX</code> and <code>pageY</code> properties
+of a mouse event can be used to position an element precisely under
+the mouse, by setting the <code>left</code>, <code>top</code>, <code>width</code>, and <code>height</code> styles
+to the correct pixel values.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_dL4pxdAiRT" href="#c_dL4pxdAiRT"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">tools</span>.<span class="cm-property">Rectangle</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">event</span>, <span class="cm-def">cx</span>) {
+    <span class="cm-comment">// Your code here.</span>
+  };
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"css/paint.css"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span><span class="cm-variable">createPaint</span>(<span class="cm-variable">document</span>.<span class="cm-property">body</span>);<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_+2Q554eAdQ" href="#p_+2Q554eAdQ"></a>You can use <code>relativePos</code> to find the corner
+corresponding to the start of the mouse drag. Figuring out where the
+drag ends can be done with <code>trackDrag</code> or by registering your own
+event handler.</p>
+<p><a class=p_ident id="p_UvlqG2Ephm" href="#p_UvlqG2Ephm"></a>When you have two corners of the rectangle, you must
+somehow translate these into the arguments that <code>fillRect</code> expects:
+the top-left corner, width, and height of the rectangle. <code>Math.min</code>
+can be used to find the leftmost x-coordinate and topmost
+y-coordinate. To get the width or height, you can call <code>Math.abs</code> (the
+absolute value) on the difference between two sides.</p>
+<p><a class=p_ident id="p_qnwnWqJZmQ" href="#p_qnwnWqJZmQ"></a>Showing the rectangle during the mouse drag requires
+a similar set of numbers but in the context of the whole page rather
+than relative to the canvas. Consider writing a function <code>findRect</code>,
+which converts two points into an object with <code>top</code>, <code>left</code>, <code>width</code>,
+and <code>height</code> properties so that you don&#8217;t have to write the same
+logic twice.</p>
+<p><a class=p_ident id="p_BtWgOio6fw" href="#p_BtWgOio6fw"></a>You can then create a <code>&lt;div&gt;</code> node and set its
+<code>style.position</code> to <code>absolute</code>. When setting positioning styles, do
+not forget to append <code>"px"</code> to the numbers. The node must be added to
+the document (you can append it to <code>document.body</code>) and also removed
+again when the drag ends and the actual rectangle gets drawn onto the
+canvas.</p>
+</div></div>
+<h3><a class=h_ident id="h_kd7pYrPaOx" href="#h_kd7pYrPaOx"></a>Color picker</h3>
+<p><a class=p_ident id="p_Jg9zx2ZHXs" href="#p_Jg9zx2ZHXs"></a>Another tool that is commonly found in
+graphics programs is a color picker, which allows the user to
+click the picture and selects the color under the mouse pointer.
+Build this.</p>
+<p><a class=p_ident id="p_2/ActRBD9m" href="#p_2/ActRBD9m"></a>For
+this tool, we need a way to access the content of the canvas. The
+<code>toDataURL</code> method more or less did that, but getting pixel
+information out of such a data URL is hard. Instead, we&#8217;ll use the
+<code>getImageData</code> method on the drawing context, which returns a
+rectangular piece of the image as an object with <code>width</code>, <code>height</code>,
+and <code>data</code> properties. The <code>data</code> property holds an array of numbers
+from 0 to 255, using four numbers to represent each pixel&#8217;s red,
+green, blue, and alpha (opaqueness) components.</p>
+<p><a class=p_ident id="p_D6jTExt5KG" href="#p_D6jTExt5KG"></a>This example retrieves the numbers for a single pixel from a canvas
+once when the canvas is blank (all pixels are transparent black) and
+once when the pixel has been colored red.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_kkpvQb4tko" href="#c_kkpvQb4tko"></a><span class="cm-keyword">function</span> <span class="cm-variable">pixelAt</span>(<span class="cm-def">cx</span>, <span class="cm-def">x</span>, <span class="cm-def">y</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">data</span> <span class="cm-operator">=</span> <span class="cm-variable-2">cx</span>.<span class="cm-property">getImageData</span>(<span class="cm-variable-2">x</span>, <span class="cm-variable-2">y</span>, <span class="cm-number">1</span>, <span class="cm-number">1</span>);
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">data</span>.<span class="cm-property">data</span>);
+}
+
+<span class="cm-keyword">var</span> <span class="cm-variable">canvas</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">createElement</span>(<span class="cm-string">"canvas"</span>);
+<span class="cm-keyword">var</span> <span class="cm-variable">cx</span> <span class="cm-operator">=</span> <span class="cm-variable">canvas</span>.<span class="cm-property">getContext</span>(<span class="cm-string">"2d"</span>);
+<span class="cm-variable">pixelAt</span>(<span class="cm-variable">cx</span>, <span class="cm-number">10</span>, <span class="cm-number">10</span>);
+<span class="cm-comment">// → [0, 0, 0, 0]</span>
+
+<span class="cm-variable">cx</span>.<span class="cm-property">fillStyle</span> <span class="cm-operator">=</span> <span class="cm-string">"red"</span>;
+<span class="cm-variable">cx</span>.<span class="cm-property">fillRect</span>(<span class="cm-number">10</span>, <span class="cm-number">10</span>, <span class="cm-number">1</span>, <span class="cm-number">1</span>);
+<span class="cm-variable">pixelAt</span>(<span class="cm-variable">cx</span>, <span class="cm-number">10</span>, <span class="cm-number">10</span>);
+<span class="cm-comment">// → [255, 0, 0, 255]</span></pre>
+<p><a class=p_ident id="p_LAAk4BgbLG" href="#p_LAAk4BgbLG"></a>The arguments to <code>getImageData</code> indicate the starting x- and
+y-coordinates of the rectangle we want to retrieve, followed by its
+width and height.</p>
+<p><a class=p_ident id="p_C46YeilKO0" href="#p_C46YeilKO0"></a>Ignore transparency during this exercise and look
+only at the first three values for a given pixel. Also, do not worry
+about updating the color field when the user picks a color. Just make
+sure that the drawing context&#8217;s <code>fillStyle</code> and <code>strokeStyle</code> are set
+to the color under the mouse cursor.</p>
+<p><a class=p_ident id="p_AvBU/YxtZc" href="#p_AvBU/YxtZc"></a>Remember that these properties accept any color that
+CSS understands, which includes the <code>rgb(R, G, B)</code> style you saw in
+<a href="15_game.html#game_css">Chapter 15</a>.</p>
+<p><a class=p_ident id="p_TrX1yewkGx" href="#p_TrX1yewkGx"></a>The
+<code>getImageData</code> method is subject to the same restrictions as
+<code>toDataURL</code>—it will raise an error when the canvas contains pixels
+that originate from another domain. Use a <code>try/catch</code> statement to
+report such errors with an <code>alert</code> dialog.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_tIbJS0qHIa" href="#c_tIbJS0qHIa"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">tools</span>[<span class="cm-string">"Pick color"</span>] <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">event</span>, <span class="cm-def">cx</span>) {
+    <span class="cm-comment">// Your code here.</span>
+  };
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"css/paint.css"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span><span class="cm-variable">createPaint</span>(<span class="cm-variable">document</span>.<span class="cm-property">body</span>);<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_VIyP7gKCWe" href="#p_VIyP7gKCWe"></a>You&#8217;ll again need to use <code>relativePos</code> to find out which
+pixel was clicked. The <code>pixelAt</code> function in the example demonstrates how to get
+the values for a given pixel. Putting those into an <code>rgb</code> string
+merely requires some string concatenation.</p>
+<p><a class=p_ident id="p_F8sDaqW/ce" href="#p_F8sDaqW/ce"></a>Make sure you verify
+that the exception you catch is an instance of <code>SecurityError</code> so
+that you don&#8217;t accidentally handle the wrong kind of exception.</p>
+</div></div>
+<h3><a class=h_ident id="h_0M49T26QUl" href="#h_0M49T26QUl"></a>Flood fill</h3>
+<p><a class=p_ident id="p_9+5Lhu8/5P" href="#p_9+5Lhu8/5P"></a>This is a more advanced exercise than the
+preceding two, and it will require you to design a nontrivial solution
+to a tricky problem. Make sure you have plenty of time and
+patience before starting to work on this exercise, and do not get
+discouraged by initial failures.</p>
+<p><a class=p_ident id="p_OkFYhhueP3" href="#p_OkFYhhueP3"></a>A flood fill tool colors the pixel under the mouse
+and the surrounding pixels of the same color. For
+the purpose of this exercise, we will consider such a group to include
+all pixels that can be reached from our starting pixel by moving in
+single-pixel horizontal and vertical steps (not diagonal), without
+ever touching a pixel that has a color different from the starting
+pixel.</p>
+<p><a class=p_ident id="p_6uRENk52k1" href="#p_6uRENk52k1"></a>The following image illustrates the set of pixels colored when the flood
+fill tool is used at the marked pixel:</p>
+<div class="image">
+  <img src="img/flood-grid.svg" alt="Flood fill example">
+</div>
+<p><a class=p_ident id="p_wwglcJ4sDv" href="#p_wwglcJ4sDv"></a>The flood fill does not leak through diagonal gaps and does not touch
+pixels that are not reachable, even if they have the same color as the
+target pixel.</p>
+<p><a class=p_ident id="p_76DZCicyt0" href="#p_76DZCicyt0"></a>You will once again need
+<code>getImageData</code> to find out the color for each pixel. It is
+probably a good idea to fetch the whole image in one go and then pick
+out pixel data from the resulting array. The pixels are organized in
+this array in a similar way to the grid elements in
+<a href="07_elife.html#grid">Chapter 7</a>, one row at a time, except that
+each pixel is represented by four values. The first value for the
+pixel at (<em>x</em>,<em>y</em>) is at position (<em>x</em> + <em>y</em> × width) × 4.</p>
+<p><a class=p_ident id="p_jVploHhiTC" href="#p_jVploHhiTC"></a>Do include the fourth (alpha) value this
+time since we want to be able to tell the difference between empty
+and black pixels.</p>
+<p><a class=p_ident id="p_pGlySQoufy" href="#p_pGlySQoufy"></a>Finding all adjacent pixels with the same color
+requires you to “walk” over the pixel surface, one pixel up, down,
+left, or right, as long as new same-colored pixels can be found. But
+you won&#8217;t find all pixels in a group on the first walk. Rather, you
+have to do something similar to the backtracking done by the regular
+expression matcher, described in
+<a href="09_regexp.html#backtracking">Chapter 9</a>. Whenever more than one
+possible direction to proceed is seen, you must store all the
+directions you do not take immediately and look at them later, when
+you finish your current walk.</p>
+<p><a class=p_ident id="p_QgadJ7T7nC" href="#p_QgadJ7T7nC"></a>In a normal-sized picture, there are
+a <em>lot</em> of pixels. Thus, you must take care to do the minimal amount
+of work required or your program will take a very long time to run. For
+example, every walk must ignore pixels seen by previous walks so that
+it does not redo work that has already been done.</p>
+<p><a class=p_ident id="p_tPAU+iaccT" href="#p_tPAU+iaccT"></a>I recommend calling <code>fillRect</code> for individual
+pixels when a pixel that should be colored is found, and keeping some
+data structure that tells you about all the pixels that have already
+been looked at.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_Cj2ssFLWyJ" href="#c_Cj2ssFLWyJ"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">tools</span>[<span class="cm-string">"Flood fill"</span>] <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">event</span>, <span class="cm-def">cx</span>) {
+    <span class="cm-comment">// Your code here.</span>
+  };
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"css/paint.css"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span><span class="cm-variable">createPaint</span>(<span class="cm-variable">document</span>.<span class="cm-property">body</span>);<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_roLPCOzlbR" href="#p_roLPCOzlbR"></a>Given a
+pair of starting coordinates and the image data for the whole
+canvas, this approach should work:</p>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p><a class=p_ident id="p_DJfuZAPd2V" href="#p_DJfuZAPd2V"></a>
+Create an array to hold information about already colored
+    coordinates.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_8q76RzMUPC" href="#p_8q76RzMUPC"></a>
+Create a work list array to hold coordinates that must be looked
+    at. Put the start position in it.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_jf/y0a21iq" href="#p_jf/y0a21iq"></a>
+When the work list is empty, we are done.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_wDYrBpc4sn" href="#p_wDYrBpc4sn"></a>
+Remove one pair of coordinates from the work list.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_JXeW3M6LBu" href="#p_JXeW3M6LBu"></a>
+If those coordinates are already in our array of colored pixels, go
+    back to step 3.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_ybLJYGmnPS" href="#p_ybLJYGmnPS"></a>
+Color the pixel at the current coordinates and add the
+    coordinates to the array of colored pixels.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_6sixhBP7gV" href="#p_6sixhBP7gV"></a>
+Add the coordinates of each adjacent pixel whose color is the same
+    as the starting pixel&#8217;s original color to the work list.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_37aWwfOEWf" href="#p_37aWwfOEWf"></a>
+Return to step 3.
+</p>
+</li>
+</ol></div>
+<p><a class=p_ident id="p_K10R222PDR" href="#p_K10R222PDR"></a>The work list can simply be an array of vector objects. The data
+structure that tracks colored pixels will be consulted <em>very</em> often.
+Searching through the whole thing every time a new pixel is visited
+will take a lot of time. You could instead create an array that has a
+value in it for every pixel, using again the x + y × width scheme for
+associating positions with pixels. When checking whether a pixel has
+been colored already, you could directly access the field corresponding to the
+current pixel.</p>
+<p><a class=p_ident id="p_238ysWaiXF" href="#p_238ysWaiXF"></a>You can compare colors by running over
+the relevant part of the data array, comparing one field at a time. Or
+you can “condense” a color to a single number or string and
+compare those. When doing this, ensure that every color produces a
+unique value. For example, simply adding the color&#8217;s components is not
+safe since multiple colors will have the same sum.</p>
+<p><a class=p_ident id="p_JPRZIpzUnJ" href="#p_JPRZIpzUnJ"></a>When enumerating the neighbors of a given point, take care to exclude
+neighbors that are not inside of the canvas or your program might run
+off into one direction forever.</p>
+</div></div>
+<nav>
+  <a href="18_forms.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="20_node.html" title="next chapter">▶</a>
+</nav>
+</article>

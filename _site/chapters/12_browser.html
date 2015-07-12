@@ -1,0 +1,315 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>JavaScript and the Browser :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 12;</script>
+</head>
+
+<article>
+<nav>
+  <a href="11_language.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="13_dom.html" title="next chapter">▶</a>
+</nav>
+
+<h1><div class=chap_num>Chapter 12</div>JavaScript and the Browser</h1>
+<blockquote>
+<p><a class=p_ident id="p_oSbDqg89i/" href="#p_oSbDqg89i/"></a>The browser is a really hostile programming environment.</p>
+ <footer>Douglas Crockford, <cite>The JavaScript Programming Language (video lecture)</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_GZ7nJVK3wA" href="#p_GZ7nJVK3wA"></a>The next part of this book will talk about web browsers. Without
+web browsers, there would be no JavaScript. And even if there
+were, no one would ever have paid any attention to it.</p>
+<p><a class=p_ident id="p_XT5pNqisw+" href="#p_XT5pNqisw+"></a>Web technology has, from the
+start, been decentralized, not just technically but also in the
+way it has evolved. Various browser vendors have added new
+functionality in ad hoc and sometimes poorly thought out ways, which
+then sometimes ended up being adopted by others and finally set down
+as a standard.</p>
+<p><a class=p_ident id="p_ePAQfpo7ra" href="#p_ePAQfpo7ra"></a>This is both a blessing and a curse. On the one hand, it is empowering
+to not have a central party control a system but have it be improved
+by various parties working in loose collaboration (or,
+occasionally, open hostility). On the other hand, the haphazard way in
+which the Web was developed means that the resulting system is not
+exactly a shining example of internal consistency. In fact, some
+parts of it are downright messy and confusing.</p>
+<h2><a class=h_ident id="h_MYPczIw5xZ" href="#h_MYPczIw5xZ"></a>Networks and the Internet</h2>
+<p><a class=p_ident id="p_hsMIYbAKNv" href="#p_hsMIYbAKNv"></a>Computer networks have been around since the 1950s. If you put
+cables between two or more computers and allow them to send data back
+and forth through these cables, you can do all kinds of wonderful
+things.</p>
+<p><a class=p_ident id="p_rRsGS85yhE" href="#p_rRsGS85yhE"></a>If connecting two machines in the same building allows us to do
+wonderful things, connecting machines all over the planet should be
+even better. The technology to start implementing this vision was
+developed in the 1980s, and the resulting network is called the
+<em>Internet</em>. It has lived up to its promise.</p>
+<p><a class=p_ident id="p_cvrUZPtUxT" href="#p_cvrUZPtUxT"></a>A computer can use this network to spew bits at another computer. For
+any effective communication to arise out of this bit-spewing, the
+computers at both ends must know what the bits are supposed to
+represent. The meaning of any given sequence of bits depends entirely
+on the kind of thing that it is trying to express and on the
+encoding mechanism used.</p>
+<p><a class=p_ident id="p_tlYBPgx73H" href="#p_tlYBPgx73H"></a>A <em>network protocol</em> describes a style of communication over a
+network. There are protocols for sending email, for fetching email,
+for sharing files, or even for controlling computers that happen to be
+infected by malicious software.</p>
+<p><a class=p_ident id="p_u8lDPIC39z" href="#p_u8lDPIC39z"></a>For example, a simple chat protocol might consist of one computer
+sending the bits that represent the text “CHAT?” to another machine
+and the other responding with “OK!” to confirm that it understands the
+protocol. They can then proceed to send each other strings of text,
+read the text sent by the other from the network, and display whatever
+they receive on their screens.</p>
+<p><a class=p_ident id="p_WXSVtMixCt" href="#p_WXSVtMixCt"></a>Most protocols are built on
+top of other protocols. Our example chat protocol treats the network
+as a streamlike device into which you can put bits and have them
+arrive at the correct destination in the correct order. Ensuring those
+things is already a rather difficult technical problem.</p>
+<p><a class=p_ident id="p_7IOEk4hhjX" href="#p_7IOEk4hhjX"></a>The <em>Transmission Control Protocol</em> (TCP) is a protocol that
+solves this problem. All Internet-connected devices “speak” it, and
+most communication on the Internet is built on top of it.</p>
+<p><a class=p_ident id="p_R1N5wYYFn+" href="#p_R1N5wYYFn+"></a>A TCP connection works as follows: one
+computer must be waiting, or <em>listening</em>, for other computers to start
+talking to it. To be able to listen for different kinds of
+communication at the same time on a single machine, each listener has
+a number (called a <em>port</em>) associated with it. Most protocols
+specify which port should be used by default. For example, when we
+want to send an email using the SMTP protocol, the machine through
+which we send it is expected to be listening on port 25.</p>
+<p><a class=p_ident id="p_C9NFg/yfxC" href="#p_C9NFg/yfxC"></a>Another computer can then establish a connection by connecting to
+the target machine using the correct port number. If the target
+machine can be reached and is listening on that port, the connection
+is successfully created. The listening computer is called the
+<em>server</em>, and the connecting computer is called the <em>client</em>.</p>
+<p><a class=p_ident id="p_g48pTp1IKV" href="#p_g48pTp1IKV"></a>Such a connection acts as a two-way pipe through which bits can
+flow—the machines on both ends can put data into it. Once the bits are
+successfully transmitted, they can be read out again by the machine on
+the other side. This is a convenient model. You could say that
+TCP provides an abstraction of the network.</p>
+<h2 id="web"><a class=h_ident id="h_tbGTd9Llzv" href="#h_tbGTd9Llzv"></a>The Web</h2>
+<p><a class=p_ident id="p_w4VQt163Im" href="#p_w4VQt163Im"></a>The <em>World Wide Web</em> (not to be confused with the Internet as
+a whole) is a set of protocols and formats that allow us to visit
+web pages in a browser. The “Web” part in the name refers to the fact
+that such pages can easily link to each other, thus connecting into a
+huge mesh that users can move through.</p>
+<p><a class=p_ident id="p_IX9vl21tDt" href="#p_IX9vl21tDt"></a>To add content to the Web, all you need to do is connect a machine to
+the Internet, and have it listen on port 80, using the
+<em>Hypertext Transfer Protocol</em> (HTTP). This protocol allows other computers
+to request documents over the network.</p>
+<p><a class=p_ident id="p_KH3H5PXZlk" href="#p_KH3H5PXZlk"></a>Each document on the Web is named by a <em>Universal Resource
+Locator</em> (URL), which looks something like this:</p>
+<pre>  http://eloquentjavascript.net/12_browser.html
+ |      |                      |               |
+ protocol       server               path</pre>
+<p><a class=p_ident id="p_0F4MKpLU9B" href="#p_0F4MKpLU9B"></a>The first part tells us that this URL uses the HTTP
+protocol (as opposed to, for example, encrypted HTTP, which would
+be <em>https://</em>). Then comes the part that identifies which server
+we are requesting the document from. Last is a path string that
+identifies the specific document (or <em>resource</em>) we are interested
+in.</p>
+<p><a class=p_ident id="p_/GdEX6bncv" href="#p_/GdEX6bncv"></a>Each machine connected to the Internet gets a unique <em>IP address</em>,
+which looks something like <code>37.187.37.82</code>. You can use these directly
+as the server part of a URL. But lists of more or less random
+numbers are hard to remember and awkward to type, so you can instead
+register a <em>domain name</em> to point toward a specific machine or
+set of machines. I registered <em>eloquentjavascript.net</em> to point at the
+IP address of a machine I control and can thus use that domain name
+to serve web pages.</p>
+<p><a class=p_ident id="p_VQIXesk4P9" href="#p_VQIXesk4P9"></a>If you type the previous URL into your browser&#8217;s address bar, it will try to retrieve and display the document at that
+URL. First, your browser has to find out what address
+<em>eloquentjavascript.net</em> refers to. Then, using the HTTP protocol,
+it makes a connection to the server at that address and asks for the
+resource <em>/12_browser.html</em>.</p>
+<p><a class=p_ident id="p_pfUoCDr2pV" href="#p_pfUoCDr2pV"></a>We will take a closer look at the HTTP protocol in
+<a href="17_http.html#http">Chapter 17</a>.</p>
+<h2><a class=h_ident id="h_n3OM6EV/KR" href="#h_n3OM6EV/KR"></a>HTML</h2>
+<p><a class=p_ident id="p_m2H1Cp4ACJ" href="#p_m2H1Cp4ACJ"></a>HTML, which stands for <em>Hypertext Markup Language</em>, is the
+document format used for web pages. An HTML document contains
+text, as well as <em>tags</em> that give structure to the text,
+describing things such as links, paragraphs, and headings.</p>
+<p><a class=p_ident id="p_P2V14LZFIv" href="#p_P2V14LZFIv"></a>A simple HTML document looks like this:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_hfCVWJl6ha" href="#c_hfCVWJl6ha"></a><span class="cm-meta">&lt;!doctype html></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">html</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">head</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">title</span><span class="cm-tag cm-bracket">></span>My home page<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">title</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">head</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>My home page<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Hello, I am Marijn and this is my home page.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>I also wrote a book! Read it
+      <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">a</span> <span class="cm-attribute">href</span>=<span class="cm-string">"http://eloquentjavascript.net"</span><span class="cm-tag cm-bracket">></span>here<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">a</span><span class="cm-tag cm-bracket">></span>.<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">body</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">html</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_zP6SuTzWSr" href="#p_zP6SuTzWSr"></a>The tags, wrapped in angle brackets (<code>&lt;</code>
+and <code>&gt;</code>), provide information about the structure of the
+document. The other text is just plain text.</p>
+<p><a class=p_ident id="p_7PI7BADgG4" href="#p_7PI7BADgG4"></a>The document starts with <code>&lt;!doctype html&gt;</code>,
+which tells the browser to interpret it as <em>modern</em> HTML, as opposed
+to various dialects that were in use in the past.</p>
+<p><a class=p_ident id="p_Et3bT2kUby" href="#p_Et3bT2kUby"></a>HTML documents have a head and a body.
+The head contains information <em>about</em> the document, and the body
+contains the document itself. In this case, we first declared that the
+title of this document is “My home page” and then gave a document
+containing a heading (<code>&lt;h1&gt;</code>, meaning “heading 1”—<code>&lt;h2&gt;</code> to <code>&lt;h6&gt;</code>
+produce more minor headings) and two paragraphs (<code>&lt;p&gt;</code>).</p>
+<p><a class=p_ident id="p_twHeUPgGnQ" href="#p_twHeUPgGnQ"></a>Tags come in several forms. An
+element, such as the body, a paragraph, or a link, is started by
+an <em>opening tag</em> like <code>&lt;p&gt;</code> and ended by a <em>closing tag</em> like
+<code>&lt;/p&gt;</code>. Some opening tags, such as the one for the link (<code>&lt;a&gt;</code>),
+contain extra information in the form of <code>name="value"</code> pairs. These
+are called <em>attributes</em>. In this case, the destination of the link
+is indicated with <code>href="http://eloquentjavascript.net"</code>, where <code>href</code>
+stands for “hypertext reference”.</p>
+<p><a class=p_ident id="p_a6Kx16yoMd" href="#p_a6Kx16yoMd"></a>Some
+kinds of tags do not enclose anything and thus do not need to be
+closed. An example of this would be <code>&lt;img
+src="http://example.com/image.jpg"&gt;</code>, which will display the image
+found at the given source URL.</p>
+<p><a class=p_ident id="p_aDzWCv6pnm" href="#p_aDzWCv6pnm"></a>To be able to include angle brackets in
+the text of a document, even though they have a special meaning in
+HTML, yet another form of special notation has to be introduced. A
+plain opening angle bracket is written as <code>&amp;lt;</code> (“less than”), and
+a closing bracket is written as <code>&amp;gt;</code> (“greater than”). In HTML, an ampersand
+(<code>&amp;</code>) character followed by a word and a semicolon (<code>;</code>) is called an
+<em>entity</em>, and will be replaced by the character it encodes.</p>
+<p><a class=p_ident id="p_BVTrBS/gKt" href="#p_BVTrBS/gKt"></a>This is analogous to the way backslashes are used in
+JavaScript strings. Since this mechanism gives ampersand characters a
+special meaning, too, those need to be escaped as <code>&amp;amp;</code>. Inside an
+attribute, which is wrapped in double quotes, <code>&amp;quot;</code> can be used to
+insert an actual quote character.</p>
+<p><a class=p_ident id="p_RK6LQEinS9" href="#p_RK6LQEinS9"></a>HTML is parsed in a remarkably
+error-tolerant way. When tags that should be there are missing, the
+browser reconstructs them. The way in which this is done has been
+standardized, and you can rely on all modern browsers to do it in the
+same way.</p>
+<p><a class=p_ident id="p_hnbBzl0NyQ" href="#p_hnbBzl0NyQ"></a>The following document will be treated just like the one shown previously:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_wP8noGtvgK" href="#c_wP8noGtvgK"></a><span class="cm-meta">&lt;!doctype html></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">title</span><span class="cm-tag cm-bracket">></span>My home page<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">title</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>My home page<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Hello, I am Marijn and this is my home page.
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>I also wrote a book! Read it
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">a</span> <span class="cm-attribute">href</span>=<span class="cm-string">http://eloquentjavascript.net</span><span class="cm-tag cm-bracket">></span>here<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">a</span><span class="cm-tag cm-bracket">></span>.</pre>
+<p><a class=p_ident id="p_6iDhitY04v" href="#p_6iDhitY04v"></a>The <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, and <code>&lt;body&gt;</code> tags
+are gone completely. The browser knows that <code>&lt;title&gt;</code> belongs in a
+head, and that <code>&lt;h1&gt;</code> in a body. Furthermore, I am no longer explicitly
+closing the paragraphs since opening a new paragraph or ending the
+document will close them implicitly. The quotes around the link target
+are also gone.</p>
+<p><a class=p_ident id="p_849RpAZtxv" href="#p_849RpAZtxv"></a>This book will usually omit the <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, and <code>&lt;body&gt;</code> tags
+from examples to keep them short and free of clutter. But I <em>will</em>
+close tags and include quotes around attributes.</p>
+<p><a class=p_ident id="p_YK9xXsU8IZ" href="#p_YK9xXsU8IZ"></a>I will also usually omit the doctype. This is not to
+be taken as an encouragement to omit doctype declarations. Browsers
+will often do ridiculous things when you forget them. You should
+consider doctypes implicitly present in examples, even when they are
+not actually shown in the text.</p>
+<h2 id="script_tag"><a class=h_ident id="h_x9VDt2sTZZ" href="#h_x9VDt2sTZZ"></a>HTML and JavaScript</h2>
+<p><a class=p_ident id="p_Eruo+DmcTl" href="#p_Eruo+DmcTl"></a>In the context of this
+book, the most important HTML tag is <code>&lt;script&gt;</code>. This tag allows
+us to include a piece of JavaScript in a document.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_sp1xCw7ODQ" href="#c_sp1xCw7ODQ"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>Testing alert<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span><span class="cm-variable">alert</span>(<span class="cm-string">"hello!"</span>);<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_3pFG6nbfUJ" href="#p_3pFG6nbfUJ"></a>Such a script will run as soon as
+its <code>&lt;script&gt;</code> tag is encountered as the browser reads the HTML. The
+page shown earlier will pop up an <code>alert</code> dialog when opened.</p>
+<p><a class=p_ident id="p_GmDPwY/KfO" href="#p_GmDPwY/KfO"></a>Including large programs directly in HTML documents
+is often impractical. The <code>&lt;script&gt;</code> tag can be given an <code>src</code>
+attribute in order to fetch a script file (a text file containing a
+JavaScript program) from a URL.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_mNvXGO5FgF" href="#c_mNvXGO5FgF"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>Testing alert<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span> <span class="cm-attribute">src</span>=<span class="cm-string">"code/hello.js"</span><span class="cm-tag cm-bracket">></span><span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_Hz/JcRYmOp" href="#p_Hz/JcRYmOp"></a>The <em>code/hello.js</em> file included here contains the same simple program,
+<code>alert("hello!")</code>. When an HTML page references other URLs as part of
+itself, for example an image file or a script—web browsers will
+retrieve them immediately and include them in the page.</p>
+<p><a class=p_ident id="p_DLaR5M/yDv" href="#p_DLaR5M/yDv"></a>A script tag must always be
+closed with <code>&lt;/script&gt;</code>, even if it refers to a script file and
+doesn&#8217;t contain any code. If you forget this, the rest of the page
+will be interpreted as part of the script.</p>
+<p><a class=p_ident id="p_ztoAMAZEju" href="#p_ztoAMAZEju"></a>Some attributes can also
+contain a JavaScript program. The <code>&lt;button&gt;</code> tag shown next (which shows up
+as a button) has an <code>onclick</code> attribute, whose content will be run
+whenever the button is clicked.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_2Cf2BZ7PG2" href="#c_2Cf2BZ7PG2"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">onclick</span>=<span class="cm-string">"alert('Boom!');"</span><span class="cm-tag cm-bracket">></span>DO NOT PRESS<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_hBrXiBnQxx" href="#p_hBrXiBnQxx"></a>Note that I had to
+use single quotes for the string in the <code>onclick</code> attribute because
+double quotes are already used to quote the whole attribute. I could
+also have used <code>&amp;quot;</code>, but that&#8217;d make the program harder to read.</p>
+<h2><a class=h_ident id="h_xSthu5StoL" href="#h_xSthu5StoL"></a>In the sandbox</h2>
+<p><a class=p_ident id="p_AniKiqdG2y" href="#p_AniKiqdG2y"></a>Running programs
+downloaded from the Internet is potentially dangerous. You do not
+know much about the people behind most sites you visit, and they do
+not necessarily mean well. Running programs by people who do not mean
+well is how you get your computer infected by viruses, your data
+stolen, and your accounts hacked.</p>
+<p><a class=p_ident id="p_D7H4XfnmGB" href="#p_D7H4XfnmGB"></a>Yet the attraction of the Web is that you can surf it without
+necessarily trusting all the pages you visit. This is why browsers
+severely limit the things a JavaScript program may do: it can&#8217;t look
+at the files on your computer or modify anything not related to the
+web page it was embedded in.</p>
+<p><a class=p_ident id="p_KW2fU3B9nm" href="#p_KW2fU3B9nm"></a>Isolating a programming environment in this way is
+called <em>sandboxing</em>, the idea being that the program is harmlessly
+playing in a sandbox. But you should imagine this particular kind of
+sandbox as having a cage of thick steel bars over it, which makes it
+somewhat different from your typical playground sandbox.</p>
+<p><a class=p_ident id="p_7pNt468QvZ" href="#p_7pNt468QvZ"></a>The hard part of sandboxing is allowing the programs enough room to be
+useful yet at the same time restricting them from doing anything
+dangerous. Lots of useful functionality, such as communicating with
+other servers or reading the content of the copy-paste clipboard,
+can also be used to do problematic, privacy-invading things.</p>
+<p><a class=p_ident id="p_0xA5OSkc0i" href="#p_0xA5OSkc0i"></a>Every now and then, someone comes
+up with a new way to circumvent the limitations of a browser and
+do something harmful, ranging from leaking minor private information
+to taking over the whole machine that the browser runs on. The browser
+developers respond by fixing the hole, and all is well again—that is,
+until the next problem is discovered, and hopefully publicized, rather
+than secretly exploited by some government or mafia.</p>
+<h2><a class=h_ident id="h_p42hxqLkOm" href="#h_p42hxqLkOm"></a>Compatibility and the browser wars</h2>
+<p><a class=p_ident id="p_EZKXamx/Cn" href="#p_EZKXamx/Cn"></a>In the early stages of the
+Web, a browser called Mosaic dominated the market. After a few
+years, the balance had shifted to Netscape, which was then, in
+turn, largely supplanted by Microsoft&#8217;s Internet Explorer. At any
+point where a single browser was dominant, that browser&#8217;s vendor
+would feel entitled to unilaterally invent new features for the Web.
+Since most users used the same browser, websites would simply
+start using those features—never mind the other browsers.</p>
+<p><a class=p_ident id="p_VsfVT8QgQV" href="#p_VsfVT8QgQV"></a>This was the dark age of compatibility, often called the
+<em>browser wars</em>. Web developers were left with not one unified Web
+but two or three incompatible platforms. To make things worse, the
+browsers in use around 2003 were all full of bugs, and of course
+the bugs were different for each browser. Life was hard for people
+writing web pages.</p>
+<p><a class=p_ident id="p_K5Wu7RrwZS" href="#p_K5Wu7RrwZS"></a>Mozilla Firefox, a
+not-for-profit offshoot of Netscape, challenged Internet
+Explorer&#8217;s hegemony in the late 2000s. Because Microsoft was not
+particularly interested in staying competitive at the time, Firefox
+took quite a chunk of market share away from it. Around the same
+time, Google introduced its Chrome browser, and Apple&#8217;s
+Safari browser gained popularity, leading to a situation where
+there were four major players, rather than one.</p>
+<p><a class=p_ident id="p_ztjPRIOS1D" href="#p_ztjPRIOS1D"></a>The new players had a more serious attitude toward
+standards and better engineering practices, leading to less
+incompatibility and fewer bugs. Microsoft, seeing its market share
+crumble, came around and adopted these attitudes. If you are starting
+to learn web development today, consider yourself lucky. The latest
+versions of the major browsers behave quite uniformly and have
+relatively few bugs.</p>
+<p><a class=p_ident id="p_4EMPHMJP+U" href="#p_4EMPHMJP+U"></a>That is not to say that the situation is perfect
+just yet. Some of the people using the Web are, for reasons of inertia
+or corporate policy, stuck with very old browsers. Until those
+browsers die out entirely, writing websites that work for them will
+require a lot of arcane knowledge about their shortcomings and quirks.
+This book is not about those quirks. Rather, it aims to present
+the modern, sane style of web programming.</p>
+<nav>
+  <a href="11_language.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="13_dom.html" title="next chapter">▶</a>
+</nav>
+</article>

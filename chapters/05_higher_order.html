@@ -1,0 +1,793 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Higher-Order Functions :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 5;var sandboxLoadFiles = ["code/ancestry.js", "code/chapter/05_higher_order.js", "code/intro.js"];</script>
+</head>
+
+<article>
+<nav>
+  <a href="04_data.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="06_object.html" title="next chapter">▶</a>
+</nav>
+
+<h1><div class=chap_num>Chapter 5</div>Higher-Order Functions</h1>
+<blockquote>
+<p><a class=p_ident id="p_18CYJsdOxo" href="#p_18CYJsdOxo"></a>Tzu-li and Tzu-ssu were
+boasting about the size of their latest programs. ‘Two-hundred
+thousand lines,’ said Tzu-li, ‘not counting comments!’ Tzu-ssu
+responded, ‘Pssh, mine is almost a <strong>million</strong> lines already.’ Master
+Yuan-Ma said, ‘My best program has five hundred lines.’ Hearing this,
+Tzu-li and Tzu-ssu were enlightened.</p>
+ <footer>Master Yuan-Ma, <cite>The Book of Programming</cite></footer>
+</blockquote>
+<blockquote>
+<p><a class=p_ident id="p_MZD8y19lPz" href="#p_MZD8y19lPz"></a>There are two ways of constructing a software
+design: One way is to make it so simple that there are obviously no
+deficiencies, and the other way is to make it so complicated that
+there are no obvious deficiencies.</p>
+ <footer>C.A.R. Hoare, <cite>1980 ACM Turing Award Lecture</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_1SpKr5NIrc" href="#p_1SpKr5NIrc"></a>A large program is a costly program, and not just
+because of the time it takes to build. Size almost always involves
+complexity, and complexity confuses programmers. Confused
+programmers, in turn, tend to introduce mistakes (<em>bugs</em>) into
+programs. A large program also provides a lot of space for these bugs
+to hide, making them hard to find.</p>
+<p><a class=p_ident id="p_ethH+CXxsM" href="#p_ethH+CXxsM"></a>Let&#8217;s briefly go back to the final two example
+programs in the introduction. The first is self-contained and six
+lines long.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_W93KRCwXP0" href="#c_W93KRCwXP0"></a><span class="cm-keyword">var</span> <span class="cm-variable">total</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>, <span class="cm-variable">count</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+<span class="cm-keyword">while</span> (<span class="cm-variable">count</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">10</span>) {
+  <span class="cm-variable">total</span> <span class="cm-operator">+=</span> <span class="cm-variable">count</span>;
+  <span class="cm-variable">count</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">total</span>);</pre>
+<p><a class=p_ident id="p_Sy8N6Qcb09" href="#p_Sy8N6Qcb09"></a>The second relies on two external functions and is one line long.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_OULOwD7HOm" href="#c_OULOwD7HOm"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>(<span class="cm-variable">range</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));</pre>
+<p><a class=p_ident id="p_srOi7846QY" href="#p_srOi7846QY"></a>Which one is more likely to contain a bug?</p>
+<p><a class=p_ident id="p_G+ApGqjOk4" href="#p_G+ApGqjOk4"></a>If we count the size of the definitions of <code>sum</code> and
+<code>range</code>, the second program is also big—even bigger than the first.
+But still, I&#8217;d argue that it is more likely to be correct.</p>
+<p><a class=p_ident id="p_pkQRvZqQ0u" href="#p_pkQRvZqQ0u"></a>It is more likely to
+be correct because the solution is expressed in a vocabulary that
+corresponds to the problem being solved. Summing a range of
+numbers isn&#8217;t about loops and counters. It is about ranges and sums.</p>
+<p><a class=p_ident id="p_VwxmDNivhe" href="#p_VwxmDNivhe"></a>The definitions of this vocabulary (the functions <code>sum</code> and <code>range</code>)
+will still involve loops, counters, and other incidental details. But
+because they are expressing simpler concepts than the program as a
+whole, they are easier to get right.</p>
+<h2><a class=h_ident id="h_j9ps8qrlyo" href="#h_j9ps8qrlyo"></a>Abstraction</h2>
+<p><a class=p_ident id="p_ZPK6t/LrMG" href="#p_ZPK6t/LrMG"></a>In the context of programming, these kinds of vocabularies are usually
+called <em>abstractions</em>. Abstractions hide details and give us the
+ability to talk about problems at a higher (or more abstract) level.</p>
+<p><a class=p_ident id="p_XMbJPaIiI4" href="#p_XMbJPaIiI4"></a>As an analogy, compare these two
+recipes for pea soup:</p>
+<blockquote>
+<p><a class=p_ident id="p_F+PunfZCXq" href="#p_F+PunfZCXq"></a>Put 1 cup of dried peas per person into a container. Add water until
+the peas are well covered. Leave the peas in water for at least 12 hours.
+Take the peas out of the water and put them in a cooking pan. Add 4
+cups of water per person. Cover the pan and keep the peas
+simmering for two hours. Take half an onion per person. Cut it into
+pieces with a knife. Add it to the peas. Take a stalk of celery per
+person. Cut it into pieces with a knife. Add it to the peas. Take a
+carrot per person. Cut it into pieces. With a knife! Add it to the
+peas. Cook for 10 more minutes.</p>
+
+</blockquote>
+<p><a class=p_ident id="p_jOZH7oGiYb" href="#p_jOZH7oGiYb"></a>And the second recipe:</p>
+<blockquote>
+<p><a class=p_ident id="p_iNBZReprTd" href="#p_iNBZReprTd"></a>Per person: 1 cup dried split peas, half a chopped onion, a stalk of
+celery, and a carrot.</p>
+<p><a class=p_ident id="p_k5rI5P5p5u" href="#p_k5rI5P5p5u"></a>Soak peas for 12 hours. Simmer for 2 hours in 4 cups of water
+(per person). Chop and add vegetables. Cook for 10 more minutes.</p>
+
+</blockquote>
+<p><a class=p_ident id="p_cSeY164LbX" href="#p_cSeY164LbX"></a>The second is shorter and easier to interpret. But
+you do need to understand a few more cooking-related words—<em>soak</em>,
+<em>simmer</em>, <em>chop</em>, and, I guess, <em>vegetable</em>.</p>
+<p><a class=p_ident id="p_g/g3l7uyEG" href="#p_g/g3l7uyEG"></a>When programming, we can&#8217;t rely on all the words we need to be waiting
+for us in the dictionary. Thus, you might fall into the pattern of the
+first recipe—work out the precise steps the computer has to perform,
+one by one, blind to the higher-level concepts that they express.</p>
+<p><a class=p_ident id="p_SfvOkDsRNZ" href="#p_SfvOkDsRNZ"></a>It has to become second nature, for a programmer, to
+notice when a concept is begging to be abstracted into a new word.</p>
+<h2><a class=h_ident id="h_inPZJ813r4" href="#h_inPZJ813r4"></a>Abstracting array traversal</h2>
+<p><a class=p_ident id="p_kYV0l7wLUe" href="#p_kYV0l7wLUe"></a>Plain functions, as we&#8217;ve seen them so far, are a good
+way to build abstractions. But sometimes they fall short.</p>
+<p><a class=p_ident id="p_zubh2XbQ26" href="#p_zubh2XbQ26"></a>In the <a href="04_data.html#data">previous chapter</a>, this
+type of <code>for</code> loop made several appearances:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_LwyYCeYiUF" href="#c_LwyYCeYiUF"></a><span class="cm-keyword">var</span> <span class="cm-variable">array</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>];
+<span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">array</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-variable">current</span> <span class="cm-operator">=</span> <span class="cm-variable">array</span>[<span class="cm-variable">i</span>];
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">current</span>);
+}</pre>
+<p><a class=p_ident id="p_NFtmq7O3su" href="#p_NFtmq7O3su"></a>It&#8217;s trying to say, “For
+each element in the array, log it to the console”. But it uses a
+roundabout way that involves a counter variable <code>i</code>, a check against
+the array&#8217;s length, and an extra variable declaration to pick out the
+current element. Apart from being a bit of an eyesore, this provides a
+lot of space for potential mistakes. We might accidentally reuse the
+<code>i</code> variable, misspell <code>length</code> as <code>lenght</code>, confuse the <code>i</code> and <code>current</code>
+variables, and so on.</p>
+<p><a class=p_ident id="p_Ij8hUSNURG" href="#p_Ij8hUSNURG"></a>So let&#8217;s try to abstract this into a function. Can you think of a way?</p>
+<p><a class=p_ident id="p_QZzSQpGUXs" href="#p_QZzSQpGUXs"></a>Well, it&#8217;s easy to write a function that goes over an array and calls
+<code>console.log</code> on every element.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_zrjk1tE+gJ" href="#c_zrjk1tE+gJ"></a><span class="cm-keyword">function</span> <span class="cm-variable">logEach</span>(<span class="cm-def">array</span>) {
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
+}</pre>
+<p id="forEach"><a class=p_ident id="p_q8hNTrfIYb" href="#p_q8hNTrfIYb"></a>But what
+if we want to do something other than logging the elements? Since
+“doing something” can be represented as a function and functions are
+just values, we can pass our action as a function value.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_on8vSTDMIU" href="#c_on8vSTDMIU"></a><span class="cm-keyword">function</span> <span class="cm-variable">forEach</span>(<span class="cm-def">array</span>, <span class="cm-def">action</span>) {
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
+    <span class="cm-variable-2">action</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
+}
+
+<span class="cm-variable">forEach</span>([<span class="cm-string">"Wampeter"</span>, <span class="cm-string">"Foma"</span>, <span class="cm-string">"Granfalloon"</span>], <span class="cm-variable">console</span>.<span class="cm-property">log</span>);
+<span class="cm-comment">// → Wampeter</span>
+<span class="cm-comment">// → Foma</span>
+<span class="cm-comment">// → Granfalloon</span></pre>
+<p><a class=p_ident id="p_TXDEyQXjy/" href="#p_TXDEyQXjy/"></a>Often, you don&#8217;t pass a predefined function to <code>forEach</code> but create
+a function value on the spot instead.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wRpVmSHeqP" href="#c_wRpVmSHeqP"></a><span class="cm-keyword">var</span> <span class="cm-variable">numbers</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>], <span class="cm-variable">sum</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-variable">forEach</span>(<span class="cm-variable">numbers</span>, <span class="cm-keyword">function</span>(<span class="cm-def">number</span>) {
+  <span class="cm-variable">sum</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">number</span>;
+});
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>);
+<span class="cm-comment">// → 15</span></pre>
+<p><a class=p_ident id="p_v2REJFVWCD" href="#p_v2REJFVWCD"></a>This looks quite a lot like the
+classical <code>for</code> loop, with its body written as a block below it.
+However, now the body is inside the function value, as well as
+inside the parentheses of the call to <code>forEach</code>. This is why it
+has to be closed with the closing brace <em>and</em> closing parenthesis.</p>
+<p><a class=p_ident id="p_u1F6T5TuZI" href="#p_u1F6T5TuZI"></a>Using this pattern, we can
+specify a variable name for the current element (<code>number</code>), rather
+than having to pick it out of the array manually.</p>
+<p><a class=p_ident id="p_w5leJJdYGK" href="#p_w5leJJdYGK"></a>In fact, we don&#8217;t need to write <code>forEach</code>
+ourselves. It is available as a standard method on arrays. Since the
+array is already provided as the thing the method acts on, <code>forEach</code>
+takes only one required argument: the function to be executed for each
+element.</p>
+<p><a class=p_ident id="p_BbxEeZ0Pmw" href="#p_BbxEeZ0Pmw"></a>To illustrate how helpful this is, let&#8217;s look back at a function
+from <a href="04_data.html#analysis">the previous chapter</a>. It contains two
+array-traversing loops.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1CXbGUgiP6" href="#c_1CXbGUgiP6"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">entry</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">journal</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">entry</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">events</span> <span class="cm-operator">=</span> <span class="cm-variable-2">journal</span>[<span class="cm-variable-2">entry</span>].<span class="cm-property">events</span>;
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">events</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">event</span> <span class="cm-operator">=</span> <span class="cm-variable-2">events</span>[<span class="cm-variable-2">i</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">event</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
+        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">journal</span>));
+    }
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
+}</pre>
+<p><a class=p_ident id="p_CGf69rc/Yq" href="#p_CGf69rc/Yq"></a>Working with <code>forEach</code> makes it slightly shorter
+and quite a bit cleaner.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_gIY8Dk2DPY" href="#c_gIY8Dk2DPY"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
+  <span class="cm-variable-2">journal</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">entry</span>) {
+    <span class="cm-variable-2">entry</span>.<span class="cm-property">events</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">event</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
+        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">journal</span>));
+    });
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
+}</pre>
+<h2><a class=h_ident id="h_xxCc98lOBK" href="#h_xxCc98lOBK"></a>Higher-order functions</h2>
+<p><a class=p_ident id="p_cao2fH68Tj" href="#p_cao2fH68Tj"></a>Functions that
+operate on other functions, either by taking them as arguments or by
+returning them, are called <em>higher-order functions</em>. If you have
+already accepted the fact that functions are regular values, there is
+nothing particularly remarkable about the fact that such functions
+exist. The term comes from mathematics, where the distinction
+between functions and other values is taken more seriously.</p>
+<p><a class=p_ident id="p_+cgNTV2i2y" href="#p_+cgNTV2i2y"></a>Higher-order functions allow us to abstract over
+<em>actions</em>, not just values. They come in several forms. For example,
+you can have functions that create new functions.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9JAVbcWLFt" href="#c_9JAVbcWLFt"></a><span class="cm-keyword">function</span> <span class="cm-variable">greaterThan</span>(<span class="cm-def">n</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">m</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">m</span> <span class="cm-operator">></span> <span class="cm-variable-2">n</span>; };
+}
+<span class="cm-keyword">var</span> <span class="cm-variable">greaterThan10</span> <span class="cm-operator">=</span> <span class="cm-variable">greaterThan</span>(<span class="cm-number">10</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">greaterThan10</span>(<span class="cm-number">11</span>));
+<span class="cm-comment">// → true</span></pre>
+<p><a class=p_ident id="p_MKDSIQ0X9D" href="#p_MKDSIQ0X9D"></a>And you can have functions that change other functions.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_JVArXJ1Pc1" href="#c_JVArXJ1Pc1"></a><span class="cm-keyword">function</span> <span class="cm-variable">noisy</span>(<span class="cm-def">f</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">arg</span>) {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"calling with"</span>, <span class="cm-variable-2">arg</span>);
+    <span class="cm-keyword">var</span> <span class="cm-def">val</span> <span class="cm-operator">=</span> <span class="cm-variable-2">f</span>(<span class="cm-variable-2">arg</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"called with"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- got"</span>, <span class="cm-variable-2">val</span>);
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">val</span>;
+  };
+}
+<span class="cm-variable">noisy</span>(<span class="cm-variable">Boolean</span>)(<span class="cm-number">0</span>);
+<span class="cm-comment">// → calling with 0</span>
+<span class="cm-comment">// → called with 0 - got false</span></pre>
+<p><a class=p_ident id="p_2qBy/XBHVa" href="#p_2qBy/XBHVa"></a>You can even write functions that provide new types of control flow.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_IiJsXvslVu" href="#c_IiJsXvslVu"></a><span class="cm-keyword">function</span> <span class="cm-variable">unless</span>(<span class="cm-def">test</span>, <span class="cm-def">then</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">test</span>) <span class="cm-variable-2">then</span>();
+}
+<span class="cm-keyword">function</span> <span class="cm-variable">repeat</span>(<span class="cm-def">times</span>, <span class="cm-def">body</span>) {
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">times</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) <span class="cm-variable-2">body</span>(<span class="cm-variable-2">i</span>);
+}
+
+<span class="cm-variable">repeat</span>(<span class="cm-number">3</span>, <span class="cm-keyword">function</span>(<span class="cm-def">n</span>) {
+  <span class="cm-variable">unless</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">%</span> <span class="cm-number">2</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">n</span>, <span class="cm-string">"is even"</span>);
+  });
+});
+<span class="cm-comment">// → 0 is even</span>
+<span class="cm-comment">// → 2 is even</span></pre>
+<p><a class=p_ident id="p_i6rGSdWQvz" href="#p_i6rGSdWQvz"></a>The lexical scoping
+rules that we discussed in <a href="03_functions.html#scoping">Chapter 3</a>
+work to our advantage when using functions in this way. In the previous example, the <code>n</code> variable is a parameter to the outer function.
+Because the inner function lives inside the environment of the outer
+one, it can use <code>n</code>. The bodies of such inner functions can access the
+variables around them. They can play a role similar to the <code>{}</code> blocks
+used in regular loops and conditional statements. An important
+difference is that variables declared inside inner functions do not
+end up in the environment of the outer function. And that is usually a
+good thing.</p>
+<h2><a class=h_ident id="h_7/X8BSjdvi" href="#h_7/X8BSjdvi"></a>Passing along arguments</h2>
+<p><a class=p_ident id="p_IYAO9/PwTt" href="#p_IYAO9/PwTt"></a>The <code>noisy</code> function
+defined earlier, which wraps its argument in another function, has a rather
+serious deficit.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9Deoi4g6M/" href="#c_9Deoi4g6M/"></a><span class="cm-keyword">function</span> <span class="cm-variable">noisy</span>(<span class="cm-def">f</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">arg</span>) {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"calling with"</span>, <span class="cm-variable-2">arg</span>);
+    <span class="cm-keyword">var</span> <span class="cm-def">val</span> <span class="cm-operator">=</span> <span class="cm-variable-2">f</span>(<span class="cm-variable-2">arg</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"called with"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- got"</span>, <span class="cm-variable-2">val</span>);
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">val</span>;
+  };
+}</pre>
+<p><a class=p_ident id="p_xa/8T14jAc" href="#p_xa/8T14jAc"></a>If <code>f</code> takes more than one parameter, it gets only the first one.
+We could add a bunch of arguments to the inner function (<code>arg1</code>,
+<code>arg2</code>, and so on) and pass them all to <code>f</code>, but it is not clear how many
+would be enough. This solution would also deprive <code>f</code> of the
+information in <code>arguments.length</code>. Since we&#8217;d always pass the same
+number of arguments, it wouldn&#8217;t know how many arguments were
+originally given.</p>
+<p><a class=p_ident id="p_d8oC4azbX1" href="#p_d8oC4azbX1"></a>For
+these kinds of situations, JavaScript functions have an <code>apply</code>
+method. You pass it an array (or array-like object) of arguments, and
+it will call the function with those arguments.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_OwePsf3FVa" href="#c_OwePsf3FVa"></a><span class="cm-keyword">function</span> <span class="cm-variable">transparentWrapping</span>(<span class="cm-def">f</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">f</span>.<span class="cm-property">apply</span>(<span class="cm-atom">null</span>, <span class="cm-variable-2">arguments</span>);
+  };
+}</pre>
+<p><a class=p_ident id="p_DzgFx1ko9R" href="#p_DzgFx1ko9R"></a>That&#8217;s a useless function, but it shows the pattern we are
+interested in—the function it returns passes all of the given
+arguments, and only those arguments, to <code>f</code>. It does this by passing
+its own <code>arguments</code> object to <code>apply</code>. The first argument to <code>apply</code>,
+for which we are passing <code>null</code> here, can be used to simulate a
+method call. We will come back to that in the
+<a href="06_object.html#call_method">next chapter</a>.</p>
+<h2><a class=h_ident id="h_AxpOdvCznQ" href="#h_AxpOdvCznQ"></a>JSON</h2>
+<p><a class=p_ident id="p_A2VaNOTR7R" href="#p_A2VaNOTR7R"></a>Higher-order functions that somehow apply a function to the
+elements of an array are widely used in JavaScript. The <code>forEach</code>
+method is the most primitive such function. There are a number of
+other variants available as methods on arrays. To familiarize
+ourselves with them, let&#8217;s play around with another data set.</p>
+<p><a class=p_ident id="p_U8cxfiInkI" href="#p_U8cxfiInkI"></a>A few years ago, someone crawled through a lot
+of archives and put together a book on the history of my family name
+(Haverbeke—meaning Oatbrook). I opened it hoping to find
+knights, pirates, and alchemists ... but the book turns out to be
+mostly full of Flemish farmers. For my amusement, I extracted the
+information on my direct ancestors and put it into a
+computer-readable format.</p>
+<p><a class=p_ident id="p_kyOqr/Ovkw" href="#p_kyOqr/Ovkw"></a>The file I created looks something like
+this:</p>
+<pre data-language="application/json" class="snippet cm-s-default"><a class=c_ident id="c_ndJ1dhsRpC" href="#c_ndJ1dhsRpC"></a>[
+  {<span class="cm-string cm-property">"name"</span>: <span class="cm-string">"Emma de Milliano"</span>, <span class="cm-string cm-property">"sex"</span>: <span class="cm-string">"f"</span>,
+   <span class="cm-string cm-property">"born"</span>: <span class="cm-number">1876</span>, <span class="cm-string cm-property">"died"</span>: <span class="cm-number">1956</span>,
+   <span class="cm-string cm-property">"father"</span>: <span class="cm-string">"Petrus de Milliano"</span>,
+   <span class="cm-string cm-property">"mother"</span>: <span class="cm-string">"Sophia van Damme"</span>},
+  {<span class="cm-string cm-property">"name"</span>: <span class="cm-string">"Carolus Haverbeke"</span>, <span class="cm-string cm-property">"sex"</span>: <span class="cm-string">"m"</span>,
+   <span class="cm-string cm-property">"born"</span>: <span class="cm-number">1832</span>, <span class="cm-string cm-property">"died"</span>: <span class="cm-number">1905</span>,
+   <span class="cm-string cm-property">"father"</span>: <span class="cm-string">"Carel Haverbeke"</span>,
+   <span class="cm-string cm-property">"mother"</span>: <span class="cm-string">"Maria van Brussel"</span>},
+  <span class="cm-variable">…</span> <span class="cm-variable">and</span> <span class="cm-variable">so</span> <span class="cm-variable">on</span>
+]</pre>
+<p><a class=p_ident id="p_TtSCtpw/XN" href="#p_TtSCtpw/XN"></a>This format is called JSON (pronounced “Jason”),
+which stands for JavaScript Object Notation. It is widely used as a
+data storage and communication format on the Web.</p>
+<p><a class=p_ident id="p_LkHACkXND1" href="#p_LkHACkXND1"></a>JSON is similar to
+JavaScript&#8217;s way of writing arrays and objects, with a few
+restrictions. All property names have to be surrounded by double quotes, and
+only simple data expressions are allowed—no function calls,
+variables, or anything that involves actual computation. Comments are not
+allowed in JSON.</p>
+<p><a class=p_ident id="p_1IU60Zh2Af" href="#p_1IU60Zh2Af"></a>JavaScript
+gives us functions, <code>JSON.stringify</code> and <code>JSON.parse</code>, that convert
+data from and to this format. The first takes a JavaScript value and
+returns a JSON-encoded string. The second takes such a string and
+converts it to the value it encodes.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_mzHhvmUWat" href="#c_mzHhvmUWat"></a><span class="cm-keyword">var</span> <span class="cm-variable">string</span> <span class="cm-operator">=</span> <span class="cm-variable">JSON</span>.<span class="cm-property">stringify</span>({<span class="cm-property">name</span>: <span class="cm-string">"X"</span>, <span class="cm-property">born</span>: <span class="cm-number">1980</span>});
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">string</span>);
+<span class="cm-comment">// → {"name":"X","born":1980}</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">JSON</span>.<span class="cm-property">parse</span>(<span class="cm-variable">string</span>).<span class="cm-property">born</span>);
+<span class="cm-comment">// → 1980</span></pre>
+<p><a class=p_ident id="p_NDrk0od6QR" href="#p_NDrk0od6QR"></a>The variable <code>ANCESTRY_FILE</code>, available in
+the sandbox for this chapter and in
+<a href="http://eloquentjavascript.net/code/ancestry.js">a downloadable file</a> on
+the website, contains the
+content of my JSON file as a string. Let&#8217;s decode it and see how
+many people it contains.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_iIU5d+0x1R" href="#c_iIU5d+0x1R"></a><span class="cm-keyword">var</span> <span class="cm-variable">ancestry</span> <span class="cm-operator">=</span> <span class="cm-variable">JSON</span>.<span class="cm-property">parse</span>(<span class="cm-variable">ANCESTRY_FILE</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">ancestry</span>.<span class="cm-property">length</span>);
+<span class="cm-comment">// → 39</span></pre>
+<h2><a class=h_ident id="h_1BJbwiI0gI" href="#h_1BJbwiI0gI"></a>Filtering an array</h2>
+<p><a class=p_ident id="p_Vpf83lHLbL" href="#p_Vpf83lHLbL"></a>To find
+the people in the ancestry data set who were young in 1924, the
+following function might be helpful. It filters out the elements in an
+array that don&#8217;t pass a test.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_VcGTxSYgrf" href="#c_VcGTxSYgrf"></a><span class="cm-keyword">function</span> <span class="cm-variable">filter</span>(<span class="cm-def">array</span>, <span class="cm-def">test</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">passed</span> <span class="cm-operator">=</span> [];
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">test</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]))
+      <span class="cm-variable-2">passed</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">passed</span>;
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">filter</span>(<span class="cm-variable">ancestry</span>, <span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">person</span>.<span class="cm-property">born</span> <span class="cm-operator">></span> <span class="cm-number">1900</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">person</span>.<span class="cm-property">born</span> <span class="cm-operator">&lt;</span> <span class="cm-number">1925</span>;
+}));
+<span class="cm-comment">// → [{name: "Philibert Haverbeke", …}, …]</span></pre>
+<p><a class=p_ident id="p_F1sdIqvMdQ" href="#p_F1sdIqvMdQ"></a>This uses the
+argument named <code>test</code>, a function value, to fill in a “gap” in the
+computation. The <code>test</code> function is called for each element, and its
+return value determines whether an element is included in the returned
+array.</p>
+<p><a class=p_ident id="p_l78Pj0p/pD" href="#p_l78Pj0p/pD"></a>Three people in the file were alive and young in
+1924: my grandfather, grandmother, and great-aunt.</p>
+<p><a class=p_ident id="p_vcnUQxte/7" href="#p_vcnUQxte/7"></a>Note how the
+<code>filter</code> function, rather than deleting elements from the existing
+array, builds up a new array with only the elements that pass the
+test. This function is <em>pure</em>. It does not modify the array it is
+given.</p>
+<p><a class=p_ident id="p_OduOippCCU" href="#p_OduOippCCU"></a>Like <code>forEach</code>, <code>filter</code> is also a standard method on arrays. The
+example defined the function only in order to show what it does
+internally. From now on, we&#8217;ll use it like this instead:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_V5IGmt9uTK" href="#c_V5IGmt9uTK"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">ancestry</span>.<span class="cm-property">filter</span>(<span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">person</span>.<span class="cm-property">father</span> <span class="cm-operator">==</span> <span class="cm-string">"Carel Haverbeke"</span>;
+}));
+<span class="cm-comment">// → [{name: "Carolus Haverbeke", …}]</span></pre>
+<h2><a class=h_ident id="h_lJEtQ+qjXz" href="#h_lJEtQ+qjXz"></a>Transforming with map</h2>
+<p><a class=p_ident id="p_iZsa8JAje9" href="#p_iZsa8JAje9"></a>Say we
+have an array of objects representing people, produced by filtering
+the <code>ancestry</code> array somehow. But we want an array of names, which is
+easier to read.</p>
+<p><a class=p_ident id="p_/HoP3C1P28" href="#p_/HoP3C1P28"></a>The <code>map</code> method transforms an array by
+applying a function to all of its elements and building a new array
+from the returned values. The new array will have the same length as
+the input array, but its content will have been “mapped” to a new form
+by the function.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Oc5rRWigBO" href="#c_Oc5rRWigBO"></a><span class="cm-keyword">function</span> <span class="cm-variable">map</span>(<span class="cm-def">array</span>, <span class="cm-def">transform</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">mapped</span> <span class="cm-operator">=</span> [];
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
+    <span class="cm-variable-2">mapped</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">transform</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]));
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">mapped</span>;
+}
+
+<span class="cm-keyword">var</span> <span class="cm-variable">overNinety</span> <span class="cm-operator">=</span> <span class="cm-variable">ancestry</span>.<span class="cm-property">filter</span>(<span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">person</span>.<span class="cm-property">died</span> <span class="cm-operator">-</span> <span class="cm-variable-2">person</span>.<span class="cm-property">born</span> <span class="cm-operator">></span> <span class="cm-number">90</span>;
+});
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">map</span>(<span class="cm-variable">overNinety</span>, <span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">person</span>.<span class="cm-property">name</span>;
+}));
+<span class="cm-comment">// → ["Clara Aernoudts", "Emile Haverbeke",</span>
+<span class="cm-comment">//    "Maria Haverbeke"]</span></pre>
+<p><a class=p_ident id="p_Jd3axE7OGU" href="#p_Jd3axE7OGU"></a>Interestingly, the people who lived to at least 90 years of age are the
+same three people who we saw before—the people who were young in the
+1920s, which happens to be the most recent generation in my data set.
+I guess medicine has come a long way.</p>
+<p><a class=p_ident id="p_kz8fxQbtBm" href="#p_kz8fxQbtBm"></a>Like <code>forEach</code> and <code>filter</code>, <code>map</code> is also a standard method on
+arrays.</p>
+<h2><a class=h_ident id="h_fx3e34kT/k" href="#h_fx3e34kT/k"></a>Summarizing with reduce</h2>
+<p><a class=p_ident id="p_jc3nW2aN35" href="#p_jc3nW2aN35"></a>Another common pattern of computation on arrays is computing
+a single value from them. Our recurring example, summing a collection
+of numbers, is an instance of this. Another example would be finding
+the person with the earliest year of birth in the data set.</p>
+<p><a class=p_ident id="p_AR3Kp1oBC4" href="#p_AR3Kp1oBC4"></a>The higher-order
+operation that represents this pattern is called <em>reduce</em> (or
+sometimes <em>fold</em>). You can think of it as folding up the array, one
+element at a time. When summing numbers, you&#8217;d start with the number
+zero and, for each element, combine it with the current sum by adding
+the two.</p>
+<p><a class=p_ident id="p_2+GsHstzgE" href="#p_2+GsHstzgE"></a>The parameters to the <code>reduce</code> function are, apart from the array, a
+combining function and a start value. This function is a little less
+straightforward than <code>filter</code> and <code>map</code>, so pay careful attention.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_0Tuk2O6cyM" href="#c_0Tuk2O6cyM"></a><span class="cm-keyword">function</span> <span class="cm-variable">reduce</span>(<span class="cm-def">array</span>, <span class="cm-def">combine</span>, <span class="cm-def">start</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">current</span> <span class="cm-operator">=</span> <span class="cm-variable-2">start</span>;
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
+    <span class="cm-variable-2">current</span> <span class="cm-operator">=</span> <span class="cm-variable-2">combine</span>(<span class="cm-variable-2">current</span>, <span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">current</span>;
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">reduce</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>], <span class="cm-keyword">function</span>(<span class="cm-def">a</span>, <span class="cm-def">b</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">a</span> <span class="cm-operator">+</span> <span class="cm-variable-2">b</span>;
+}, <span class="cm-number">0</span>));
+<span class="cm-comment">// → 10</span></pre>
+<p><a class=p_ident id="p_r9cFmJJTar" href="#p_r9cFmJJTar"></a>The standard array method <code>reduce</code>, which of course
+corresponds to this function, has an added convenience. If your array
+contains at least one element, you are allowed to leave off the
+<code>start</code> argument. The method will take the first element of the array
+as its start value and start reducing at the second element.</p>
+<p><a class=p_ident id="p_I1pmLx5OiJ" href="#p_I1pmLx5OiJ"></a>To use <code>reduce</code> to find my most
+ancient known ancestor, we can write something like this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_yFx+CUT9gj" href="#c_yFx+CUT9gj"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">ancestry</span>.<span class="cm-property">reduce</span>(<span class="cm-keyword">function</span>(<span class="cm-def">min</span>, <span class="cm-def">cur</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">cur</span>.<span class="cm-property">born</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">min</span>.<span class="cm-property">born</span>) <span class="cm-keyword">return</span> <span class="cm-variable-2">cur</span>;
+  <span class="cm-keyword">else</span> <span class="cm-keyword">return</span> <span class="cm-variable-2">min</span>;
+}));
+<span class="cm-comment">// → {name: "Pauwels van Haverbeke", born: 1535, …}</span></pre>
+<h2><a class=h_ident id="h_+NeFt8aXxf" href="#h_+NeFt8aXxf"></a>Composability</h2>
+<p><a class=p_ident id="p_UHvCjnmGjM" href="#p_UHvCjnmGjM"></a>Consider how we would
+have written the previous example (finding the person with the
+earliest year of birth) without higher-order functions. The code is
+not that much worse.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZzCa/ILXHh" href="#c_ZzCa/ILXHh"></a><span class="cm-keyword">var</span> <span class="cm-variable">min</span> <span class="cm-operator">=</span> <span class="cm-variable">ancestry</span>[<span class="cm-number">0</span>];
+<span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">ancestry</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-variable">cur</span> <span class="cm-operator">=</span> <span class="cm-variable">ancestry</span>[<span class="cm-variable">i</span>];
+  <span class="cm-keyword">if</span> (<span class="cm-variable">cur</span>.<span class="cm-property">born</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">min</span>.<span class="cm-property">born</span>)
+    <span class="cm-variable">min</span> <span class="cm-operator">=</span> <span class="cm-variable">cur</span>;
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">min</span>);
+<span class="cm-comment">// → {name: "Pauwels van Haverbeke", born: 1535, …}</span></pre>
+<p><a class=p_ident id="p_EbeznYJOvD" href="#p_EbeznYJOvD"></a>There are a few more variables, and the program is two lines
+longer but still quite easy to understand.</p>
+<p id="average_function"><a class=p_ident id="p_a0FspsuDHF" href="#p_a0FspsuDHF"></a>Higher-order
+functions start to shine when you need to <em>compose</em> functions. As an
+example, let&#8217;s write code that finds the average age for men and for
+women in the data set.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_uqgWfWbd7m" href="#c_uqgWfWbd7m"></a><span class="cm-keyword">function</span> <span class="cm-variable">average</span>(<span class="cm-def">array</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">plus</span>(<span class="cm-def">a</span>, <span class="cm-def">b</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">a</span> <span class="cm-operator">+</span> <span class="cm-variable-2">b</span>; }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>.<span class="cm-property">reduce</span>(<span class="cm-variable-2">plus</span>) <span class="cm-operator">/</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>;
+}
+<span class="cm-keyword">function</span> <span class="cm-variable">age</span>(<span class="cm-def">p</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">p</span>.<span class="cm-property">died</span> <span class="cm-operator">-</span> <span class="cm-variable-2">p</span>.<span class="cm-property">born</span>; }
+<span class="cm-keyword">function</span> <span class="cm-variable">male</span>(<span class="cm-def">p</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">p</span>.<span class="cm-property">sex</span> <span class="cm-operator">==</span> <span class="cm-string">"m"</span>; }
+<span class="cm-keyword">function</span> <span class="cm-variable">female</span>(<span class="cm-def">p</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">p</span>.<span class="cm-property">sex</span> <span class="cm-operator">==</span> <span class="cm-string">"f"</span>; }
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">average</span>(<span class="cm-variable">ancestry</span>.<span class="cm-property">filter</span>(<span class="cm-variable">male</span>).<span class="cm-property">map</span>(<span class="cm-variable">age</span>)));
+<span class="cm-comment">// → 61.67</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">average</span>(<span class="cm-variable">ancestry</span>.<span class="cm-property">filter</span>(<span class="cm-variable">female</span>).<span class="cm-property">map</span>(<span class="cm-variable">age</span>)));
+<span class="cm-comment">// → 54.56</span></pre>
+<p><a class=p_ident id="p_Tnj4SDSgBt" href="#p_Tnj4SDSgBt"></a>(It&#8217;s a bit
+silly that we have to define <code>plus</code> as a function, but operators in
+JavaScript, unlike functions, are not values, so you can&#8217;t pass them
+as arguments.)</p>
+<p><a class=p_ident id="p_vIaMNOYUL0" href="#p_vIaMNOYUL0"></a>Instead of tangling the logic into a
+big loop, it is neatly composed into the concepts we are
+interested in—determining sex, computing age, and averaging numbers. We
+can apply these one by one to get the result we are looking for.</p>
+<p><a class=p_ident id="p_ZOp8f8zApw" href="#p_ZOp8f8zApw"></a>This is <em>fabulous</em> for writing clear code. Unfortunately, this clarity
+comes at a cost.</p>
+<h2><a class=h_ident id="h_KTy9HpX3R4" href="#h_KTy9HpX3R4"></a>The cost</h2>
+<p><a class=p_ident id="p_ROxex88LkV" href="#p_ROxex88LkV"></a>In the happy land of elegant code
+and pretty rainbows, there lives a spoil-sport monster called
+<em>inefficiency</em>.</p>
+<p><a class=p_ident id="p_KZv3u+lncm" href="#p_KZv3u+lncm"></a>A program that processes an array is most
+elegantly expressed as a sequence of cleanly separated steps that each
+do something with the array and produce a new array. But building up
+all those intermediate arrays is somewhat expensive.</p>
+<p><a class=p_ident id="p_fwEhp/GEHu" href="#p_fwEhp/GEHu"></a>Likewise, passing a function to
+<code>forEach</code> and letting that method handle the array iteration for us is
+convenient and easy to read. But function calls in JavaScript are
+costly compared to simple loop bodies.</p>
+<p><a class=p_ident id="p_QCCz0cq1ti" href="#p_QCCz0cq1ti"></a>And so it goes with a lot of techniques that help
+improve the clarity of a program. Abstractions add layers between the
+raw things the computer is doing and the concepts we are working with
+and thus cause the machine to perform more work. This is not an iron
+law—there are programming languages that have better support for
+building abstractions without adding inefficiencies, and even in
+JavaScript, an experienced programmer can find ways to write abstract
+code that is still fast. But it is a problem that comes up a lot.</p>
+<p><a class=p_ident id="p_8YtdVmu3Oc" href="#p_8YtdVmu3Oc"></a>Fortunately, most computers are insanely fast. If you
+are processing a modest set of data or doing something that has
+to happen only on a human time scale (say, every time the user clicks a
+button), then it <em>does not matter</em> whether you wrote a pretty solution
+that takes half a millisecond or a super-optimized solution that takes
+a tenth of a millisecond.</p>
+<p><a class=p_ident id="p_s9R2GjExxl" href="#p_s9R2GjExxl"></a>It is helpful to
+roughly keep track of how often a piece of your program is going to
+run. If you have a loop inside a loop (either directly or through
+the outer loop calling a function that ends up performing the inner
+loop), the code inside the inner loop will end up running <em>N</em>×<em>M</em>
+times, where <em>N</em> is the number of times the outer loop repeats and
+<em>M</em> is the number of times the inner loop repeats within each iteration
+of the outer loop. If that inner loop contains another loop that makes
+<em>P</em> rounds, its body will run <em>M</em>×<em>N</em>×<em>P</em> times, and so on. This
+can add up to large numbers, and when a program is slow, the problem
+can often be traced to only a small part of the code, which sits inside an inner loop.</p>
+<h2><a class=h_ident id="h_XnMZS4zMW6" href="#h_XnMZS4zMW6"></a>Great-great-great-great-...</h2>
+<p><a class=p_ident id="p_Typ91CWfYn" href="#p_Typ91CWfYn"></a>My grandfather, Philibert Haverbeke, is
+included in the data file. By starting with him, I can trace my
+lineage to find out whether the most ancient person in the data,
+Pauwels van Haverbeke, is my direct ancestor. And if he is, I would
+like to know how much DNA I theoretically share with him.</p>
+<p><a class=p_ident id="p_pwQeT587/V" href="#p_pwQeT587/V"></a>To be able to go from a parent&#8217;s name to the actual object that
+represents this person, we first build up an object that associates
+names with people.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_/p8Gq6iabK" href="#c_/p8Gq6iabK"></a><span class="cm-keyword">var</span> <span class="cm-variable">byName</span> <span class="cm-operator">=</span> {};
+<span class="cm-variable">ancestry</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+  <span class="cm-variable">byName</span>[<span class="cm-variable-2">person</span>.<span class="cm-property">name</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">person</span>;
+});
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">byName</span>[<span class="cm-string">"Philibert Haverbeke"</span>]);
+<span class="cm-comment">// → {name: "Philibert Haverbeke", …}</span></pre>
+<p><a class=p_ident id="p_Yko1+UXeBG" href="#p_Yko1+UXeBG"></a>Now, the problem is not entirely as simple as following the <code>father</code>
+properties and counting how many we need to reach Pauwels. There are
+several cases in the family tree where people married their second
+cousins (tiny villages and all that). This causes the branches of the
+family tree to rejoin in a few places, which means I share more than
+1/2<sup><em>G</em></sup> of my genes with this person, where <em>G</em> for the number of
+generations between Pauwels and me. This formula comes from the idea
+that each generation splits the gene pool in two.</p>
+<p><a class=p_ident id="p_qznNjPi9uB" href="#p_qznNjPi9uB"></a>A reasonable way to think about
+this problem is to look at it as being analogous to <code>reduce</code>, which
+condenses an array to a single value by repeatedly combining
+values, left to right. In this case, we also want to condense our data
+structure to a single value but in a way that follows family
+lines. The <em>shape</em> of the data is that of a family tree, rather than a
+flat list.</p>
+<p><a class=p_ident id="p_1De08sAcOD" href="#p_1De08sAcOD"></a>The way we want to reduce this shape is by computing a value for a
+given person by combining values from their ancestors. This can be
+done recursively: if we are interested in person <em>A</em>, we have to
+compute the values for <em>A</em>’s parents, which in turn requires us to
+compute the value for <em>A</em>’s grandparents, and so on. In principle,
+that&#8217;d require us to look at an infinite number of people, but since
+our data set is finite, we have to stop somewhere. We&#8217;ll allow a
+default value to be given to our reduction function, which will be
+used for people who are not in the data. In our case, that value is
+simply zero, on the assumption that people not in the list don&#8217;t share
+DNA with the ancestor we are looking at.</p>
+<p><a class=p_ident id="p_B0sEhVOeSP" href="#p_B0sEhVOeSP"></a>Given a person, a
+function to combine values from the two parents of a given person, and
+a default value, <code>reduceAncestors</code> condenses a value from a family
+tree.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_FR1ZA75xXV" href="#c_FR1ZA75xXV"></a><span class="cm-keyword">function</span> <span class="cm-variable">reduceAncestors</span>(<span class="cm-def">person</span>, <span class="cm-def">f</span>, <span class="cm-def">defaultValue</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">valueFor</span>(<span class="cm-def">person</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">person</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span>)
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">defaultValue</span>;
+    <span class="cm-keyword">else</span>
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">f</span>(<span class="cm-variable-2">person</span>, <span class="cm-variable-2">valueFor</span>(<span class="cm-variable">byName</span>[<span class="cm-variable-2">person</span>.<span class="cm-property">mother</span>]),
+                       <span class="cm-variable-2">valueFor</span>(<span class="cm-variable">byName</span>[<span class="cm-variable-2">person</span>.<span class="cm-property">father</span>]));
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">valueFor</span>(<span class="cm-variable-2">person</span>);
+}</pre>
+<p><a class=p_ident id="p_HK0Nr6MiCM" href="#p_HK0Nr6MiCM"></a>The inner function (<code>valueFor</code>) handles a
+single person. Through the magic of recursion, it can simply call
+itself to handle the father and the mother of this person. The
+results, along with the person object itself, are passed to <code>f</code>, which
+returns the actual value for this person.</p>
+<p><a class=p_ident id="p_2Q4JEt3Fiv" href="#p_2Q4JEt3Fiv"></a>We can then use this to compute the amount of DNA my
+grandfather shared with Pauwels van Haverbeke and divide that by
+four.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DKCt/KZuIB" href="#c_DKCt/KZuIB"></a><span class="cm-keyword">function</span> <span class="cm-variable">sharedDNA</span>(<span class="cm-def">person</span>, <span class="cm-def">fromMother</span>, <span class="cm-def">fromFather</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">person</span>.<span class="cm-property">name</span> <span class="cm-operator">==</span> <span class="cm-string">"Pauwels van Haverbeke"</span>)
+    <span class="cm-keyword">return</span> <span class="cm-number">1</span>;
+  <span class="cm-keyword">else</span>
+    <span class="cm-keyword">return</span> (<span class="cm-variable-2">fromMother</span> <span class="cm-operator">+</span> <span class="cm-variable-2">fromFather</span>) <span class="cm-operator">/</span> <span class="cm-number">2</span>;
+}
+<span class="cm-keyword">var</span> <span class="cm-variable">ph</span> <span class="cm-operator">=</span> <span class="cm-variable">byName</span>[<span class="cm-string">"Philibert Haverbeke"</span>];
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">reduceAncestors</span>(<span class="cm-variable">ph</span>, <span class="cm-variable">sharedDNA</span>, <span class="cm-number">0</span>) <span class="cm-operator">/</span> <span class="cm-number">4</span>);
+<span class="cm-comment">// → 0.00049</span></pre>
+<p><a class=p_ident id="p_+kx1i84Abe" href="#p_+kx1i84Abe"></a>The person with the name Pauwels van Haverbeke obviously shared 100 percent
+of his DNA with Pauwels van Haverbeke (there are no people who share
+names in the data set), so the function returns 1 for him. All other
+people share the average of the amounts that their parents share.</p>
+<p><a class=p_ident id="p_sxFDHiagLr" href="#p_sxFDHiagLr"></a>So, statistically speaking, I share about 0.05 percent of my DNA with
+this 16th-century person. It should be noted that this is only a
+statistical approximation, not an exact amount. It is a rather small
+number, but given how much genetic material we carry (about 3 billion
+base pairs), there&#8217;s still probably some aspect in the biological
+machine that is me that originates with Pauwels.</p>
+<p><a class=p_ident id="p_GcwzcbaVkE" href="#p_GcwzcbaVkE"></a>We could also have computed this number
+without relying on <code>reduceAncestors</code>. But separating the general
+approach (condensing a family tree) from the specific case (computing
+shared DNA) can improve the clarity of the code and allows us to
+reuse the abstract part of the program for other cases. For example,
+the following code finds the percentage of known ancestors, for a
+given person, who lived past 70:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wz0PzuR/zD" href="#c_wz0PzuR/zD"></a><span class="cm-keyword">function</span> <span class="cm-variable">countAncestors</span>(<span class="cm-def">person</span>, <span class="cm-def">test</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">combine</span>(<span class="cm-def">person</span>, <span class="cm-def">fromMother</span>, <span class="cm-def">fromFather</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">thisOneCounts</span> <span class="cm-operator">=</span> <span class="cm-variable-2">test</span>(<span class="cm-variable-2">person</span>);
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">fromMother</span> <span class="cm-operator">+</span> <span class="cm-variable-2">fromFather</span> <span class="cm-operator">+</span> (<span class="cm-variable-2">thisOneCounts</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">0</span>);
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable">reduceAncestors</span>(<span class="cm-variable-2">person</span>, <span class="cm-variable-2">combine</span>, <span class="cm-number">0</span>);
+}
+<span class="cm-keyword">function</span> <span class="cm-variable">longLivingPercentage</span>(<span class="cm-def">person</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">all</span> <span class="cm-operator">=</span> <span class="cm-variable">countAncestors</span>(<span class="cm-variable-2">person</span>, <span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+    <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+  });
+  <span class="cm-keyword">var</span> <span class="cm-def">longLiving</span> <span class="cm-operator">=</span> <span class="cm-variable">countAncestors</span>(<span class="cm-variable-2">person</span>, <span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+    <span class="cm-keyword">return</span> (<span class="cm-variable-2">person</span>.<span class="cm-property">died</span> <span class="cm-operator">-</span> <span class="cm-variable-2">person</span>.<span class="cm-property">born</span>) <span class="cm-operator">>=</span> <span class="cm-number">70</span>;
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">longLiving</span> <span class="cm-operator">/</span> <span class="cm-variable-2">all</span>;
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">longLivingPercentage</span>(<span class="cm-variable">byName</span>[<span class="cm-string">"Emile Haverbeke"</span>]));
+<span class="cm-comment">// → 0.145</span></pre>
+<p><a class=p_ident id="p_yX3KPrQkep" href="#p_yX3KPrQkep"></a>Such numbers are not to be taken too seriously, given that
+our data set contains a rather arbitrary collection of people. But the
+code illustrates the fact that <code>reduceAncestors</code> gives us a useful
+piece of vocabulary for working with the family tree data
+structure.</p>
+<h2><a class=h_ident id="h_fwBD5oTMLl" href="#h_fwBD5oTMLl"></a>Binding</h2>
+<p><a class=p_ident id="p_JR92h9ZvcR" href="#p_JR92h9ZvcR"></a>The <code>bind</code> method, which all
+functions have, creates a new function that will call the original
+function but with some of the arguments already fixed.</p>
+<p><a class=p_ident id="p_RpFvD2j6a4" href="#p_RpFvD2j6a4"></a>The following code shows an
+example of <code>bind</code> in use. It defines a function <code>isInSet</code> that
+tells us whether a person is in a given set of strings. To call
+<code>filter</code> in order to collect those person objects whose names are in a
+specific set, we can either write a function expression that makes a
+call to <code>isInSet</code> with our set as its first argument or <em>partially
+apply</em> the <code>isInSet</code> function.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_P/KGz4FBMo" href="#c_P/KGz4FBMo"></a><span class="cm-keyword">var</span> <span class="cm-variable">theSet</span> <span class="cm-operator">=</span> [<span class="cm-string">"Carel Haverbeke"</span>, <span class="cm-string">"Maria van Brussel"</span>,
+              <span class="cm-string">"Donald Duck"</span>];
+<span class="cm-keyword">function</span> <span class="cm-variable">isInSet</span>(<span class="cm-def">set</span>, <span class="cm-def">person</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">set</span>.<span class="cm-property">indexOf</span>(<span class="cm-variable-2">person</span>.<span class="cm-property">name</span>) <span class="cm-operator">></span> <span class="cm-operator">-</span><span class="cm-number">1</span>;
+}
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">ancestry</span>.<span class="cm-property">filter</span>(<span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable">isInSet</span>(<span class="cm-variable">theSet</span>, <span class="cm-variable-2">person</span>);
+}));
+<span class="cm-comment">// → [{name: "Maria van Brussel", …},</span>
+<span class="cm-comment">//    {name: "Carel Haverbeke", …}]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">ancestry</span>.<span class="cm-property">filter</span>(<span class="cm-variable">isInSet</span>.<span class="cm-property">bind</span>(<span class="cm-atom">null</span>, <span class="cm-variable">theSet</span>)));
+<span class="cm-comment">// → … same result</span></pre>
+<p><a class=p_ident id="p_P5qnPOIMMg" href="#p_P5qnPOIMMg"></a>The call to <code>bind</code> returns a function that will call <code>isInSet</code> with
+<code>theSet</code> as first argument, followed by any remaining arguments given
+to the bound function.</p>
+<p><a class=p_ident id="p_j9JPuWJlk7" href="#p_j9JPuWJlk7"></a>The first argument, where the example passes <code>null</code>, is used
+for method calls, similar to the first argument to <code>apply</code>. I&#8217;ll
+describe this in more detail in the
+<a href="06_object.html#call_method">next chapter</a>.</p>
+<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
+<p><a class=p_ident id="p_EmYdYeFPjo" href="#p_EmYdYeFPjo"></a>Being able to pass function values to other functions is not just a
+gimmick but a deeply useful aspect of JavaScript. It allows us to
+write computations with “gaps” in them as functions and have the code
+that calls these functions fill in those gaps by providing function
+values that describe the missing computations.</p>
+<p><a class=p_ident id="p_YfXho6cgu+" href="#p_YfXho6cgu+"></a>Arrays provide a number of useful higher-order methods—<code>forEach</code>
+to do something with each element in an array, <code>filter</code> to build a new
+array with some elements filtered out, <code>map</code> to build a new array
+where each element has been put through a function, and <code>reduce</code> to
+combine all an array&#8217;s elements into a single value.</p>
+<p><a class=p_ident id="p_3UBuCIfCEM" href="#p_3UBuCIfCEM"></a>Functions have an <code>apply</code> method that can be used to call them with an
+array specifying their arguments. They also have a <code>bind</code> method,
+which is used to create a partially applied version of the function.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<h3><a class=h_ident id="h_aIOczlLyX1" href="#h_aIOczlLyX1"></a>Flattening</h3>
+<p><a class=p_ident id="p_RqAkArolEa" href="#p_RqAkArolEa"></a>Use the <code>reduce</code> method in combination with
+the <code>concat</code> method to “flatten” an array of arrays into a single
+array that has all the elements of the input arrays.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HFu+EZSG8B" href="#c_HFu+EZSG8B"></a><span class="cm-keyword">var</span> <span class="cm-variable">arrays</span> <span class="cm-operator">=</span> [[<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>], [<span class="cm-number">4</span>, <span class="cm-number">5</span>], [<span class="cm-number">6</span>]];
+<span class="cm-comment">// Your code here.</span>
+<span class="cm-comment">// → [1, 2, 3, 4, 5, 6]</span></pre>
+<h3><a class=h_ident id="h_I9XoVSLsTV" href="#h_I9XoVSLsTV"></a>Mother-child age difference</h3>
+<p><a class=p_ident id="p_a44KIXR4aT" href="#p_a44KIXR4aT"></a>Using the example data set from this chapter, compute the
+average age difference between mothers and children (the age of the
+mother when the child is born). You can use the <code>average</code> function
+defined <a href="05_higher_order.html#average_function">earlier</a> in this
+chapter.</p>
+<p><a class=p_ident id="p_/E+zqsb0UA" href="#p_/E+zqsb0UA"></a>Note that not all the mothers mentioned in the data
+are themselves present in the array. The <code>byName</code> object, which makes
+it easy to find a person&#8217;s object from their name, might be useful
+here.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+30TY+6MeW" href="#c_+30TY+6MeW"></a><span class="cm-keyword">function</span> <span class="cm-variable">average</span>(<span class="cm-def">array</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">plus</span>(<span class="cm-def">a</span>, <span class="cm-def">b</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">a</span> <span class="cm-operator">+</span> <span class="cm-variable-2">b</span>; }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>.<span class="cm-property">reduce</span>(<span class="cm-variable-2">plus</span>) <span class="cm-operator">/</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>;
+}
+
+<span class="cm-keyword">var</span> <span class="cm-variable">byName</span> <span class="cm-operator">=</span> {};
+<span class="cm-variable">ancestry</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">person</span>) {
+  <span class="cm-variable">byName</span>[<span class="cm-variable-2">person</span>.<span class="cm-property">name</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">person</span>;
+});
+
+<span class="cm-comment">// Your code here.</span>
+
+<span class="cm-comment">// → 31.2</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_UL/8si2OX7" href="#p_UL/8si2OX7"></a>Because not all elements in
+the <code>ancestry</code> array produce useful data (we can&#8217;t compute the age
+difference unless we know the birth date of the mother), we will have
+to apply <code>filter</code> in some manner before calling <code>average</code>. You could
+do it as a first pass, by defining a <code>hasKnownMother</code> function and
+filtering on that first. Alternatively, you could start by calling
+<code>map</code> and in your mapping function return either the age difference
+or <code>null</code> if no mother is known. Then, you can call <code>filter</code> to remove
+the <code>null</code> elements before passing the array to <code>average</code>.</p>
+</div></div>
+<h3><a class=h_ident id="h_FkNn96IrQe" href="#h_FkNn96IrQe"></a>Historical life expectancy</h3>
+<p><a class=p_ident id="p_ENbLeUYppS" href="#p_ENbLeUYppS"></a>When we looked up all the people in
+our data set that lived more than 90 years, only the latest
+generation in the data came out. Let&#8217;s take a closer look at that
+phenomenon.</p>
+<p><a class=p_ident id="p_0JOS/ablSJ" href="#p_0JOS/ablSJ"></a>Compute and output the average age of the people
+in the ancestry data set per century. A person is assigned to a
+century by taking their year of death, dividing it by 100,
+and rounding it up, as in <code>Math.ceil(person.died / 100)</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Xi4vRpdLx1" href="#c_Xi4vRpdLx1"></a><span class="cm-keyword">function</span> <span class="cm-variable">average</span>(<span class="cm-def">array</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">plus</span>(<span class="cm-def">a</span>, <span class="cm-def">b</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">a</span> <span class="cm-operator">+</span> <span class="cm-variable-2">b</span>; }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>.<span class="cm-property">reduce</span>(<span class="cm-variable-2">plus</span>) <span class="cm-operator">/</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>;
+}
+
+<span class="cm-comment">// Your code here.</span>
+
+<span class="cm-comment">// → 16: 43.5</span>
+<span class="cm-comment">//   17: 51.2</span>
+<span class="cm-comment">//   18: 52.8</span>
+<span class="cm-comment">//   19: 54.8</span>
+<span class="cm-comment">//   20: 84.7</span>
+<span class="cm-comment">//   21: 94</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_fj5gLJr4+G" href="#p_fj5gLJr4+G"></a>The essence of this example lies in
+grouping the elements of a collection by some aspect of
+theirs—splitting the array of ancestors into smaller arrays with the
+ancestors for each century.</p>
+<p><a class=p_ident id="p_Jonw4Z0wbo" href="#p_Jonw4Z0wbo"></a>During the grouping
+process, keep an object that associates century names (numbers)
+with arrays of either person objects or ages. Since we do not know in
+advance what categories we will find, we&#8217;ll have to create them on the
+fly. For each person, after computing their century, we test whether
+that century was already known. If not, add an array for it. Then add
+the person (or age) to the array for the proper century.</p>
+<p><a class=p_ident id="p_YoO/BHbTiQ" href="#p_YoO/BHbTiQ"></a>Finally, a <code>for</code>/<code>in</code> loop can
+be used to print the average ages for the individual centuries.</p>
+</div></div>
+<p><a class=p_ident id="p_yzI++go/yy" href="#p_yzI++go/yy"></a>For
+bonus points, write a function <code>groupBy</code> that abstracts the grouping
+operation. It should accept as arguments an array and a function that
+computes the group for an element in the array and returns an object
+that maps group names to arrays of group members.</p>
+<h3><a class=h_ident id="h_jr7hZiuR7+" href="#h_jr7hZiuR7+"></a>Every and then some</h3>
+<p><a class=p_ident id="p_BZKBxgsPML" href="#p_BZKBxgsPML"></a>Arrays also come with the standard methods <code>every</code> and
+<code>some</code>. Both take a predicate function that, when called with an array
+element as argument, returns true or false. Just like <code>&amp;&amp;</code>
+returns a true value only when the expressions on both sides are true,
+<code>every</code> returns true only when the predicate returns true for <em>all</em>
+elements of the array. Similarly, <code>some</code> returns true as soon as the
+predicate returns true for <em>any</em> of the elements. They do not process
+more elements than necessary—for example, if <code>some</code> finds that the
+predicate holds for the first element of the array, it will not look
+at the values after that.</p>
+<p><a class=p_ident id="p_aMPYznovUm" href="#p_aMPYznovUm"></a>Write two functions, <code>every</code> and <code>some</code>, that behave like these
+methods, except that they take the array as their first argument
+rather than being a method.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_EK+njyIMWq" href="#c_EK+njyIMWq"></a><span class="cm-comment">// Your code here.</span>
+
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">every</span>([<span class="cm-atom">NaN</span>, <span class="cm-atom">NaN</span>, <span class="cm-atom">NaN</span>], <span class="cm-variable">isNaN</span>));
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">every</span>([<span class="cm-atom">NaN</span>, <span class="cm-atom">NaN</span>, <span class="cm-number">4</span>], <span class="cm-variable">isNaN</span>));
+<span class="cm-comment">// → false</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">some</span>([<span class="cm-atom">NaN</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>], <span class="cm-variable">isNaN</span>));
+<span class="cm-comment">// → true</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">some</span>([<span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>], <span class="cm-variable">isNaN</span>));
+<span class="cm-comment">// → false</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_43tyHVRbBq" href="#p_43tyHVRbBq"></a>The functions can follow a similar pattern to the
+<a href="05_higher_order.html#forEach">definition</a> of <code>forEach</code> at the
+start of the chapter, except that they must return immediately (with
+the right value) when the predicate function returns false—or true.
+Don&#8217;t forget to put another <code>return</code> statement after the loop so that
+the function also returns the correct value when it reaches the end of
+the array.</p>
+</div></div>
+<nav>
+  <a href="04_data.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="06_object.html" title="next chapter">▶</a>
+</nav>
+</article>

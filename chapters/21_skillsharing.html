@@ -1,0 +1,1005 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Project: Skill-Sharing Website :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 21;</script>
+</head>
+
+<article>
+<nav>
+  <a href="20_node.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  
+</nav>
+
+<h1><div class=chap_num>Chapter 21</div>Project: Skill-Sharing Website</h1>
+<p><a class=p_ident id="p_lJLUX5aYTh" href="#p_lJLUX5aYTh"></a>A
+<em>skill-sharing</em> meeting is an event where people with a shared
+interest come together and give small, informal presentations about
+things they know. At a gardening skill-sharing meeting, someone
+might explain how to cultivate celery. Or in a
+programming-oriented skill-sharing group, you could drop by and tell
+everybody about Node.js.</p>
+<p><a class=p_ident id="p_a0XqWGdMH9" href="#p_a0XqWGdMH9"></a>Such meetups, also often called
+<em>users’ groups</em> when they are about computers, are a great way to
+broaden your horizon, learn about new developments, or simply meet
+people with similar interests. Many large cities have a JavaScript
+meetup. They are typically free to attend, and I&#8217;ve found the ones
+I&#8217;ve visited to be friendly and welcoming.</p>
+<p><a class=p_ident id="p_PVL3M81JFR" href="#p_PVL3M81JFR"></a>In this final project chapter, our goal is to set up a website
+for managing talks given at a skill-sharing meeting. Imagine a
+small group of people meeting up regularly in a member’s
+office to talk about unicycling. The problem is that when the previous
+organizer of the meetings moved to another town, nobody stepped
+forward to take over this task. We want a system that will let the
+participants propose and discuss talks among themselves, without a
+central organizer.</p>
+<div class="image">
+  <img src="img/unicycle.svg" alt="The unicycling meetup">
+</div>
+<p><a class=p_ident id="p_We9gc8FghX" href="#p_We9gc8FghX"></a>Just like in the <a href="20_node.html#node">previous chapter</a>, the
+code in this chapter is written for Node.js, and running it directly
+in the HTML page that you are looking at is unlikely to work. The
+full code for the project can be downloaded from
+<a href="http://eloquentjavascript.net/code/skillsharing.zip"><em>eloquentjavascript.net/code/skillsharing.zip</em></a>.</p>
+<h2><a class=h_ident id="h_WbA1NnIRqT" href="#h_WbA1NnIRqT"></a>Design</h2>
+<p><a class=p_ident id="p_MplsNwNLhr" href="#p_MplsNwNLhr"></a>There is a <em>server</em>
+part to this project, written for Node.js, and a <em>client</em>
+part, written for the browser. The server stores the system&#8217;s data
+and provides it to the client. It also serves the HTML and JavaScript
+files that implement the client-side system.</p>
+<p><a class=p_ident id="p_jXT76qvYdx" href="#p_jXT76qvYdx"></a>The server keeps a list of talks proposed for the next meeting,
+and the client shows this list. Each talk has a presenter name, a
+title, a summary, and a list of comments associated with it. The
+client allows users to propose new talks (adding them to the list),
+delete talks, and comment on existing talks. Whenever the user
+makes such a change, the client makes an HTTP request to tell
+the server about it.</p>
+<div class="image">
+  <img src="img/skillsharing.png" alt="Screenshot of the skill-sharing website">
+</div>
+<p><a class=p_ident id="p_R3HdsDdi40" href="#p_R3HdsDdi40"></a>The application will be set up to show a <em>live</em>
+view of the current proposed talks and their comments. Whenever
+someone, somewhere, submits a new talk or adds a comment, all people
+who have the page open in their browsers should immediately see the
+change. This poses a bit of a challenge since there is no way for a
+web server to open up a connection to a client, nor is there a good
+way to know which clients currently are looking at a given website.</p>
+<p><a class=p_ident id="p_uVBydEeXpf" href="#p_uVBydEeXpf"></a>A common solution to this problem is called <em>long polling</em>, which happens to be one of the motivations for Node&#8217;s
+design.</p>
+<h2><a class=h_ident id="h_Yxu7U155Cs" href="#h_Yxu7U155Cs"></a>Long polling</h2>
+<p><a class=p_ident id="p_UARchLL3as" href="#p_UARchLL3as"></a>To be
+able to immediately notify a client that something changed, we need a
+connection to that client. Since web browsers do not
+traditionally accept connections and clients are usually behind
+devices that would block such connections anyway, having the server
+initiate this connection is not practical.</p>
+<p><a class=p_ident id="p_0nqsjRmsQ7" href="#p_0nqsjRmsQ7"></a>We can arrange for the client to open the connection and keep it
+around so that the server can use it to send information when it
+needs to do so.</p>
+<p><a class=p_ident id="p_nPHiUyGtEt" href="#p_nPHiUyGtEt"></a>But an HTTP request allows only a simple flow of information,
+where the client sends a request, the server comes back with a single
+response, and that is it. There is a technology called <em>web sockets</em>, supported by modern browsers, which makes it possible to
+open connections for arbitrary data exchange. But using them
+properly is somewhat tricky.</p>
+<p><a class=p_ident id="p_h/JHQAq292" href="#p_h/JHQAq292"></a>In this chapter, we will use a relatively simple technique, long polling, where clients continuously ask the server for new information
+using regular HTTP requests, and the server simply stalls its answer
+when it has nothing new to report.</p>
+<p><a class=p_ident id="p_jgdXNb8hyw" href="#p_jgdXNb8hyw"></a>As long as the client makes sure it constantly has a
+polling request open, it will receive information from the server
+immediately. For example, if Alice has our skill-sharing application
+open in her browser, that browser will have made a request for
+updates and be waiting for a response to that request. When Bob
+submits a talk on Extreme Downhill Unicycling, the
+server will notice that Alice is waiting for updates and send
+information about the new talk as a response to her pending request.
+Alice&#8217;s browser will receive the data and update the screen to show
+the talk.</p>
+<p><a class=p_ident id="p_SAbyKs9a4Y" href="#p_SAbyKs9a4Y"></a>To prevent connections from timing out
+(being aborted because of a lack of activity), long-polling techniques
+usually set a maximum time for each request, after which the server
+will respond anyway, even though it has nothing to report, and the
+client will start a new request. Periodically restarting the request
+also makes the technique more robust, allowing clients to recover from
+temporary connection failures or server problems.</p>
+<p><a class=p_ident id="p_G3JjyqG0SD" href="#p_G3JjyqG0SD"></a>A busy server that is using long polling may have
+thousands of waiting requests, and thus TCP connections, open.
+Node, which makes it easy to manage many connections without creating
+a separate thread of control for each one, is a good fit for such a
+system.</p>
+<h2><a class=h_ident id="h_a1H+QQ9w0g" href="#h_a1H+QQ9w0g"></a>HTTP interface</h2>
+<p><a class=p_ident id="p_pnq2n4wyAS" href="#p_pnq2n4wyAS"></a>Before we start fleshing out either the
+server or the client, let&#8217;s think about the point where they touch:
+the HTTP interface over which they communicate.</p>
+<p><a class=p_ident id="p_b+doiaw86m" href="#p_b+doiaw86m"></a>We will base our interface on JSON, and like in the file server
+from <a href="20_node.html#file_server">Chapter 20</a>, we&#8217;ll try to make good use
+of HTTP methods. The interface is centered around the <code>/talks</code> path.
+Paths that do not start with <code>/talks</code> will be used for
+serving static files—the HTML and JavaScript code that implements
+the client-side system.</p>
+<p><a class=p_ident id="p_4DScu49oMT" href="#p_4DScu49oMT"></a>A <code>GET</code> request to <code>/talks</code> returns a JSON document
+like this:</p>
+<pre data-language="application/json" class="snippet cm-s-default"><a class=c_ident id="c_MPPA7y/f9p" href="#c_MPPA7y/f9p"></a>{<span class="cm-string cm-property">"serverTime"</span>: <span class="cm-number">1405438911833</span>,
+ <span class="cm-string cm-property">"talks"</span>: [{<span class="cm-string cm-property">"title"</span>: <span class="cm-string">"Unituning"</span>,
+            <span class="cm-string cm-property">"presenter"</span>: <span class="cm-string">"Carlos"</span>,
+            <span class="cm-string cm-property">"summary"</span>: <span class="cm-string">"Modifying your cycle for extra style"</span>,
+            <span class="cm-string cm-property">"comment"</span>: []}]}</pre>
+<p><a class=p_ident id="p_/qoYuRF/YK" href="#p_/qoYuRF/YK"></a>The <code>serverTime</code> field will be used to make reliable long polling
+possible. I will return to it
+<a href="21_skillsharing.html#poll_time">later</a>.</p>
+<p><a class=p_ident id="p_S84lcaMrne" href="#p_S84lcaMrne"></a>Creating a new talk is done by making a <code>PUT</code>
+request to a URL like <code>/talks/Unituning</code>, where the part after the
+second slash is the title of the talk. The <code>PUT</code> request&#8217;s body should
+contain a JSON object that has <code>presenter</code> and <code>summary</code>
+properties.</p>
+<p><a class=p_ident id="p_KfmhZR585o" href="#p_KfmhZR585o"></a>Since talk titles may contain spaces and other
+characters that may not appear normally in a URL, title strings must be encoded
+with the <code>encodeURIComponent</code> function when building up such a URL.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WZrQjfPzaC" href="#c_WZrQjfPzaC"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"/talks/"</span> <span class="cm-operator">+</span> <span class="cm-variable">encodeURIComponent</span>(<span class="cm-string">"How to Idle"</span>));
+<span class="cm-comment">// → /talks/How%20to%20Idle</span></pre>
+<p><a class=p_ident id="p_lVTXP6zy/G" href="#p_lVTXP6zy/G"></a>A request to create a talk about idling might look something like
+this:</p>
+<pre data-language="http" class="snippet cm-s-default"><a class=c_ident id="c_SBTL1faUH8" href="#c_SBTL1faUH8"></a><span class="cm-keyword">PUT</span> <span class="cm-string-2">/talks/How%20to%20Idle</span> <span class="cm-keyword">HTTP/1.1</span>
+<span class="cm-atom">Content-Type:</span><span class="cm-string"> application/json</span>
+<span class="cm-atom">Content-Length:</span><span class="cm-string"> 92</span>
+
+{"presenter": "Dana",
+ "summary": "Standing still on a unicycle"}</pre>
+<p><a class=p_ident id="p_MlEec58Mz7" href="#p_MlEec58Mz7"></a>Such URLs also support <code>GET</code> requests to retrieve the JSON
+representation of a talk and <code>DELETE</code> requests to delete a talk.</p>
+<p><a class=p_ident id="p_cq5rvlZpbo" href="#p_cq5rvlZpbo"></a>Adding a comment to a talk is done with a <code>POST</code>
+request to a URL like <code>/talks/Unituning/comments</code>, with a JSON object
+that has <code>author</code> and <code>message</code> properties as the body of the request.</p>
+<pre data-language="http" class="snippet cm-s-default"><a class=c_ident id="c_q6wZi+hCG/" href="#c_q6wZi+hCG/"></a><span class="cm-keyword">POST</span> <span class="cm-string-2">/talks/Unituning/comments</span> <span class="cm-keyword">HTTP/1.1</span>
+<span class="cm-atom">Content-Type:</span><span class="cm-string"> application/json</span>
+<span class="cm-atom">Content-Length:</span><span class="cm-string"> 72</span>
+
+{"author": "Alice",
+ "message": "Will you talk about raising a cycle?"}</pre>
+<p><a class=p_ident id="p_nTbHD0Z9xy" href="#p_nTbHD0Z9xy"></a>To support long polling, <code>GET</code>
+requests to <code>/talks</code> may include a query parameter called <code>changesSince</code>,
+which is used to indicate that the client is interested in updates
+that happened since a given point in time. When there are such
+changes, they are immediately returned. When there aren&#8217;t, the response is
+delayed until something happens or until a given time period (we will use
+90 seconds) has elapsed.</p>
+<p id="poll_time"><a class=p_ident id="p_zbkFppI/Py" href="#p_zbkFppI/Py"></a>The time
+must be indicated as the number of milliseconds elapsed since the
+start of 1970, the same type of number that is returned by
+<code>Date.now()</code>. To ensure that it receives all updates and
+doesn&#8217;t receive the same update more than once, the client must pass
+the time at which it last received information from the server. The
+server&#8217;s clock might not be exactly in sync with the client&#8217;s clock,
+and even if it were, it would be impossible for the client to know the
+precise time at which the server sent a response because
+transferring data over the network takes time.</p>
+<p><a class=p_ident id="p_O0TBchv5t6" href="#p_O0TBchv5t6"></a>This is the reason for the existence of the <code>serverTime</code> property in
+responses sent to <code>GET</code> requests to <code>/talks</code>. That property tells the client the
+precise time, from the server&#8217;s perspective, at which the data it
+receives was created. The client can then simply store this time and pass it
+along in its next polling request to make sure that it receives
+exactly the updates that it has not seen before.</p>
+<pre>GET /talks?changesSince=1405438911833 HTTP/1.1
+
+(time passes)
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 95
+
+{"serverTime": 1405438913401,
+ "talks": [{"title": "Unituning",
+            "deleted": true}]}</pre>
+<p><a class=p_ident id="p_IIvPCQ2yb6" href="#p_IIvPCQ2yb6"></a>When a talk has been changed, has been newly created, or has a comment added,
+the full representation of the talk is included in the response to
+the client&#8217;s next polling request. When a talk is deleted, only its title and the
+property <code>deleted</code> are included. The client can then add talks with
+titles it has not seen before to its display, update talks that it was
+already showing, and remove those that were deleted.</p>
+<p><a class=p_ident id="p_7eI6fi/el3" href="#p_7eI6fi/el3"></a>The protocol described in this chapter does not do any
+access control. Everybody can comment, modify talks, and even
+delete them. Since the Internet is filled with hooligans, putting
+such a system online without further protection is likely to end in
+disaster.</p>
+<p><a class=p_ident id="p_dRsn3VsD/D" href="#p_dRsn3VsD/D"></a>A simple solution would be to put
+the system behind a <em>reverse proxy</em>, which is an HTTP server that
+accepts connections from outside the system and forwards them to HTTP
+servers that are running locally. Such a proxy can be configured
+to require a username and password, and you could make sure only the
+participants in the skill-sharing group have this password.</p>
+<h2><a class=h_ident id="h_wTUn7xllPe" href="#h_wTUn7xllPe"></a>The server</h2>
+<p><a class=p_ident id="p_/iHn83lKOE" href="#p_/iHn83lKOE"></a>Let&#8217;s start by writing the server-side
+part of the program. The code in this section runs on Node.js.</p>
+<h3><a class=h_ident id="h_fRXdG+wuBV" href="#h_fRXdG+wuBV"></a>Routing</h3>
+<p><a class=p_ident id="p_YGBPHzmANZ" href="#p_YGBPHzmANZ"></a>Our server will use
+<code>http.createServer</code> to start an HTTP server. In the function that
+handles a new request, we must distinguish between the various kinds
+of requests (as determined by the method and the path) that we
+support. This can be done with a long chain of <code>if</code> statements, but
+there is a nicer way.</p>
+<p><a class=p_ident id="p_leW0rMWKfc" href="#p_leW0rMWKfc"></a>A <em>router</em> is a component that helps dispatch a
+request to the function that can handle it. You can tell the router, for
+example, that <code>PUT</code> requests with a path that
+matches the regular expression <code>/^\/talks\/([^\/]+)$/</code> (which matches <code>/talks/</code>
+followed by a talk title) can be handled by a given function. In
+addition, it can help extract the meaningful parts of the path, in this
+case the talk title, wrapped in parentheses in the regular expression and pass those to the handler function.</p>
+<p><a class=p_ident id="p_l/CAybKBxr" href="#p_l/CAybKBxr"></a>There are a number of good router packages on NPM, but here we
+will write one ourselves to illustrate the principle.</p>
+<p><a class=p_ident id="p_76UeceNiA/" href="#p_76UeceNiA/"></a>This is
+<code>router.js</code>, which we will later <code>require</code> from our server module:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_QH06ksI6zt" href="#c_QH06ksI6zt"></a><span class="cm-keyword">var</span> <span class="cm-variable">Router</span> <span class="cm-operator">=</span> <span class="cm-keyword">module</span>.<span class="cm-variable">exports</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">this</span>.<span class="cm-property">routes</span> <span class="cm-operator">=</span> [];
+};
+
+<span class="cm-variable">Router</span>.<span class="cm-property">prototype</span>.<span class="cm-property">add</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">method</span>, <span class="cm-def">url</span>, <span class="cm-def">handler</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">routes</span>.<span class="cm-property">push</span>({<span class="cm-property">method</span>: <span class="cm-variable-2">method</span>,
+                    <span class="cm-property">url</span>: <span class="cm-variable-2">url</span>,
+                    <span class="cm-property">handler</span>: <span class="cm-variable-2">handler</span>});
+};
+
+<span class="cm-variable">Router</span>.<span class="cm-property">prototype</span>.<span class="cm-property">resolve</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">request</span>, <span class="cm-def">response</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">path</span> <span class="cm-operator">=</span> <span class="cm-variable">require</span>(<span class="cm-string">"url"</span>).<span class="cm-property">parse</span>(<span class="cm-variable-2">request</span>.<span class="cm-property">url</span>).<span class="cm-property">pathname</span>;
+
+  <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">routes</span>.<span class="cm-property">some</span>(<span class="cm-keyword">function</span>(<span class="cm-def">route</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">match</span> <span class="cm-operator">=</span> <span class="cm-variable-2">route</span>.<span class="cm-property">url</span>.<span class="cm-property">exec</span>(<span class="cm-variable-2">path</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">match</span> <span class="cm-operator">||</span> <span class="cm-variable-2">route</span>.<span class="cm-property">method</span> <span class="cm-operator">!=</span> <span class="cm-variable-2">request</span>.<span class="cm-property">method</span>)
+      <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+
+    <span class="cm-keyword">var</span> <span class="cm-def">urlParts</span> <span class="cm-operator">=</span> <span class="cm-variable-2">match</span>.<span class="cm-property">slice</span>(<span class="cm-number">1</span>).<span class="cm-property">map</span>(<span class="cm-variable">decodeURIComponent</span>);
+    <span class="cm-variable-2">route</span>.<span class="cm-property">handler</span>.<span class="cm-property">apply</span>(<span class="cm-atom">null</span>, [<span class="cm-variable-2">request</span>, <span class="cm-variable-2">response</span>]
+                                .<span class="cm-property">concat</span>(<span class="cm-variable-2">urlParts</span>));
+    <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+  });
+};</pre>
+<p><a class=p_ident id="p_4UgvQPflKR" href="#p_4UgvQPflKR"></a>The module exports the <code>Router</code> constructor. A router
+object allows new handlers to be registered with the <code>add</code> method and
+can resolve requests with its <code>resolve</code> method.</p>
+<p><a class=p_ident id="p_zGaZWr/Iyt" href="#p_zGaZWr/Iyt"></a>The latter will return a Boolean that indicates
+whether a handler was found. The <code>some</code> method on the
+array of routes will try the routes one at a time (in the order in
+which they were defined) and stop, returning <code>true</code>, when a matching
+one is found.</p>
+<p><a class=p_ident id="p_OL5KXeAkmE" href="#p_OL5KXeAkmE"></a>The handler functions are called with the <code>request</code> and
+<code>response</code> objects. When the regular expression that matches the
+URL contains any groups, the strings they match are passed to the handler
+as extra arguments. These strings have to be URL-decoded since the raw URL
+contains <code>%20</code>-style codes.</p>
+<h3><a class=h_ident id="h_WmSQ4nnG8k" href="#h_WmSQ4nnG8k"></a>Serving files</h3>
+<p><a class=p_ident id="p_G58QvpWZ3S" href="#p_G58QvpWZ3S"></a>When a request matches none of the request types defined in our
+router, the server must interpret it as a request for a file in
+the <code>public</code> directory. It would be possible to use the file server
+defined in <a href="20_node.html#file_server">Chapter 20</a> to serve such
+files, but we neither need nor want to support <code>PUT</code> and
+<code>DELETE</code> requests on files, and we would like to have advanced
+features such as support for caching. So let&#8217;s use a solid, well-tested
+static file server from NPM instead.</p>
+<p><a class=p_ident id="p_tOJqwN8CJl" href="#p_tOJqwN8CJl"></a>I opted for
+<code>ecstatic</code>. This isn&#8217;t the only such server on NPM, but it works
+well and fits our purposes. The <code>ecstatic</code> module exports a function
+that can be called with a configuration object to produce a request
+handler function. We use the <code>root</code> option to tell the server where it
+should look for files. The handler function accepts <code>request</code> and
+<code>response</code> parameters and can be passed directly to <code>createServer</code> to
+create a server that serves <em>only</em> files. We want to first check for
+requests that we handle specially, though, so we wrap it in another
+function.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7vql8hmflt" href="#c_7vql8hmflt"></a><span class="cm-keyword">var</span> <span class="cm-variable">http</span> <span class="cm-operator">=</span> <span class="cm-variable">require</span>(<span class="cm-string">"http"</span>);
+<span class="cm-keyword">var</span> <span class="cm-variable">Router</span> <span class="cm-operator">=</span> <span class="cm-variable">require</span>(<span class="cm-string">"./router"</span>);
+<span class="cm-keyword">var</span> <span class="cm-variable">ecstatic</span> <span class="cm-operator">=</span> <span class="cm-variable">require</span>(<span class="cm-string">"ecstatic"</span>);
+
+<span class="cm-keyword">var</span> <span class="cm-variable">fileServer</span> <span class="cm-operator">=</span> <span class="cm-variable">ecstatic</span>({<span class="cm-property">root</span>: <span class="cm-string">"./public"</span>});
+<span class="cm-keyword">var</span> <span class="cm-variable">router</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Router</span>();
+
+<span class="cm-variable">http</span>.<span class="cm-property">createServer</span>(<span class="cm-keyword">function</span>(<span class="cm-def">request</span>, <span class="cm-def">response</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">router</span>.<span class="cm-property">resolve</span>(<span class="cm-variable-2">request</span>, <span class="cm-variable-2">response</span>))
+    <span class="cm-variable">fileServer</span>(<span class="cm-variable-2">request</span>, <span class="cm-variable-2">response</span>);
+}).<span class="cm-property">listen</span>(<span class="cm-number">8000</span>);</pre>
+<p><a class=p_ident id="p_aqqI6AlQfN" href="#p_aqqI6AlQfN"></a>The <code>respond</code> and <code>respondJSON</code> helper functions are used throughout the
+server code to send off responses with a single function call.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_xvMKUIpXbr" href="#c_xvMKUIpXbr"></a><span class="cm-keyword">function</span> <span class="cm-variable">respond</span>(<span class="cm-def">response</span>, <span class="cm-def">status</span>, <span class="cm-def">data</span>, <span class="cm-def">type</span>) {
+  <span class="cm-variable-2">response</span>.<span class="cm-property">writeHead</span>(<span class="cm-variable-2">status</span>, {
+    <span class="cm-string cm-property">"Content-Type"</span>: <span class="cm-variable-2">type</span> <span class="cm-operator">||</span> <span class="cm-string">"text/plain"</span>
+  });
+  <span class="cm-variable-2">response</span>.<span class="cm-property">end</span>(<span class="cm-variable-2">data</span>);
+}
+
+<span class="cm-keyword">function</span> <span class="cm-variable">respondJSON</span>(<span class="cm-def">response</span>, <span class="cm-def">status</span>, <span class="cm-def">data</span>) {
+  <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-variable-2">status</span>, <span class="cm-variable">JSON</span>.<span class="cm-property">stringify</span>(<span class="cm-variable-2">data</span>),
+          <span class="cm-string">"application/json"</span>);
+}</pre>
+<h3><a class=h_ident id="h_soh9hQbmUg" href="#h_soh9hQbmUg"></a>Talks as resources</h3>
+<p><a class=p_ident id="p_F7tu+Amiqq" href="#p_F7tu+Amiqq"></a>The server keeps the talks that have been proposed in an object
+called <code>talks</code>, whose property names are the talk titles. These will
+be exposed as HTTP resources under <code>/talks/[title]</code>, so we need to
+add handlers to our router that implement the various methods that
+clients can use to work with them.</p>
+<p><a class=p_ident id="p_/JQcLOK+vv" href="#p_/JQcLOK+vv"></a>The handler for requests
+that <code>GET</code> a single talk must look up the talk and respond either with
+the talk&#8217;s JSON data or with a 404 error response.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_i3klcsNrYB" href="#c_i3klcsNrYB"></a><span class="cm-keyword">var</span> <span class="cm-variable">talks</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-atom">null</span>);
+
+<span class="cm-variable">router</span>.<span class="cm-property">add</span>(<span class="cm-string">"GET"</span>, <span class="cm-string-2">/^\/talks\/([^\/]+)$/</span>,
+           <span class="cm-keyword">function</span>(<span class="cm-def">request</span>, <span class="cm-def">response</span>, <span class="cm-def">title</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">title</span> <span class="cm-keyword">in</span> <span class="cm-variable">talks</span>)
+    <span class="cm-variable">respondJSON</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">200</span>, <span class="cm-variable">talks</span>[<span class="cm-variable-2">title</span>]);
+  <span class="cm-keyword">else</span>
+    <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">404</span>, <span class="cm-string">"No talk '"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">title</span> <span class="cm-operator">+</span> <span class="cm-string">"' found"</span>);
+});</pre>
+<p><a class=p_ident id="p_3zgr/RdzUU" href="#p_3zgr/RdzUU"></a>Deleting a talk is done by removing it from the
+<code>talks</code> object.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_IcieD1TcoW" href="#c_IcieD1TcoW"></a><span class="cm-variable">router</span>.<span class="cm-property">add</span>(<span class="cm-string">"DELETE"</span>, <span class="cm-string-2">/^\/talks\/([^\/]+)$/</span>,
+           <span class="cm-keyword">function</span>(<span class="cm-def">request</span>, <span class="cm-def">response</span>, <span class="cm-def">title</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">title</span> <span class="cm-keyword">in</span> <span class="cm-variable">talks</span>) {
+    <span class="cm-keyword">delete</span> <span class="cm-variable">talks</span>[<span class="cm-variable-2">title</span>];
+    <span class="cm-variable">registerChange</span>(<span class="cm-variable-2">title</span>);
+  }
+  <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">204</span>, <span class="cm-atom">null</span>);
+});</pre>
+<p><a class=p_ident id="p_pyoMvuSjhx" href="#p_pyoMvuSjhx"></a>The <code>registerChange</code> function, which we
+will define <a href="21_skillsharing.html#registerChange">later</a>, notifies
+waiting long-polling requests about the change.</p>
+<p><a class=p_ident id="p_OHqEGZA2TJ" href="#p_OHqEGZA2TJ"></a>To retrieve
+the content of JSON-encoded request bodies, we define a
+function called <code>readStreamAsJSON</code>, which reads all content from a stream,
+parses it as JSON, and then calls a callback function.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_xdc2fSFiD4" href="#c_xdc2fSFiD4"></a><span class="cm-keyword">function</span> <span class="cm-variable">readStreamAsJSON</span>(<span class="cm-def">stream</span>, <span class="cm-def">callback</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">data</span> <span class="cm-operator">=</span> <span class="cm-string">""</span>;
+  <span class="cm-variable-2">stream</span>.<span class="cm-property">on</span>(<span class="cm-string">"data"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">chunk</span>) {
+    <span class="cm-variable-2">data</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">chunk</span>;
+  });
+  <span class="cm-variable-2">stream</span>.<span class="cm-property">on</span>(<span class="cm-string">"end"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">var</span> <span class="cm-def">result</span>, <span class="cm-def">error</span>;
+    <span class="cm-keyword">try</span> { <span class="cm-variable-2">result</span> <span class="cm-operator">=</span> <span class="cm-variable">JSON</span>.<span class="cm-property">parse</span>(<span class="cm-variable-2">data</span>); }
+    <span class="cm-keyword">catch</span> (<span class="cm-def">e</span>) { <span class="cm-variable-2">error</span> <span class="cm-operator">=</span> <span class="cm-variable-2">e</span>; }
+    <span class="cm-variable-2">callback</span>(<span class="cm-variable-2">error</span>, <span class="cm-variable-2">result</span>);
+  });
+  <span class="cm-variable-2">stream</span>.<span class="cm-property">on</span>(<span class="cm-string">"error"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">error</span>) {
+    <span class="cm-variable-2">callback</span>(<span class="cm-variable-2">error</span>);
+  });
+}</pre>
+<p><a class=p_ident id="p_nKzpVkDH6v" href="#p_nKzpVkDH6v"></a>One handler that
+needs to read JSON responses is the <code>PUT</code> handler, which is used to create new
+talks. It has to check whether the data it was given has
+<code>presenter</code> and <code>summary</code> properties, which are strings. Any data
+coming from outside the system might be nonsense, and we don&#8217;t want to
+corrupt our internal data model, or even crash, when bad requests
+come in.</p>
+<p><a class=p_ident id="p_ptAYx9j8oM" href="#p_ptAYx9j8oM"></a>If the data looks valid, the handler
+stores an object that represents the new talk in the <code>talks</code> object,
+possibly overwriting an existing talk with this title, and again
+calls <code>registerChange</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_FOu4O/hPwE" href="#c_FOu4O/hPwE"></a><span class="cm-variable">router</span>.<span class="cm-property">add</span>(<span class="cm-string">"PUT"</span>, <span class="cm-string-2">/^\/talks\/([^\/]+)$/</span>,
+           <span class="cm-keyword">function</span>(<span class="cm-def">request</span>, <span class="cm-def">response</span>, <span class="cm-def">title</span>) {
+  <span class="cm-variable">readStreamAsJSON</span>(<span class="cm-variable-2">request</span>, <span class="cm-keyword">function</span>(<span class="cm-def">error</span>, <span class="cm-def">talk</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">error</span>) {
+      <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">400</span>, <span class="cm-variable-2">error</span>.<span class="cm-property">toString</span>());
+    } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">talk</span> <span class="cm-operator">||</span>
+               <span class="cm-keyword">typeof</span> <span class="cm-variable-2">talk</span>.<span class="cm-property">presenter</span> <span class="cm-operator">!=</span> <span class="cm-string">"string"</span> <span class="cm-operator">||</span>
+               <span class="cm-keyword">typeof</span> <span class="cm-variable-2">talk</span>.<span class="cm-property">summary</span> <span class="cm-operator">!=</span> <span class="cm-string">"string"</span>) {
+      <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">400</span>, <span class="cm-string">"Bad talk data"</span>);
+    } <span class="cm-keyword">else</span> {
+      <span class="cm-variable">talks</span>[<span class="cm-variable-2">title</span>] <span class="cm-operator">=</span> {<span class="cm-property">title</span>: <span class="cm-variable-2">title</span>,
+                      <span class="cm-property">presenter</span>: <span class="cm-variable-2">talk</span>.<span class="cm-property">presenter</span>,
+                      <span class="cm-property">summary</span>: <span class="cm-variable-2">talk</span>.<span class="cm-property">summary</span>,
+                      <span class="cm-property">comments</span>: []};
+      <span class="cm-variable">registerChange</span>(<span class="cm-variable-2">title</span>);
+      <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">204</span>, <span class="cm-atom">null</span>);
+    }
+  });
+});</pre>
+<p><a class=p_ident id="p_5d2itdrhai" href="#p_5d2itdrhai"></a>Adding a comment to
+a talk works similarly. We use <code>readStreamAsJSON</code> to
+get the content of the request, validate the resulting data, and store
+it as a comment when it looks valid.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_LwOOalwVFz" href="#c_LwOOalwVFz"></a><span class="cm-variable">router</span>.<span class="cm-property">add</span>(<span class="cm-string">"POST"</span>, <span class="cm-string-2">/^\/talks\/([^\/]+)\/comments$/</span>,
+           <span class="cm-keyword">function</span>(<span class="cm-def">request</span>, <span class="cm-def">response</span>, <span class="cm-def">title</span>) {
+  <span class="cm-variable">readStreamAsJSON</span>(<span class="cm-variable-2">request</span>, <span class="cm-keyword">function</span>(<span class="cm-def">error</span>, <span class="cm-def">comment</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">error</span>) {
+      <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">400</span>, <span class="cm-variable-2">error</span>.<span class="cm-property">toString</span>());
+    } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">comment</span> <span class="cm-operator">||</span>
+               <span class="cm-keyword">typeof</span> <span class="cm-variable-2">comment</span>.<span class="cm-property">author</span> <span class="cm-operator">!=</span> <span class="cm-string">"string"</span> <span class="cm-operator">||</span>
+               <span class="cm-keyword">typeof</span> <span class="cm-variable-2">comment</span>.<span class="cm-property">message</span> <span class="cm-operator">!=</span> <span class="cm-string">"string"</span>) {
+      <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">400</span>, <span class="cm-string">"Bad comment data"</span>);
+    } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">title</span> <span class="cm-keyword">in</span> <span class="cm-variable">talks</span>) {
+      <span class="cm-variable">talks</span>[<span class="cm-variable-2">title</span>].<span class="cm-property">comments</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">comment</span>);
+      <span class="cm-variable">registerChange</span>(<span class="cm-variable-2">title</span>);
+      <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">204</span>, <span class="cm-atom">null</span>);
+    } <span class="cm-keyword">else</span> {
+      <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">404</span>, <span class="cm-string">"No talk '"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">title</span> <span class="cm-operator">+</span> <span class="cm-string">"' found"</span>);
+    }
+  });
+});</pre>
+<p><a class=p_ident id="p_uLZ9tBoiGb" href="#p_uLZ9tBoiGb"></a>Trying to add a comment to a nonexistent
+talk should return a 404 error, of course.</p>
+<h3><a class=h_ident id="h_kDNUlKj7rv" href="#h_kDNUlKj7rv"></a>Long-polling support</h3>
+<p><a class=p_ident id="p_Q2AlAKJnYq" href="#p_Q2AlAKJnYq"></a>The most interesting aspect of the server is the part that handles
+long polling. When a <code>GET</code> request comes in for <code>/talks</code>, it can
+be either a simple request for all talks or a request for
+updates, with a <code>changesSince</code> parameter.</p>
+<p><a class=p_ident id="p_GhbQTw6SZ+" href="#p_GhbQTw6SZ+"></a>There will be various situations in which we have to send a list of
+talks to the client, so we first define a small helper function that
+attaches the <code>serverTime</code> field to such responses.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qN3STb271J" href="#c_qN3STb271J"></a><span class="cm-keyword">function</span> <span class="cm-variable">sendTalks</span>(<span class="cm-def">talks</span>, <span class="cm-def">response</span>) {
+  <span class="cm-variable">respondJSON</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">200</span>, {
+    <span class="cm-property">serverTime</span>: <span class="cm-variable">Date</span>.<span class="cm-property">now</span>(),
+    <span class="cm-property">talks</span>: <span class="cm-variable-2">talks</span>
+  });
+}</pre>
+<p><a class=p_ident id="p_EltkhTQ54Y" href="#p_EltkhTQ54Y"></a>The handler itself
+needs to look at the query parameters in the request&#8217;s URL to see
+whether a <code>changesSince</code> parameter is given. If you give the <code>"url"</code> module&#8217;s
+<code>parse</code> function a second argument of <code>true</code>, it will
+also parse the query part of a URL. The object it returns will have a
+<code>query</code> property, which holds another object that maps parameter names to
+values.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_zGJp6gCcDe" href="#c_zGJp6gCcDe"></a><span class="cm-variable">router</span>.<span class="cm-property">add</span>(<span class="cm-string">"GET"</span>, <span class="cm-string-2">/^\/talks$/</span>, <span class="cm-keyword">function</span>(<span class="cm-def">request</span>, <span class="cm-def">response</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">query</span> <span class="cm-operator">=</span> <span class="cm-variable">require</span>(<span class="cm-string">"url"</span>).<span class="cm-property">parse</span>(<span class="cm-variable-2">request</span>.<span class="cm-property">url</span>, <span class="cm-atom">true</span>).<span class="cm-property">query</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">query</span>.<span class="cm-property">changesSince</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">list</span> <span class="cm-operator">=</span> [];
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">title</span> <span class="cm-keyword">in</span> <span class="cm-variable">talks</span>)
+      <span class="cm-variable-2">list</span>.<span class="cm-property">push</span>(<span class="cm-variable">talks</span>[<span class="cm-variable-2">title</span>]);
+    <span class="cm-variable">sendTalks</span>(<span class="cm-variable-2">list</span>, <span class="cm-variable-2">response</span>);
+  } <span class="cm-keyword">else</span> {
+    <span class="cm-keyword">var</span> <span class="cm-def">since</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable-2">query</span>.<span class="cm-property">changesSince</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable">isNaN</span>(<span class="cm-variable-2">since</span>)) {
+      <span class="cm-variable">respond</span>(<span class="cm-variable-2">response</span>, <span class="cm-number">400</span>, <span class="cm-string">"Invalid parameter"</span>);
+    } <span class="cm-keyword">else</span> {
+      <span class="cm-keyword">var</span> <span class="cm-def">changed</span> <span class="cm-operator">=</span> <span class="cm-variable">getChangedTalks</span>(<span class="cm-variable-2">since</span>);
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">changed</span>.<span class="cm-property">length</span> <span class="cm-operator">></span> <span class="cm-number">0</span>)
+         <span class="cm-variable">sendTalks</span>(<span class="cm-variable-2">changed</span>, <span class="cm-variable-2">response</span>);
+      <span class="cm-keyword">else</span>
+        <span class="cm-variable">waitForChanges</span>(<span class="cm-variable-2">since</span>, <span class="cm-variable-2">response</span>);
+    }
+  }
+});</pre>
+<p><a class=p_ident id="p_0gOtQ9gRNI" href="#p_0gOtQ9gRNI"></a>When the <code>changesSince</code> parameter is missing, the handler simply
+builds up a list of all talks and returns that.</p>
+<p><a class=p_ident id="p_i4f8K0rlnB" href="#p_i4f8K0rlnB"></a>Otherwise, the <code>changeSince</code>
+parameter first has to be checked to make sure that it is a valid
+number. The <code>getChangedTalks</code> function, to be defined shortly, returns
+an array of changed talks since a given point in time. If it returns an
+empty array, the server does not yet have anything to send back to the
+client, so it stores the response object (using <code>waitForChanges</code>) to
+be responded to at a later time.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_FWUEnzp9Uh" href="#c_FWUEnzp9Uh"></a><span class="cm-keyword">var</span> <span class="cm-variable">waiting</span> <span class="cm-operator">=</span> [];
+
+<span class="cm-keyword">function</span> <span class="cm-variable">waitForChanges</span>(<span class="cm-def">since</span>, <span class="cm-def">response</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">waiter</span> <span class="cm-operator">=</span> {<span class="cm-property">since</span>: <span class="cm-variable-2">since</span>, <span class="cm-property">response</span>: <span class="cm-variable-2">response</span>};
+  <span class="cm-variable">waiting</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">waiter</span>);
+  <span class="cm-variable">setTimeout</span>(<span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">var</span> <span class="cm-def">found</span> <span class="cm-operator">=</span> <span class="cm-variable">waiting</span>.<span class="cm-property">indexOf</span>(<span class="cm-variable-2">waiter</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">found</span> <span class="cm-operator">></span> <span class="cm-operator">-</span><span class="cm-number">1</span>) {
+      <span class="cm-variable">waiting</span>.<span class="cm-property">splice</span>(<span class="cm-variable-2">found</span>, <span class="cm-number">1</span>);
+      <span class="cm-variable">sendTalks</span>([], <span class="cm-variable-2">response</span>);
+    }
+  }, <span class="cm-number">90</span> <span class="cm-operator">*</span> <span class="cm-number">1000</span>);
+}</pre>
+<p><a class=p_ident id="p_KJPecJ2C8w" href="#p_KJPecJ2C8w"></a>The <code>splice</code> method is used to cut a piece out of an array.
+You give it an index and a number of elements, and it <em>mutates</em> the
+array, removing that many elements after the given index. In this
+case, we remove a single element, the object that tracks the waiting
+response, whose index we found by calling <code>indexOf</code>. If you pass
+additional arguments to <code>splice</code>, their values will be inserted into
+the array at the given position, replacing the removed elements.</p>
+<p><a class=p_ident id="p_33ov2uS0wd" href="#p_33ov2uS0wd"></a>When a response object is stored
+in the <code>waiting</code> array, a timeout is immediately set. After 90
+seconds, this timeout sees whether the request is still waiting and, if it
+is, sends an empty response and removes it from the <code>waiting</code> array.</p>
+<p id="registerChange"><a class=p_ident id="p_w3fgYDXBML" href="#p_w3fgYDXBML"></a>To be able to find exactly those talks
+that have been changed since a given point in time, we need to keep
+track of the history of changes. Registering a change with
+<code>registerChange</code> will remember that change, along with the current
+time, in an array called <code>changes</code>. When a change occurs, that means
+there is new data, so all waiting requests can be responded to
+immediately.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_x3UM6XV9Bx" href="#c_x3UM6XV9Bx"></a><span class="cm-keyword">var</span> <span class="cm-variable">changes</span> <span class="cm-operator">=</span> [];
+
+<span class="cm-keyword">function</span> <span class="cm-variable">registerChange</span>(<span class="cm-def">title</span>) {
+  <span class="cm-variable">changes</span>.<span class="cm-property">push</span>({<span class="cm-property">title</span>: <span class="cm-variable-2">title</span>, <span class="cm-property">time</span>: <span class="cm-variable">Date</span>.<span class="cm-property">now</span>()});
+  <span class="cm-variable">waiting</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">waiter</span>) {
+    <span class="cm-variable">sendTalks</span>(<span class="cm-variable">getChangedTalks</span>(<span class="cm-variable-2">waiter</span>.<span class="cm-property">since</span>), <span class="cm-variable-2">waiter</span>.<span class="cm-property">response</span>);
+  });
+  <span class="cm-variable">waiting</span> <span class="cm-operator">=</span> [];
+}</pre>
+<p><a class=p_ident id="p_IokNlBSqeg" href="#p_IokNlBSqeg"></a>Finally, <code>getChangedTalks</code> uses the <code>changes</code> array to build up an
+array of changed talks, including objects with a <code>deleted</code> property for
+talks that no longer exist. When building that array, <code>getChangedTalks</code> has to ensure that it
+doesn&#8217;t include the same talk twice since there might have been
+multiple changes to a talk since the given time.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DGLeA1qeUU" href="#c_DGLeA1qeUU"></a><span class="cm-keyword">function</span> <span class="cm-variable">getChangedTalks</span>(<span class="cm-def">since</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">found</span> <span class="cm-operator">=</span> [];
+  <span class="cm-keyword">function</span> <span class="cm-def">alreadySeen</span>(<span class="cm-def">title</span>) {
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">found</span>.<span class="cm-property">some</span>(<span class="cm-keyword">function</span>(<span class="cm-def">f</span>) {<span class="cm-keyword">return</span> <span class="cm-variable-2">f</span>.<span class="cm-property">title</span> <span class="cm-operator">==</span> <span class="cm-variable-2">title</span>;});
+  }
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-variable">changes</span>.<span class="cm-property">length</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">>=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span><span class="cm-operator">--</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">change</span> <span class="cm-operator">=</span> <span class="cm-variable">changes</span>[<span class="cm-variable-2">i</span>];
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">change</span>.<span class="cm-property">time</span> <span class="cm-operator">&lt;=</span> <span class="cm-variable-2">since</span>)
+      <span class="cm-keyword">break</span>;
+    <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">alreadySeen</span>(<span class="cm-variable-2">change</span>.<span class="cm-property">title</span>))
+      <span class="cm-keyword">continue</span>;
+    <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">change</span>.<span class="cm-property">title</span> <span class="cm-keyword">in</span> <span class="cm-variable">talks</span>)
+      <span class="cm-variable-2">found</span>.<span class="cm-property">push</span>(<span class="cm-variable">talks</span>[<span class="cm-variable-2">change</span>.<span class="cm-property">title</span>]);
+    <span class="cm-keyword">else</span>
+      <span class="cm-variable-2">found</span>.<span class="cm-property">push</span>({<span class="cm-property">title</span>: <span class="cm-variable-2">change</span>.<span class="cm-property">title</span>, <span class="cm-property">deleted</span>: <span class="cm-atom">true</span>});
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">found</span>;
+}</pre>
+<p><a class=p_ident id="p_3rLxFmwzJp" href="#p_3rLxFmwzJp"></a>That concludes the server code. Running the program defined so far
+will get you a server running on port 8000, which serves files from
+the <code>public</code> subdirectory alongside a talk-managing interface under
+the <code>/talks</code> URL.</p>
+<h2><a class=h_ident id="h_+jMNtbJ4U3" href="#h_+jMNtbJ4U3"></a>The client</h2>
+<p><a class=p_ident id="p_wVvjBUA/vN" href="#p_wVvjBUA/vN"></a>The client-side part of the
+talk-managing website consists of three files: an HTML page, a style
+sheet, and a JavaScript file.</p>
+<h3><a class=h_ident id="h_n3OM6EV/KR" href="#h_n3OM6EV/KR"></a>HTML</h3>
+<p><a class=p_ident id="p_jNP5xbaXQN" href="#p_jNP5xbaXQN"></a>It is a widely used convention for web servers to try
+to serve a file named <code>index.html</code> when a request is made directly
+to a path that corresponds to a directory. The file server module
+we use, <code>ecstatic</code>, supports this convention. When a request is made
+to the path <code>/</code>, the server looks for the file <code>./public/index.html</code> (<code>./public</code>
+being the root we gave it) and returns that file if found.</p>
+<p><a class=p_ident id="p_17VtIBLbQE" href="#p_17VtIBLbQE"></a>Thus, if we want a page to show up when a browser is pointed at our
+server, we should put it in <code>public/index.html</code>. This is how our index
+file starts:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_Z2P6hR+wGL" href="#c_Z2P6hR+wGL"></a><span class="cm-meta">&lt;!doctype html></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">title</span><span class="cm-tag cm-bracket">></span>Skill Sharing<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">title</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"skillsharing.css"</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>Skill sharing<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">h1</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>Your name: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"name"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">id</span>=<span class="cm-string">"talks"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_CbpqVP4HI4" href="#p_CbpqVP4HI4"></a>It defines the document title and includes a style sheet,
+which defines a few styles to, among other things, add a border around
+talks. Then it adds a heading and a name field. The user is expected
+to put their name in the latter so that it can be attached to talks
+and comments they submit.</p>
+<p><a class=p_ident id="p_AyaILfiByw" href="#p_AyaILfiByw"></a>The <code>&lt;div&gt;</code> element with the ID
+<code>"talks"</code> will contain the current list of talks. The script fills the list
+in when it receives talks from the server.</p>
+<p><a class=p_ident id="p_Y7s6DwG+9R" href="#p_Y7s6DwG+9R"></a>Next comes the form that is used to create a new
+talk.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_qBYkPxBdWl" href="#c_qBYkPxBdWl"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">form</span> <span class="cm-attribute">id</span>=<span class="cm-string">"newtalk"</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">h3</span><span class="cm-tag cm-bracket">></span>Submit a talk<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">h3</span><span class="cm-tag cm-bracket">></span>
+  Title: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">style</span>=<span class="cm-string">"width: 40em"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"title"</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">br</span><span class="cm-tag cm-bracket">></span>
+  Summary: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">style</span>=<span class="cm-string">"width: 40em"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"summary"</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">type</span>=<span class="cm-string">"submit"</span><span class="cm-tag cm-bracket">></span>Send<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">form</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_SY0ZWXkS+z" href="#p_SY0ZWXkS+z"></a>The script will add a <code>"submit"</code> event handler to
+this form, from which it can make the HTTP request that tells the
+server about the talk.</p>
+<p><a class=p_ident id="p_01rGKtjDzP" href="#p_01rGKtjDzP"></a>Next comes a rather mysterious
+block, which has its <code>display</code> style set to <code>none</code>, preventing it from
+actually showing up on the page. Can you guess what it is for?</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_88Blr//GMS" href="#c_88Blr//GMS"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">id</span>=<span class="cm-string">"template"</span> <span class="cm-attribute">style</span>=<span class="cm-string">"display: none"</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"talk"</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">h2</span><span class="cm-tag cm-bracket">></span>{{title}}<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">h2</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>by <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">span</span> <span class="cm-attribute">class</span>=<span class="cm-string">"name"</span><span class="cm-tag cm-bracket">></span>{{presenter}}<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">span</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>{{summary}}<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"comments"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">form</span><span class="cm-tag cm-bracket">></span>
+      <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"comment"</span><span class="cm-tag cm-bracket">></span>
+      <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">type</span>=<span class="cm-string">"submit"</span><span class="cm-tag cm-bracket">></span>Add comment<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+      <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">type</span>=<span class="cm-string">"button"</span> <span class="cm-attribute">class</span>=<span class="cm-string">"del"</span><span class="cm-tag cm-bracket">></span>Delete talk<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">form</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"comment"</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">span</span> <span class="cm-attribute">class</span>=<span class="cm-string">"name"</span><span class="cm-tag cm-bracket">></span>{{author}}<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">span</span><span class="cm-tag cm-bracket">></span>: {{message}}
+  <span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_nUrh268UuK" href="#p_nUrh268UuK"></a>Creating complicated DOM structures with
+JavaScript code produces ugly code. You can make the code slightly better by
+introducing helper functions like the <code>elt</code> function from
+<a href="13_dom.html#elt">Chapter 13</a>, but the result will still look worse
+than HTML, which can be thought of as a domain-specific language
+for expressing DOM structures.</p>
+<p><a class=p_ident id="p_+UxIQCbmjS" href="#p_+UxIQCbmjS"></a>To create DOM structures for the
+talks, our program will define a simple <em>templating</em> system,
+which uses hidden DOM structures included in the document to
+instantiate new DOM structures, replacing the placeholders between
+double braces with the values of a specific talk.</p>
+<p><a class=p_ident id="p_sC79xfZRJT" href="#p_sC79xfZRJT"></a>Finally, the HTML document includes the script
+file that contains the client-side code.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_6VMvK0ztJb" href="#c_6VMvK0ztJb"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span> <span class="cm-attribute">src</span>=<span class="cm-string">"skillsharing_client.js"</span><span class="cm-tag cm-bracket">></span><span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<h3><a class=h_ident id="h_mboAXnxq/u" href="#h_mboAXnxq/u"></a>Starting up</h3>
+<p><a class=p_ident id="p_ZvRC5GfFJX" href="#p_ZvRC5GfFJX"></a>The first thing the client has
+to do when the page is loaded is ask the server for the current set
+of talks. Since we are going to make a lot of HTTP requests, we will
+again define a small wrapper around <code>XMLHttpRequest</code>, which accepts an
+object to configure the request as well as a callback to call when the
+request finishes.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Lq4u7sBZCv" href="#c_Lq4u7sBZCv"></a><span class="cm-keyword">function</span> <span class="cm-variable">request</span>(<span class="cm-def">options</span>, <span class="cm-def">callback</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">req</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">XMLHttpRequest</span>();
+  <span class="cm-variable-2">req</span>.<span class="cm-property">open</span>(<span class="cm-variable-2">options</span>.<span class="cm-property">method</span> <span class="cm-operator">||</span> <span class="cm-string">"GET"</span>, <span class="cm-variable-2">options</span>.<span class="cm-property">pathname</span>, <span class="cm-atom">true</span>);
+  <span class="cm-variable-2">req</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"load"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">req</span>.<span class="cm-property">status</span> <span class="cm-operator">&lt;</span> <span class="cm-number">400</span>)
+      <span class="cm-variable-2">callback</span>(<span class="cm-atom">null</span>, <span class="cm-variable-2">req</span>.<span class="cm-property">responseText</span>);
+    <span class="cm-keyword">else</span>
+      <span class="cm-variable-2">callback</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-string">"Request failed: "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">req</span>.<span class="cm-property">statusText</span>));
+  });
+  <span class="cm-variable-2">req</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"error"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable-2">callback</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-string">"Network error"</span>));
+  });
+  <span class="cm-variable-2">req</span>.<span class="cm-property">send</span>(<span class="cm-variable-2">options</span>.<span class="cm-property">body</span> <span class="cm-operator">||</span> <span class="cm-atom">null</span>);
+}</pre>
+<p><a class=p_ident id="p_+tZz/acy91" href="#p_+tZz/acy91"></a>The initial request displays the talks it
+receives on the screen and starts the long-polling process by calling
+<code>waitForChanges</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_tyqN7H6Gk5" href="#c_tyqN7H6Gk5"></a><span class="cm-keyword">var</span> <span class="cm-variable">lastServerTime</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+
+<span class="cm-variable">request</span>({<span class="cm-property">pathname</span>: <span class="cm-string">"talks"</span>}, <span class="cm-keyword">function</span>(<span class="cm-def">error</span>, <span class="cm-def">response</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">error</span>) {
+    <span class="cm-variable">reportError</span>(<span class="cm-variable-2">error</span>);
+  } <span class="cm-keyword">else</span> {
+    <span class="cm-variable-2">response</span> <span class="cm-operator">=</span> <span class="cm-variable">JSON</span>.<span class="cm-property">parse</span>(<span class="cm-variable-2">response</span>);
+    <span class="cm-variable">displayTalks</span>(<span class="cm-variable-2">response</span>.<span class="cm-property">talks</span>);
+    <span class="cm-variable">lastServerTime</span> <span class="cm-operator">=</span> <span class="cm-variable-2">response</span>.<span class="cm-property">serverTime</span>;
+    <span class="cm-variable">waitForChanges</span>();
+  }
+});</pre>
+<p><a class=p_ident id="p_x9cXc2plZU" href="#p_x9cXc2plZU"></a>The <code>lastServerTime</code> variable is used to track
+the time of the last update that was received from the server.
+After the initial request, the client&#8217;s view of the talks corresponds
+to the view that the server had when it responded to that request.
+Thus, the <code>serverTime</code> property included in the response provides an
+appropriate initial value for <code>lastServerTime</code>.</p>
+<p><a class=p_ident id="p_gwDxefJOAx" href="#p_gwDxefJOAx"></a>When the request fails, we
+don&#8217;t want to have our page just sit there, doing nothing without
+explanation. So we define a simple function called <code>reportError</code>, which at
+least shows the user a dialog that tells them something went wrong.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_W0nNbmzqMN" href="#c_W0nNbmzqMN"></a><span class="cm-keyword">function</span> <span class="cm-variable">reportError</span>(<span class="cm-def">error</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">error</span>)
+    <span class="cm-variable">alert</span>(<span class="cm-variable-2">error</span>.<span class="cm-property">toString</span>());
+}</pre>
+<p><a class=p_ident id="p_CAD2u101IA" href="#p_CAD2u101IA"></a>The function checks whether there <em>is</em> an
+actual error, and it alerts only when there is one. That way, we can also
+directly pass this function to <code>request</code> for requests where we can ignore the
+response. This makes sure that if the request fails, the error is reported
+to the user.</p>
+<h3><a class=h_ident id="h_KV4ik1gcBy" href="#h_KV4ik1gcBy"></a>Displaying talks</h3>
+<p><a class=p_ident id="p_ABlg+B4JoH" href="#p_ABlg+B4JoH"></a>To be able to update the view of
+the talks when changes come in, the client must keep track of the
+talks that it is currently showing. That way, when a new version of a
+talk that is already on the screen comes in, the talk can be replaced
+(in place) with its updated form. Similarly, when information comes in
+that a talk is being deleted, the right DOM element can be removed
+from the document.</p>
+<p><a class=p_ident id="p_HX4fJQ/YuG" href="#p_HX4fJQ/YuG"></a>The function <code>displayTalks</code> is used both to build up the initial
+display and to update it when something changes. It will use the
+<code>shownTalks</code> object, which associates talk titles with DOM nodes, to
+remember the talks it currently has on the screen.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DSPPbB1GXB" href="#c_DSPPbB1GXB"></a><span class="cm-keyword">var</span> <span class="cm-variable">talkDiv</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#talks"</span>);
+<span class="cm-keyword">var</span> <span class="cm-variable">shownTalks</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-atom">null</span>);
+
+<span class="cm-keyword">function</span> <span class="cm-variable">displayTalks</span>(<span class="cm-def">talks</span>) {
+  <span class="cm-variable-2">talks</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">talk</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">shown</span> <span class="cm-operator">=</span> <span class="cm-variable">shownTalks</span>[<span class="cm-variable-2">talk</span>.<span class="cm-property">title</span>];
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">talk</span>.<span class="cm-property">deleted</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">shown</span>) {
+        <span class="cm-variable">talkDiv</span>.<span class="cm-property">removeChild</span>(<span class="cm-variable-2">shown</span>);
+        <span class="cm-keyword">delete</span> <span class="cm-variable">shownTalks</span>[<span class="cm-variable-2">talk</span>.<span class="cm-property">title</span>];
+      }
+    } <span class="cm-keyword">else</span> {
+      <span class="cm-keyword">var</span> <span class="cm-def">node</span> <span class="cm-operator">=</span> <span class="cm-variable">drawTalk</span>(<span class="cm-variable-2">talk</span>);
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">shown</span>)
+        <span class="cm-variable">talkDiv</span>.<span class="cm-property">replaceChild</span>(<span class="cm-variable-2">node</span>, <span class="cm-variable-2">shown</span>);
+      <span class="cm-keyword">else</span>
+        <span class="cm-variable">talkDiv</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable-2">node</span>);
+      <span class="cm-variable">shownTalks</span>[<span class="cm-variable-2">talk</span>.<span class="cm-property">title</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">node</span>;
+    }
+  });
+}</pre>
+<p><a class=p_ident id="p_eNjQj7FZqE" href="#p_eNjQj7FZqE"></a>Building up the DOM
+structure for talks is done using the templates that were included
+in the HTML document. First, we must define <code>instantiateTemplate</code>,
+which looks up and fills in a template.</p>
+<p><a class=p_ident id="p_QzVkBI26S7" href="#p_QzVkBI26S7"></a>The <code>name</code> parameter is the
+template&#8217;s name. To look up the template element, we search for an
+element whose class name matches the template name, which is a child
+of the element with ID <code>"template"</code>. Using the <code>querySelector</code> method
+makes this easy. There were templates named <code>"talk"</code> and <code>"comment"</code> in
+the HTML page.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Vecz/HgG8g" href="#c_Vecz/HgG8g"></a><span class="cm-keyword">function</span> <span class="cm-variable">instantiateTemplate</span>(<span class="cm-def">name</span>, <span class="cm-def">values</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">instantiateText</span>(<span class="cm-def">text</span>) {
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">text</span>.<span class="cm-property">replace</span>(<span class="cm-string-2">/\{\{(\w+)\}\}/g</span>, <span class="cm-keyword">function</span>(<span class="cm-def">_</span>, <span class="cm-def">name</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">values</span>[<span class="cm-variable-2">name</span>];
+    });
+  }
+  <span class="cm-keyword">function</span> <span class="cm-def">instantiate</span>(<span class="cm-def">node</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">node</span>.<span class="cm-property">nodeType</span> <span class="cm-operator">==</span> <span class="cm-variable">document</span>.<span class="cm-property">ELEMENT_NODE</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">copy</span> <span class="cm-operator">=</span> <span class="cm-variable-2">node</span>.<span class="cm-property">cloneNode</span>();
+      <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">node</span>.<span class="cm-property">childNodes</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
+        <span class="cm-variable-2">copy</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable-2">instantiate</span>(<span class="cm-variable-2">node</span>.<span class="cm-property">childNodes</span>[<span class="cm-variable-2">i</span>]));
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">copy</span>;
+    } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">node</span>.<span class="cm-property">nodeType</span> <span class="cm-operator">==</span> <span class="cm-variable">document</span>.<span class="cm-property">TEXT_NODE</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-variable">document</span>.<span class="cm-property">createTextNode</span>(
+               <span class="cm-variable-2">instantiateText</span>(<span class="cm-variable-2">node</span>.<span class="cm-property">nodeValue</span>));
+    } <span class="cm-keyword">else</span> {
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">node</span>;
+    }
+  }
+
+  <span class="cm-keyword">var</span> <span class="cm-def">template</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#template ."</span> <span class="cm-operator">+</span> <span class="cm-variable-2">name</span>);
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">instantiate</span>(<span class="cm-variable-2">template</span>);
+}</pre>
+<p><a class=p_ident id="p_/nQdGhe85J" href="#p_/nQdGhe85J"></a>The
+<code>cloneNode</code> method, which all DOM nodes have, creates a copy of a
+node. It won&#8217;t copy the node&#8217;s child nodes unless <code>true</code> is given as
+a first argument. The <code>instantiate</code> function recursively builds up a
+copy of the template, filling in the template as it goes.</p>
+<p><a class=p_ident id="p_DrLRp8KMhs" href="#p_DrLRp8KMhs"></a>The second argument to <code>instantiateTemplate</code> should be an object,
+whose properties hold the strings that are to be filled into the
+template. A placeholder like <code>{{title}}</code> will be replaced with the
+value of <code>values</code>’ <code>title</code> property.</p>
+<p><a class=p_ident id="p_QeRff45qDA" href="#p_QeRff45qDA"></a>This is a crude approach to templating, but it
+is enough to implement <code>drawTalk</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_T1GqphrHzC" href="#c_T1GqphrHzC"></a><span class="cm-keyword">function</span> <span class="cm-variable">drawTalk</span>(<span class="cm-def">talk</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">node</span> <span class="cm-operator">=</span> <span class="cm-variable">instantiateTemplate</span>(<span class="cm-string">"talk"</span>, <span class="cm-variable-2">talk</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">comments</span> <span class="cm-operator">=</span> <span class="cm-variable-2">node</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">".comments"</span>);
+  <span class="cm-variable-2">talk</span>.<span class="cm-property">comments</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">comment</span>) {
+    <span class="cm-variable-2">comments</span>.<span class="cm-property">appendChild</span>(
+      <span class="cm-variable">instantiateTemplate</span>(<span class="cm-string">"comment"</span>, <span class="cm-variable-2">comment</span>));
+  });
+
+  <span class="cm-variable-2">node</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"button.del"</span>).<span class="cm-property">addEventListener</span>(
+    <span class="cm-string">"click"</span>, <span class="cm-variable">deleteTalk</span>.<span class="cm-property">bind</span>(<span class="cm-atom">null</span>, <span class="cm-variable-2">talk</span>.<span class="cm-property">title</span>));
+
+  <span class="cm-keyword">var</span> <span class="cm-def">form</span> <span class="cm-operator">=</span> <span class="cm-variable-2">node</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"form"</span>);
+  <span class="cm-variable-2">form</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"submit"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>();
+    <span class="cm-variable">addComment</span>(<span class="cm-variable-2">talk</span>.<span class="cm-property">title</span>, <span class="cm-variable-2">form</span>.<span class="cm-property">elements</span>.<span class="cm-property">comment</span>.<span class="cm-property">value</span>);
+    <span class="cm-variable-2">form</span>.<span class="cm-property">reset</span>();
+  });
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">node</span>;
+}</pre>
+<p><a class=p_ident id="p_wkegcUE+fb" href="#p_wkegcUE+fb"></a>After instantiating the <code>"talk"</code> template, there
+are various things that need to be patched up. First, the comments
+have to be filled in by repeatedly instantiating the <code>"comment"</code>
+template and appending the results to the node with class
+<code>"comments"</code>. Next, event handlers have to be attached to the button
+that deletes the task and the form that adds a new comment.</p>
+<h3><a class=h_ident id="h_Fxf3YQJcAP" href="#h_Fxf3YQJcAP"></a>Updating the server</h3>
+<p><a class=p_ident id="p_+djWXXL4a7" href="#p_+djWXXL4a7"></a>The event handlers registered by <code>drawTalk</code> call the function
+<code>deleteTalk</code> and <code>addComment</code> to perform the actual actions required
+to delete a talk or add a comment. These will need to build up
+URLs that refer to talks with a given title, for which we define
+the <code>talkURL</code> helper function.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WLsWF+fVeR" href="#c_WLsWF+fVeR"></a><span class="cm-keyword">function</span> <span class="cm-variable">talkURL</span>(<span class="cm-def">title</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-string">"talks/"</span> <span class="cm-operator">+</span> <span class="cm-variable">encodeURIComponent</span>(<span class="cm-variable-2">title</span>);
+}</pre>
+<p><a class=p_ident id="p_2F7+HjPRJf" href="#p_2F7+HjPRJf"></a>The <code>deleteTalk</code> function fires off a <code>DELETE</code>
+request and reports the error when that fails.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2KfleKDwSk" href="#c_2KfleKDwSk"></a><span class="cm-keyword">function</span> <span class="cm-variable">deleteTalk</span>(<span class="cm-def">title</span>) {
+  <span class="cm-variable">request</span>({<span class="cm-property">pathname</span>: <span class="cm-variable">talkURL</span>(<span class="cm-variable-2">title</span>), <span class="cm-property">method</span>: <span class="cm-string">"DELETE"</span>},
+          <span class="cm-variable">reportError</span>);
+}</pre>
+<p><a class=p_ident id="p_lPxu6YmNuw" href="#p_lPxu6YmNuw"></a>Adding a comment requires building up a JSON
+representation of the comment and submitting that as part of a <code>POST</code>
+request.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_M7QiAhwiFp" href="#c_M7QiAhwiFp"></a><span class="cm-keyword">function</span> <span class="cm-variable">addComment</span>(<span class="cm-def">title</span>, <span class="cm-def">comment</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">comment</span> <span class="cm-operator">=</span> {<span class="cm-property">author</span>: <span class="cm-variable">nameField</span>.<span class="cm-property">value</span>, <span class="cm-property">message</span>: <span class="cm-variable-2">comment</span>};
+  <span class="cm-variable">request</span>({<span class="cm-property">pathname</span>: <span class="cm-variable">talkURL</span>(<span class="cm-variable-2">title</span>) <span class="cm-operator">+</span> <span class="cm-string">"/comments"</span>,
+           <span class="cm-property">body</span>: <span class="cm-variable">JSON</span>.<span class="cm-property">stringify</span>(<span class="cm-variable-2">comment</span>),
+           <span class="cm-property">method</span>: <span class="cm-string">"POST"</span>},
+          <span class="cm-variable">reportError</span>);
+}</pre>
+<p><a class=p_ident id="p_0lktU89vVm" href="#p_0lktU89vVm"></a>The <code>nameField</code> variable used to
+set the comment&#8217;s <code>author</code> property is a reference to the <code>&lt;input&gt;</code>
+field at the top of the page that allows the user to specify their
+name. We also wire up that field to <code>localStorage</code> so that it does
+not have to be filled in again every time the page is reloaded.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NTJPodOcVP" href="#c_NTJPodOcVP"></a><span class="cm-keyword">var</span> <span class="cm-variable">nameField</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#name"</span>);
+
+<span class="cm-variable">nameField</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-variable">localStorage</span>.<span class="cm-property">getItem</span>(<span class="cm-string">"name"</span>) <span class="cm-operator">||</span> <span class="cm-string">""</span>;
+
+<span class="cm-variable">nameField</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+  <span class="cm-variable">localStorage</span>.<span class="cm-property">setItem</span>(<span class="cm-string">"name"</span>, <span class="cm-variable">nameField</span>.<span class="cm-property">value</span>);
+});</pre>
+<p><a class=p_ident id="p_UkPG5Nhwu/" href="#p_UkPG5Nhwu/"></a>The form at the
+bottom of the page, for proposing a new talk, gets a <code>"submit"</code> event
+handler. This handler prevents the event&#8217;s default effect (which would
+cause a page reload), clears the form, and fires off a <code>PUT</code> request
+to create the talk.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_dyGT4khGTb" href="#c_dyGT4khGTb"></a><span class="cm-keyword">var</span> <span class="cm-variable">talkForm</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#newtalk"</span>);
+
+<span class="cm-variable">talkForm</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"submit"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+  <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>();
+  <span class="cm-variable">request</span>({<span class="cm-property">pathname</span>: <span class="cm-variable">talkURL</span>(<span class="cm-variable">talkForm</span>.<span class="cm-property">elements</span>.<span class="cm-property">title</span>.<span class="cm-property">value</span>),
+           <span class="cm-property">method</span>: <span class="cm-string">"PUT"</span>,
+           <span class="cm-property">body</span>: <span class="cm-variable">JSON</span>.<span class="cm-property">stringify</span>({
+             <span class="cm-property">presenter</span>: <span class="cm-variable">nameField</span>.<span class="cm-property">value</span>,
+             <span class="cm-property">summary</span>: <span class="cm-variable">talkForm</span>.<span class="cm-property">elements</span>.<span class="cm-property">summary</span>.<span class="cm-property">value</span>
+           })}, <span class="cm-variable">reportError</span>);
+  <span class="cm-variable">talkForm</span>.<span class="cm-property">reset</span>();
+});</pre>
+<h3><a class=h_ident id="h_2EFD142D/X" href="#h_2EFD142D/X"></a>Noticing changes</h3>
+<p><a class=p_ident id="p_iWkpEvrdoJ" href="#p_iWkpEvrdoJ"></a>I should point out that the
+various functions that change the state of the application by creating
+or deleting talks or adding a comment do absolutely nothing to
+ensure that the changes they make are visible on the screen. They simply
+tell the server and rely on the long-polling mechanism to
+trigger the appropriate updates to the page.</p>
+<p><a class=p_ident id="p_xdAPc8BwNG" href="#p_xdAPc8BwNG"></a>Given the mechanism that we implemented in our server and the way we
+defined <code>displayTalks</code> to handle updates of talks that are already on
+the page, the actual long polling is surprisingly simple.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_aGn7X8h/7m" href="#c_aGn7X8h/7m"></a><span class="cm-keyword">function</span> <span class="cm-variable">waitForChanges</span>() {
+  <span class="cm-variable">request</span>({<span class="cm-property">pathname</span>: <span class="cm-string">"talks?changesSince="</span> <span class="cm-operator">+</span> <span class="cm-variable">lastServerTime</span>},
+          <span class="cm-keyword">function</span>(<span class="cm-def">error</span>, <span class="cm-def">response</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">error</span>) {
+      <span class="cm-variable">setTimeout</span>(<span class="cm-variable">waitForChanges</span>, <span class="cm-number">2500</span>);
+      <span class="cm-variable">console</span>.<span class="cm-property">error</span>(<span class="cm-variable-2">error</span>.<span class="cm-property">stack</span>);
+    } <span class="cm-keyword">else</span> {
+      <span class="cm-variable-2">response</span> <span class="cm-operator">=</span> <span class="cm-variable">JSON</span>.<span class="cm-property">parse</span>(<span class="cm-variable-2">response</span>);
+      <span class="cm-variable">displayTalks</span>(<span class="cm-variable-2">response</span>.<span class="cm-property">talks</span>);
+      <span class="cm-variable">lastServerTime</span> <span class="cm-operator">=</span> <span class="cm-variable-2">response</span>.<span class="cm-property">serverTime</span>;
+      <span class="cm-variable">waitForChanges</span>();
+    }
+  });
+}</pre>
+<p><a class=p_ident id="p_pB96H5tQ0A" href="#p_pB96H5tQ0A"></a>This function is
+called once when the program starts up and then keeps calling itself
+to ensure that a polling request is always active. When the request
+fails, we don&#8217;t call <code>reportError</code> since popping up a dialog every
+time we fail to reach the server would get annoying when the
+server is down. Instead, the error is written to the console (to ease
+debugging), and another attempt is made 2.5 seconds later.</p>
+<p><a class=p_ident id="p_QNpe4g2kOS" href="#p_QNpe4g2kOS"></a>When the request succeeds, the new data is put onto the screen, and
+<code>lastServerTime</code> is updated to reflect the fact that we received data
+corresponding to this new point in time. The request is immediately
+restarted to wait for the next update.</p>
+<p><a class=p_ident id="p_zfJgnDyZM2" href="#p_zfJgnDyZM2"></a>If you run the server and open two browser windows for
+<a href="http://localhost:8000/"><em>localhost:8000/</em></a> next to each other, you can
+see that the actions you perform in one window are immediately visible
+in the other.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<p><a class=p_ident id="p_RTbqFFPYXr" href="#p_RTbqFFPYXr"></a>The following exercises will involve modifying the system
+defined in this chapter. To work on them, make sure you download
+the code first
+(<a href="http://eloquentjavascript.net/code/skillsharing.zip"><em>eloquentjavascript.net/code/skillsharing.zip</em></a>)
+and have Node installed (<a href="http://nodejs.org"><em>nodejs.org</em></a>).</p>
+<h3><a class=h_ident id="h_QcUCZfnLE+" href="#h_QcUCZfnLE+"></a>Disk persistence</h3>
+<p><a class=p_ident id="p_wtP8pzYaoa" href="#p_wtP8pzYaoa"></a>The skill-sharing server keeps its
+data purely in memory. This means that when it crashes or is
+restarted for any reason, all talks and comments are lost.</p>
+<p><a class=p_ident id="p_3H2K0biSmc" href="#p_3H2K0biSmc"></a>Extend the server so that it stores the talk data to
+disk and automatically reloads the data when it is restarted. Do not worry
+about efficiency—do the simplest thing that works.</p>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_VyCgv1RQvk" href="#p_VyCgv1RQvk"></a>The simplest solution I can come up with
+is to encode the whole <code>talks</code> object as JSON and dump it
+to a file with <code>fs.writeFile</code>. There is already a function
+(<code>registerChange</code>) that is called every time the server&#8217;s data
+changes. It can be extended to write the new data to disk.</p>
+<p><a class=p_ident id="p_Pko5rJ5s3N" href="#p_Pko5rJ5s3N"></a>Pick a filename, for example
+<code>./talks.json</code>. When the server starts, it can try to read that
+file with <code>fs.readFile</code>, and if that succeeds, the server can use the
+file&#8217;s contents as its starting data.</p>
+<p><a class=p_ident id="p_3SFJ9KCIjw" href="#p_3SFJ9KCIjw"></a>Beware, though. The <code>talks</code>
+object started as a prototype-less object so that the <code>in</code>
+operator could be sanely used. <code>JSON.parse</code> will return regular
+objects with <code>Object.prototype</code> as their prototype. If you use JSON as
+your file format, you&#8217;ll have to copy the properties of the object
+returned by <code>JSON.parse</code> into a new, prototype-less object.</p>
+</div></div>
+<h3><a class=h_ident id="h_oMIXw3b5pk" href="#h_oMIXw3b5pk"></a>Comment field resets</h3>
+<p><a class=p_ident id="p_ZLgsWCWv6a" href="#p_ZLgsWCWv6a"></a>The
+wholesale redrawing of talks works pretty well because you usually
+can&#8217;t tell the difference between a DOM node and its identical
+replacement. But there are exceptions. If you start typing something
+in the comment field for a talk in one browser window and then,
+in another, add a comment to that talk, the field in the first window
+will be redrawn, removing both its content and its focus.</p>
+<p><a class=p_ident id="p_y5nWDjEiiD" href="#p_y5nWDjEiiD"></a>In a heated discussion, where multiple people are adding comments to a
+single talk, this would be very annoying. Can you come up with a way
+to avoid it?</p>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_tGqAe5WTfL" href="#p_tGqAe5WTfL"></a>The ad hoc approach
+is to simply store the state of a talk&#8217;s comment field (its content and
+whether it is focused) before redrawing the talk and then
+reset the field to its old state afterward.</p>
+<p><a class=p_ident id="p_67foZJA/0m" href="#p_67foZJA/0m"></a>Another solution would be
+to not simply replace the old DOM structure with the new one but
+recursively compare them, node by node, and update only  the parts that
+actually changed. This is a lot harder to implement, but it&#8217;s more general and
+continues working even if we add another text field.</p>
+</div></div>
+<h3><a class=h_ident id="h_mAO3w3FVBR" href="#h_mAO3w3FVBR"></a>Better templates</h3>
+<p><a class=p_ident id="p_/QOXJknIo1" href="#p_/QOXJknIo1"></a>Most
+templating systems do more than just fill in some strings. At the very
+least, they also allow conditional inclusion of parts of the template,
+analogous to <code>if</code> statements, and repetition of parts of a template,
+similar to a loop.</p>
+<p><a class=p_ident id="p_zIsRVUDVAg" href="#p_zIsRVUDVAg"></a>If we were able to repeat a piece of template for each element in an
+array, we would not need the second template (<code>"comment"</code>). Rather, we
+could specify the <code>"talk"</code> template to loop over the array held in
+a talk&#8217;s <code>comments</code> property and render the nodes that make up a
+comment for every element in the array.</p>
+<p><a class=p_ident id="p_2qPMlaQA9i" href="#p_2qPMlaQA9i"></a>It could look like this:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_WyFXapmwcz" href="#c_WyFXapmwcz"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"comments"</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">class</span>=<span class="cm-string">"comment"</span> <span class="cm-attribute">template-repeat</span>=<span class="cm-string">"comments"</span><span class="cm-tag cm-bracket">></span>
+    <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">span</span> <span class="cm-attribute">class</span>=<span class="cm-string">"name"</span><span class="cm-tag cm-bracket">></span>{{author}}<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">span</span><span class="cm-tag cm-bracket">></span>: {{message}}
+  <span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_BMAO7dW/5p" href="#p_BMAO7dW/5p"></a>The idea is that whenever a node
+with a <code>template-repeat</code> attribute is found during template
+instantiation, the instantiating code loops over the array held in the
+property named by that attribute. For each element in the array, it
+adds an instance of the node. The template&#8217;s context (the <code>values</code>
+variable in <code>instantiateTemplate</code>) would, during this loop, point at
+the current element of the array so that <code>{{author}}</code> would be looked up
+in the comment object rather than in the original context (the talk).</p>
+<p><a class=p_ident id="p_8WQZs9CwPa" href="#p_8WQZs9CwPa"></a>Rewrite
+<code>instantiateTemplate</code> to implement this and then change the templates
+to use this feature and remove the explicit rendering of comments from
+the <code>drawTalk</code> function.</p>
+<p><a class=p_ident id="p_0HE7T7eefT" href="#p_0HE7T7eefT"></a>How would you add conditional instantiation of nodes, making it
+possible to omit parts of the template when a given value is true or
+false?</p>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_J1655eJu2y" href="#p_J1655eJu2y"></a>You
+could change <code>instantiateTemplate</code> so that its inner function
+takes not just a node but also a current context as an argument. You can
+then, when looping over a node&#8217;s child nodes, check whether the child
+has a <code>template-repeat</code> attribute. If it does, don&#8217;t instantiate it
+once but instead loop over the array indicated by the attribute&#8217;s
+value and instantiate it once for every element in the array, passing
+the current array element as context.</p>
+<p><a class=p_ident id="p_cjA8nyLLNh" href="#p_cjA8nyLLNh"></a>Conditionals can be implemented in a similar way, with attributes
+called, for example, <code>template-when</code> and <code>template-unless</code>, which
+cause a node to be instantiated only when a given property is true (or
+false).</p>
+</div></div>
+<h3><a class=h_ident id="h_V+TcFyuz/v" href="#h_V+TcFyuz/v"></a>The unscriptables</h3>
+<p><a class=p_ident id="p_pTLwmwvGb9" href="#p_pTLwmwvGb9"></a>When someone
+visits our website with a browser that has JavaScript disabled or
+is simply not capable of displaying JavaScript, they will get a
+completely broken, inoperable page. This is not nice.</p>
+<p><a class=p_ident id="p_17cAgFKUum" href="#p_17cAgFKUum"></a>Some types of web applications really can&#8217;t be done without
+JavaScript. For others, you just don&#8217;t have the budget or patience
+to bother about clients that can&#8217;t run scripts. But for pages with a
+wide audience, it is polite to support scriptless users.</p>
+<p><a class=p_ident id="p_dFmv2TkNrB" href="#p_dFmv2TkNrB"></a>Try to think of a way the skill-sharing
+website could be set up to preserve basic functionality when run
+without JavaScript. The automatic updates will have to go, and people
+will have to refresh their page the old-fashioned way. But being able
+to see existing talks, create new ones, and submit comments would be
+nice.</p>
+<p><a class=p_ident id="p_d0wQ5C75Bk" href="#p_d0wQ5C75Bk"></a>Don&#8217;t feel obliged to actually implement this. Outlining a solution is
+enough. Does the revised approach strike you as more or less elegant
+than what we did initially?</p>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_UXxEXIwRSy" href="#p_UXxEXIwRSy"></a>Two central aspects of the
+approach taken in this chapter—a clean HTTP interface and client-side
+template rendering—don&#8217;t work without JavaScript. Normal HTML forms
+can send <code>GET</code> and <code>POST</code> requests but not <code>PUT</code> or <code>DELETE</code> requests
+and can send their data only  to a fixed URL.</p>
+<p><a class=p_ident id="p_4JCtv9/G+Q" href="#p_4JCtv9/G+Q"></a>Thus, the server
+would have to be revised to accept comments, new talks, and deleted
+talks through <code>POST</code> requests, whose bodies aren&#8217;t JSON but rather
+use the URL-encoded format that HTML forms use (see
+<a href="18_forms.html#forms">Chapter 17</a>). These requests would have to
+return the full new page so that users see the new state of the site
+after they make a change. This would not be too hard to engineer and
+could be implemented alongside the “clean” HTTP interface.</p>
+<p><a class=p_ident id="p_BpHJYWubwA" href="#p_BpHJYWubwA"></a>The code for rendering talks would have to be duplicated
+on the server. The <code>index.html</code> file, rather than being a static file,
+would have to be generated dynamically by adding a handler for it to
+the router. That way, it already includes the current talks and
+comments when it gets served.</p>
+</div></div>
+<nav>
+  <a href="20_node.html" title="previous chapter">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  
+</nav>
+</article>
