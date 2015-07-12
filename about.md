@@ -7,7 +7,7 @@ permalink: /about/
 Esta página ha sido creada con el objetivo de ir mostrando los avances en la traducción de Eloquent JavaScript al español, y obtener retroalimentación de la gente
 interesada en aprender programación así como de expertos en el área de edición y traducción.
 
-El libro está escrito originalmente por Marjin Haverbeke(Aquí su [Github](https://github.com/marijnh) y [Twitter](https://twitter.com/marijnjh)).
+El libro está escrito originalmente por Marijn Haverbeke(Aquí su [Github](https://github.com/marijnh) y [Twitter](https://twitter.com/marijnjh)).
 
 Es un tabajo en curso, puedes ponerte en contacto con Héctor Patricio([hectorip](https://github.com/hectorip)) o contribuir al trabajo a través de [Github](https://github.com/hectorip/Eloquent-JavaScript-es)
 La obra ha sido compartida bajo licencia [Creative Commons Atribución-NoComercial 4.0 Internacional](http://creativecommons.org/licenses/by-nc/4.0/), además todo el código debe considerarse bajo licencia [MIT](http://opensource.org/licenses/MIT)
