@@ -1,25 +1,21 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
-date:   2015-07-10 13:10:13
-categories: jekyll update
+title:  "Eloquent Javascript en Español, trabajo en curso"
+date:   2015-07-11 20:32:00
+categories: noticias
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+En esta página se subiran periódicamente los avances realizados en la versión en español del libro [Eloquent Javascript][eloquent_javascript], para que sean leídas por las personas interesadas en aprender JavaScript y aún se les hace difícil leer en inglés.
 
-Jekyll also offers powerful support for code snippets:
+Cuando esté lista una parte significativa se harán disponibles las versiones en PDF y epub.
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
+Este es un esfuerzo por acercar contenidos de excelente calidad a la comunidad de habla hispana, debido a que el 93.72% (número inventado) de la información relacionada con tecnología está en inglés u otros idiomas.
 
-Check out the [Jekyll docs][jekyll] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll’s dedicated Help repository][jekyll-help].
+Se aceptan correcciones en el [repositorio de github][repo], hace falta mucho trabajo por realizar, si tienes sufiente conocimiento del inglés para apoyar no dudes en hacerlo.
 
-[jekyll]:      http://jekyllrb.com
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-help]: https://github.com/jekyll/jekyll-help
+También requerimos correctores de estilo, editores o traductores profesionales que nos ayuden a editar los errores que cometemos al no ser excritores profesionales.
+
+Pueden contactarnos a través del 
+
+[eloquent_javascript]:      http://eloquentjavascript.net/
+[repo]: https://github.com/hectorip/Eloquent-JavaScript-es
