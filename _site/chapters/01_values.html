@@ -39,7 +39,7 @@ de información discreta puede ser reducida a una secuencia de ceros y
 unos y por lo tanto representada como bits.</p>
 <p><a class=p_ident id="p_JE/XYCmcJB" href="#p_JE/XYCmcJB"></a> Por ejemplo, piensa
 cómo podrías representar el número 13 en bits. Funciona de la misma
-forma en que escribes número decimales, pero en vez de tener 10
+forma en que escribes números decimales, pero en vez de tener 10
 dígitos, tienes sólo 2, y el peso de cada uno se incrementa
 por un factor de 2 de derecha a izquierda. Aquí están los bits que
 conforman el número 13, con los pesos de cada uno mostrados debajo de
@@ -48,85 +48,85 @@ ellos.</p>
  128  64  32  16   8   4   2   1</pre>
 <p><a class=p_ident id="p_u5x2Yw8/7N" href="#p_u5x2Yw8/7N"></a>Así que ese es el número binario 00001101, u 8 + 4 + 1,
 que equivale a 13.</p>
-<h2><a class=h_ident id="h_sVZPaxUSy/" href="#h_sVZPaxUSy/"></a>Values</h2>
-<p><a class=p_ident id="p_ySnc2wG5kf" href="#p_ySnc2wG5kf"></a>Imagine a sea of
-bits. An ocean of them. A typical modern computer has more than 30
-billion bits in its volatile data storage. Nonvolatile storage (the
-hard disk or equivalent) tends to have yet a few orders of magnitude
-more.</p>
+<h2><a class=h_ident id="h_U9F8ZU147i" href="#h_U9F8ZU147i"></a>Valores</h2>
+<p><a class=p_ident id="p_W4yD+2tNFN" href="#p_W4yD+2tNFN"></a>Imagina
+un mar de bits. Un océano de estos. Una computadora moderna típica
+tiene más de 30 mil millones de bits en su almacenamiento de datos
+volátil. El almacenamiento no volátil (el disco duro o su equivalente)
+tiene un par de órdenes de magnitud más todavía.</p>
 <div class="image">
   <img src="img/bit-sea.png" alt="The Ocean of Bits">
 </div>
-<p><a class=p_ident id="p_e7djokdoxd" href="#p_e7djokdoxd"></a>To be able to work with such quantities of bits without getting lost,
-you can separate them into chunks that represent pieces of
-information. In a JavaScript environment, those chunks are called
-<em>values</em>. Though all values are made of bits, they play different
-roles. Every value has a type that determines its role. There are
-six basic types of values in JavaScript: numbers, strings, Booleans,
-objects, functions, and undefined values.</p>
-<p><a class=p_ident id="p_+ayfFmFdze" href="#p_+ayfFmFdze"></a>To create a value, you must merely invoke its
-name. This is convenient. You don&#8217;t have to gather building material
-for your values or pay for them. You just call for one, and <em>woosh</em>,
-you have it. They are not created from thin air, of course. Every
-value has to be stored somewhere, and if you want to use a gigantic
-amount of them at the same time, you might run out of bits.
-Fortunately, this is a problem only if you need them all
-simultaneously. As soon as you no longer use a value, it will
-dissipate, leaving behind its bits to be recycled as building material
-for the next generation of values.</p>
-<p><a class=p_ident id="p_4qFZuA8nQ3" href="#p_4qFZuA8nQ3"></a>This chapter introduces the atomic elements of JavaScript programs,
-that is, the simple value types and the operators that can act on such
-values.</p>
-<h2><a class=h_ident id="h_flOCH3CuFg" href="#h_flOCH3CuFg"></a>Numbers</h2>
-<p><a class=p_ident id="p_lB/BspzEbz" href="#p_lB/BspzEbz"></a>Values of the
-<em>number</em> type are, unsurprisingly, numeric values. In a JavaScript
-program, they are written as follows:</p>
+<p><a class=p_ident id="p_/+rSEDl+t3" href="#p_/+rSEDl+t3"></a>Para ser capaces con tales cantidades de bits sin perderte, puedes
+separarlos en pedazos que representen piezas de información. En un
+entorno en JavaScript, esos pedazos son llamados <em>valores</em>. Aunque
+todos los valores están hechos de bits, juegan diferentes roles. Cada
+valor tiene un tipo que determina su rol. Existen seis tipos básicos de
+valores en JavaScript: números, cadenas, Booleanos, objetos, funciones,
+y valores indefinidos.</p>
+<p><a class=p_ident id="p_Iamt82VWK9" href="#p_Iamt82VWK9"></a>Para crear un valor, sólo tienes que invocar
+su nombre. Esto es conveniente. No tienes que reuinir el material de
+construcción de tus valores o pagar por ellos. Sólo llamas uno y <em>woosh</em>,
+lo tienes. No son creados de la nada, por supuesto. Cada valor tiene que
+estar almacenado en algún lugar, y si quieres usar una cantidad enorme
+de estos al mismo tiempo, te podrías quedar sin bits. Afortunadamente,
+esto se convierte en un problema sólamente si los necesitas todos al
+mismo tiempo. Tan pronto como dejes de usar un valor se disipará, dejando
+sus bits para que sean reciclados como material de construcción de la
+próxima generación de valores.</p>
+<p><a class=p_ident id="p_Ug5egI/knJ" href="#p_Ug5egI/knJ"></a>Este capítulo introduce los elementos atómicos de los programas en
+JavaScript, los tipos de valor simples y los operadores que pueden
+actuar sobre tales valores.</p>
+<h2><a class=h_ident id="h_BPeI5tySz2" href="#h_BPeI5tySz2"></a>Números</h2>
+<p><a class=p_ident id="p_/BWrVUBa16" href="#p_/BWrVUBa16"></a>Los valores de tipo
+<em>número</em>(number) son, sin sorpresa alguna, valores numéricos.
+En un programa en JavaScript, se escriben de la siguiente forma:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_vTB6PsMp4Q" href="#c_vTB6PsMp4Q"></a><span class="cm-number">13</span></pre>
-<p><a class=p_ident id="p_5FswHziHvR" href="#p_5FswHziHvR"></a>Use that in a program, and it will cause the bit
-pattern for the number 13 to come into existence inside the computer&#8217;s
-memory.</p>
-<p><a class=p_ident id="p_34VeW0GvxJ" href="#p_34VeW0GvxJ"></a>JavaScript uses a fixed
-number of bits, namely 64 of them, to store a single number value.
-There are only so many patterns you can make with 64 bits, which means
-that the amount of different numbers that can be represented is
-limited. For <em>N</em> decimal digits, the amount of numbers that can be
-represented is 10<sup><em>N</em></sup>. Similarly, given 64 binary digits, you can
-represent 2<sup>64</sup> different numbers, which is about 18 quintillion (an
-18 with 18 zeros after it). This is a lot.</p>
-<p><a class=p_ident id="p_WcfWpTcQB6" href="#p_WcfWpTcQB6"></a>Computer memory used to be a lot smaller, and people tended to use
-groups of 8 or 16 bits to represent their numbers. It was easy to
-accidentally <em>overflow</em> such small numbers—to end up with a number
-that did not fit into the given amount of bits. Today, even personal
-computers have plenty of memory, so you are free to use 64-bit chunks,
-which means you need to worry about overflow only when dealing with
-truly astronomical numbers.</p>
-<p><a class=p_ident id="p_qgS+bpqvEk" href="#p_qgS+bpqvEk"></a>Not
-all whole numbers below 18 quintillion fit in a JavaScript number,
-though. Those bits also store negative numbers, so one bit indicates
-the sign of the number. A bigger issue is that nonwhole numbers must
-also be represented. To do this, some of the bits are used to store
-the position of the decimal point. The actual maximum whole number
-that can be stored is more in the range of 9 quadrillion (15 zeros),
-which is still pleasantly huge.</p>
-<p><a class=p_ident id="p_+wzyK91zcb" href="#p_+wzyK91zcb"></a>Fractional numbers are written by using a
-dot.</p>
+<p><a class=p_ident id="p_hhFOOgT9wU" href="#p_hhFOOgT9wU"></a> Usa eso en un programa y causará que el patrón de
+bits para el número 13 exista dentro de la memoria de la computadora.</p>
+<p><a class=p_ident id="p_T/okPTL5NG" href="#p_T/okPTL5NG"></a>JavaScript usa una cantidad fija
+de bits, 64, para guardar un valor del tipo número. Existe un límite
+en la cantidad de patrones que se pueden hacer con 64 bits, lo que
+significa que la cantidad de números que puedes representar también es
+limitada. Para <em>N</em> dígitos decimales, la cantidad de números que
+pueden ser representados es 10<sup><em>N</em></sup>. Similarmente, dados 64 dígitos
+binarios, puedes representar 2<sup>64</sup> números diferentes, que es cerca de
+18 cuatrillones (un 18 con 18 ceros después). Eso es mucho.</p>
+<p><a class=p_ident id="p_Kq2zPrF86n" href="#p_Kq2zPrF86n"></a>La memoria de la computadora solía ser mucho más pequeña, y la gente
+tendía a usar grupos de 8 ó 16 bits para representar sus números. Era
+fácil <em>desbordar</em> accidentalmente números tan pequeños: terminar
+con un número que no pudiera ser almacenado en el número dado de bits. Hoy,
+incluso las computadoras personales tienen mucha memoria, así
+que eres libre de usar grupos de 64 bits, lo que significa que
+necesitas preocuparte del desbordamiento sólo cuando estés
+tratando con números verdaderamente astronómicos.</p>
+<p><a class=p_ident id="p_+SuavY86yZ" href="#p_+SuavY86yZ"></a>No
+todos los número enteros debajo de 18 cuatrillones caben en un número
+de JavaScript. Esos bits también guardan números negativos, así
+que un bit indica el signo del número. Un problema mayor es que
+los números no enteros también deben ser representados. Para hacer esto,
+algunos de los bits son usados para guardar la posición del punto decimal.
+El número entero máximo real que puede ser guardado está más cerca del rango de
+los 9 trillones (15 ceros), que aún es satisfactoriamente grande.</p>
+<p><a class=p_ident id="p_QuaxCY0XYg" href="#p_QuaxCY0XYg"></a>Los números fraccionarios son escritos usando un punto.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pDtjSHBkOT" href="#c_pDtjSHBkOT"></a><span class="cm-number">9.81</span></pre>
-<p><a class=p_ident id="p_j34c/ZU9g4" href="#p_j34c/ZU9g4"></a>For
-very big or very small numbers, you can also use scientific notation
-by adding an “e” (for “exponent”), followed by the exponent of the
-number:</p>
+<p><a class=p_ident id="p_swGkw2BgKN" href="#p_swGkw2BgKN"></a>Para números
+muy grandes o muy pequeños, también se puede usar la notación
+científica, añadiendo una "e" de "exponente", seguido por el exponente
+del número:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_BcwYGRXGfX" href="#c_BcwYGRXGfX"></a><span class="cm-number">2.998e8</span></pre>
-<p><a class=p_ident id="p_YbACmHw8Kd" href="#p_YbACmHw8Kd"></a>That is 2.998 × 10<sup>8</sup> = 299,800,000.</p>
-<p><a class=p_ident id="p_8KgYC0F1fX" href="#p_8KgYC0F1fX"></a>Calculations with whole numbers (also called <em>integers</em>)
-smaller than the aforementioned 9 quadrillion are guaranteed to always
-be precise. Unfortunately, calculations with fractional numbers are
-generally not. Just as π (pi) cannot be precisely expressed by a
-finite number of decimal digits, many numbers lose some precision when
-only 64 bits are available to store them. This is a shame, but it
-causes practical problems only in specific situations. The important
-thing is to be aware of it and treat fractional digital numbers as
-approximations, not as precise values.</p>
-<h3><a class=h_ident id="h_RfBT3HMnYs" href="#h_RfBT3HMnYs"></a>Arithmetic</h3>
+<p><a class=p_ident id="p_SLK7nYlKGz" href="#p_SLK7nYlKGz"></a>Esto es 2.998 × 10<sup>8</sup> = 299,800,000.</p>
+<p><a class=p_ident id="p_/aSx+o6E65" href="#p_/aSx+o6E65"></a>Calculos con
+números enteros (en inglés llamados <em>integer</em>) más pequeños que el supracitado
+9 trillones, están garantizados para siempre ser precisos. Desafortunadamente,
+cálculos con números fraccionarios generalmente no lo son. Justo como π (pi)
+no puede ser expresado precisamente por un número finito de dígitos decimales,
+muchos números pierden algo de precisión cuando sólo hay 64 bits disponibles
+para guardarlos. Esto es una pena, pero causa problemas prácticos sólo en
+algunas situaciones específicas. Lo importante es estar al tanto de
+esto y tratar a los números digitales fraccionarios como aproximaciones
+y no como valores precisos.</p>
+<h3><a class=h_ident id="h_k3aFxhy61f" href="#h_k3aFxhy61f"></a>Aritmética</h3>
 <p><a class=p_ident id="p_PO8MaZIpG1" href="#p_PO8MaZIpG1"></a> The main
 thing to do with numbers is arithmetic. Arithmetic operations such as
 addition or multiplication take two number values and produce a new
