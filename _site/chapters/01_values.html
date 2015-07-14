@@ -147,9 +147,9 @@ y la división se puede hacer con el operador <code>/</code>.</p>
 <p><a class=p_ident id="p_E1FK3xSXcx" href="#p_E1FK3xSXcx"></a>Cuando los operadores aparecen juntos sin paréntesis, el order en el que
 son aplicados es determinado por su <em>precedencia</em>. El ejemplo muestra
 que la multiplicación se aplica antes que la suma. El operador <code>/</code> tiene
-la mism precedencia que <code>*</code>. De igual forma pasa con <code>+</code> y <code>-</code>. Cuando
+la misma precedencia que <code>*</code>. De igual forma pasa con <code>+</code> y <code>-</code>. Cuando
 varios operadores con la misma precedencia aparecen juntos, como en
-<code>1 - 2 + 1</code>, son aplicados de izquierda a derecha <code>(1 - 2) + 1</code>.</p>
+<code>1 - 2 + 1</code>, son aplicados de izquierda a derecha: <code>(1 - 2) + 1</code>.</p>
 <p><a class=p_ident id="p_9tOejS3+vt" href="#p_9tOejS3+vt"></a>Estas reglas de precedencia son algo de lo que no te deberías
 de preocupar. Cuando tengas duda, simplemente agrega paréntesis.</p>
 <p><a class=p_ident id="p_oKySpEEh7U" href="#p_oKySpEEh7U"></a>Existe un operador aritmético más, que podrías no reconocer
@@ -159,20 +159,21 @@ operación <em>sobrante</em>. <code>X % Y</code> es el sobrante de dividir <code
 La precedencia del sobrante es la misma que la de la multiplicación
 y división. Verás a menudo este operador referido como <em>módulo</em>,
 aunque técnicamente <em>sobrante</em> es más preciso.</p>
-<h3><a class=h_ident id="h_R4eFf8w7Yz" href="#h_R4eFf8w7Yz"></a>Special numbers</h3>
-<p><a class=p_ident id="p_JBBwZano0e" href="#p_JBBwZano0e"></a>There are three special values in
-JavaScript that are considered numbers but don&#8217;t behave like normal
-numbers.</p>
-<p><a class=p_ident id="p_2+t3nK7Yp2" href="#p_2+t3nK7Yp2"></a>The first two are <code>Infinity</code> and <code>-Infinity</code>, which
-represent the positive and negative infinities. <code>Infinity - 1</code> is
-still <code>Infinity</code>, and so on. Don&#8217;t put too much trust in
-infinity-based computation. It isn&#8217;t mathematically solid, and it will
-quickly lead to our next special number: <code>NaN</code>.</p>
-<p><a class=p_ident id="p_E2lMHg1a0p" href="#p_E2lMHg1a0p"></a><code>NaN</code> stands for “not
-a number”, even though it is a value of the number type. You&#8217;ll get
-this result when you, for example, try to calculate <code>0 / 0</code> (zero
-divided by zero), <code>Infinity - Infinity</code>, or any number of other
-numeric operations that don&#8217;t yield a precise, meaningful result.</p>
+<h3><a class=h_ident id="h_q/U1Vl93Es" href="#h_q/U1Vl93Es"></a>Números especiales</h3>
+<p><a class=p_ident id="p_1er7MFfhlQ" href="#p_1er7MFfhlQ"></a>Hay 3 valores especiales en JavaScript
+que son considerados números pero no se comportanc como números
+normales.</p>
+<p><a class=p_ident id="p_4XZ6GJX3yy" href="#p_4XZ6GJX3yy"></a>El primero es <code>Infinity</code> (Infinito) y <code>-Infinity</code>, que
+representan infinitos positivos y negativos. <code>Infinity - 1</code>
+sigue siendo <code>Infinity</code>, y así por el estilo. No confíes mucho en los
+cálculos basados en infinitos. No son matemáticamente confiables y
+pronto te llevarán al próximo número especial: <code>NaN</code>.</p>
+<p><a class=p_ident id="p_Bk6jDnbfKQ" href="#p_Bk6jDnbfKQ"></a><code>NaN</code> son las siglas
+de “not a number” ("no es un número"), aunque es un valor del tipo
+número. Obtendrás este resultado cuando, por ejemplo, trates de
+calcular <code>0 / 0</code> (cero entre cero), <code>Infinity - Infinity</code>, o cualquier
+otra operación numérica que no produzca un resultado
+preciso, significativo.</p>
 <h2><a class=h_ident id="h_OBbEvqxHHH" href="#h_OBbEvqxHHH"></a>Strings</h2>
 <p><a class=p_ident id="p_JUYnmsnZEA" href="#p_JUYnmsnZEA"></a>The next
 basic data type is the <em>string</em>. Strings are used to represent
