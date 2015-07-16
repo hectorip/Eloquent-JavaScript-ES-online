@@ -215,11 +215,11 @@ significa un tabulador. Tomemos la siguiente cadena:</p>
 Y esta la segunda</pre>
 <p><a class=p_ident id="p_+q8GQ52Ru8" href="#p_+q8GQ52Ru8"></a>Existen, por supuesto, situaciones en las que querrás que una
 diagonal invertida sea sólo eso en una cadena de texto, no un
-código especial. Si dos diagonales invertidas están juntas, se van
-a juntar, y sólo una quedará como resultado en el valor de la cadena.
+código especial. Si dos diagonales invertidas están juntas, se volverán
+una, y sólo eso quedará como resultado en el valor de la cadena.
 Así es como la cadena "<code>Un caracter de nueva línea es escrito "\n".</code>"
 puede ser expresada:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_hy9zVIm9J3" href="#c_hy9zVIm9J3"></a><span class="cm-string">"Un caracter de nueva linea es escrito \"\\n\"."</span></pre>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NcFEthDu5U" href="#c_NcFEthDu5U"></a><span class="cm-string">"Un caracter de nueva línea es escrito \"\\n\"."</span></pre>
 <p><a class=p_ident id="p_QQ64wkUTvA" href="#p_QQ64wkUTvA"></a>Las cadenas de texto no pueden ser
 divididas numéricamente, multiplicadas, o restadas, pero el caracter
 <code>+</code> <em>puede</em> ser usado en ellas. No suma, sino que <em>concatena</em>; pega dos
@@ -227,25 +227,25 @@ cadenas. La siguiente línea produce la cadena <code>"concatenar"</code>:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_VXe76CfhFt" href="#c_VXe76CfhFt"></a><span class="cm-string">"con"</span> <span class="cm-operator">+</span> <span class="cm-string">"cat"</span> <span class="cm-operator">+</span> <span class="cm-string">"e"</span> <span class="cm-operator">+</span> <span class="cm-string">"nar"</span></pre>
 <p><a class=p_ident id="p_shy1mIjLYN" href="#p_shy1mIjLYN"></a>Hay más maneras de manipular las cadenas, de las que hablaremos cuando
 lleguemos a los métodos en el <a href="04_data.html#methods">Capítulo 4</a>.</p>
-<h2><a class=h_ident id="h_ygn12/ieo+" href="#h_ygn12/ieo+"></a>Unary operators</h2>
-<p><a class=p_ident id="p_GyQlmgK5IK" href="#p_GyQlmgK5IK"></a>Not all operators are
-symbols. Some are written as words. One example is the <code>typeof</code>
-operator, which produces a string value naming the type of the value
-you give it.</p>
+<h2><a class=h_ident id="h_+wSd5TZBW5" href="#h_+wSd5TZBW5"></a>Operadores Unarios</h2>
+<p><a class=p_ident id="p_oRfQ/XjFs3" href="#p_oRfQ/XjFs3"></a>No todos los operadores
+son símbolos. Algunos son escritos como palabras. Un ejemplo es el
+operador <code>typeof</code>, que produce una cadena de texto que representa el
+tipo del valor que le pasaste.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_cbV8yHeFlx" href="#c_cbV8yHeFlx"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-number">4.5</span>)
 <span class="cm-comment">// → number</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-string">"x"</span>)
 <span class="cm-comment">// → string</span></pre>
-<p id="console.log"><a class=p_ident id="p_X4IS2nLCLI" href="#p_X4IS2nLCLI"></a>We will use
-<code>console.log</code> in example code to indicate that we want to see the
-result of evaluating something. When you run such code, the value
-produced should be shown on the screen, though how it appears will
-depend on the JavaScript environment you use to run it.</p>
-<p><a class=p_ident id="p_j8F6SrKjF/" href="#p_j8F6SrKjF/"></a>The other operators we saw all operated on two values, but
-<code>typeof</code> takes only one. Operators that use two values are called
-<em>binary</em> operators, while those that take one are called <em>unary</em>
-operators. The minus operator can be used both as a binary operator
-and as a unary operator.</p>
+<p id="console.log"><a class=p_ident id="p_n16MMAn/V3" href="#p_n16MMAn/V3"></a>Usaremos
+<code>console.log</code> para indicar que queremos ver el resultado de la evaluación
+de algo. Cuando corres ese código, el valor producido debería mostrarse en
+pantalla, aunque la forma en que aparece dependerá del en entorno en que
+estés corriendo el programa.</p>
+<p><a class=p_ident id="p_WB1hGgzX/j" href="#p_WB1hGgzX/j"></a> Los otros operadores que hemos visto operaban sobre
+dos valores, pero <code>typeof</code> sólamente toma uno. Los operadores que usan
+dos valores son llamados operadores <em>binarios</em>, mientras que aquellos
+que sólo toman uno son llamados operadores <em>unarios</em>. El operador menos
+puede usar tanto como operador binario como operador unario.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_I6DXnYgW4r" href="#c_I6DXnYgW4r"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-operator">-</span> (<span class="cm-number">10</span> <span class="cm-operator">-</span> <span class="cm-number">2</span>))
 <span class="cm-comment">// → -8</span></pre>
 <h2><a class=h_ident id="h_cTPxJxlmFR" href="#h_cTPxJxlmFR"></a>Boolean values</h2>
