@@ -192,37 +192,41 @@ texto. Son declaradas al poner el contenido entre comillas.</p>
 <span class="cm-string">'Monkeys wave goodbye'</span></pre>
 <p><a class=p_ident id="p_LcEgHp5FVi" href="#p_LcEgHp5FVi"></a>Tanto las comillas simples como las dobles pueden ser usadas para declarar
 cadenas de texto mientras coincidan al principio y al final.</p>
-<p><a class=p_ident id="p_ah2sKgvNub" href="#p_ah2sKgvNub"></a>Almost anything can be put
-between quotes, and JavaScript will make a string value out of it. But
-a few characters are more difficult. You can imagine how putting
-quotes between quotes might be hard. <em>Newlines</em> (the characters you
-get when you press Enter) also can&#8217;t be put between quotes. The string
-has to stay on a single line.</p>
-<p><a class=p_ident id="p_Fhyuks46v3" href="#p_Fhyuks46v3"></a>To make it possible to include
-such characters in a string, the following notation is used: whenever
-a backslash (<code>\</code>) is found inside quoted text, it indicates that the
-character after it has a special meaning. This is called <em>escaping</em>
-the character. A quote that is preceded by a backslash will not end
-the string but be part of it. When an <code>n</code> character occurs after a
-backslash, it is interpreted as a newline. Similarly, a <code>t</code> after a
-backslash means a tab character. Take the following string:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+tEhLdJIcu" href="#c_+tEhLdJIcu"></a><span class="cm-string">"This is the first line\nAnd this is the second"</span></pre>
-<p><a class=p_ident id="p_rtFNX67M4o" href="#p_rtFNX67M4o"></a>The actual text contained is this:</p>
-<pre>This is the first line
-And this is the second</pre>
-<p><a class=p_ident id="p_RcQxEVsohZ" href="#p_RcQxEVsohZ"></a>There are, of course, situations where you want a backslash in a
-string to be just a backslash, not a special code. If two backslashes
-follow each other, they will collapse together, and only one will be
-left in the resulting string value. This is how the string “<code>A newline
-character is written like "\n".</code>” can be expressed:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_nou8u5sxl3" href="#c_nou8u5sxl3"></a><span class="cm-string">"A newline character is written like \"\\n\"."</span></pre>
-<p><a class=p_ident id="p_FBU7ANmjDA" href="#p_FBU7ANmjDA"></a>Strings cannot be divided,
-multiplied, or subtracted, but the <code>+</code> operator <em>can</em> be used on them.
-It does not add, but it <em>concatenates</em>—it glues two strings together.
-The following line will produce the string <code>"concatenate"</code>:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_oV+FsD85id" href="#c_oV+FsD85id"></a><span class="cm-string">"con"</span> <span class="cm-operator">+</span> <span class="cm-string">"cat"</span> <span class="cm-operator">+</span> <span class="cm-string">"e"</span> <span class="cm-operator">+</span> <span class="cm-string">"nate"</span></pre>
-<p><a class=p_ident id="p_+o5PJ5ubRj" href="#p_+o5PJ5ubRj"></a>There are more ways of manipulating strings, which we will discuss
-when we get to methods in <a href="04_data.html#methods">Chapter 4</a>.</p>
+<p><a class=p_ident id="p_HnEpuO15e3" href="#p_HnEpuO15e3"></a>Casi cualquier
+cosa puede estar entre comillas, y JavaScript creará una cadena. Pero unos
+cuantos caracteres son un poco difíceles. Puedes imaginar que poner
+comillas dentro de comillas puede ser difícil. <em>Newlines</em> (el caracter
+salto de línea, lo que obtines cuando presionas Enter), tampoco puede
+ser introducido entre comillas. La cadena tiene que permanecer en una
+sola línea.</p>
+<p><a class=p_ident id="p_2VktmhanBJ" href="#p_2VktmhanBJ"></a>Para hacer posible
+la inclusión de estos caracteres en  una cadena de texto, la siguiente
+notación es usada: cuando una diagonal invertida(<em>backslash</em>: <code>\</code>)
+se encuentra dentro de un texto entre comillas, indica que el caracter
+siguiente tiene un significado especial. Esto es llamado <em>escapar</em> el
+caracter. Una comilla que es precedida por una diagonal invertida
+no terminará la cadena, sino que será parte de ella. Cuando un
+caracter <code>n</code> sigue a una diagonal invertida, se interpreta como
+una nueva línea. Similarmente, un <code>t</code> después de la diagonal invertida
+significa un tabulador. Tomemos la siguiente cadena:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_lsOc69n5DE" href="#c_lsOc69n5DE"></a><span class="cm-string">"Esta es la primera línea\nY esta la segunda"</span></pre>
+<p><a class=p_ident id="p_PCqDLOd8Eb" href="#p_PCqDLOd8Eb"></a>El verdadero texto contenido es:</p>
+<pre>Esta es la primera línea
+Y esta la segunda</pre>
+<p><a class=p_ident id="p_+q8GQ52Ru8" href="#p_+q8GQ52Ru8"></a>Existen, por supuesto, situaciones en las que querrás que una
+diagonal invertida sea sólo eso en una cadena de texto, no un
+código especial. Si dos diagonales invertidas están juntas, se van
+a juntar, y sólo una quedará como resultado en el valor de la cadena.
+Así es como la cadena "<code>Un caracter de nueva línea es escrito "\n".</code>"
+puede ser expresada:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_hy9zVIm9J3" href="#c_hy9zVIm9J3"></a><span class="cm-string">"Un caracter de nueva linea es escrito \"\\n\"."</span></pre>
+<p><a class=p_ident id="p_QQ64wkUTvA" href="#p_QQ64wkUTvA"></a>Las cadenas de texto no pueden ser
+divididas numéricamente, multiplicadas, o restadas, pero el caracter
+<code>+</code> <em>puede</em> ser usado en ellas. No suma, sino que <em>concatena</em>; pega dos
+cadenas. La siguiente línea produce la cadena <code>"concatenar"</code>:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_VXe76CfhFt" href="#c_VXe76CfhFt"></a><span class="cm-string">"con"</span> <span class="cm-operator">+</span> <span class="cm-string">"cat"</span> <span class="cm-operator">+</span> <span class="cm-string">"e"</span> <span class="cm-operator">+</span> <span class="cm-string">"nar"</span></pre>
+<p><a class=p_ident id="p_shy1mIjLYN" href="#p_shy1mIjLYN"></a>Hay más maneras de manipular las cadenas, de las que hablaremos cuando
+lleguemos a los métodos en el <a href="04_data.html#methods">Capítulo 4</a>.</p>
 <h2><a class=h_ident id="h_ygn12/ieo+" href="#h_ygn12/ieo+"></a>Unary operators</h2>
 <p><a class=p_ident id="p_GyQlmgK5IK" href="#p_GyQlmgK5IK"></a>Not all operators are
 symbols. Some are written as words. One example is the <code>typeof</code>
