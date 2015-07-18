@@ -254,7 +254,7 @@ necesitarás un valor que simplemente distinga entre dos posibilidades,
 como "sí" y "no" o "encendido" y "apagado". Para esto, JavaScript
 tiene un tipo <em>Booleano</em>, que tiene sólo dos valores, verdadero (true)
 y falso (false), que son simplemente estas palabras en inglés.</p>
-<h3><a class=h_ident id="h_5G7gD95A6V" href="#h_5G7gD95A6V"></a>Comparisons</h3>
+<h3><a class=h_ident id="h_z2NZH4aCDj" href="#h_z2NZH4aCDj"></a>Comparaciones</h3>
 <p><a class=p_ident id="p_gSOiffsN0O" href="#p_gSOiffsN0O"></a>Esta es una forma de producir valores booleanos:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_xiXHb34xBv" href="#c_xiXHb34xBv"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">3</span> <span class="cm-operator">></span> <span class="cm-number">2</span>)
 <span class="cm-comment">// → true</span>
@@ -292,65 +292,65 @@ número".</p>
 <p><a class=p_ident id="p_g38Y3i4Uzg" href="#p_g38Y3i4Uzg"></a>La intención de <code>NaN</code> es representar el resultado de un cálculo sin
 sentido y como tal, no es igual al resultado de cualquier <em>otro</em>
 cálculo sin sentido.</p>
-<h3><a class=h_ident id="h_pdqDW7Pebo" href="#h_pdqDW7Pebo"></a>Logical operators</h3>
-<p><a class=p_ident id="p_nRCLrGwcCn" href="#p_nRCLrGwcCn"></a>There are also some operations
-that can be applied to Boolean values themselves. JavaScript supports
-three logical operators: <em>and</em>, <em>or</em>, and <em>not</em>. These can be used to
-“reason” about Booleans.</p>
-<p><a class=p_ident id="p_h6pEyNS4IJ" href="#p_h6pEyNS4IJ"></a>The <code>&amp;&amp;</code> operator represents logical
-<em>and</em>. It is a binary operator, and its result is true only if both
-the values given to it are true.</p>
+<h3><a class=h_ident id="h_/PyO55ICk8" href="#h_/PyO55ICk8"></a>Operadores Lógicos</h3>
+<p><a class=p_ident id="p_8wCAxk/Boo" href="#p_8wCAxk/Boo"></a>Hay también algunas operaciones
+que pueden ser aplicadas a los valores Booleanos. JavaScript soporta
+tres operadores lógicos: <em>and</em>, <em>or</em> y <em>not</em>. Estos pueden ser usados para
+"razonar" con los Booleanos.</p>
+<p><a class=p_ident id="p_IlZiB/NoWt" href="#p_IlZiB/NoWt"></a>El operador <code>&amp;&amp;</code> representa la operación
+lógica <em>and</em> ("y"). Es un operador binario, y su resultado es verdadero(true)
+sólo si los dos valores dados son verdaderos.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_t4ZiXDWhwB" href="#c_t4ZiXDWhwB"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-atom">false</span>)
 <span class="cm-comment">// → false</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-atom">true</span>)
 <span class="cm-comment">// → true</span></pre>
-<p><a class=p_ident id="p_T/V30CHY82" href="#p_T/V30CHY82"></a>The <code>||</code> operator denotes logical
-<em>or</em>. It produces true if either of the values given to it is true.</p>
+<p><a class=p_ident id="p_MEpVurVr3V" href="#p_MEpVurVr3V"></a>El operador <code>||</code> denota la operación
+lógica <em>or</em> ("o"). Devuelve verdadero si cualquiera de los dos valores
+dados es verdadero.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MyM/xeosFi" href="#c_MyM/xeosFi"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">||</span> <span class="cm-atom">true</span>)
 <span class="cm-comment">// → true</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">||</span> <span class="cm-atom">false</span>)
 <span class="cm-comment">// → false</span></pre>
-<p><a class=p_ident id="p_JakZ+mTPwL" href="#p_JakZ+mTPwL"></a><em>Not</em> is written as an exclamation mark
-(<code>!</code>). It is a unary operator that flips the value given to it—<code>!true</code>
-produces <code>false</code> and <code>!false</code> gives <code>true</code>.</p>
-<p><a class=p_ident id="p_qSXjNNI5/y" href="#p_qSXjNNI5/y"></a>When mixing these Boolean operators with arithmetic
-and other operators, it is not always obvious when parentheses are
-needed. In practice, you can usually get by with knowing that of the
-operators we have seen so far, <code>||</code> has the lowest precedence, then
-comes <code>&amp;&amp;</code>, then the comparison operators (<code>&gt;</code>, <code>==</code>, and so on), and
-then the rest. This order has been chosen such that, in typical
-expressions like the following one, as few parentheses as possible are
-necessary:</p>
+<p><a class=p_ident id="p_aeYiv0RMwB" href="#p_aeYiv0RMwB"></a><em>Not</em> (Negación) es escrito como un símbolo
+de admiración (<code>!</code>). Es un operador binario que voltea el valor que se
+le de; <code>!true</code> produce <code>false</code> y <code>!false</code> regresa <code>true</code>.</p>
+<p><a class=p_ident id="p_Waui0+jz3S" href="#p_Waui0+jz3S"></a>Cuando mezclamos estos operadores Booleanos con
+aritmética y otros operadores, no es siempre obvio cuándo se necesitan los
+paréntesis. En la prácitca, puedes avanzar sabiendo que de los operadores
+que hemos visto hasta ahora, <code>||</code> tiene la menor precedencia, después
+viene el <code>&amp;&amp;</code>, siguen los operadores de comparación(<code>&gt;</code>, <code>==</code>, etc.),
+y después los demás operadores. Este orden ha sido elegido tal que, en
+expresiones típicas con la siguiente, sean necesarios tan pocos
+paréntesis como sea posible:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_D90BLmBiLw" href="#c_D90BLmBiLw"></a><span class="cm-number">1</span> <span class="cm-operator">+</span> <span class="cm-number">1</span> <span class="cm-operator">==</span> <span class="cm-number">2</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-number">10</span> <span class="cm-operator">*</span> <span class="cm-number">10</span> <span class="cm-operator">></span> <span class="cm-number">50</span></pre>
-<p><a class=p_ident id="p_EWJu4coIAh" href="#p_EWJu4coIAh"></a>The last logical operator I will discuss is not unary, not
-binary, but <em>ternary</em>, operating on three values. It is written with a
-question mark and a colon, like this:</p>
+<p><a class=p_ident id="p_Wlk+fDzW24" href="#p_Wlk+fDzW24"></a>El último operador lógico del que hablaré no es unario,
+ni binario, sino <em>ternario</em>, opera en tres valores. Este es escrito con
+un símbolo de interrogación  y dos puntos, como sigue:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_S1KcGPZ6au" href="#c_S1KcGPZ6au"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">2</span>);
 <span class="cm-comment">// → 1</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">2</span>);
 <span class="cm-comment">// → 2</span></pre>
-<p><a class=p_ident id="p_MQqkekcjA2" href="#p_MQqkekcjA2"></a>This one is called the <em>conditional</em> operator (or sometimes just
-<em>ternary</em> operator since it is the only such operator in the
-language). The value on the left of the question mark “picks” which of
-the other two values will come out. When it is true, the middle value
-is chosen, and when it is false, the value on the right comes out.</p>
-<h2><a class=h_ident id="h_WAVjYN+DYj" href="#h_WAVjYN+DYj"></a>Undefined values</h2>
-<p><a class=p_ident id="p_Q/OIPtr8xY" href="#p_Q/OIPtr8xY"></a>There are two special values, written <code>null</code>
-and <code>undefined</code>, that are used to denote the absence of a meaningful
-value. They are themselves values, but they carry no
-information.</p>
-<p><a class=p_ident id="p_HKYk2Oxaf6" href="#p_HKYk2Oxaf6"></a>Many operations in the language that don&#8217;t produce a meaningful value
-(you&#8217;ll see some later) yield <code>undefined</code> simply because they have to
-yield <em>some</em> value.</p>
-<p><a class=p_ident id="p_vNLaRBSip6" href="#p_vNLaRBSip6"></a>The difference in meaning between <code>undefined</code> and <code>null</code> is an accident
-of JavaScript&#8217;s design, and it doesn&#8217;t matter most of the time. In the cases
-where you actually have to concern yourself with these values, I
-recommend treating them as interchangeable (more on that in a moment).</p>
-<h2><a class=h_ident id="h_AY+YGu6qyM" href="#h_AY+YGu6qyM"></a>Automatic type conversion</h2>
-<p><a class=p_ident id="p_ZUS5EPFCx3" href="#p_ZUS5EPFCx3"></a>In the introduction, I mentioned that
-JavaScript goes out of its way to accept almost any program you give
-it, even programs that do odd things. This is nicely demonstrated by
-the following expressions:</p>
+<p><a class=p_ident id="p_0ysYqgQ9uD" href="#p_0ysYqgQ9uD"></a>Esste es llamado el operador <em>condicional</em> (o algunas veces el operador
+<em>tenario</em> dado que es el único operador de este tipo en el lenguaje).
+El valor a la izquierda del signo de interrogación "escoge" cuál de los
+otros dos valores resultará. Cuando es verdadero, el valor central es
+escogido, y cuando es falso, el valor de la derecha se da como resultado.</p>
+<h2><a class=h_ident id="h_YLXSn/7D6P" href="#h_YLXSn/7D6P"></a>Valores Indefinidos (Undefined)</h2>
+<p><a class=p_ident id="p_pCHBIoVFC4" href="#p_pCHBIoVFC4"></a>Existen dos valores especiales,
+escritos <code>null</code> y <code>undefined</code>, que son usados para denotar la ausencia
+de un valor con significado. Son valores en sí mismos, pero no poseen
+ninguna información.</p>
+<p><a class=p_ident id="p_KPBuVm+Itl" href="#p_KPBuVm+Itl"></a>Muchas operaciones en el lenguaje que no producen un valor con significado
+(lo verás después) producen <code>undefined</code> simplemente porque tienen producir
+<em>algún</em> valor.</p>
+<p><a class=p_ident id="p_vMPIwzT3el" href="#p_vMPIwzT3el"></a>La diferencia en el significado entre <code>undefined</code> y <code>null</code> es un accidente del
+diseño de JavaScript, y no importa la mayoría del tiempo. En los casos en
+dónde realmente te tienes que preocupar de estos valores, te recomiendo tratarlos
+como intercambiables (más de esto en un momento).</p>
+<h2><a class=h_ident id="h_RQ/BIuOREc" href="#h_RQ/BIuOREc"></a>Conversión automática de tipo</h2>
+<p><a class=p_ident id="p_yCaM9fZN3I" href="#p_yCaM9fZN3I"></a>En la introducción, mencioné que
+JavaScript acepta casi cualquier programa que le des, incluso programas que
+hagan cosas raras. Esto es muy bien demostrado por las siguientes expresiones:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_le/xDT5s3y" href="#c_le/xDT5s3y"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">8</span> <span class="cm-operator">*</span> <span class="cm-atom">null</span>)
 <span class="cm-comment">// → 0</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"5"</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>)
