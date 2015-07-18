@@ -361,14 +361,15 @@ hagan cosas raras. Esto es muy bien demostrado por las siguientes expresiones:</
 <span class="cm-comment">// → NaN</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
 <span class="cm-comment">// → true</span></pre>
-<p><a class=p_ident id="p_kjH0rNN5jK" href="#p_kjH0rNN5jK"></a>When an operator is applied to the “wrong” type of value,
-JavaScript will quietly convert that value to the type it wants, using
-a set of rules that often aren&#8217;t what you want or expect. This is
-called <em>type coercion</em>. So the <code>null</code> in the first expression becomes
-<code>0</code>, and the <code>"5"</code> in the second expression becomes <code>5</code> (from string
-to number). Yet in the third expression, <code>+</code> tries string
-concatenation before numeric addition, so the <code>1</code> is converted to
-<code>"1"</code> (from number to string).</p>
+<p><a class=p_ident id="p_kWThuwgB1l" href="#p_kWThuwgB1l"></a>Cuando un operador es aplicado al tipo "incorrecto" de valor,
+JavaScript convertirá silenciosamente el valor en el tipo de dato
+que espera, usando un conjunto de reglas que a menudo no son lo que
+tú quieres o esperas. Esto es llamado <em>coerción de tipo</em>. Así que
+el <code>null</code> en la primera expresión se vuelve <code>0</code>, y el <code>"5"</code> en la
+segunda expresión se convierte en <code>5</code> (de cadena a número). Aún así,
+em la tercera expresión, <code>+</code> intenta hacer concatenación de cadenas
+antes de suma numérica, así que el <code>1</code> es convertido en <code>"1"</code> (de
+número a cadena).</p>
 <p><a class=p_ident id="p_mw5To5JJ6Q" href="#p_mw5To5JJ6Q"></a>When something that
 doesn&#8217;t map to a number in an obvious way (such as <code>"five"</code> or
 <code>undefined</code>) is converted to a number, the value <code>NaN</code> is produced.
