@@ -67,8 +67,8 @@ tiene un par de órdenes de magnitud más todavía.</p>
 <div class="image">
   <img src="img/bit-sea.png" alt="The Ocean of Bits">
 </div>
-<p><a class=p_ident id="p_/+rSEDl+t3" href="#p_/+rSEDl+t3"></a>Para ser capaces con tales cantidades de bits sin perderte, puedes
-separarlos en pedazos que representen piezas de información. En un
+<p><a class=p_ident id="p_TcfE2cYJzd" href="#p_TcfE2cYJzd"></a>Para ser capaz de trabajar con semejantes cantidades de bits sin perderte,
+puedes separarlos en pedazos que representen piezas de información. En un
 entorno en JavaScript, esos pedazos son llamados <em>valores</em>. Aunque
 todos los valores están hechos de bits, juegan diferentes roles. Cada
 valor tiene un tipo que determina su rol. Existen seis tipos básicos de
@@ -85,7 +85,7 @@ mismo tiempo. Tan pronto como dejes de usar un valor se disipará, dejando
 sus bits para que sean reciclados como material de construcción de la
 próxima generación de valores.</p>
 <p><a class=p_ident id="p_Ug5egI/knJ" href="#p_Ug5egI/knJ"></a>Este capítulo introduce los elementos atómicos de los programas en
-JavaScript, los tipos de valor simples y los operadores que pueden
+JavaScript, los tipos de valores simples y los operadores que pueden
 actuar sobre tales valores.</p>
 <h2><a class=h_ident id="h_BPeI5tySz2" href="#h_BPeI5tySz2"></a>Números</h2>
 <p><a class=p_ident id="p_/BWrVUBa16" href="#p_/BWrVUBa16"></a>Los valores de tipo
@@ -351,13 +351,13 @@ como intercambiables (más de esto en un momento).</p>
 <p><a class=p_ident id="p_yCaM9fZN3I" href="#p_yCaM9fZN3I"></a>En la introducción, mencioné que
 JavaScript acepta casi cualquier programa que le des, incluso programas que
 hagan cosas raras. Esto es muy bien demostrado por las siguientes expresiones:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_le/xDT5s3y" href="#c_le/xDT5s3y"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">8</span> <span class="cm-operator">*</span> <span class="cm-atom">null</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_te+D+nzz1Z" href="#c_te+D+nzz1Z"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">8</span> <span class="cm-operator">*</span> <span class="cm-atom">null</span>)
 <span class="cm-comment">// → 0</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"5"</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>)
 <span class="cm-comment">// → 4</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"5"</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>)
 <span class="cm-comment">// → 51</span>
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"five"</span> <span class="cm-operator">*</span> <span class="cm-number">2</span>)
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"cinco"</span> <span class="cm-operator">*</span> <span class="cm-number">2</span>)
 <span class="cm-comment">// → NaN</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
 <span class="cm-comment">// → true</span></pre>
@@ -370,41 +370,43 @@ segunda expresión se convierte en <code>5</code> (de cadena a número). Aún as
 em la tercera expresión, <code>+</code> intenta hacer concatenación de cadenas
 antes de suma numérica, así que el <code>1</code> es convertido en <code>"1"</code> (de
 número a cadena).</p>
-<p><a class=p_ident id="p_mw5To5JJ6Q" href="#p_mw5To5JJ6Q"></a>When something that
-doesn&#8217;t map to a number in an obvious way (such as <code>"five"</code> or
-<code>undefined</code>) is converted to a number, the value <code>NaN</code> is produced.
-Further arithmetic operations on <code>NaN</code> keep producing <code>NaN</code>, so if you
-find yourself getting one of those in an unexpected place, look for
-accidental type conversions.</p>
-<p><a class=p_ident id="p_2V6JygcBXy" href="#p_2V6JygcBXy"></a>When comparing values of the same type using <code>==</code>, the
-outcome is easy to predict: you should get true when both values are
-the same, except in the case of <code>NaN</code>. But when the types differ,
-JavaScript uses a complicated and confusing set of rules to determine
-what to do. In most cases, it just tries to convert one of the values
-to the other value&#8217;s type. However, when <code>null</code> or <code>undefined</code> occurs
-on either side of the operator, it produces true only if both sides
-are one of <code>null</code> or <code>undefined</code>.</p>
+<p><a class=p_ident id="p_5xmydDVW3L" href="#p_5xmydDVW3L"></a>Cuando algo que no
+se corresponde con un número de manera obvia (como <code>"cinco"</code> o
+<code>undefined</code>) es convertido a un número, el valor resultante
+es <code>NaN</code>. Las siguientes operaciones aritméticas sobre <code>NaN</code> seguirán
+produciendo <code>NaN</code>, así que si te encuentras con uno de estos en
+un lugar inesperado, busca conversiones accidentales de tipo.</p>
+<p><a class=p_ident id="p_9Jyx3W8EPq" href="#p_9Jyx3W8EPq"></a> Cuando comparamos valores del mismo tipo
+usando <code>==</code>, la salida es fácil de predecir: deberías obtener verdadero
+cuando los dos valores sean el mismo, excepto en el caso de <code>NaN</code>.
+Pero cuando los tipos son diferentes, JavaScript usa un complicado
+y confuso conjunto de reglas para determinar qué hacer. En la mayoría
+de los casos, sólo trata de convertir uno de los valores al tipo de
+dato del otro valor. Sin embargo, cuando <code>null</code> o <code>undefined</code> están
+en cualquier lado de la operación, resulta verdadero sólo en el caso
+de que los dos lados sean <code>null</code> o <code>undefined</code>.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_OhN7QQZzYz" href="#c_OhN7QQZzYz"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">==</span> <span class="cm-atom">undefined</span>);
 <span class="cm-comment">// → true</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>);
 <span class="cm-comment">// → false</span></pre>
-<p><a class=p_ident id="p_MzUL8LaoQ2" href="#p_MzUL8LaoQ2"></a>That last piece of behavior is often useful. When you want to test
-whether a value has a real value instead of <code>null</code> or <code>undefined</code>, you
-can simply compare it to <code>null</code> with the <code>==</code> (or <code>!=</code>) operator.</p>
-<p><a class=p_ident id="p_N4OuWeYOwF" href="#p_N4OuWeYOwF"></a>But what if you want to test whether
-something refers to the precise value <code>false</code>? The rules for
-converting strings and numbers to Boolean values state that <code>0</code>,
-<code>NaN</code>, and the empty string (<code>""</code>) count as <code>false</code>, while all the
-other values count as <code>true</code>. Because of this, expressions like <code>0 ==
-false</code> and <code>"" == false</code> are also true. For cases like this, where you
-do <em>not</em> want any automatic type conversions to happen, there are two
-extra operators: <code>===</code> and <code>!==</code>. The first tests whether a value is
-precisely equal to the other, and the second tests whether it is not
-precisely equal. So <code>"" === false</code> is false as expected.</p>
-<p><a class=p_ident id="p_S/opLpHJcU" href="#p_S/opLpHJcU"></a>I recommend using the three-character comparison operators defensively to
-prevent unexpected type conversions from tripping you up. But when you&#8217;re
-certain the types on both sides will be the same, there is no problem with
-using the shorter operators.</p>
+<p><a class=p_ident id="p_c2lor433oW" href="#p_c2lor433oW"></a>Este último comportamiento es útil a menudo. Cuando quieres probar
+si un valor tiene un significado real en vez de <code>null</code> o <code>undefined</code>,
+simplemente comparas contra <code>null</code> con el operador <code>==</code> (o <code>!=</code>).</p>
+<p><a class=p_ident id="p_DkgGcUcbaK" href="#p_DkgGcUcbaK"></a>¿Y si quieres proobar
+si algo se refiere precisamente al valor <code>false</code>? Las reglas para
+convertir cadenas y números a Booleanos dicen que <code>0</code>, <code>NaN</code> y la
+cadena vacía (<code>""</code>) cuantan como <code>false</code>, mientras que todos los
+demás valores cuentan como <code>true</code>. Debido a esto, expresiones como
+<code>0 == false</code> y <code>"" == false</code> también son verdaderas. Para casos como
+este en el que <em>no</em> quieres que ocurra ninguna conversión automática
+de tipos, existen dos operadores extra: <code>===</code> y <code>!==</code>. El primero
+prueba si un valor es precisamente igual a otro, y el segundo
+si no es precisamente igual. Así que <code>"" === false</code> es falso como
+se espera.</p>
+<p><a class=p_ident id="p_+m+PhUWJKl" href="#p_+m+PhUWJKl"></a>Yo recomiendo usar la comparación de tres caracteres defensivamente para
+evitar que conversiones de tipos inesperadas te causen problemas. Pero
+cuando estás seguro de que los tipos en ambos lados serán los mismos,
+no hay problema con usar los operadores más cortos.</p>
 <h3><a class=h_ident id="h_3jN0iK4yKW" href="#h_3jN0iK4yKW"></a>Short-circuiting of logical operators</h3>
 <p><a class=p_ident id="p_CFbagJsQYK" href="#p_CFbagJsQYK"></a>The
 logical operators <code>&amp;&amp;</code> and <code>||</code> handle values of different types in a
