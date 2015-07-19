@@ -53,52 +53,52 @@ definido de forma más precisa, así que es menos flexible
 que en un lenguaje humano. En consecuencia, usualmente <em>tenemos</em>
 que añadir algo de nuestro propio vocabulario para evitar repetirnos
 demasiado.</p>
-<h2><a class=h_ident id="h_tqLFw/oazr" href="#h_tqLFw/oazr"></a>Defining a function</h2>
-<p><a class=p_ident id="p_pBsAbh0THD" href="#p_pBsAbh0THD"></a>A function definition is just a
-regular variable definition where the value given to the variable
-happens to be a function. For example, the following code defines the
-variable <code>square</code> to refer to a function that produces the square of a
-given number:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_tThK6S/S5v" href="#c_tThK6S/S5v"></a><span class="cm-keyword">var</span> <span class="cm-variable">square</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">x</span>) {
+<h2><a class=h_ident id="h_j3HvZo/C/K" href="#h_j3HvZo/C/K"></a>Definiendo una función</h2>
+<p><a class=p_ident id="p_5jo0JygqfX" href="#p_5jo0JygqfX"></a>Una definición de una función
+es sólo una definición regular de una variable cuando ocurre que el
+valor dado a la variable es una función. Por ejemplo, el siguiente código
+define la variable <code>cuadrado</code> para referirse a la función que produce
+el cuadrado de un número dado:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_8H/K+uBft0" href="#c_8H/K+uBft0"></a><span class="cm-keyword">var</span> <span class="cm-variable">cuadrado</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">x</span>) {
   <span class="cm-keyword">return</span> <span class="cm-variable-2">x</span> <span class="cm-operator">*</span> <span class="cm-variable-2">x</span>;
 };
 
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">square</span>(<span class="cm-number">12</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">cuadrado</span>(<span class="cm-number">12</span>));
 <span class="cm-comment">// → 144</span></pre>
-<p><a class=p_ident id="p_dEjhFVa89N" href="#p_dEjhFVa89N"></a>A function is
-created by an expression that starts with the keyword <code>function</code>.
-Functions have a set of <em>parameters</em> (in this case, only <code>x</code>) and
-a <em>body</em>, which contains the statements that are to be executed when
-the function is called. The function body must always be wrapped in
-braces, even when it consists of only a single statement (as
-in the previous example).</p>
-<p><a class=p_ident id="p_qK7IQPBIRf" href="#p_qK7IQPBIRf"></a>A function can have multiple parameters or no
-parameters at all. In the following example, <code>makeNoise</code> does not list
-any parameter names, whereas <code>power</code> lists two:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MhQVBHC9xI" href="#c_MhQVBHC9xI"></a><span class="cm-keyword">var</span> <span class="cm-variable">makeNoise</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+<p><a class=p_ident id="p_zzTjhlbHB8" href="#p_zzTjhlbHB8"></a>Una función es
+creada por una expresión que empieza con la palbra reservada <code>function</code>.
+Las funciones tienen un conjunto de <em>parametros</em> (en este caso
+sólo <code>x</code>) y un <em>cuerpo</em>, que contiene las sentencias que serán ejecutadas
+cuando la función sea llamada. El cuerpo de la función tiene que estar
+siempre encerrado en llaves, incluso cuando consista de una sola
+instrucción (como en el ejemplo previo).</p>
+<p><a class=p_ident id="p_l5IBusH/jt" href="#p_l5IBusH/jt"></a>Una función puede tener varios parámetros
+o puede no tener ninguno. En el siguiente ejemplo <code>hazRuido</code> no tiene
+parámetros, mientras que <code>potencia</code> tiene dos:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_f0YI3AJsrk" href="#c_f0YI3AJsrk"></a><span class="cm-keyword">var</span> <span class="cm-variable">hazRuido</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Pling!"</span>);
 };
 
-<span class="cm-variable">makeNoise</span>();
+<span class="cm-variable">hazRuido</span>();
 <span class="cm-comment">// → Pling!</span>
 
-<span class="cm-keyword">var</span> <span class="cm-variable">power</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">base</span>, <span class="cm-def">exponent</span>) {
-  <span class="cm-keyword">var</span> <span class="cm-def">result</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
-  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">count</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">count</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">exponent</span>; <span class="cm-variable-2">count</span><span class="cm-operator">++</span>)
-    <span class="cm-variable-2">result</span> <span class="cm-operator">*=</span> <span class="cm-variable-2">base</span>;
-  <span class="cm-keyword">return</span> <span class="cm-variable-2">result</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">potencia</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">base</span>, <span class="cm-def">exponente</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">resultado</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">cuenta</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">cuenta</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">exponente</span>; <span class="cm-variable-2">cuenta</span><span class="cm-operator">++</span>)
+    <span class="cm-variable-2">resultado</span> <span class="cm-operator">*=</span> <span class="cm-variable-2">base</span>;
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">resultado</span>;
 };
 
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">power</span>(<span class="cm-number">2</span>, <span class="cm-number">10</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">potencia</span>(<span class="cm-number">2</span>, <span class="cm-number">10</span>));
 <span class="cm-comment">// → 1024</span></pre>
-<p><a class=p_ident id="p_PmG96omvw7" href="#p_PmG96omvw7"></a>Some functions
-produce a value, such as <code>power</code> and <code>square</code>, and some don&#8217;t, such as
-<code>makeNoise</code>, which produces only a side effect. A <code>return</code>
-statement determines the value the function returns. When control
-comes across such a statement, it immediately jumps out of the current
-function and gives the returned value to the code that called the
-function. The <code>return</code> keyword without an expression after it will
-cause the function to return <code>undefined</code>.</p>
+<p><a class=p_ident id="p_2E/7l5vjIo" href="#p_2E/7l5vjIo"></a>Algunas
+funciones producen un valor, como <code>potencia</code> y <code>cuadrado</code>, y algunas no,
+como <code>hazRuido</code>, la cuál produce sólo un efecto secundario. Una sentencia
+<code>return</code> determina el valor que una función regresa. Cuando el control
+pasa a esta sentencia, inmediatamente salta fuera de la función actual
+y pasa el valor retornado a la código que llamó la función. La palabra
+reservada <code>return</code> sin una expresión después de ella hará que la función
+devuelva <code>undefined</code>.</p>
 <h2><a class=h_ident id="h_u4j2OhpYkg" href="#h_u4j2OhpYkg"></a>Parameters and scopes</h2>
 <p><a class=p_ident id="p_N7xZ5k5OET" href="#p_N7xZ5k5OET"></a>The
 parameters to a function behave like regular variables, but their
@@ -652,7 +652,7 @@ the first. Functions that create values are easier to combine in new
 ways than functions that directly perform side effects.</p>
 <p><a class=p_ident id="p_jtr5vcWSkM" href="#p_jtr5vcWSkM"></a>A <em>pure</em> function is a specific kind of
 value-producing function that not only has no side effects but also
-doesn&#8217;t rely on side effects from other code—for example, it doesn&#8217;t
+doesn&#8217;t rely on side effects from other code���for example, it doesn&#8217;t
 read global variables that are occasionally changed by other code. A
 pure function has the pleasant property that, when called with the
 same arguments, it always produces the same value (and doesn&#8217;t do
