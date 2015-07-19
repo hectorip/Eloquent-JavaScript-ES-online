@@ -347,7 +347,7 @@ ninguna información.</p>
 diseño de JavaScript, y no importa la mayoría del tiempo. En los casos en
 dónde realmente te tienes que preocupar de estos valores, te recomiendo tratarlos
 como intercambiables (más de esto en un momento).</p>
-<h2><a class=h_ident id="h_RQ/BIuOREc" href="#h_RQ/BIuOREc"></a>Conversión automática de tipo</h2>
+<h2><a class=h_ident id="h_LIw5kpsNI6" href="#h_LIw5kpsNI6"></a>Conversión automática de tipos</h2>
 <p><a class=p_ident id="p_yCaM9fZN3I" href="#p_yCaM9fZN3I"></a>En la introducción, mencioné que
 JavaScript acepta casi cualquier programa que le des, incluso programas que
 hagan cosas raras. Esto es muy bien demostrado por las siguientes expresiones:</p>
@@ -407,44 +407,45 @@ se espera.</p>
 evitar que conversiones de tipos inesperadas te causen problemas. Pero
 cuando estás seguro de que los tipos en ambos lados serán los mismos,
 no hay problema con usar los operadores más cortos.</p>
-<h3><a class=h_ident id="h_3jN0iK4yKW" href="#h_3jN0iK4yKW"></a>Short-circuiting of logical operators</h3>
-<p><a class=p_ident id="p_CFbagJsQYK" href="#p_CFbagJsQYK"></a>The
-logical operators <code>&amp;&amp;</code> and <code>||</code> handle values of different types in a
-peculiar way. They will convert the value on their left side to
-Boolean type in order to decide what to do, but depending on the
-operator and the result of that conversion, they return either the
-<em>original</em> left-hand value or the right-hand value.</p>
-<p><a class=p_ident id="p_BFq+/JeBH9" href="#p_BFq+/JeBH9"></a>The <code>||</code> operator, for example, will return the value
-to its left when that can be converted to true and will return the
-value on its right otherwise. This conversion works as you&#8217;d expect
-for Boolean values and should do something analogous for values of
-other types.</p>
+<h3><a class=h_ident id="h_F+MTKuzCze" href="#h_F+MTKuzCze"></a>Corto circuito de operadores lógicos</h3>
+<p><a class=p_ident id="p_uieZyUDZJD" href="#p_uieZyUDZJD"></a>Los
+operadores lógicos <code>&amp;&amp;</code> and <code>||</code> manejan los valores de diferentes
+tipos de un modo peculiar. Convertirán el valor de su lado izquierdo
+para decidir qué hacer, pero dependiendo del operador y del resultado
+de la conversión, devuelven el valor del lado izquierdo <em>original</em>
+o el del lado derecho.</p>
+<p><a class=p_ident id="p_d+fK5uFMGA" href="#p_d+fK5uFMGA"></a>El operador <code>||</code>, por ejemplo, regresará el valor de
+la izquierda cuando pueda ser convertido a <code>true</code> y regresará el valor
+a la derecha en cualquier otro caso. Esta conversión funciona como
+esperarías con valores Booleanos y debería hacer algo análogo con
+valores de otros tipos.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ME/mwf+CCF" href="#c_ME/mwf+CCF"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">||</span> <span class="cm-string">"user"</span>)
 <span class="cm-comment">// → user</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Karl"</span> <span class="cm-operator">||</span> <span class="cm-string">"user"</span>)
 <span class="cm-comment">// → Karl</span></pre>
-<p><a class=p_ident id="p_GtKVVao8+3" href="#p_GtKVVao8+3"></a>This functionality allows the <code>||</code> operator to be
-used as a way to fall back on a default value. If you give it an
-expression that might produce an empty value on the left, the value on
-the right will be used as a replacement in that case.</p>
-<p><a class=p_ident id="p_LlkwKHpB6u" href="#p_LlkwKHpB6u"></a>The <code>&amp;&amp;</code> operator works similarly, but the other way
-around. When the value to its left is something that converts to
-false, it returns that value, and otherwise it returns the value on
-its right.</p>
-<p><a class=p_ident id="p_IW4V8ztNjs" href="#p_IW4V8ztNjs"></a>Another important property of these two
-operators is that the expression to their right is evaluated only when
-necessary. In the case of <code>true || X</code>, no matter what <code>X</code> is—even if
-it&#8217;s an expression that does something <em>terrible</em>—the result will be
-true, and <code>X</code> is never evaluated. The same goes for <code>false &amp;&amp; X</code>,
-which is false and will ignore <code>X</code>. This is called <em>short-circuit
-evaluation</em>.</p>
-<p><a class=p_ident id="p_S9XylKoY/U" href="#p_S9XylKoY/U"></a>The
-conditional operator works in a similar way. The first expression is
-always evaluated, but the second or third value, the one that is not
-picked, is not.</p>
-<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
-<p><a class=p_ident id="p_K8XmHEfEpW" href="#p_K8XmHEfEpW"></a>We looked at four types of JavaScript values in this chapter: numbers,
-strings, Booleans, and undefined values.</p>
+<p><a class=p_ident id="p_bP7i0D//OL" href="#p_bP7i0D//OL"></a>Esta funcionalidad permite al operador <code>||</code>
+ser usado como una manera de repaldarnos con un valor por defecto.
+Si le das en el lado izquierdo una expresión que puede producir
+un valor vacío, el valor de l aderecha será usado como reemplazo
+dado el caso.</p>
+<p><a class=p_ident id="p_VbWuO1gdSS" href="#p_VbWuO1gdSS"></a>El operador <code>&amp;&amp;</code> funciona de manera similar, pero
+en sentido opuesto. Cuando el valor a su izquierda es algo que se
+convierte en falso, regresa este valor, y en otro caso regresa el
+valor de la derecha.</p>
+<p><a class=p_ident id="p_IuoznueTZL" href="#p_IuoznueTZL"></a>Otra importante propiedad de estos
+dos operadores es que el lado derecho sólo es evaluado cuando es
+necesario. En el caso de <code>true || X</code>, no importa lo que sea <code>X</code>,
+incluso en si es una expresión que hace algo <em>terrible</em>, el resultado
+será verdadero, y <code>X</code> no será evaluado nunca. Lo mismo ocurre para
+<code>false &amp;&amp; X</code>, lo cuál es falso e ignorará <code>X</code>. Esto es llamado
+<em>evaluación de corto circuito</em> (short-circuit evaluation).</p>
+<p><a class=p_ident id="p_CNvlagjrHv" href="#p_CNvlagjrHv"></a>El
+operador condicional trabaja de una forma similar. La primera expresión
+es evaluada siempre, pero el segundo o tercer valor, el que no sea
+escogido, no se evalúa.</p>
+<h2><a class=h_ident id="h_NUFOUyK+lw" href="#h_NUFOUyK+lw"></a>Resumen</h2>
+<p><a class=p_ident id="p_5G5f9AOH34" href="#p_5G5f9AOH34"></a>Vimos cuatro tipos de valores de JavaScript en este capítulo: números,
+cadenas, Booleanos, y valores indefinidos.</p>
 <p><a class=p_ident id="p_3rwX3Mq/e/" href="#p_3rwX3Mq/e/"></a>Such values are created by typing in their name (<code>true</code>, <code>null</code>) or
 value (<code>13</code>, <code>"abc"</code>). You can combine and transform values with
 operators. We saw binary operators for arithmetic (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>,
