@@ -188,21 +188,20 @@ la definición de una función son visibles para ella, esto es, en todos
 los cuerpos de las funciones que la envuelven y las correspondientes
 al nivel superior(ámbito global). Este manera de resolver la visibilidad
 de las variables es llamada <em>definición léxica de ámbito</em>(lexical scoping).</p>
-<p><a class=p_ident id="p_obDE6s63wd" href="#p_obDE6s63wd"></a>People who have experience with other programming
-languages might expect that any block of code between braces produces
-a new local environment. But in JavaScript, functions are the only
-things that create a new scope. You are allowed to use free-standing
-blocks.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Dbc5SebDan" href="#c_Dbc5SebDan"></a><span class="cm-keyword">var</span> <span class="cm-variable">something</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+<p><a class=p_ident id="p_FItQg1ObNB" href="#p_FItQg1ObNB"></a>Las personas que tienen experiencia con otros lenguajes
+de programción podrían esperar que cualquier bloque entre llaves produzca
+un nuevo entorno local. Pero en JavaScript, las funciones son lo único
+que crea un nuevo ámbito. Pero puedes usar bloques independientes.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_v4MiIgTQg8" href="#c_v4MiIgTQg8"></a><span class="cm-keyword">var</span> <span class="cm-variable">algo</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
 {
-  <span class="cm-keyword">var</span> <span class="cm-variable">something</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>;
-  <span class="cm-comment">// Do stuff with variable something...</span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">algo</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>;
+  <span class="cm-comment">// Haz algo con la variable...</span>
 }
-<span class="cm-comment">// Outside of the block again...</span></pre>
-<p><a class=p_ident id="p_hrFxt2jf+L" href="#p_hrFxt2jf+L"></a>But the <code>something</code> inside the block refers to the same variable as
-the one outside the block. In fact, although blocks like this are
-allowed, they are useful only to group the body of an <code>if</code> statement
-or a loop.</p>
+<span class="cm-comment">// Fuera del bloque...</span></pre>
+<p><a class=p_ident id="p_Whaz5dyKyX" href="#p_Whaz5dyKyX"></a>Pero la variable <code>algo</code> dentro del bloque se refiere a la misma variable
+que la que está fuera del bloque. De hecho, aunque bloques como este
+son permitidos, sólo son útiles para agrupar el cuerpo de las sentencias
+<code>if</code> o de los bucles.</p>
 <p><a class=p_ident id="p_uliI/PmHtG" href="#p_uliI/PmHtG"></a>If you find this odd, you&#8217;re not
 alone. The next version of JavaScript will introduce a <code>let</code> keyword,
 which works like <code>var</code> but creates a variable that is local to the
