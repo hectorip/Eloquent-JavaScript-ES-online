@@ -262,38 +262,38 @@ en el bloque más externo de tu función o programa.</p>
     <span class="cm-keyword">function</span> <span class="cm-def">b</span>() {} <span class="cm-comment">// ¡Peligro!</span>
   }
 }</pre>
-<h2 id="stack"><a class=h_ident id="h_D2Yui+mx6D" href="#h_D2Yui+mx6D"></a>The call stack</h2>
-<p><a class=p_ident id="p_6VtLMfnNTJ" href="#p_6VtLMfnNTJ"></a>It will be helpful to take a
-closer look at the way control flows through functions. Here is a
-simple program that makes a few function calls:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_rZkAGv0+td" href="#c_rZkAGv0+td"></a><span class="cm-keyword">function</span> <span class="cm-variable">greet</span>(<span class="cm-def">who</span>) {
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Hello "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">who</span>);
+<h2 id="stack"><a class=h_ident id="h_nePB5S+L1Q" href="#h_nePB5S+L1Q"></a>La pila de llamadas</h2>
+<p><a class=p_ident id="p_MIcX+dVOJH" href="#p_MIcX+dVOJH"></a> Será útil mirar más de
+cerca la forma en que el control se mueve a través de las funciones.
+Aquí hay un simple programa que hace unas cuantas llamadas a funciones.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2mhgGbOeXv" href="#c_2mhgGbOeXv"></a><span class="cm-keyword">function</span> <span class="cm-variable">saluda</span>(<span class="cm-def">a_quien</span>) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Hola "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">a_quien</span>);
 }
-<span class="cm-variable">greet</span>(<span class="cm-string">"Harry"</span>);
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Bye"</span>);</pre>
-<p><a class=p_ident id="p_vj7N9c3dLf" href="#p_vj7N9c3dLf"></a>A run through
-this program goes roughly like this: the call to <code>greet</code> causes
-control to jump to the start of that function (line 2). It calls
-<code>console.log</code> (a built-in browser function), which takes control, does
-its job, and then returns control to line 2. Then it reaches the end
-of the <code>greet</code> function, so it returns to the place that called it, at
-line 4. The line after that calls <code>console.log</code> again.</p>
-<p><a class=p_ident id="p_l2J0qZcbr2" href="#p_l2J0qZcbr2"></a>We could show the flow of control schematically like this:</p>
-<pre>top
-   greet
+<span class="cm-variable">saluda</span>(<span class="cm-string">"Harry"</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Adiós"</span>);</pre>
+<p><a class=p_ident id="p_X4F0pqfkKz" href="#p_X4F0pqfkKz"></a>(((console.log))Una ejecución
+de este programa va más o menos así: la llamada a <code>saluda</code> causa que el control
+pase al inicio de esa función (línea 2). Esta llama a <code>control.log</code> (una función
+incluída en los navegadores), que toma el control, hace su trabajo, y devuelve
+el control a la línea 2. Después, se alcanza el dinal de la función <code>saluda</code>, así
+que se regresa al lugar en dónde se llamó, en la línea 4. La línea siguiente llama
+a <code>console.log</code> otra vez.</p>
+<p><a class=p_ident id="p_U3XWu6xDX+" href="#p_U3XWu6xDX+"></a>Podemos mostrar el flujo de control esquemáticamente así:</p>
+<pre>raíz
+   saluda
         console.log
-   greet
-top
+   saluda
+raíz
    console.log
-top</pre>
-<p><a class=p_ident id="p_0AzS0ZGujS" href="#p_0AzS0ZGujS"></a>Because a function has to jump back to
-the place of the call when it returns, the computer must remember the
-context from which the function was called. In one case, <code>console.log</code>
-has to jump back to the <code>greet</code> function. In the other case, it jumps
-back to the end of the program.</p>
-<p><a class=p_ident id="p_PCO8aj4Plj" href="#p_PCO8aj4Plj"></a>The place where the computer stores this context is the <em>call stack</em>. Every time a function is called, the current context is put
-on top of this “stack”. When the function returns, it removes the top
-context from the stack and uses it to continue execution.</p>
+raíz</pre>
+<p><a class=p_ident id="p_JBwQYCOD0U" href="#p_JBwQYCOD0U"></a>Debido a que una función tiene que
+saltar de regreso al lugar en que fue llamada cuando termine, la computadora
+debe recordar el contexto en el que fue llamada. En un caso, <code>console.log</code> tiene
+que regresar a la función <code>saluda</code>. En el otro caso salta al final del programa.</p>
+<p><a class=p_ident id="p_q+Dy7vNOH+" href="#p_q+Dy7vNOH+"></a>El lugar en el que la computadora guarda este context es la <em>pila de llamadas</em>.
+Cada vez que una función es llamada, el contexto actual es puesto en la parte superior
+de esta pila. Cuando la función retorne, remueve el contexto superior de la "pila" y
+lo usa para continuar la ejecución.</p>
 <p><a class=p_ident id="p_HxxwtLgAhP" href="#p_HxxwtLgAhP"></a>Storing this
 stack requires space in the computer&#8217;s memory. When the stack grows
 too big, the computer will fail with a message like “out of stack
