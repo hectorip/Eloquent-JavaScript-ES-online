@@ -294,21 +294,21 @@ que regresar a la función <code>saluda</code>. En el otro caso salta al final d
 Cada vez que una función es llamada, el contexto actual es puesto en la parte superior
 de esta pila. Cuando la función retorne, remueve el contexto superior de la "pila" y
 lo usa para continuar la ejecución.</p>
-<p><a class=p_ident id="p_HxxwtLgAhP" href="#p_HxxwtLgAhP"></a>Storing this
-stack requires space in the computer&#8217;s memory. When the stack grows
-too big, the computer will fail with a message like “out of stack
-space” or “too much recursion”. The following code illustrates this by
-asking the computer a really hard question, which causes an infinite
-back-and-forth between two functions. Rather, it <em>would</em> be infinite,
-if the computer had an infinite stack. As it is, we will run out of
-space, or “blow the stack”.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_d9pZXzK1kY" href="#c_d9pZXzK1kY"></a><span class="cm-keyword">function</span> <span class="cm-variable">chicken</span>() {
-  <span class="cm-keyword">return</span> <span class="cm-variable">egg</span>();
+<p><a class=p_ident id="p_K5Ire0rChj" href="#p_K5Ire0rChj"></a>Guardar esta pila requiere
+espacio en la memoria de la coputadora. Cuando la pila se hace demasiado grande
+la computadora mostrará un error parecido a "out of stack space" (sin espacio en la
+en la pila) o "too much recursion" (demasiada recursión). El siguiente código lo ilustra
+al preguntarle algo realmente difícil a la computadora, lo que causa un ir y venir
+infinito entre funciones. Más bien, <em>sería</em> infinito, si la computadora
+tuviera una pila infinita. Como son las cosas, nos quedaremos sin espacio,
+o "volaremos la pila".</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_AhBAx37CuW" href="#c_AhBAx37CuW"></a><span class="cm-keyword">function</span> <span class="cm-variable">gallina</span>() {
+  <span class="cm-keyword">return</span> <span class="cm-variable">huevo</span>();
 }
-<span class="cm-keyword">function</span> <span class="cm-variable">egg</span>() {
-  <span class="cm-keyword">return</span> <span class="cm-variable">chicken</span>();
+<span class="cm-keyword">function</span> <span class="cm-variable">huevo</span>() {
+  <span class="cm-keyword">return</span> <span class="cm-variable">gallina</span>();
 }
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">chicken</span>() <span class="cm-operator">+</span> <span class="cm-string">" came first."</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">gallina</span>() <span class="cm-operator">+</span> <span class="cm-string">" fue primero"</span>);
 <span class="cm-comment">// → ??</span></pre>
 <h2><a class=h_ident id="h_1pGtRjrCUp" href="#h_1pGtRjrCUp"></a>Optional Arguments</h2>
 <p><a class=p_ident id="p_npZ63wzfMQ" href="#p_npZ63wzfMQ"></a>The following code is allowed
