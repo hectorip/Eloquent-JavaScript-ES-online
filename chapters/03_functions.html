@@ -310,45 +310,44 @@ o "volaremos la pila".</p>
 }
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">gallina</span>() <span class="cm-operator">+</span> <span class="cm-string">" fue primero"</span>);
 <span class="cm-comment">// → ??</span></pre>
-<h2><a class=h_ident id="h_1pGtRjrCUp" href="#h_1pGtRjrCUp"></a>Optional Arguments</h2>
-<p><a class=p_ident id="p_npZ63wzfMQ" href="#p_npZ63wzfMQ"></a>The following code is allowed
-and executes without any problem:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_N7xNoevYVv" href="#c_N7xNoevYVv"></a><span class="cm-variable">alert</span>(<span class="cm-string">"Hello"</span>, <span class="cm-string">"Good Evening"</span>, <span class="cm-string">"How do you do?"</span>);</pre>
-<p><a class=p_ident id="p_IpeGOJUHty" href="#p_IpeGOJUHty"></a>The function <code>alert</code> officially accepts only one
-argument. Yet when you call it like this, it doesn&#8217;t complain. It
-simply ignores the other arguments and shows you “Hello”.</p>
-<p><a class=p_ident id="p_MSukyYxa3X" href="#p_MSukyYxa3X"></a>JavaScript is extremely broad-minded
-about the number of arguments you pass to a function. If you pass too
-many, the extra ones are ignored. If you pass too few, the missing
-parameters simply get assigned the value <code>undefined</code>.</p>
-<p><a class=p_ident id="p_U01Tix9/O1" href="#p_U01Tix9/O1"></a>The downside of this is that it is possible—likely, even—that you&#8217;ll
-accidentally pass the wrong number of arguments to functions and no
-one will tell you about it.</p>
-<p id="power"><a class=p_ident id="p_1HVJeCtkjS" href="#p_1HVJeCtkjS"></a>The
-upside is that this behavior can be used to have a function take
-“optional” arguments. For example, the following version of <code>power</code>
-can be called either with two arguments or with a single argument, in
-which case the exponent is assumed to be two, and the function behaves
-like <code>square</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Qk4NJmNgHK" href="#c_Qk4NJmNgHK"></a><span class="cm-keyword">function</span> <span class="cm-variable">power</span>(<span class="cm-def">base</span>, <span class="cm-def">exponent</span>) {
-  <span class="cm-keyword">if</span> (<span class="cm-variable-2">exponent</span> <span class="cm-operator">==</span> <span class="cm-atom">undefined</span>)
-    <span class="cm-variable-2">exponent</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>;
-  <span class="cm-keyword">var</span> <span class="cm-def">result</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
-  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">count</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">count</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">exponent</span>; <span class="cm-variable-2">count</span><span class="cm-operator">++</span>)
-    <span class="cm-variable-2">result</span> <span class="cm-operator">*=</span> <span class="cm-variable-2">base</span>;
-  <span class="cm-keyword">return</span> <span class="cm-variable-2">result</span>;
+<h2><a class=h_ident id="h_jNCGCF3rFb" href="#h_jNCGCF3rFb"></a>Argumentos Opcionales</h2>
+<p><a class=p_ident id="p_H9TL95isqo" href="#p_H9TL95isqo"></a>El siguiente código es permitido y se ejecuta sin
+ningún problema:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_U6A9mZYPyZ" href="#c_U6A9mZYPyZ"></a><span class="cm-variable">alert</span>(<span class="cm-string">"Hola"</span>, <span class="cm-string">"Buenas Noches"</span>, <span class="cm-string">"¿Cómo estás?"</span>);</pre>
+<p><a class=p_ident id="p_h45iKuBld5" href="#p_h45iKuBld5"></a>La función <code>alert</code> oficialmente acepta sólo un argumento.
+Aún así, cuando la llamas como aquí, no se queja. Simplemente ignora los otros
+argumentos y te muestra "Hola".</p>
+<p><a class=p_ident id="p_CFCRGRqAfJ" href="#p_CFCRGRqAfJ"></a>JavaScript es extremadamente abierta de mente
+acerca del número de argumentos que le pasas a una función. Sí le pasas demasiados,
+loa argumentos extra son ignorados. Si le pasas muy pocos, los parámetros quie faltan
+simplemente son asignados a <code>undefined</code>.</p>
+<p><a class=p_ident id="p_byAKowZLIp" href="#p_byAKowZLIp"></a>El lado malo de esto es que es posbible/probable, casi seguro que le pasarás
+accidentalmente un número incorrecto de argumentos a las funciones y nadie te
+avisará.</p>
+<p id="potencia"><a class=p_ident id="p_MLpfFTxf6C" href="#p_MLpfFTxf6C"></a> El lado bueno de este
+comportamiento es que puede ser usado para tener una función que
+tome parámetros "opcionales". Por ejemplo, la soguiente versión de
+<code>potencia</code> puede ser llamada con dos argumentos o uno solo, caso en el que
+el exponente se asume como dos, y la función se comporta como <code>cuadrado</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZanpM9q23d" href="#c_ZanpM9q23d"></a><span class="cm-keyword">function</span> <span class="cm-variable">potencia</span>(<span class="cm-def">base</span>, <span class="cm-def">exponente</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">exponente</span> <span class="cm-operator">==</span> <span class="cm-atom">undefined</span>)
+    <span class="cm-variable-2">exponente</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">resultado</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">cuenta</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">cuenta</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">exponente</span>; <span class="cm-variable-2">cuenta</span><span class="cm-operator">++</span>)
+    <span class="cm-variable-2">resultado</span> <span class="cm-operator">*=</span> <span class="cm-variable-2">base</span>;
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">resultado</span>;
 }
 
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">power</span>(<span class="cm-number">4</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">potencia</span>(<span class="cm-number">4</span>));
 <span class="cm-comment">// → 16</span>
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">power</span>(<span class="cm-number">4</span>, <span class="cm-number">3</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">potencia</span>(<span class="cm-number">4</span>, <span class="cm-number">3</span>));
 <span class="cm-comment">// → 64</span></pre>
-<p><a class=p_ident id="p_HXV4vPfIcZ" href="#p_HXV4vPfIcZ"></a>In the <a href="04_data.html#arguments_object">next
-chapter</a>, we will see a way in which a function body can get at the
-exact list of arguments that were passed. This is helpful because it
-makes it possible for a function to accept any number of arguments.
-For example, <code>console.log</code> makes use of this—it outputs all of the
-values it is given.</p>
+<p><a class=p_ident id="p_qDx8VfKunp" href="#p_qDx8VfKunp"></a>En el <a href="04_data.html#arguments_object">próximo
+capítulo</a>, veremos una forma en la que el cuerpo de una función puede
+obetener la lista exacta de argumentos que se le pasaron. Esto es útil
+porque permite a una función aceptar un número indeterminado de argumentos.
+Por ejemplo, <code>console.log</code> hace uso de esto: imprime todos los valores que
+se le pasaron.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_rwDFIqBrDl" href="#c_rwDFIqBrDl"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"R"</span>, <span class="cm-number">2</span>, <span class="cm-string">"D"</span>, <span class="cm-number">2</span>);
 <span class="cm-comment">// → R 2 D 2</span></pre>
 <h2><a class=h_ident id="h_hOd+yVxaku" href="#h_hOd+yVxaku"></a>Closure</h2>
