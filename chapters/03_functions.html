@@ -326,7 +326,7 @@ accidentalmente un número incorrecto de argumentos a las funciones y nadie te
 avisará.</p>
 <p id="potencia"><a class=p_ident id="p_MLpfFTxf6C" href="#p_MLpfFTxf6C"></a> El lado bueno de este
 comportamiento es que puede ser usado para tener una función que
-tome parámetros "opcionales". Por ejemplo, la soguiente versión de
+tome parámetros "opcionales". Por ejemplo, la siguiente versión de
 <code>potencia</code> puede ser llamada con dos argumentos o uno solo, caso en el que
 el exponente se asume como dos, y la función se comporta como <code>cuadrado</code>.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZanpM9q23d" href="#c_ZanpM9q23d"></a><span class="cm-keyword">function</span> <span class="cm-variable">potencia</span>(<span class="cm-def">base</span>, <span class="cm-def">exponente</span>) {
@@ -351,24 +351,24 @@ se le pasaron.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_rwDFIqBrDl" href="#c_rwDFIqBrDl"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"R"</span>, <span class="cm-number">2</span>, <span class="cm-string">"D"</span>, <span class="cm-number">2</span>);
 <span class="cm-comment">// → R 2 D 2</span></pre>
 <h2><a class=h_ident id="h_hOd+yVxaku" href="#h_hOd+yVxaku"></a>Closure</h2>
-<p><a class=p_ident id="p_Y88pfbKskW" href="#p_Y88pfbKskW"></a>The ability to treat functions as
-values, combined with the fact that local variables are “re-created”
-every time a function is called, brings up an interesting question.
-What happens to local variables when the function call that created
-them is no longer active?</p>
-<p><a class=p_ident id="p_GDGcocAd5v" href="#p_GDGcocAd5v"></a>The following code shows an example of this. It defines a function,
-<code>wrapValue</code>, which creates a local variable. It then returns a function
-that accesses and returns this local variable.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_VI86FLVzPw" href="#c_VI86FLVzPw"></a><span class="cm-keyword">function</span> <span class="cm-variable">wrapValue</span>(<span class="cm-def">n</span>) {
-  <span class="cm-keyword">var</span> <span class="cm-def">localVariable</span> <span class="cm-operator">=</span> <span class="cm-variable-2">n</span>;
-  <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>() { <span class="cm-keyword">return</span> <span class="cm-variable-2">localVariable</span>; };
+<p><a class=p_ident id="p_eDid6K5Fi2" href="#p_eDid6K5Fi2"></a> La habilidad de tratar Funciones
+como valores, combinada con el hecho de que las varibles locales son
+"re-creadas" cada vez que una función es llamada, saca a la luz
+una pregunta interesante. ¿Qué pasa con las variables locales
+cuando la función que las creó ya no está activa?</p>
+<p><a class=p_ident id="p_Kb5dHADISx" href="#p_Kb5dHADISx"></a>El siguiente código muestra un ejemplo de esto. Define una funnción,
+<code>envuelveValor</code>, que crea una variable local. Después devuelve una
+función que accede y devuelve esta variable local.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_F1jDyB51/z" href="#c_F1jDyB51/z"></a><span class="cm-keyword">function</span> <span class="cm-variable">envuelveValor</span>(<span class="cm-def">n</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">variableLocal</span> <span class="cm-operator">=</span> <span class="cm-variable-2">n</span>;
+  <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>() { <span class="cm-keyword">return</span> <span class="cm-variable-2">variableLocal</span>; };
 }
 
-<span class="cm-keyword">var</span> <span class="cm-variable">wrap1</span> <span class="cm-operator">=</span> <span class="cm-variable">wrapValue</span>(<span class="cm-number">1</span>);
-<span class="cm-keyword">var</span> <span class="cm-variable">wrap2</span> <span class="cm-operator">=</span> <span class="cm-variable">wrapValue</span>(<span class="cm-number">2</span>);
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">wrap1</span>());
+<span class="cm-keyword">var</span> <span class="cm-variable">envoltura1</span> <span class="cm-operator">=</span> <span class="cm-variable">envuelveValor</span>(<span class="cm-number">1</span>);
+<span class="cm-keyword">var</span> <span class="cm-variable">envoltura2</span> <span class="cm-operator">=</span> <span class="cm-variable">envuelveValor</span>(<span class="cm-number">2</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">envoltura11</span>());
 <span class="cm-comment">// → 1</span>
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">wrap2</span>());
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">envoltura2</span>());
 <span class="cm-comment">// → 2</span></pre>
 <p><a class=p_ident id="p_Sa1QP5wNdF" href="#p_Sa1QP5wNdF"></a>This is allowed and works as you&#8217;d hope—the variable can still be
 accessed. In fact, multiple instances of the variable can be alive at
