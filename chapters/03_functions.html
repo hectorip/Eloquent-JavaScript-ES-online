@@ -370,11 +370,11 @@ función que accede y devuelve esta variable local.</p>
 <span class="cm-comment">// → 1</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">envoltura2</span>());
 <span class="cm-comment">// → 2</span></pre>
-<p><a class=p_ident id="p_Sa1QP5wNdF" href="#p_Sa1QP5wNdF"></a>This is allowed and works as you&#8217;d hope—the variable can still be
-accessed. In fact, multiple instances of the variable can be alive at
-the same time, which is another good illustration of the concept that
-local variables really are re-created for every call—different calls
-can&#8217;t trample on one another&#8217;s local variables.</p>
+<p><a class=p_ident id="p_7RHFNfs+6E" href="#p_7RHFNfs+6E"></a>Esto está permitido y trabaja como esperarías; la variable todavía puede
+leerse. De hecho, múltiples instancias de las variables pueden existir
+al mismo tiempo, lo que es otra buena ilustración del concepto de que las
+variables locales son re-creadas realmente para cada llamada; diferentes
+llamadas no pueden afectar otras variables locales.</p>
 <p><a class=p_ident id="p_psCFtoqbmB" href="#p_psCFtoqbmB"></a>This feature—being able to reference a specific instance of local
 variables in an enclosing function—is called <em>closure</em>. A function
 that “closes over” some local variables is called <em>a</em> closure. This
