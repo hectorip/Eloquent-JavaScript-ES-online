@@ -370,16 +370,17 @@ función que accede y devuelve esta variable local.</p>
 <span class="cm-comment">// → 1</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">envoltura2</span>());
 <span class="cm-comment">// → 2</span></pre>
-<p><a class=p_ident id="p_7RHFNfs+6E" href="#p_7RHFNfs+6E"></a>Esto está permitido y trabaja como esperarías; la variable todavía puede
+<p><a class=p_ident id="p_7RHFNfs+6E" href="#p_7RHFNfs+6E"></a>Esto está permitido y funciona como esperarías; la variable todavía puede
 leerse. De hecho, múltiples instancias de las variables pueden existir
 al mismo tiempo, lo que es otra buena ilustración del concepto de que las
 variables locales son re-creadas realmente para cada llamada; diferentes
 llamadas no pueden afectar otras variables locales.</p>
-<p><a class=p_ident id="p_psCFtoqbmB" href="#p_psCFtoqbmB"></a>This feature—being able to reference a specific instance of local
-variables in an enclosing function—is called <em>closure</em>. A function
-that “closes over” some local variables is called <em>a</em> closure. This
-behavior not only frees you from having to worry about lifetimes of
-variables but also allows for some creative use of function values.</p>
+<p><a class=p_ident id="p_MeN/dq9I07" href="#p_MeN/dq9I07"></a>Esta característica -ser capaces de hacer referencia a una instancia
+local de varables en un función que las encierra- se llama <em><em>closure</em></em>.
+Una función que "encapsula" algunas variables locales es llamada <em>una</em>
+closure. Este comportamiento no sólo te libera de preocuparte de los
+tiempos de vida de las variables, además permite algunos usos creativos
+de las funciones.</p>
 <p><a class=p_ident id="p_YtnB1+ZhQb" href="#p_YtnB1+ZhQb"></a>With a slight change, we can turn the
 previous example into a way to create functions that multiply by an
 arbitrary amount.</p>
