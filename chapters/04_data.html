@@ -1,157 +1,160 @@
 <!doctype html>
 <head>
   <meta charset="utf-8">
-  <title>Data Structures: Objects and Arrays :: Eloquent JavaScript</title>
+  <title>Estructuras de Datos: Objetos y Arreglos :: Eloquent JavaScript</title>
   <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
   <script src="js/acorn_codemirror.js"></script>
   <link rel=stylesheet href="css/ejs.css">
   <script src="js/sandbox.js"></script>
   <script src="js/ejs.js"></script>
   <script>var chapNum = 4;var sandboxLoadFiles = ["code/jacques_journal.js", "code/chapter/04_data.js"];</script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53624335-3', 'auto');
+  ga('send', 'pageview');
+
+  </script>
 </head>
 
 <article>
 <nav>
-  <a href="03_functions.html" title="previous chapter">◀</a>
+  <a href="03_functions.html" title="capítulo previo">◀</a>
   <a href="index.html" title="cover">◆</a>
-  <a href="05_higher_order.html" title="next chapter">▶</a>
+  <a href="05_higher_order.html" title="capítulo siguiente">▶</a>
 </nav>
 
-<h1><div class=chap_num>Chapter 4</div>Data Structures: Objects and Arrays</h1>
+<h1><div class=chap_num>Capítulo 4</div>Estructuras de Datos: Objetos y Arreglos</h1>
 <blockquote>
-<p><a class=p_ident id="p_3DGxnMhaad" href="#p_3DGxnMhaad"></a>On two occasions I have been asked, ‘Pray,
-Mr. Babbage, if you put into the machine wrong figures, will the right
-answers come out?’ [...] I am not able rightly to apprehend the kind
-of confusion of ideas that could provoke such a question.</p>
+<p><a class=p_ident id="p_AF14oG5tGE" href="#p_AF14oG5tGE"></a>En dos ocasiones me preguntaron - “Disculpe, Sr. Babbage, si pongo
+números incorrectos en la máquina, ¿van a salir las respuestas correctas?”
+[...] No puedo terminar de comprender el tipo de confusión de ideas que
+podrían provocar esta pregunta.</p>
  <footer>Charles Babbage, <cite>Passages from the Life of a Philosopher (1864)</cite></footer>
 </blockquote>
-<p><a class=p_ident id="p_j/UjCN3npi" href="#p_j/UjCN3npi"></a>Numbers, Booleans, and strings are the
-bricks that data structures are built from. But you can&#8217;t make
-much of a house out of a single brick. <em>Objects</em> allow us to group
-values—including other objects—together and thus build more complex
-structures.</p>
-<p><a class=p_ident id="p_TT9r8Cr1W0" href="#p_TT9r8Cr1W0"></a>The programs we have built so far have been seriously hampered by the
-fact that they were operating only on simple data types. This chapter
-will add a basic understanding of data structures to your toolkit. By
-the end of it, you&#8217;ll know enough to start writing some useful
-programs.</p>
-<p><a class=p_ident id="p_vL8agXHSiL" href="#p_vL8agXHSiL"></a>The chapter will work through a more or less realistic programming
-example, introducing concepts as they apply to the problem at hand.
-The example code will often build on functions and variables that were
-introduced earlier in the text.</p>
-<h2><a class=h_ident id="h_NvjtahQLlw" href="#h_NvjtahQLlw"></a>The weresquirrel</h2>
-<p><a class=p_ident id="p_2uQlDOT3CH" href="#p_2uQlDOT3CH"></a>Every now and then, usually
-between eight and ten in the evening, Jacques finds himself
-transforming into a small furry rodent with a bushy tail.</p>
-<p><a class=p_ident id="p_EIDMzKWaqr" href="#p_EIDMzKWaqr"></a>On one hand, Jacques is quite glad that he doesn&#8217;t have classic
-lycanthropy. Turning into a squirrel tends to cause fewer problems
-than turning into a wolf. Instead of having to worry about
-accidentally eating the neighbor (<em>that</em> would be awkward), he worries
-about being eaten by the neighbor&#8217;s cat. After two occasions where he
-woke up on a precariously thin branch in the crown of an oak, naked
-and disoriented, he has taken to locking the doors and windows of his
-room at night and putting a few walnuts on the floor to keep himself
-busy.</p>
+<p><a class=p_ident id="p_FVxq6Uf2rv" href="#p_FVxq6Uf2rv"></a>Números, Booleanos
+y cadenas son los ladrillos de los que están hechas las estructuras de datos.
+Pero no podrás construir mucha casa de un solo ladrillo. Los <em>objetos</em> nos
+permiten agrupar valores-incluyendo otros objetos-permitiéndonos construir
+estructuras más complejas.</p>
+<p><a class=p_ident id="p_lP6aJVStsL" href="#p_lP6aJVStsL"></a>Los programas que hemos construido hasta ahora han sido seriamente limitados
+debido al hecho de que estaban operando únicamente en tipos de datos simples. Este
+capítulo agregará a tu caja de herramientas un entendimiento básico de las
+estructuras de datos. Al finalizarlo, sabrás lo suficiente para empezar a escribir
+algunos programas de utilidad.</p>
+<p><a class=p_ident id="p_MCaISwxTsj" href="#p_MCaISwxTsj"></a>El capítulo trabajará a lo largo de un ejemplo de programación más o menos
+realista, introduciendo conceptos conforme apliquen al problema en cuestión.
+El código de ejemplo muchas veces construirá sobre funciones y variables que
+fueron presentadas previamente en el texto.</p>
+<h2><a class=h_ident id="h_iVT/lU2XGg" href="#h_iVT/lU2XGg"></a>La ardillalobo</h2>
+<p><a class=p_ident id="p_ILCOYpDrw1" href="#p_ILCOYpDrw1"></a>De vez en cuando, comúnmente
+entre las ocho y las diez de la noche, Jacques  se transforma en
+un pequeño y peludo roedor con una frondosa cola.</p>
+<p><a class=p_ident id="p_JWDybfL/03" href="#p_JWDybfL/03"></a>Por un lado, Jacques esta bastante contento de no tener la clásica licantropía.
+Convertirse en una ardilla suele causar menos problemas que convertirse en un
+lobo. En vez de tener que preocuparse por comerse accidentalmente a un vecino
+(<em>eso</em> sería extraño), le preocupa el ser deborado por el gato del vecino.
+Después de un par de ocasiones donde se despertó, desnudo y desorientado, en una
+apenas delgada rama en la cima de un roble, se ha asegurado de cerrar puertas y
+ventanas de su cuarto por las noches y ponear algunas nueces en el suelo para
+mantenerse ocupado.</p>
 <div class="image">
   <img src="img/weresquirrel.png" alt="The weresquirrel">
 </div>
-<p><a class=p_ident id="p_mMWZqiA+i1" href="#p_mMWZqiA+i1"></a>That takes care of the cat and oak problems. But Jacques still suffers
-from his condition. The irregular occurrences of the transformation
-make him suspect that they might be triggered by something.
-For a while, he believed that it happened only on days when he
-had touched trees. So he stopped touching trees entirely and even
-avoided going near them. But the problem persisted.</p>
-<p><a class=p_ident id="p_I4RF6opRCC" href="#p_I4RF6opRCC"></a>Switching to a more scientific approach, Jacques intends
-to start keeping a daily log of everything he did that day and whether
-he changed form. With this data he hopes to narrow down the conditions
-that trigger the transformations.</p>
-<p><a class=p_ident id="p_WERwFzJu93" href="#p_WERwFzJu93"></a>The first thing he does is design a data structure to store this
-information.</p>
-<h2><a class=h_ident id="h_HjL/otjEJn" href="#h_HjL/otjEJn"></a>Data sets</h2>
-<p><a class=p_ident id="p_HFLfyQFSDp" href="#p_HFLfyQFSDp"></a>To work with a chunk of digital data, we&#8217;ll first
-have to find a way to represent it in our machine&#8217;s memory. Say,
-as a simple example, that we want to represent a collection of
-numbers: 2, 3, 5, 7, and 11.</p>
-<p><a class=p_ident id="p_cnzv4pg+Wz" href="#p_cnzv4pg+Wz"></a>We could get creative with strings—after all, strings
-can be any length, so we can put a lot of data into them—and use <code>"2 3
-5 7 11"</code> as our representation. But this is awkward. You&#8217;d have to
-somehow extract the digits and convert them back to numbers to access
-them.</p>
-<p><a class=p_ident id="p_/aFILq7bDn" href="#p_/aFILq7bDn"></a>Fortunately, JavaScript
-provides a data type specifically for storing sequences of values. It
-is called an <em>array</em> and is written as a list of values between
-square brackets, separated by commas.</p>
+<p><a class=p_ident id="p_t8snrXUbD8" href="#p_t8snrXUbD8"></a>Eso resuelve los problemas del gato y el roble. Pero Jacques aún sufre de su
+enfermedad. Los momentos irregular en que se presenta la transformación le hacen
+sospechar que pudieran ser detonadas por algo. Por algún tiempo, creyó que
+sucedía sólo en los dias que había tocado árboles. Así que dejó de tocar árboles
+de manera definitiva e incluso evitó acercarse a ellos. Pero el problema
+presistió.</p>
+<p><a class=p_ident id="p_JnDiVDnGkd" href="#p_JnDiVDnGkd"></a>Cambiando a una perspectiva un poco más científica, Jacques planea
+empezar un registro diario de todo lo que hizo ese día y si tuvo o no una
+transformación. Con estos datos espera limitar las condiciones que disparan las
+transformaciones.</p>
+<p><a class=p_ident id="p_IyloWR3Bh6" href="#p_IyloWR3Bh6"></a>La primer cosa que hace es diseñar una estructura de datos para almacenar esta
+información.</p>
+<h2><a class=h_ident id="h_7lZW6LyfA5" href="#h_7lZW6LyfA5"></a>Conjuntos de datos</h2>
+<p><a class=p_ident id="p_970mNfCcKX" href="#p_970mNfCcKX"></a>Para trabajar con un pedazo de datos digitales, primero
+tendremos que encontrar una forma de representarlo en la memoria de nuestra
+máquina.Digamos, como un pequeño ejemplo, que queremos representar una
+colección de números: 2, 3, 5, 7 y 11.</p>
+<p><a class=p_ident id="p_z0fHaVBgeu" href="#p_z0fHaVBgeu"></a>Podríamos ponernos creativos usando cadenas-despues de todo, las
+cadenas pueden ser de cualquier longitud, así que podríamos pone mucha
+información en ellas-y usar <code>"2 3 5 7 11"</code> como nuestra representación. Pero
+esto es extaño. De alguna forma tendrías que extaer los dígitos y convertirlos
+de vuelta a números para accesarlos.</p>
+<p><a class=p_ident id="p_E6FJenluA8" href="#p_E6FJenluA8"></a>Afortunadamente, Javascript proporciona un
+tipo de dato específico para almacenar secuencias de valores. Se le llama
+<em>arreglo</em> y se escribe como una lista de valores entre corchetes, separados
+por comas.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WrRipN2I5z" href="#c_WrRipN2I5z"></a><span class="cm-keyword">var</span> <span class="cm-variable">listOfNumbers</span> <span class="cm-operator">=</span> [<span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">5</span>, <span class="cm-number">7</span>, <span class="cm-number">11</span>];
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listOfNumbers</span>[<span class="cm-number">1</span>]);
 <span class="cm-comment">// → 3</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listOfNumbers</span>[<span class="cm-number">1</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>]);
 <span class="cm-comment">// → 2</span></pre>
-<p><a class=p_ident id="p_xu5bhsrvS2" href="#p_xu5bhsrvS2"></a>The notation for getting
-at the elements inside an array also uses square brackets. A pair
-of square brackets immediately after an expression, with another
-expression inside of them, will look up the element in the left-hand
-expression that corresponds to the <em>index</em> given by the expression
-in the brackets.</p>
-<p id="array_indexing"><a class=p_ident id="p_i4f1iEZJFW" href="#p_i4f1iEZJFW"></a>The first index of an array is zero, not one. So the first element can
-be read with <code>listOfNumbers[0]</code>. If you don&#8217;t have a programming
-background, this convention might take some getting used to. But
-zero-based counting has a long tradition in technology, and as
-long as this convention is followed consistently (which it is, in
-JavaScript), it works well.</p>
-<h2 id="properties"><a class=h_ident id="h_vGyI2y8HA6" href="#h_vGyI2y8HA6"></a>Properties</h2>
-<p><a class=p_ident id="p_N/KiJ+p6sy" href="#p_N/KiJ+p6sy"></a>We&#8217;ve seen a few
-suspicious-looking expressions like <code>myString.length</code> (to get the
-length of a string) and <code>Math.max</code> (the maximum function) in past
-examples. These are expressions that access a <em>property</em> of some
-value. In the first case, we access the <code>length</code> property of the value
-in <code>myString</code>. In the second, we access the property named <code>max</code> in
-the <code>Math</code> object (which is a collection of mathematics-related values
-and functions).</p>
-<p><a class=p_ident id="p_dTOk+Nu/lR" href="#p_dTOk+Nu/lR"></a>Almost all JavaScript values
-have properties. The exceptions are <code>null</code> and <code>undefined</code>. If you try
-to access a property on one of these nonvalues, you get an error.</p>
+<p><a class=p_ident id="p_Y7cmBj9QZD" href="#p_Y7cmBj9QZD"></a>La notación para obtener los elementos
+dentro de un arreglo también utiliza corchetes. Un par de corchetes
+inmediátamente después de una expresión, con otra expresión dentro de los
+corchetes. buscará el elemento en la expresión de la izquierda que corresponda
+al  <em>índice</em> dado por la expresión en corchetes.</p>
+<p id="array_indexing"><a class=p_ident id="p_k/YYH/xvvI" href="#p_k/YYH/xvvI"></a>El primer índice de un arreglo es cero, no uno. Así que el primer elemento puede
+leerse usando <code>listOfNumbers[0]</code>. Si no tienes antecedentes en programación,
+acostumbrarte a esta convención puede tomarte algún tiempo. Pero el
+zero-based counting tiene una larga tradición en tecnología y mientras la
+convención se siga de manera consistente (que se ha hecho, en Javascript),
+funciona bien.</p>
+<h2 id="properties"><a class=h_ident id="h_jddsYRbSVf" href="#h_jddsYRbSVf"></a>Propiedades</h2>
+<p><a class=p_ident id="p_QWfY9lqvUg" href="#p_QWfY9lqvUg"></a>Hemos visto algunas expresiones
+sospechosas como <code>myString.length</code> (para obtener la longitud de una cadena) y
+<code>Math.max</code> (la función máximo) en ejemplos pasados. Estas son expresiones que
+accesan una <em>propiedad</em> de algún valor. En el primer caso, accesamos la
+propiedad <code>length</code> de el valor en <code>myString</code>. En el segundo, accesamos la
+propiedad llamada <code>max</code> en el objeto <code>Math</code> (que es una colección de valores y
+funciones relacionadas con las matemáticas).</p>
+<p><a class=p_ident id="p_+scqPh9V5v" href="#p_+scqPh9V5v"></a>Casi todos los valores de Javascript tienen
+propiedades. Las excepciones son <code>null</code> y <code>undefined</code>. Si intentas acceder una
+propiedad de alguno de estos nonvalues, recibirás un error.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZEvFsOQLc8" href="#c_ZEvFsOQLc8"></a><span class="cm-atom">null</span>.<span class="cm-property">length</span>;
 <span class="cm-comment">// → TypeError: Cannot read property 'length' of null</span></pre>
-<p><a class=p_ident id="p_etK6gD7WXZ" href="#p_etK6gD7WXZ"></a>The two most common ways to access
-properties in JavaScript are with a dot and with square brackets. Both
-<code>value.x</code> and <code>value[x]</code> access a property on <code>value</code>—but not
-necessarily the same property. The difference is in how <code>x</code> is
-interpreted. When using a dot, the part after the dot must be a valid
-variable name, and it directly names the property. When using square
-brackets, the expression between the brackets is <em>evaluated</em> to get
-the property name. Whereas <code>value.x</code> fetches the property of <code>value</code>
-named “x”, <code>value[x]</code> tries to evaluate the expression <code>x</code> and uses
-the result as the property name.</p>
-<p><a class=p_ident id="p_tcrruPP6JD" href="#p_tcrruPP6JD"></a>So if you know that the property you are interested in is called
-“length”, you say <code>value.length</code>. If you want to extract the property
-named by the value held in the variable <code>i</code>, you say <code>value[i]</code>. And
-because property names can be any string, if you want to access a
-property named “2” or “John Doe”, you must use square brackets:
-<code>value[2]</code> or <code>value["John Doe"]</code>. This is the case even though you
-know the precise name of the property in advance, because neither “2”
-nor “John Doe” is a valid variable name and so cannot be accessed
-through dot notation.</p>
-<p><a class=p_ident id="p_d0vwHo1UJ1" href="#p_d0vwHo1UJ1"></a>The elements in an array are stored in properties. Because the
-names of these properties are numbers and we often need to get their
-name from a variable, we have to use the bracket syntax to access
-them. The <code>length</code> property of an array tells us how many elements it
-contains. This property name is a valid variable name, and we know its
-name in advance, so to find the length of an array, you typically
-write <code>array.length</code> because that is easier to write than
-<code>array["length"]</code>.</p>
-<h2 id="methods"><a class=h_ident id="h_fkrGgDyRWc" href="#h_fkrGgDyRWc"></a>Methods</h2>
-<p><a class=p_ident id="p_1Q3NM3X6G3" href="#p_1Q3NM3X6G3"></a>Both string and
-array objects contain, in addition to the <code>length</code> property, a number
-of properties that refer to function values.</p>
+<p><a class=p_ident id="p_7d7s0A0x5C" href="#p_7d7s0A0x5C"></a>Las dos maneras comúnes de accesar propiedades
+en Javascript es con un punto y con corchetes. Ambas <code>value.x</code> y <code>value[x]</code>
+accesan una propiedad en <code>value</code>—pero no necesariamente la misma propiedad.
+La diferencia radica en cómo se interpreta <code>x</code>. Cuando usamos un punto, la parte
+después del punto debe ser un nombre de variable válido y nombra de maner a
+directa a la propiedad. Cuando usamos corchetes, la expresión dentro de los
+corchetes es <em>evaluada</em> para obtener el nombre de la propiedad. Mientras que
+<code>value.x</code> busca la propiedad de <code>value</code> llamada “x”, <code>value[x]</code> intenta evaluar
+la expresión <code>x</code> y usa el resultado como el nombre de la propiedad.</p>
+<p><a class=p_ident id="p_c9PE09Ekfb" href="#p_c9PE09Ekfb"></a>Así que si sabes que la propiedad que te interesa se llama “length”, usas
+<code>value.length</code>. Si deseas extraer la propiedad nombrada por el valor almacenado
+en la variable<code>i</code>, usas <code>value[i]</code>. Y debido a que el nombre de las propiedades
+puede ser cualquier cadena, si quieres accesar una propiedad llamada “2” o
+“John Doe”, debes utilizar corchetes:<code>value[2]</code> or <code>value["John Doe"]</code>. Así lo
+harías incluso si conoces el nombre preciso de la propiedad de antemano, ya que
+ni “2” ni “John Doe” son nombres válidos de variables y por lo tanto no pueden
+accesarse a traves de la notación con punto.</p>
+<p><a class=p_ident id="p_yzUg5l+lTX" href="#p_yzUg5l+lTX"></a>Los elementos en un arreglo se almacenan en propiedades. Debido a que los
+nombres de estas propiedades son números y usualmente necesitamos obtener su
+nombre de una variable, tenemos que usar la sintaxis de corchetes para accesarlos.
+La propiedad <code>length</code> de un arreglo nos dice cuantos elementos contiene. Este
+nombre de propiedad es un nombre de variable válido, y conocemos su nombre por
+anticipad, así que para encontrar la longitud de un arreglo, comúnmente
+escribiremos <code>array.length</code> ya que es más fácil de escribir que <code>array["length"]</code>.</p>
+<h2 id="methods"><a class=h_ident id="h_PmdOYH9y71" href="#h_PmdOYH9y71"></a>Métodos</h2>
+<p><a class=p_ident id="p_DA9DUDOpwl" href="#p_DA9DUDOpwl"></a>Ambos objetos, las cadenas y
+los arreglos contienen, adicionalmente a la propiedad <code>length</code>, un número de
+propiedades que refieren a valores función.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Crc8UwFnzX" href="#c_Crc8UwFnzX"></a><span class="cm-keyword">var</span> <span class="cm-variable">doh</span> <span class="cm-operator">=</span> <span class="cm-string">"Doh"</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-variable">doh</span>.<span class="cm-property">toUpperCase</span>);
 <span class="cm-comment">// → function</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">doh</span>.<span class="cm-property">toUpperCase</span>());
 <span class="cm-comment">// → DOH</span></pre>
-<p><a class=p_ident id="p_EmYOwg/BO9" href="#p_EmYOwg/BO9"></a>Every string has a <code>toUpperCase</code> property. When called, it
-will return a copy of the string, in which all letters have been
-converted to uppercase. There is also <code>toLowerCase</code>. You can guess
-what that does.</p>
+<p><a class=p_ident id="p_9XCMFPbv3s" href="#p_9XCMFPbv3s"></a>Todas las cadenas tienen una propiedad <code>toUpperCase</code>. Cuando es llamada,
+regresará una copia de la cadena en la que todas las letras han sido convertidas
+a mayúsculas. También existe <code>toLowerCase</code>. Puedes adivinar que es lo que hace.</p>
 <p><a class=p_ident id="p_lNzNM3PoU4" href="#p_lNzNM3PoU4"></a>Interestingly, even though the call to <code>toUpperCase</code> does
 not pass any arguments, the function somehow has access to the string
 <code>"Doh"</code>, the value whose property we called. How this works is
@@ -1028,8 +1031,8 @@ best done by immediately returning false when a mismatch is noticed
 and returning true at the end of the function.</p>
 </div></div>
 <nav>
-  <a href="03_functions.html" title="previous chapter">◀</a>
+  <a href="03_functions.html" title="capítulo previo">◀</a>
   <a href="index.html" title="cover">◆</a>
-  <a href="05_higher_order.html" title="next chapter">▶</a>
+  <a href="05_higher_order.html" title="capítulo siguiente">▶</a>
 </nav>
 </article>
