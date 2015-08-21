@@ -395,20 +395,19 @@ del ejemplo anterior funciones que multiplicquen por un número arbitrario.</p>
 <p><a class=p_ident id="p_tsNc0owPeX" href="#p_tsNc0owPeX"></a> La variable explícita <code>variableLocal</code> de la
 función <code>envuelveValor</code> en el ejemplo previo no es necesaria porque un
 parámetro en sí mismo es una variable local.</p>
-<p><a class=p_ident id="p_jRZH0MnxB1" href="#p_jRZH0MnxB1"></a>Thinking about programs like this takes some
-practice. A good mental model is to think of the <code>function</code> keyword as
-“freezing” the code in its body and wrapping it into a package (the
-function value). So when you read <code>return function(...) {...}</code>, think
-of it as returning a handle to a piece of computation, frozen for
-later use.</p>
-<p><a class=p_ident id="p_SZYpNI2fMu" href="#p_SZYpNI2fMu"></a>In the example, <code>multiplier</code> returns a frozen chunk of code that gets
-stored in the <code>twice</code> variable. The last line then calls the value in
-this variable, causing the frozen code (<code>return number * factor;</code>) to
-be activated. It still has access to the <code>factor</code> variable from the
-<code>multiplier</code> call that created it, and in addition it gets access to
-the argument passed when unfreezing it, 5, through its <code>number</code>
-parameter.</p>
-<h2><a class=h_ident id="h_jxl1p970Fy" href="#h_jxl1p970Fy"></a>Recursion</h2>
+<p><a class=p_ident id="p_63fqkh11UW" href="#p_63fqkh11UW"></a>Concebir los parámetros de esta forma
+requiere algo de práctica. Un buen modelo mental es pensar en la
+palabra clave <code>function</code> como si "congelara" el código que está dentro de
+ella en un paquete(el valor función). Así, cuando leas <code>return function(...){...}</code>,
+piensa en que esto regresa un acceso a un conjunto de cálculos, congelados
+para uso posterior.</p>
+<p><a class=p_ident id="p_OQuM9H6apZ" href="#p_OQuM9H6apZ"></a>En el ejemplo, <code>multiplicador</code> regresa un pedazo congelado de código que
+se guarda en la variable <code>doble</code>. La última línea entonces llama el valor
+guardado en esta variable, haciendo que el código congelado (<code>return numero * factor;</code>)
+se active. Este todavía tiene acceso a la variable <code>factor</code> de la llamada a
+<code>multiplicador</code> que lo creó, y además obtiene acceso al argumento que se pasa
+cuando se activa el código, 5, a través de su parámetro <code>numero</code>.</p>
+<h2><a class=h_ident id="h_TDpZBcOUPE" href="#h_TDpZBcOUPE"></a>Recursión</h2>
 <p><a class=p_ident id="p_nvfJ5Y3yW4" href="#p_nvfJ5Y3yW4"></a>It is perfectly
 okay for a function to call itself, as long as it takes care not to
 overflow the stack. A function that calls itself is called
