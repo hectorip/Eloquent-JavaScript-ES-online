@@ -408,62 +408,60 @@ se active. Este todavía tiene acceso a la variable <code>factor</code> de la ll
 <code>multiplicador</code> que lo creó, y además obtiene acceso al argumento que se pasa
 cuando se activa el código, 5, a través de su parámetro <code>numero</code>.</p>
 <h2><a class=h_ident id="h_TDpZBcOUPE" href="#h_TDpZBcOUPE"></a>Recursión</h2>
-<p><a class=p_ident id="p_nvfJ5Y3yW4" href="#p_nvfJ5Y3yW4"></a>It is perfectly
-okay for a function to call itself, as long as it takes care not to
-overflow the stack. A function that calls itself is called
-<em>recursive</em>. Recursion allows some functions to be written in a
-different style. Take, for example, this alternative implementation of
-<code>power</code>:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_5l4GeQmC7i" href="#c_5l4GeQmC7i"></a><span class="cm-keyword">function</span> <span class="cm-variable">power</span>(<span class="cm-def">base</span>, <span class="cm-def">exponent</span>) {
-  <span class="cm-keyword">if</span> (<span class="cm-variable-2">exponent</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
+<p><a class=p_ident id="p_LLUe70k/Vn" href="#p_LLUe70k/Vn"></a>Es perfectamente correcto que
+una función se llame a sí misma, mientras tenga cuidado de no desbordar la pila.
+Una función que se llama a sí misma se llama <em>recursiva</em>. La recursión permite
+que algunas funciones se escriban con un estilo diferente. Tomemos por ejemplo,
+esta implementación alternativa de <code>potencia</code>:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MAKKXW2qQR" href="#c_MAKKXW2qQR"></a><span class="cm-keyword">function</span> <span class="cm-variable">potencia</span>(<span class="cm-def">base</span>, <span class="cm-def">exponente</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">exponente</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
     <span class="cm-keyword">return</span> <span class="cm-number">1</span>;
   <span class="cm-keyword">else</span>
-    <span class="cm-keyword">return</span> <span class="cm-variable-2">base</span> <span class="cm-operator">*</span> <span class="cm-variable">power</span>(<span class="cm-variable-2">base</span>, <span class="cm-variable-2">exponent</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>);
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">base</span> <span class="cm-operator">*</span> <span class="cm-variable">potencia</span>(<span class="cm-variable-2">base</span>, <span class="cm-variable-2">exponente</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>);
 }
 
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">power</span>(<span class="cm-number">2</span>, <span class="cm-number">3</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">potencia</span>(<span class="cm-number">2</span>, <span class="cm-number">3</span>));
 <span class="cm-comment">// → 8</span></pre>
-<p><a class=p_ident id="p_/7VYZ2mLWF" href="#p_/7VYZ2mLWF"></a>This is rather
-close to the way mathematicians define exponentiation and arguably
-describes the concept in a more elegant way than the looping variant
-does. The function calls itself multiple times with different
-arguments to achieve the repeated multiplication.</p>
-<p><a class=p_ident id="p_gL3pzy469i" href="#p_gL3pzy469i"></a>But this implementation has
-one important problem: in typical JavaScript implementations, it&#8217;s
-about 10 times slower than the looping version. Running through a
-simple loop is a lot cheaper than calling a function multiple times.</p>
-<p><a class=p_ident id="p_uMHI/JnzZZ" href="#p_uMHI/JnzZZ"></a>The dilemma of speed versus elegance is an
-interesting one. You can see it as a kind of continuum between
-human-friendliness and machine-friendliness. Almost any program can be
-made faster by making it bigger and more convoluted. The programmer
-must decide on an appropriate balance.</p>
-<p><a class=p_ident id="p_3VspvG7sBY" href="#p_3VspvG7sBY"></a>In the case of the <a href="03_functions.html#power">earlier</a> <code>power</code>
-function, the inelegant (looping) version is still fairly simple and
-easy to read. It doesn&#8217;t make much sense to replace it with the
-recursive version. Often, though, a program deals with such complex
-concepts that giving up some efficiency in order to make the program
-more straightforward becomes an attractive choice.</p>
-<p><a class=p_ident id="p_WkiJSoduhy" href="#p_WkiJSoduhy"></a>The basic rule, which has been repeated by many
-programmers and with which I wholeheartedly agree, is to not worry
-about efficiency until you know for sure that the program is too slow.
-If it is, find out which parts are taking up the most time, and start
-exchanging elegance for efficiency in those parts.</p>
-<p><a class=p_ident id="p_KHwfQ0yZv2" href="#p_KHwfQ0yZv2"></a>Of course, this rule doesn&#8217;t mean one should start ignoring
-performance altogether. In many cases, like the <code>power</code> function, not
-much simplicity is gained from the “elegant” approach. And sometimes
-an experienced programmer can see right away that a simple approach is
-never going to be fast enough.</p>
-<p><a class=p_ident id="p_l9EEqdrDJ+" href="#p_l9EEqdrDJ+"></a>The reason I&#8217;m stressing this is that
-surprisingly many beginning programmers focus fanatically on
-efficiency, even in the smallest details. The result is bigger, more
-complicated, and often less correct programs, that take longer to
-write than their more straightforward equivalents and that usually run
-only marginally faster.</p>
-<p><a class=p_ident id="p_IWOXsklZbt" href="#p_IWOXsklZbt"></a>But recursion is not always just a
-less-efficient alternative to looping. Some problems are much easier
-to solve with recursion than with loops. Most often these are problems
-that require exploring or processing several “branches”, each of which
-might branch out again into more branches.</p>
+<p><a class=p_ident id="p_dJWO6MGGCR" href="#p_dJWO6MGGCR"></a> Esto es más cercano
+al modo en que los matemáticos definen la potenciación y describe
+el concepto de un modo más elegante que la variante que lo hace con bucles.
+La función se llama a sí misma varias veces con diferentes argumentos
+para conseguir la multiplicación repetida.</p>
+<p><a class=p_ident id="p_ZTlTujVn8E" href="#p_ZTlTujVn8E"></a>Pero esta implementación tiene
+un problema importante: en implementaciones típicas de JavaScript, es
+cerca de 10 veces más lenta que la versión con bucles. Correr a través
+de un siple bucle es más barato que llamar a una función muchas veces.</p>
+<p><a class=p_ident id="p_1D1aVQEebE" href="#p_1D1aVQEebE"></a>El dilema de velocidad contra elegancia es interesante.
+Puedes verlo como un continuum entre amigabilidad-humano y amigabilidad-máquina.
+Casi cualquier programa puede hacerse más rápido haciéndolo más grande
+y convolucionado. El programador debe de decidir el balance apropiado.</p>
+<p><a class=p_ident id="p_pAPmgTlzgU" href="#p_pAPmgTlzgU"></a>En el caso de la función <a href="03_functions.html#potencia">anterior</a> <code>potencia</code>
+la poco elegante versión(iterativa) es aún bastante simple y fácil de leer.
+No tiene mucho sentido reemplazarla con la versión recursiva. A menudo,
+sin embargo, un programa tiene conceptos tan complejos que sacrificar
+un poco de eficiencia para hacer el programa más claro se vuelve una
+opción atractiva.</p>
+<p><a class=p_ident id="p_Z84ZhvaURK" href="#p_Z84ZhvaURK"></a> La regla básica, que ha sido repetida por muchos programadores
+y con la cuál concuerdo de todo corazón, es no preocuparse por
+la eficiencia hasta que estés seguro que el programa es demasiado lento.
+Si lo es, busca las partes que están abarcando la mayoría del tiempo
+y empieza a cambiar elegancia por eficiencia en esas partes.</p>
+<p><a class=p_ident id="p_Js9hi3NYJu" href="#p_Js9hi3NYJu"></a>Por supuesto, esta regla no significa que debas ignorar el rendimiento
+completamente. En muchos casos, como en la función <code>potencia</code>,
+no se gana demasiada simplicidad de la solución "elegante". Y algunas
+veces un programador experimentado puede inmediatamente que un
+soulución simple nunca va a ser lo suficientemente rápida.</p>
+<p><a class=p_ident id="p_+UI2VoiIJm" href="#p_+UI2VoiIJm"></a>La razón por la que estoy hablando tanto
+de esto es que muchos programadores novatos se enfocan fanáticamente
+en la eficiencia, incluso en los detalles más pequeños. El resultado
+son programas más grandes, más complicados y a menudo menos correctos,
+que toman más tiempo en escribirse que sus equivalentes más sencillos
+y que generalmente corren solo un poco más rápido.</p>
+<p><a class=p_ident id="p_NVKCM4shea" href="#p_NVKCM4shea"></a>Pero la recursión no es siempre sólo
+una alternativa menos eficiente a los bucles. Alguos problemas son
+mucho más fáciles de resolver con recursión que con bucles. La mayoría
+de estos son problemas que requieren explorar o procesar varias "ramas",
+cada una de las cuáles se puede ramificar otra vez.</p>
 <p id="recursive_puzzle"><a class=p_ident id="p_KNlnW1VpW2" href="#p_KNlnW1VpW2"></a>Consider this puzzle: by
 starting from the number 1 and repeatedly either adding 5 or
 multiplying by 3, an infinite amount of new numbers can be produced.
