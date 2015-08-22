@@ -462,36 +462,33 @@ una alternativa menos eficiente a los bucles. Alguos problemas son
 mucho más fáciles de resolver con recursión que con bucles. La mayoría
 de estos son problemas que requieren explorar o procesar varias "ramas",
 cada una de las cuáles se puede ramificar otra vez.</p>
-<p id="recursive_puzzle"><a class=p_ident id="p_KNlnW1VpW2" href="#p_KNlnW1VpW2"></a>Consider this puzzle: by
-starting from the number 1 and repeatedly either adding 5 or
-multiplying by 3, an infinite amount of new numbers can be produced.
-How would you write a function that, given a number, tries to find a
-sequence of such additions and multiplications that produce that
-number? For example, the number 13 could be reached by first
-multiplying by 3 and then adding 5 twice, whereas the number 15 cannot
-be reached at all.</p>
-<p><a class=p_ident id="p_ca4W5yMbty" href="#p_ca4W5yMbty"></a>Here is a recursive solution:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_x9E2vbHeNP" href="#c_x9E2vbHeNP"></a><span class="cm-keyword">function</span> <span class="cm-variable">findSolution</span>(<span class="cm-def">target</span>) {
-  <span class="cm-keyword">function</span> <span class="cm-def">find</span>(<span class="cm-def">start</span>, <span class="cm-def">history</span>) {
-    <span class="cm-keyword">if</span> (<span class="cm-variable-2">start</span> <span class="cm-operator">==</span> <span class="cm-variable-2">target</span>)
-      <span class="cm-keyword">return</span> <span class="cm-variable-2">history</span>;
-    <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">start</span> <span class="cm-operator">></span> <span class="cm-variable-2">target</span>)
+<p id="rompecabezas_recursivo"><a class=p_ident id="p_1cm1ulHv3t" href="#p_1cm1ulHv3t"></a>Considera el siguente
+rompecabezas: empezando por el número 1 y añadiendo repetidamente 5 o
+multiplicándolo por 3, un número infinito de nuevos números puede ser producido.
+¿Cómo escribirías una función que, dado un número, trate de encontrar una
+secuencia de sumas y multipliclaciones que producen ese número?
+Por ejemplo, el número 13 puede ser producido al multiplicar por 3 primero
+y después sumar 5 dos veces, mientras que el número 15 no puede ser producido.</p>
+<p><a class=p_ident id="p_6eI6hyPXeT" href="#p_6eI6hyPXeT"></a>Aquí hay una solución recursiva:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Eg4adhDpWx" href="#c_Eg4adhDpWx"></a><span class="cm-keyword">function</span> <span class="cm-variable">encontrarSolucion</span>(<span class="cm-def">objetivo</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">encontrar</span>(<span class="cm-def">inicio</span>, <span class="cm-def">historia</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">inicio</span> <span class="cm-operator">==</span> <span class="cm-variable-2">objetivo</span>)
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">historia</span>;
+    <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">inicio</span> <span class="cm-operator">></span> <span class="cm-variable-2">objetivo</span>)
       <span class="cm-keyword">return</span> <span class="cm-atom">null</span>;
     <span class="cm-keyword">else</span>
-      <span class="cm-keyword">return</span> <span class="cm-variable-2">find</span>(<span class="cm-variable-2">start</span> <span class="cm-operator">+</span> <span class="cm-number">5</span>, <span class="cm-string">"("</span> <span class="cm-operator">+</span> <span class="cm-variable-2">history</span> <span class="cm-operator">+</span> <span class="cm-string">" + 5)"</span>) <span class="cm-operator">||</span>
-             <span class="cm-variable-2">find</span>(<span class="cm-variable-2">start</span> <span class="cm-operator">*</span> <span class="cm-number">3</span>, <span class="cm-string">"("</span> <span class="cm-operator">+</span> <span class="cm-variable-2">history</span> <span class="cm-operator">+</span> <span class="cm-string">" * 3)"</span>);
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">encontrar</span>(<span class="cm-variable-2">inicio</span> <span class="cm-operator">+</span> <span class="cm-number">5</span>, <span class="cm-string">"("</span> <span class="cm-operator">+</span> <span class="cm-variable-2">historia</span> <span class="cm-operator">+</span> <span class="cm-string">" + 5)"</span>) <span class="cm-operator">||</span>
+             <span class="cm-variable-2">encontrar</span>(<span class="cm-variable-2">inicio</span> <span class="cm-operator">*</span> <span class="cm-number">3</span>, <span class="cm-string">"("</span> <span class="cm-operator">+</span> <span class="cm-variable-2">historia</span> <span class="cm-operator">+</span> <span class="cm-string">" * 3)"</span>);
   }
-  <span class="cm-keyword">return</span> <span class="cm-variable-2">find</span>(<span class="cm-number">1</span>, <span class="cm-string">"1"</span>);
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">encontrar</span>(<span class="cm-number">1</span>, <span class="cm-string">"1"</span>);
 }
 
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">findSolution</span>(<span class="cm-number">24</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">encontrarSolucion</span>(<span class="cm-number">24</span>));
 <span class="cm-comment">// → (((1 * 3) + 5) * 3)</span></pre>
-<p><a class=p_ident id="p_fhaqzpNMMF" href="#p_fhaqzpNMMF"></a>Note that this program doesn&#8217;t necessarily find the <em>shortest</em>
-sequence of operations. It is satisfied when it finds any sequence at
-all.</p>
-<p><a class=p_ident id="p_NWnjWt3C1V" href="#p_NWnjWt3C1V"></a>I don&#8217;t necessarily expect you to see how it works right away. But
-let&#8217;s work through it, since it makes for a great exercise in
-recursive thinking.</p>
+<p><a class=p_ident id="p_1Lme2+0OFW" href="#p_1Lme2+0OFW"></a>Nota que este programa no encuentra necesariamente la ruta
+<em>más corta</em> de operaciones. Se satisface cuando cuentre cualquier sequencia.</p>
+<p><a class=p_ident id="p_yRASkciCuK" href="#p_yRASkciCuK"></a>No necesariamente espero que veas como este trabaja esto inmediatamente. Pero
+trabajemos en eso, porque es un gran ejercicio en el pensamiento recursivo.</p>
 <p><a class=p_ident id="p_TdwUEI2F58" href="#p_TdwUEI2F58"></a>The inner function <code>find</code> does the actual recursing. It takes two
 arguments—the current number and a string that records how we
 reached this number—and returns either a string that shows how to get
