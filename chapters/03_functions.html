@@ -489,21 +489,22 @@ y después sumar 5 dos veces, mientras que el número 15 no puede ser producido.
 <em>más corta</em> de operaciones. Se satisface cuando cuentre cualquier sequencia.</p>
 <p><a class=p_ident id="p_yRASkciCuK" href="#p_yRASkciCuK"></a>No necesariamente espero que veas como este trabaja esto inmediatamente. Pero
 trabajemos en eso, porque es un gran ejercicio en el pensamiento recursivo.</p>
-<p><a class=p_ident id="p_TdwUEI2F58" href="#p_TdwUEI2F58"></a>The inner function <code>find</code> does the actual recursing. It takes two
-arguments—the current number and a string that records how we
-reached this number—and returns either a string that shows how to get
-to the target or <code>null</code>.</p>
-<p><a class=p_ident id="p_QSzesXs0Kg" href="#p_QSzesXs0Kg"></a>To do this, the
-function performs one of three actions. If the current number is the
-target number, the current history is a way to reach that target, so
-it is simply returned. If the current number is greater than the
-target, there&#8217;s no sense in further exploring this history since both
-adding and multiplying will only make the number bigger. And finally,
-if we&#8217;re still below the target, the function tries both possible
-paths that start from the current number, by calling itself twice,
-once for each of the allowed next steps. If the first call returns
-something that is not <code>null</code>, it is returned. Otherwise, the second
-call is returned—regardless of whether it produces a string or <code>null</code>.</p>
+<p><a class=p_ident id="p_BIi2dAKcGy" href="#p_BIi2dAKcGy"></a>La función interna <code>encontrar</code> hace la recursividad. Toma dos
+argumentos – el número actual y una cadena que registra como
+hemos alcanzado el número – y regresa o una cadena que muestra como
+llegar al objetivo o <code>null</code>.</p>
+<p><a class=p_ident id="p_+gapriLTa7" href="#p_+gapriLTa7"></a> Para hacer esto
+la función realiza una de tres acciones. Si el número actual es el
+número objetivo, entonces la historia actual es una forma de alcanzar
+este objetivo, así que siemplemente es devuelta. Si el número actual
+es mayot que el número objetivo, no tiene sentido seguir haciendo más
+exploraciones porque tanto sumar como multiplicar sólo hará mayor el número.
+Y finalmente, si estamos todavía debajo del objetivo la función prueba
+los dos caminos posibles que empiezan con el número actual llamándose dos
+veces a sí misma, una vez por cada uno de los pasos permitos. Si la
+primera llamada regresa cualquier cosa que no sea <code>null</code>, se devuelve como
+resultado. De otra forma, la segunda opción es la que se devuelve, independientemente
+de si produce una cadena o <code>null</code>.</p>
 <p><a class=p_ident id="p_QvX/6dUvST" href="#p_QvX/6dUvST"></a>To better understand how this function produces the
 effect we&#8217;re looking for, let&#8217;s look at all the calls to <code>find</code> that
 are made when searching for a solution for the number 13.</p>
