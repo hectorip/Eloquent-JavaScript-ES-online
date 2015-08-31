@@ -505,35 +505,35 @@ veces a sí misma, una vez por cada uno de los pasos permitos. Si la
 primera llamada regresa cualquier cosa que no sea <code>null</code>, se devuelve como
 resultado. De otra forma, la segunda opción es la que se devuelve, independientemente
 de si produce una cadena o <code>null</code>.</p>
-<p><a class=p_ident id="p_QvX/6dUvST" href="#p_QvX/6dUvST"></a>To better understand how this function produces the
-effect we&#8217;re looking for, let&#8217;s look at all the calls to <code>find</code> that
-are made when searching for a solution for the number 13.</p>
-<pre>find(1, "1")
-  find(6, "(1 + 5)")
-    find(11, "((1 + 5) + 5)")
-      find(16, "(((1 + 5) + 5) + 5)")
-        too big
-      find(33, "(((1 + 5) + 5) * 3)")
-        too big
-    find(18, "((1 + 5) * 3)")
-      too big
-  find(3, "(1 * 3)")
-    find(8, "((1 * 3) + 5)")
-      find(13, "(((1 * 3) + 5) + 5)")
-        found!</pre>
-<p><a class=p_ident id="p_acU+LwVT0i" href="#p_acU+LwVT0i"></a>The indentation suggests the depth of the call stack. The first time
-<code>find</code> is called it calls itself twice to explore the solutions that start with
-<code>(1 + 5)</code> and <code>(1 * 3)</code>. The first call tries to find a solution that
-starts with <code>(1 + 5)</code> and, using recursion, explores <em>every</em> solution
-that yields a number less than or equal to the target number. Since
-it doesn&#8217;t find a solution that hits the target, it returns <code>null</code>
-back to the first call. There the <code>||</code> operator causes the call that
-explores <code>(1 * 3)</code> to happen. This search has more luck because its
-first recursive call, through yet <em>another</em> recursive call, hits upon
-the target number, 13. This innermost recursive call returns a string,
-and each of the <code>||</code> operators in the intermediate calls pass that
-string along, ultimately returning our solution.</p>
-<h2><a class=h_ident id="h_eVDWIAuyBK" href="#h_eVDWIAuyBK"></a>Growing functions</h2>
+<p><a class=p_ident id="p_87C75eNTfr" href="#p_87C75eNTfr"></a>Para entender mejor como esta función produce el
+efecto que estamos buscando, miremos a todas las llamadas a <code>encontrar</code> que
+se hacen cuando estamos buscando la solución para el número 13.</p>
+<pre>encuentra(1, "1")
+  encuentra(6, "(1 + 5)")
+    encuentra(11, "((1 + 5) + 5)")
+      encuentra(16, "(((1 + 5) + 5) + 5)")
+        demasiado grande
+      encuentra(33, "(((1 + 5) + 5) * 3)")
+        demasiado grande
+    encuentra(18, "((1 + 5) * 3)")
+      demasiado grande
+  encuentra(3, "(1 * 3)")
+    encuentra(8, "((1 * 3) + 5)")
+      encuentra(13, "(((1 * 3) + 5) + 5)")
+        ¡Encontrado!</pre>
+<p><a class=p_ident id="p_3KgnSIiQuD" href="#p_3KgnSIiQuD"></a>La identación indica la profundidad en la pila de llamadas. La primera vez que
+<code>encuentra</code> es llamada, se llama ados veces a sí misma para explorar las
+soluciones que empiezan con <code>(1 + 5)</code> y <code>(1 * 3)</code>. La primera llamada intenta
+encontrar una solución que empiece con <code>(1 + 5)</code> y, usando la recursión,
+explora <em>todas</em> las soluciónes que produzcan un número menor o igual que
+el número buscado. Dado que no encuentra una solución que corresponda con
+el objetivo, regresa <code>null</code> a la primera llamada. Entonces el operador <code>||</code>
+ahce que la llamada que explora <code>(1 * 3)</code> suceda. Esta búsqueda tiene más suerte
+debido a que su primera llamada recursiva, a través de <em>otra</em> llamada recursiva,
+llega al número que buscamos, 13. Esta llamada recursuva, la más interna,
+regresa una cadena y cada uno de los operadores <code>||</code> en la llamada superior inmediata
+pasan esa cadena, finalmente regresando nuestra solución.</p>
+<h2><a class=h_ident id="h_BaTW4UQQ8K" href="#h_BaTW4UQQ8K"></a>Funciones crecientes</h2>
 <p><a class=p_ident id="p_FDJnaYNBaa" href="#p_FDJnaYNBaa"></a>There are two more or less natural ways for
 functions to be introduced into programs.</p>
 <p><a class=p_ident id="p_zNh7WEzSLI" href="#p_zNh7WEzSLI"></a>The first is that you find yourself writing very
