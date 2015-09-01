@@ -568,37 +568,36 @@ de longitud.</p>
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">pollosString</span> <span class="cm-operator">+</span> <span class="cm-string">" Pollos"</span>);
 }
 <span class="cm-variable">imprimeInventarioGranja</span>(<span class="cm-number">7</span>, <span class="cm-number">11</span>);</pre>
-<p><a class=p_ident id="p_iRp07gdia7" href="#p_iRp07gdia7"></a>Adding <code>.length</code>
-after a string value will give us the length of that string. Thus, the
-<code>while</code> loops keep adding zeros in front of the number strings until
-they are at least three characters long.</p>
-<p><a class=p_ident id="p_hlBZoLuLCG" href="#p_hlBZoLuLCG"></a>Mission accomplished! But just as we are about to send the farmer the
-code (along with a hefty invoice, of course), he calls and tells us
-he&#8217;s also started keeping pigs, and couldn&#8217;t we please extend the
-software to also print pigs?</p>
-<p><a class=p_ident id="p_h9O1PaViIa" href="#p_h9O1PaViIa"></a>We sure can. But just as we&#8217;re in the
-process of copying and pasting those four lines one more time, we stop
-and reconsider. There has to be a better way. Here&#8217;s a first attempt:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MyKuhBUtsp" href="#c_MyKuhBUtsp"></a><span class="cm-keyword">function</span> <span class="cm-variable">printZeroPaddedWithLabel</span>(<span class="cm-def">number</span>, <span class="cm-def">label</span>) {
-  <span class="cm-keyword">var</span> <span class="cm-def">numberString</span> <span class="cm-operator">=</span> <span class="cm-variable">String</span>(<span class="cm-variable-2">number</span>);
-  <span class="cm-keyword">while</span> (<span class="cm-variable-2">numberString</span>.<span class="cm-property">length</span> <span class="cm-operator">&lt;</span> <span class="cm-number">3</span>)
-    <span class="cm-variable-2">numberString</span> <span class="cm-operator">=</span> <span class="cm-string">"0"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">numberString</span>;
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">numberString</span> <span class="cm-operator">+</span> <span class="cm-string">" "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">label</span>);
+<p><a class=p_ident id="p_IYtLR3BwSn" href="#p_IYtLR3BwSn"></a>Añadir <code>.length</code> despues
+de un valor de cadena nos dará la longitud de esa cadena. Así, los <code>while</code>
+continuán agregando ceros al principio de la cadena del número hasta que
+son por lo menos de 3 caracteres.</p>
+<p><a class=p_ident id="p_On207/J2va" href="#p_On207/J2va"></a>¡Misión cumplida! Pero casi cuando le vamos a mandar el código al granjero
+(con una buena factura) nos llama y nos dice que ha empezado a críar puercos,
+y que si podríamos extender el software para también mostrar los puerquitos,
+¿por favor?.</p>
+<p><a class=p_ident id="p_kQMHCSC/Jb" href="#p_kQMHCSC/Jb"></a>De seguro podemos. Pero mientras estamos en el
+proceso de copiar y pegar esas cuatro líneas una vez más, paramos y reconsideramos.
+Existe una mejor forma. Aquí hay un intento:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9S6ZonOu9H" href="#c_9S6ZonOu9H"></a><span class="cm-keyword">function</span> <span class="cm-variable">imprimeConCerosYEtiqueta</span>(<span class="cm-def">numero</span>, <span class="cm-def">etiqueta</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">numeroString</span> <span class="cm-operator">=</span> <span class="cm-variable">String</span>(<span class="cm-variable-2">numero</span>);
+  <span class="cm-keyword">while</span> (<span class="cm-variable-2">numeroString</span>.<span class="cm-property">length</span> <span class="cm-operator">&lt;</span> <span class="cm-number">3</span>)
+    <span class="cm-variable-2">numeroString</span> <span class="cm-operator">=</span> <span class="cm-string">"0"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">numeroString</span>;
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">numeroString</span> <span class="cm-operator">+</span> <span class="cm-string">" "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">etiqueta</span>);
 }
 
-<span class="cm-keyword">function</span> <span class="cm-variable">printFarmInventory</span>(<span class="cm-def">cows</span>, <span class="cm-def">chickens</span>, <span class="cm-def">pigs</span>) {
-  <span class="cm-variable">printZeroPaddedWithLabel</span>(<span class="cm-variable-2">cows</span>, <span class="cm-string">"Cows"</span>);
-  <span class="cm-variable">printZeroPaddedWithLabel</span>(<span class="cm-variable-2">chickens</span>, <span class="cm-string">"Chickens"</span>);
-  <span class="cm-variable">printZeroPaddedWithLabel</span>(<span class="cm-variable-2">pigs</span>, <span class="cm-string">"Pigs"</span>);
+<span class="cm-keyword">function</span> <span class="cm-variable">imprimeInventarioGranja</span>(<span class="cm-def">vacas</span>, <span class="cm-def">pollos</span>, <span class="cm-def">puercos</span>) {
+  <span class="cm-variable">imprimeConCerosYEtiqueta</span>(<span class="cm-variable-2">vacas</span>, <span class="cm-string">"Vacas"</span>);
+  <span class="cm-variable">imprimeConCerosYEtiqueta</span>(<span class="cm-variable-2">pollos</span>, <span class="cm-string">"Pollos"</span>);
+  <span class="cm-variable">imprimeConCerosYEtiqueta</span>(<span class="cm-variable-2">puercos</span>, <span class="cm-string">"Puercos"</span>);
 }
 
-<span class="cm-variable">printFarmInventory</span>(<span class="cm-number">7</span>, <span class="cm-number">11</span>, <span class="cm-number">3</span>);</pre>
-<p><a class=p_ident id="p_6/4BxnwWvK" href="#p_6/4BxnwWvK"></a>It works! But that name,
-<code>printZeroPaddedWithLabel</code>, is a little awkward. It conflates three
-things—printing, zero-padding, and adding a label—into a single
-function.</p>
-<p><a class=p_ident id="p_/zEyox400N" href="#p_/zEyox400N"></a>Instead of lifting out the repeated part of our
-program wholesale, let&#8217;s try to pick out a single <em>concept</em>.</p>
+<span class="cm-variable">imprimeInventarioGranja</span>(<span class="cm-number">7</span>, <span class="cm-number">11</span>, <span class="cm-number">3</span>);</pre>
+<p><a class=p_ident id="p_t15OmMTGO1" href="#p_t15OmMTGO1"></a>¡Funciona! Pero ese nombre,
+<code>imprimeConCerosYEtiqueta</code>, es un poco feo. Amonotona tres cosas–imprimir,
+completar con ceros, y agragar la etiqueta–en una sola función.</p>
+<p><a class=p_ident id="p_y9EnmFoueT" href="#p_y9EnmFoueT"></a>En vez de quitar la parte repetida de nuestra
+programa por mayoreo, tratemos de escoger un solo <em>concepto</em>.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_BF/ji546Xh" href="#c_BF/ji546Xh"></a><span class="cm-keyword">function</span> <span class="cm-variable">zeroPad</span>(<span class="cm-def">number</span>, <span class="cm-def">width</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">string</span> <span class="cm-operator">=</span> <span class="cm-variable">String</span>(<span class="cm-variable-2">number</span>);
   <span class="cm-keyword">while</span> (<span class="cm-variable-2">string</span>.<span class="cm-property">length</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">width</span>)
