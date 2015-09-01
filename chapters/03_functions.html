@@ -521,8 +521,8 @@ se hacen cuando estamos buscando la solución para el número 13.</p>
     encuentra(8, "((1 * 3) + 5)")
       encuentra(13, "(((1 * 3) + 5) + 5)")
         ¡Encontrado!</pre>
-<p><a class=p_ident id="p_3KgnSIiQuD" href="#p_3KgnSIiQuD"></a>La identación indica la profundidad en la pila de llamadas. La primera vez que
-<code>encuentra</code> es llamada, se llama ados veces a sí misma para explorar las
+<p><a class=p_ident id="p_yWrn7T569K" href="#p_yWrn7T569K"></a>El sangrado (indentación) indica la profundidad en la pila de llamadas. La primera vez que
+<code>encuentra</code> es llamada, se llama dos veces a sí misma para explorar las
 soluciones que empiezan con <code>(1 + 5)</code> y <code>(1 * 3)</code>. La primera llamada intenta
 encontrar una solución que empiece con <code>(1 + 5)</code> y, usando la recursión,
 explora <em>todas</em> las soluciónes que produzcan un número menor o igual que
@@ -534,40 +534,40 @@ llega al número que buscamos, 13. Esta llamada recursuva, la más interna,
 regresa una cadena y cada uno de los operadores <code>||</code> en la llamada superior inmediata
 pasan esa cadena, finalmente regresando nuestra solución.</p>
 <h2><a class=h_ident id="h_BaTW4UQQ8K" href="#h_BaTW4UQQ8K"></a>Funciones crecientes</h2>
-<p><a class=p_ident id="p_FDJnaYNBaa" href="#p_FDJnaYNBaa"></a>There are two more or less natural ways for
-functions to be introduced into programs.</p>
-<p><a class=p_ident id="p_zNh7WEzSLI" href="#p_zNh7WEzSLI"></a>The first is that you find yourself writing very
-similar code multiple times. We want to avoid doing that since having
-more code means more space for mistakes to hide and more material to
-read for people trying to understand the program. So we take the
-repeated functionality, find a good name for it, and put it into a
-function.</p>
-<p><a class=p_ident id="p_HJxU0H/STP" href="#p_HJxU0H/STP"></a>The second way is that you find you need some functionality that you
-haven&#8217;t written yet and that sounds like it deserves its own function.
-You&#8217;ll start by naming the function, and you&#8217;ll then write its body.
-You might even start writing code that uses the function before you
-actually define the function itself.</p>
-<p><a class=p_ident id="p_7YCpyNM9KP" href="#p_7YCpyNM9KP"></a>How difficult it is to find
-a good name for a function is a good indication of how clear a concept
-it is that you&#8217;re trying to wrap. Let&#8217;s go through an example.</p>
-<p><a class=p_ident id="p_NB82EwGY1X" href="#p_NB82EwGY1X"></a>We want to write a program that prints two numbers,
-the numbers of cows and chickens on a farm, with the words <code>Cows</code> and
-<code>Chickens</code> after them, and zeros padded before both numbers so that
-they are always three digits long.</p>
-<pre>007 Cows
-011 Chickens</pre>
-<p><a class=p_ident id="p_Vjv/1yrqWB" href="#p_Vjv/1yrqWB"></a>That clearly asks for a function of two arguments. Let&#8217;s get coding.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3FZcO2H/2C" href="#c_3FZcO2H/2C"></a><span class="cm-keyword">function</span> <span class="cm-variable">printFarmInventory</span>(<span class="cm-def">cows</span>, <span class="cm-def">chickens</span>) {
-  <span class="cm-keyword">var</span> <span class="cm-def">cowString</span> <span class="cm-operator">=</span> <span class="cm-variable">String</span>(<span class="cm-variable-2">cows</span>);
-  <span class="cm-keyword">while</span> (<span class="cm-variable-2">cowString</span>.<span class="cm-property">length</span> <span class="cm-operator">&lt;</span> <span class="cm-number">3</span>)
-    <span class="cm-variable-2">cowString</span> <span class="cm-operator">=</span> <span class="cm-string">"0"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">cowString</span>;
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">cowString</span> <span class="cm-operator">+</span> <span class="cm-string">" Cows"</span>);
-  <span class="cm-keyword">var</span> <span class="cm-def">chickenString</span> <span class="cm-operator">=</span> <span class="cm-variable">String</span>(<span class="cm-variable-2">chickens</span>);
-  <span class="cm-keyword">while</span> (<span class="cm-variable-2">chickenString</span>.<span class="cm-property">length</span> <span class="cm-operator">&lt;</span> <span class="cm-number">3</span>)
-    <span class="cm-variable-2">chickenString</span> <span class="cm-operator">=</span> <span class="cm-string">"0"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">chickenString</span>;
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">chickenString</span> <span class="cm-operator">+</span> <span class="cm-string">" Chickens"</span>);
+<p><a class=p_ident id="p_HjQrkcQiD9" href="#p_HjQrkcQiD9"></a>Existen dos formas más o menos naturales de
+intorducir las funciones en los programas.</p>
+<p><a class=p_ident id="p_z8NIxIKElA" href="#p_z8NIxIKElA"></a>La primera es que te encuentras a ti mismo escribiendo el mismo
+código varias veces. Necesitamos evitar hacer debido a que más código significa
+más espacio para que los errores se oculten y más material para leer para que
+leer para las personas que quiere entender el programa. Así que tomamos
+funcionalidad repetida, encontramos un buen nombre para esta, y la ponemos dentro
+de una función.
+La segunda forma es que encuentres que necesitas cierta funcionalidad
+que no has escrito aún y que suena como a que merece su propia función.
+Empezarás por nombrar la función y después escribirás su cuerpo. Podrías
+incluso empezar a escribir el código que usa la función antes de realmente
+definir la función misma.</p>
+<p><a class=p_ident id="p_RLUZ3cMDaJ" href="#p_RLUZ3cMDaJ"></a>Qué tan difícil es encontrar
+un nombre para una función es un buen indicador de que tan claro tienes el
+concepto de aquello que estás tratando de envolver. Hagamos un ejemplo.</p>
+<p><a class=p_ident id="p_8Psnlie1fv" href="#p_8Psnlie1fv"></a>Necesitamos escribir un problema que imprima dos números,
+el número de las vacas y de los pollos de una granja, con las palabras <code>Cows</code> y
+<code>Pollos</code> después de estos, y completados con ceros para que siempre sean de 3 dígitos
+de longitud.</p>
+<pre>007 Vacas
+011 Pollos</pre>
+<p><a class=p_ident id="p_smkJHqgtLg" href="#p_smkJHqgtLg"></a>Esto claramente requiere una función de dos argumentos. Empecemos a programar.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Vj7H3NH3SN" href="#c_Vj7H3NH3SN"></a><span class="cm-keyword">function</span> <span class="cm-variable">imprimeInventarioGranja</span>(<span class="cm-def">vacas</span>, <span class="cm-def">pollos</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">vacasString</span> <span class="cm-operator">=</span> <span class="cm-variable">String</span>(<span class="cm-variable-2">vacas</span>);
+  <span class="cm-keyword">while</span> (<span class="cm-variable-2">vacasString</span>.<span class="cm-property">length</span> <span class="cm-operator">&lt;</span> <span class="cm-number">3</span>)
+    <span class="cm-variable-2">vacasString</span> <span class="cm-operator">=</span> <span class="cm-string">"0"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">vacasString</span>;
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">vacasString</span> <span class="cm-operator">+</span> <span class="cm-string">" Vacas"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">pollosString</span> <span class="cm-operator">=</span> <span class="cm-variable">String</span>(<span class="cm-variable-2">pollos</span>);
+  <span class="cm-keyword">while</span> (<span class="cm-variable-2">pollosString</span>.<span class="cm-property">length</span> <span class="cm-operator">&lt;</span> <span class="cm-number">3</span>)
+    <span class="cm-variable-2">pollosString</span> <span class="cm-operator">=</span> <span class="cm-string">"0"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">pollosString</span>;
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">pollosString</span> <span class="cm-operator">+</span> <span class="cm-string">" Pollos"</span>);
 }
-<span class="cm-variable">printFarmInventory</span>(<span class="cm-number">7</span>, <span class="cm-number">11</span>);</pre>
+<span class="cm-variable">imprimeInventarioGranja</span>(<span class="cm-number">7</span>, <span class="cm-number">11</span>);</pre>
 <p><a class=p_ident id="p_iRp07gdia7" href="#p_iRp07gdia7"></a>Adding <code>.length</code>
 after a string value will give us the length of that string. Thus, the
 <code>while</code> loops keep adding zeros in front of the number strings until
