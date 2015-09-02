@@ -705,7 +705,7 @@ y modificarlo.</p>
 <p><a class=p_ident id="p_3FPsRcNlGb" href="#p_3FPsRcNlGb"></a>Una función puede contener múltiples <code>return</code>.</p>
 </div></div>
 <h3><a class=h_ident id="h_TDpZBcOUPE" href="#h_TDpZBcOUPE"></a>Recursión</h3>
-<p><a class=p_ident id="p_BE/xHzkZ4k" href="#p_BE/xHzkZ4k"></a>Hemos visto qu
+<p><a class=p_ident id="p_BzLEOgMptN" href="#p_BzLEOgMptN"></a>Hemos visto que
 <code>%</code> (el operador de sobrante) puede ser usado para probar si un número
 es par o impar usando <code>% 2</code> para checar si es divisible por dos. Aquí
 hay otra forma  de definir si un número entero es par o impar:</p>
@@ -750,41 +750,42 @@ hace la llamada recursiva. Cada una de las ramas debe de contener una
 sentencia <code>return</code> o de alguna otra forma arrglárselas para devolver un
 valor específico.</p>
 <p><a class=p_ident id="p_hY2dG9HpQH" href="#p_hY2dG9HpQH"></a> Cuando se le da un número negativo, la función va
-llamarse a sí misma una y tra vez, pasándose un número cada vez más negativo,
+llamarse a sí misma una y otra vez, pasándose un número cada vez más negativo,
 así alejándose más y más de regresar una solución. En algún momento
 se quedará sin espacio en la pila y abortará.</p>
 </div></div>
-<h3><a class=h_ident id="h_3rsiDgC2do" href="#h_3rsiDgC2do"></a>Bean counting</h3>
-<p><a class=p_ident id="p_8y74cOkS91" href="#p_8y74cOkS91"></a>You can get the
-Nth character, or letter, from a string by writing
-<code>"string".charAt(N)</code>, similar to how you get its length with
-<code>"s".length</code>. The returned value will be a string containing only one
-character (for example, <code>"b"</code>). The first character has position zero,
-which causes the last one to be found at position <code>string.length - 1</code>.
-In other words, a two-character string has length 2, and its
-characters have positions 0 and 1.</p>
-<p><a class=p_ident id="p_3+wBcfMbYR" href="#p_3+wBcfMbYR"></a>Write a function <code>countBs</code> that takes a string as its only argument
-and returns a number that indicates how many uppercase “B” characters
-are in the string.</p>
-<p><a class=p_ident id="p_WdA52+sgwM" href="#p_WdA52+sgwM"></a>Next, write a function called <code>countChar</code> that behaves like <code>countBs</code>,
-except it takes a second argument that indicates the character that is
-to be counted (rather than counting only uppercase “B” characters).
-Rewrite <code>countBs</code> to make use of this new function.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Xb4A/OaxUr" href="#c_Xb4A/OaxUr"></a><span class="cm-comment">// Your code here.</span>
+<h3><a class=h_ident id="h_WTqdyjbi5j" href="#h_WTqdyjbi5j"></a>Contando Frijoles</h3>
+<p><a class=p_ident id="p_oTwY6Ez8Oj" href="#p_oTwY6Ez8Oj"></a>Puedes obtener el
+n-avo caracter, o letra, de una cadena escribiendo <code>"cadena".charAt(N)</code>,
+similar a como obtienes su longitud con <code>"cadena".length</code>. El valor
+obtenido será una cadena que contiene sólo un caracter(por ejemplo, <code>"b"</code>).
+El primer caracter tiene la posición cero, lo cual hace que el último
+pueda ser encontrado en la posición <code>string.lenght -1</code>. En otras palabras,
+una cadenas de dos caracteres tiene un “lenght” o longitud de 2, y sus
+caracteres tienen las posiciones 0 y 1.</p>
+<p><a class=p_ident id="p_w7W3kFYAvT" href="#p_w7W3kFYAvT"></a>Escribe una función <code>cuentaFs</code> que tome una cadena como su único
+argumento y regrese un número que indique cunántos caracteres “F” mayúscula
+hay en la cadena.</p>
+<p><a class=p_ident id="p_ogbJyesqnN" href="#p_ogbJyesqnN"></a>A continuación, escribe una funcióon llamada <code>cuentaCaracter</code> que se comoporte
+como <code>cuentaFs</code>, con la diferencia de que tome un segundo caracter que
+indique el caracter que será contado(en vez de sólo caracteres “F”).
+Reescribe <code>cuentaFs</code> para hacer uso de esta nueva función.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wPvp++nw9A" href="#c_wPvp++nw9A"></a><span class="cm-comment">// Tu código va a aquí.</span>
 
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">countBs</span>(<span class="cm-string">"BBC"</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">cuentaFs</span>(<span class="cm-string">"FFC"</span>));
 <span class="cm-comment">// → 2</span>
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">countChar</span>(<span class="cm-string">"kakkerlak"</span>, <span class="cm-string">"k"</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">cuentaCaracter</span>(<span class="cm-string">"ferrocarril"</span>, <span class="cm-string">"r"</span>));
 <span class="cm-comment">// → 4</span></pre>
 <div class=solution><div class=solution-text>
-<p><a class=p_ident id="p_DGiAPWNd0Y" href="#p_DGiAPWNd0Y"></a>A loop in your function will have
-to look at every character in the string by running an index from zero
-to one below its length (<code>&lt; string.length</code>). If the character at the
-current position is the same as the one the function is looking for,
-it adds 1 to a counter variable. Once the loop has finished, the
-counter can be returned.</p>
-<p><a class=p_ident id="p_vxmtiGDt1B" href="#p_vxmtiGDt1B"></a>Take care to make all the variables used in the
-function <em>local</em> to the function by using the <code>var</code> keyword.</p>
+<p><a class=p_ident id="p_ikVE6Pa/dn" href="#p_ikVE6Pa/dn"></a>Un bucle en tu función tendrá que
+revisar cada caracter en la cadena corriendo un índice desde cero hasta uno
+menos que su longitud (<code>&lt; cadena.length</code>). Si el caracter de la
+posición actual es el mismo que la función está buscando, añade uno a
+la variable contador. Una vez que se ha terminado el bucle, el contador
+puede ser regresado.</p>
+<p><a class=p_ident id="p_FVQ4VNoVfz" href="#p_FVQ4VNoVfz"></a>Pon atención en hacer todas las variables usadas en la
+función <em>locales</em> a la función midiante el uso de la palabra reservada
+<code>var</code>.</p>
 </div></div>
 <nav>
   <a href="02_program_structure.html" title="capítulo previo">◀</a>
