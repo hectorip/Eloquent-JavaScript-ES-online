@@ -628,49 +628,50 @@ seguro de que las vas a ocupar. Puede ser tentador escribir marcos de trabajo
 generals "frameworks" para cada pequeño pedazo de funcionalidad que te
 encuentras. Resiste el impulso. No acabarás ningún trabajo real y terminarás
 escribiendo mucho código que nadie usará alguna vez.</p>
-<h2 id="pureza"><a class=h_ident id="h_EdyBGBF6y/" href="#h_EdyBGBF6y/"></a>Functions and side effects</h2>
-<p><a class=p_ident id="p_Yv2DEaMWee" href="#p_Yv2DEaMWee"></a>Functions can
-be roughly divided into those that are called for their side effects
-and those that are called for their return value. (Though it is
-definitely also possible to have both side effects and return a
-value.)</p>
-<p><a class=p_ident id="p_NoFe+XFM0N" href="#p_NoFe+XFM0N"></a>The first helper function in the farm example,
-<code>printZeroPaddedWithLabel</code>, is called for its side effect: it prints a
-line. The second version, <code>zeroPad</code>, is called for its return value.
-It is no coincidence that the second is useful in more situations than
-the first. Functions that create values are easier to combine in new
-ways than functions that directly perform side effects.</p>
-<p><a class=p_ident id="p_jtr5vcWSkM" href="#p_jtr5vcWSkM"></a>A <em>pure</em> function is a specific kind of
-value-producing function that not only has no side effects but also
-doesn&#8217;t rely on side effects from other code—for example, it doesn&#8217;t
-read global variables that are occasionally changed by other code. A
-pure function has the pleasant property that, when called with the
-same arguments, it always produces the same value (and doesn&#8217;t do
-anything else). This makes it easy to reason about. A call to such a
-function can be mentally substituted by its result, without changing
-the meaning of the code. When you are not sure that a pure function is
-working correctly, you can test it by simply calling it, and know that
-if it works in that context, it will work in any context. Nonpure
-functions might return different values based on all kinds of factors
-and have side effects that might be hard to test and think about.</p>
-<p><a class=p_ident id="p_BQs40ApxUr" href="#p_BQs40ApxUr"></a>Still, there&#8217;s no need to feel bad
-when writing functions that are not pure or to wage a holy war to
-purge them from your code. Side effects are often useful. There&#8217;d be
-no way to write a pure version of <code>console.log</code>, for example, and
-<code>console.log</code> is certainly useful. Some operations are also easier to
-express in an efficient way when we use side effects, so computing
-speed can be a reason to avoid purity.</p>
-<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
-<p><a class=p_ident id="p_mvDkl8+Eqg" href="#p_mvDkl8+Eqg"></a>This chapter taught you how to write your own functions. The
-<code>function</code> keyword, when used as an expression, can create a function
-value. When used as a statement, it can be used to declare a variable
-and give it a function as its value.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_YPhf/PZ0FA" href="#c_YPhf/PZ0FA"></a><span class="cm-comment">// Create a function value f</span>
+<h2 id="pura"><a class=h_ident id="h_vtTWcnDZ6v" href="#h_vtTWcnDZ6v"></a>Funciones y efectos colaterales</h2>
+<p><a class=p_ident id="p_YydPxmuAeB" href="#p_YydPxmuAeB"></a>Las funciones
+pueden ser más o menos divididas en aquellas que son llamadas por sus
+efectos colaterales y aquellas que son llamadas por su valor de resultado.
+(Aunque es completamente posible tener tanto efectos colaterales
+como retornar un valor).</p>
+<p><a class=p_ident id="p_WKUGh0HRia" href="#p_WKUGh0HRia"></a>La primer función de ayuda en el ejemplo de la granja,
+<code>imprimeConCerosYEtiqueta</code>, es llamada por su efecto colateral:
+imprime su valor de resultado. La segunda versión, <code>rellenoConCero</code>, es
+llamada por su valor de resultado. No es coincidencia que la segunda sea
+útil en más situaciones que la primera. Las funciones que crean valores
+son más fáciles de combinar en nuevas formas que funciones que
+realizan directamente un efecto colateral.</p>
+<p><a class=p_ident id="p_Pcp+vGVm/p" href="#p_Pcp+vGVm/p"></a>Una función <em>pura</em> es un tipo de función que produce un valor
+que no sólo carece de efectos colaterales, tampoco usa los efectos colaterales
+de otro código–por ejemplo, no lee variables globales que son ocasionalmente
+cambiadas por otro código. Una función pura tiene la agradable propiedad de que,
+cuando se llama los mismos argumentos, siempre produce el mismo valor (y
+no hace nada más). Esto hace fácil razonar con ella. Una llamada a
+una función como esta puede ser sustituida mentalmente como su resultado,
+sin cambiar el significado del código. Cuando no estas seguro de que una
+función pura funciona correctamente, puedes probarlo simplemente llamándola,
+y sabiendo que trabaja bien este contexto, trabajará bien en cualquier context.
+Funciones no puras pueden regresar diferentes valores basadas en todo tipo
+de factores y tienen efectos secundarios y que pueden ser difícil de probar
+y de razonar con ellas.</p>
+<p><a class=p_ident id="p_dytWIfG7XG" href="#p_dytWIfG7XG"></a>Aún así, no hay necesidad de sentirse mal
+cuando escribimos funciones que  no son puras o de armar una guerra santa
+para eliminarlas de tu código. Los efectos secundarios a menudo son útiles.
+No habría forma de imprimir una versión pura de <code>console.log</code>, por ejemplo, y
+<code>console.log</code> es ciertamente útil. Algunas operaciones son además más fáciles
+de expresar en una forma eficiente cuando se usan los efectos scundarios,
+así que la velocidad de cómputo puede ser una razón para evitar la pureza.</p>
+<h2><a class=h_ident id="h_fXZIaN2mkx" href="#h_fXZIaN2mkx"></a>Sumrio</h2>
+<p><a class=p_ident id="p_N+RvYgNDvE" href="#p_N+RvYgNDvE"></a>Este capítulo enseñó como escribir tus propias funciones. La palabra
+resevada <code>function</code>, cuando se usa como una expresión, puede crear un
+valor función. Cuando es usada como sentencia, puede ser usada para declarar
+una variable y darle una función como valor.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qdfvqil5Tj" href="#c_qdfvqil5Tj"></a><span class="cm-comment">// Crear un valor función f</span>
 <span class="cm-keyword">var</span> <span class="cm-variable">f</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">a</span>) {
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">a</span> <span class="cm-operator">+</span> <span class="cm-number">2</span>);
 };
 
-<span class="cm-comment">// Declare g to be a function</span>
+<span class="cm-comment">// Declarar g como función</span>
 <span class="cm-keyword">function</span> <span class="cm-variable">g</span>(<span class="cm-def">a</span>, <span class="cm-def">b</span>) {
   <span class="cm-keyword">return</span> <span class="cm-variable-2">a</span> <span class="cm-operator">*</span> <span class="cm-variable-2">b</span> <span class="cm-operator">*</span> <span class="cm-number">3.5</span>;
 }</pre>
