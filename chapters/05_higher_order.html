@@ -31,8 +31,8 @@
 <blockquote>
 <p><a class=p_ident id="p_d9yJjP1rjg" href="#p_d9yJjP1rjg"></a>Tzu-li y Tzu-ssu estaban
 presumiendo acerca del tamaño de sus úlitmos programas. ‘Doscientas mil líneas
-,’ dijo Tzu-li, ‘¡sin contar los comentarios!’ Tzu-ssu
-respondió, ‘Pssh, el mío tiene ya casi <strong>un millión</strong> de lineas.’ El Maestro
+,’ dijo Tzu-li, ‘¡sin contar los comentarios!’. Tzu-ssu
+respondió, ‘Pssh, el mío tiene ya casi <strong>un millión</strong> de líneas.’ El Maestro
 Yuan-Ma dijo, ‘Mi mejor programa tiene quinientas líneas’. Oyendo esto,
 Tzu-li y Tzu-ssu fueron iluminados.</p>
  <footer>Master Yuan-Ma, <cite>The Book of Programming</cite></footer>
@@ -44,7 +44,7 @@ deficiencias, y la otra forma es hacerlo tan complicado que
 no haya obvias deficiecias.</p>
  <footer>C.A.R. Hoare, <cite>1980 ACM Turing Award Lecture</cite></footer>
 </blockquote>
-<p><a class=p_ident id="p_FjrkWPkt9y" href="#p_FjrkWPkt9y"></a>Un programas es grande es costoso y no sólo
+<p><a class=p_ident id="p_UkjkuKBNDn" href="#p_UkjkuKBNDn"></a>Un programa grande es costoso y no sólo
 por el tiempo que toma construirlo. El tamaño casi siempre involucra
 complejidad, y la complejidad confunde a los programadores. Los
 programadores confundidos, a su vez, tienden a introducir errores
@@ -52,15 +52,15 @@ programadores confundidos, a su vez, tienden a introducir errores
 espacio para que estos bugs se oculten, haciéndolos difíciles de encontrar.</p>
 <p><a class=p_ident id="p_gTGC1t2oUz" href="#p_gTGC1t2oUz"></a>Regresemos brevemente a los dos programas finales
 en la introducción. El primero es auto-contenido y tiene seis líneas de longitud.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_W93KRCwXP0" href="#c_W93KRCwXP0"></a><span class="cm-keyword">var</span> <span class="cm-variable">total</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>, <span class="cm-variable">count</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
-<span class="cm-keyword">while</span> (<span class="cm-variable">count</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">10</span>) {
-  <span class="cm-variable">total</span> <span class="cm-operator">+=</span> <span class="cm-variable">count</span>;
-  <span class="cm-variable">count</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_p2MDtR7c49" href="#c_p2MDtR7c49"></a><span class="cm-keyword">var</span> <span class="cm-variable">total</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>, <span class="cm-variable">cuenta</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+<span class="cm-keyword">while</span> (<span class="cm-variable">cuenta</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">10</span>) {
+  <span class="cm-variable">total</span> <span class="cm-operator">+=</span> <span class="cm-variable">cuenta</span>;
+  <span class="cm-variable">cuenta</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
 }
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">total</span>);</pre>
-<p><a class=p_ident id="p_Sy8N6Qcb09" href="#p_Sy8N6Qcb09"></a>The second relies on two external functions and is one line long.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_OULOwD7HOm" href="#c_OULOwD7HOm"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>(<span class="cm-variable">range</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));</pre>
-<p><a class=p_ident id="p_srOi7846QY" href="#p_srOi7846QY"></a>Which one is more likely to contain a bug?</p>
+<p><a class=p_ident id="p_CAz3W6h9Mx" href="#p_CAz3W6h9Mx"></a>El segundo depende de dos funciones externas y es una sola línea</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_m18mTx5lPD" href="#c_m18mTx5lPD"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">suma</span>(<span class="cm-variable">rango</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));</pre>
+<p><a class=p_ident id="p_vcKbefQCCq" href="#p_vcKbefQCCq"></a>¿Cuál de los dos es más probable que tenga un bug?</p>
 <p><a class=p_ident id="p_G+ApGqjOk4" href="#p_G+ApGqjOk4"></a>If we count the size of the definitions of <code>sum</code> and
 <code>range</code>, the second program is also big—even bigger than the first.
 But still, I&#8217;d argue that it is more likely to be correct.</p>
