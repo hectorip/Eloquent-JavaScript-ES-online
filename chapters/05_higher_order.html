@@ -61,17 +61,19 @@ en la introducción. El primero es auto-contenido y tiene seis líneas de longit
 <p><a class=p_ident id="p_CAz3W6h9Mx" href="#p_CAz3W6h9Mx"></a>El segundo depende de dos funciones externas y es una sola línea</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_m18mTx5lPD" href="#c_m18mTx5lPD"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">suma</span>(<span class="cm-variable">rango</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));</pre>
 <p><a class=p_ident id="p_vcKbefQCCq" href="#p_vcKbefQCCq"></a>¿Cuál de los dos es más probable que tenga un bug?</p>
-<p><a class=p_ident id="p_G+ApGqjOk4" href="#p_G+ApGqjOk4"></a>If we count the size of the definitions of <code>sum</code> and
-<code>range</code>, the second program is also big—even bigger than the first.
-But still, I&#8217;d argue that it is more likely to be correct.</p>
-<p><a class=p_ident id="p_pkQRvZqQ0u" href="#p_pkQRvZqQ0u"></a>It is more likely to
-be correct because the solution is expressed in a vocabulary that
-corresponds to the problem being solved. Summing a range of
-numbers isn&#8217;t about loops and counters. It is about ranges and sums.</p>
-<p><a class=p_ident id="p_VwxmDNivhe" href="#p_VwxmDNivhe"></a>The definitions of this vocabulary (the functions <code>sum</code> and <code>range</code>)
-will still involve loops, counters, and other incidental details. But
-because they are expressing simpler concepts than the program as a
-whole, they are easier to get right.</p>
+<p><a class=p_ident id="p_kr8iBt6cDE" href="#p_kr8iBt6cDE"></a>Si contamos el tamaño de definición de
+<code>suma</code> y <code>rango</code>, el segungo programa también es grande–incluso más
+grande que el primero. Pero aún así, yo diría que es más probable
+que sea correcto.</p>
+<p><a class=p_ident id="p_IYD9ytOHV0" href="#p_IYD9ytOHV0"></a>Es más probable que
+sea correcto porque la solución es expresada en un vocabulario que
+corresponde al problema que está siendo resuelto. Sumar un rango de
+enteros no tiene que ver con bucles y contadores. Es acerca de
+rangos y sumas.</p>
+<p><a class=p_ident id="p_ZlewBMg1Zu" href="#p_ZlewBMg1Zu"></a>Las definiciones de este vocabulario (las funciones <code>suma</code> y <code>rango</code> )
+todavía incluirán bucles, contadores y otros detalles incidentales.
+Pero debido a que están expresando conceptos más simples que todo el
+programa, es más fácil tenerlos bien.</p>
 <h2><a class=h_ident id="h_j9ps8qrlyo" href="#h_j9ps8qrlyo"></a>Abstraction</h2>
 <p><a class=p_ident id="p_ZPK6t/LrMG" href="#p_ZPK6t/LrMG"></a>In the context of programming, these kinds of vocabularies are usually
 called <em>abstractions</em>. Abstractions hide details and give us the
