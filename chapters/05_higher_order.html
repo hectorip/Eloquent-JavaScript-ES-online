@@ -141,22 +141,22 @@ Así que tratemos de abstraer esto en una función. ¿Puedes pensar en alguna fo
 queremos hacer otra cosa que loggear los elementos? Debido a que "hacer algo"
 puede ser representado como una función y las funciones son sólo valores, podemos pasar
 nuestra acción como un valor función.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_on8vSTDMIU" href="#c_on8vSTDMIU"></a><span class="cm-keyword">function</span> <span class="cm-variable">forEach</span>(<span class="cm-def">array</span>, <span class="cm-def">action</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Tf45vj1ahg" href="#c_Tf45vj1ahg"></a><span class="cm-keyword">function</span> <span class="cm-variable">forEach</span>(<span class="cm-def">array</span>, <span class="cm-def">accion</span>) {
   <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
-    <span class="cm-variable-2">action</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
+    <span class="cm-variable-2">accion</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
 }
 
 <span class="cm-variable">forEach</span>([<span class="cm-string">"Wampeter"</span>, <span class="cm-string">"Foma"</span>, <span class="cm-string">"Granfalloon"</span>], <span class="cm-variable">console</span>.<span class="cm-property">log</span>);
 <span class="cm-comment">// → Wampeter</span>
 <span class="cm-comment">// → Foma</span>
 <span class="cm-comment">// → Granfalloon</span></pre>
-<p><a class=p_ident id="p_TXDEyQXjy/" href="#p_TXDEyQXjy/"></a>Often, you don&#8217;t pass a predefined function to <code>forEach</code> but create
-a function value on the spot instead.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wRpVmSHeqP" href="#c_wRpVmSHeqP"></a><span class="cm-keyword">var</span> <span class="cm-variable">numbers</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>], <span class="cm-variable">sum</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
-<span class="cm-variable">forEach</span>(<span class="cm-variable">numbers</span>, <span class="cm-keyword">function</span>(<span class="cm-def">number</span>) {
-  <span class="cm-variable">sum</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">number</span>;
+<p><a class=p_ident id="p_LjPN3c0PYw" href="#p_LjPN3c0PYw"></a>A menudo, no le pasas una  función predefinida a <code>forEach</code> sino que
+creas una función en el acto.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_dQUWvSu+y2" href="#c_dQUWvSu+y2"></a><span class="cm-keyword">var</span> <span class="cm-variable">numeros</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>], <span class="cm-variable">suma</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-variable">forEach</span>(<span class="cm-variable">numbers</span>, <span class="cm-keyword">function</span>(<span class="cm-def">numero</span>) {
+  <span class="cm-variable">suma</span> <span class="cm-operator">+=</span> <span class="cm-variable">numeros</span>;
 });
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">suma</span>);
 <span class="cm-comment">// → 15</span></pre>
 <p><a class=p_ident id="p_v2REJFVWCD" href="#p_v2REJFVWCD"></a>This looks quite a lot like the
 classical <code>for</code> loop, with its body written as a block below it.
