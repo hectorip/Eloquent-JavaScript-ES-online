@@ -152,9 +152,9 @@ nuestra acción como un valor función.</p>
 <span class="cm-comment">// → Granfalloon</span></pre>
 <p><a class=p_ident id="p_LjPN3c0PYw" href="#p_LjPN3c0PYw"></a>A menudo, no le pasas una  función predefinida a <code>forEach</code> sino que
 creas una función en el acto.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_dQUWvSu+y2" href="#c_dQUWvSu+y2"></a><span class="cm-keyword">var</span> <span class="cm-variable">numeros</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>], <span class="cm-variable">suma</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
-<span class="cm-variable">forEach</span>(<span class="cm-variable">numbers</span>, <span class="cm-keyword">function</span>(<span class="cm-def">numero</span>) {
-  <span class="cm-variable">suma</span> <span class="cm-operator">+=</span> <span class="cm-variable">numeros</span>;
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_a6CP0H6Zq0" href="#c_a6CP0H6Zq0"></a><span class="cm-keyword">var</span> <span class="cm-variable">numeros</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>], <span class="cm-variable">suma</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-variable">forEach</span>(<span class="cm-variable">numeros</span>, <span class="cm-keyword">function</span>(<span class="cm-def">numero</span>) {
+  <span class="cm-variable">suma</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">numero</span>;
 });
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">suma</span>);
 <span class="cm-comment">// → 15</span></pre>
@@ -163,9 +163,9 @@ bucle <code>for</code>, con su cuerpo escrito debajo de él. Sin embargo,
 ahora el cuerpo está dentro del valor función, así como
 dentro de los paréntesis de la llamada a <code>forEach</code>. Esta es la
 razón de que tenga que ser terminado con una llave <em>y</em> un paréntesis de cierre.</p>
-<p><a class=p_ident id="p_u1F6T5TuZI" href="#p_u1F6T5TuZI"></a>Using this pattern, we can
-specify a variable name for the current element (<code>number</code>), rather
-than having to pick it out of the array manually.</p>
+<p><a class=p_ident id="p_C+jp4w/YBo" href="#p_C+jp4w/YBo"></a>Usando este patrón, podemos especificar un nombre
+de variable para el elemento actual(<code>numero</code>), en vez de tener que
+tomarlo del array manuelmente.</p>
 <p><a class=p_ident id="p_w5leJJdYGK" href="#p_w5leJJdYGK"></a>In fact, we don&#8217;t need to write <code>forEach</code>
 ourselves. It is available as a standard method on arrays. Since the
 array is already provided as the thing the method acts on, <code>forEach</code>
