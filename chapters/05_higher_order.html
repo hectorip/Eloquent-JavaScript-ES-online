@@ -171,9 +171,9 @@ nosotros mismos. Está disponible como un método estándar en los arrays.
 Debido a que el array le es pasado como el elemento sobre el que actúa
 el método, <code>forEach</code> sólo recibe un argumento requerido: la función que será
 ejecutada para cada elemento.</p>
-<p><a class=p_ident id="p_BbxEeZ0Pmw" href="#p_BbxEeZ0Pmw"></a>To illustrate how helpful this is, let&#8217;s look back at a function
-from <a href="04_data.html#analysis">the previous chapter</a>. It contains two
-array-traversing loops.</p>
+<p><a class=p_ident id="p_gdPegQV2Ax" href="#p_gdPegQV2Ax"></a>Para ilustrar lo útil que esto es, miremos otra vez la función del
+<a href="04_data.html#analysis">capítulo anterior</a>. Contiene dos bucles que
+recorren un arreglo.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1CXbGUgiP6" href="#c_1CXbGUgiP6"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
   <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">entry</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">journal</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">entry</span><span class="cm-operator">++</span>) {
@@ -186,8 +186,8 @@ array-traversing loops.</p>
   }
   <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
 }</pre>
-<p><a class=p_ident id="p_CGf69rc/Yq" href="#p_CGf69rc/Yq"></a>Working with <code>forEach</code> makes it slightly shorter
-and quite a bit cleaner.</p>
+<p><a class=p_ident id="p_A7nkxj0FkT" href="#p_A7nkxj0FkT"></a>Trabajar con <code>forEach</code> lo hace un poco más corto
+y limpio.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_gIY8Dk2DPY" href="#c_gIY8Dk2DPY"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
   <span class="cm-variable-2">journal</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">entry</span>) {
