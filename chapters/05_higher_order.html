@@ -186,8 +186,8 @@ recorren un arreglo.</p>
   }
   <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
 }</pre>
-<p><a class=p_ident id="p_A7nkxj0FkT" href="#p_A7nkxj0FkT"></a>Trabajar con <code>forEach</code> lo hace un poco más corto
-y limpio.</p>
+<p><a class=p_ident id="p_CGf69rc/Yq" href="#p_CGf69rc/Yq"></a>Working with <code>forEach</code> makes it slightly shorter
+and quite a bit cleaner.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_gIY8Dk2DPY" href="#c_gIY8Dk2DPY"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
   <span class="cm-variable-2">journal</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">entry</span>) {
@@ -198,72 +198,73 @@ y limpio.</p>
   });
   <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
 }</pre>
-<h2><a class=h_ident id="h_sBm/RoOmVE" href="#h_sBm/RoOmVE"></a>Funciones de orden superior</h2>
-<p><a class=p_ident id="p_yKcYFIsmMW" href="#p_yKcYFIsmMW"></a>Las funciones que operan
-en otras funciones, al tomarlas como argumentos o regresarlas son llamadas
-<em>funciones de orden superior</em>. Si ya has acepatado el hecho de que las
-fucniones son valores regulares, no hay nada extraordinario en el hecho de que
-estas funciones existan. El término viene de las matemáticas, en
-donde la distinción entre funciones y valores es tomada más en serio.</p>
-<p><a class=p_ident id="p_SNqFdBkCjg" href="#p_SNqFdBkCjg"></a>Las funciones de orden superior no permiten
-abstraer <em>acciones</em>, no sólo valores. Y vienen en diferentes formas.
-Por ejemplo, puedes tener funciones que creen nuevas funciones.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_U82OoqyT25" href="#c_U82OoqyT25"></a><span class="cm-keyword">function</span> <span class="cm-variable">mayorQue</span>(<span class="cm-def">n</span>) {
+<h2><a class=h_ident id="h_xxCc98lOBK" href="#h_xxCc98lOBK"></a>Higher-order functions</h2>
+<p><a class=p_ident id="p_cao2fH68Tj" href="#p_cao2fH68Tj"></a>Functions that
+operate on other functions, either by taking them as arguments or by
+returning them, are called <em>higher-order functions</em>. If you have
+already accepted the fact that functions are regular values, there is
+nothing particularly remarkable about the fact that such functions
+exist. The term comes from mathematics, where the distinction
+between functions and other values is taken more seriously.</p>
+<p><a class=p_ident id="p_+cgNTV2i2y" href="#p_+cgNTV2i2y"></a>Higher-order functions allow us to abstract over
+<em>actions</em>, not just values. They come in several forms. For example,
+you can have functions that create new functions.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9JAVbcWLFt" href="#c_9JAVbcWLFt"></a><span class="cm-keyword">function</span> <span class="cm-variable">greaterThan</span>(<span class="cm-def">n</span>) {
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">m</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">m</span> <span class="cm-operator">></span> <span class="cm-variable-2">n</span>; };
 }
-<span class="cm-keyword">var</span> <span class="cm-variable">mayorQue10</span> <span class="cm-operator">=</span> <span class="cm-variable">mayorQue</span>(<span class="cm-number">10</span>);
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mayorQue10</span>(<span class="cm-number">11</span>));
+<span class="cm-keyword">var</span> <span class="cm-variable">greaterThan10</span> <span class="cm-operator">=</span> <span class="cm-variable">greaterThan</span>(<span class="cm-number">10</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">greaterThan10</span>(<span class="cm-number">11</span>));
 <span class="cm-comment">// → true</span></pre>
-<p><a class=p_ident id="p_2La2yEzEC4" href="#p_2La2yEzEC4"></a>Y puedes tener funciones que modifiquen otras funciones.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_LUB6ZRC4C/" href="#c_LUB6ZRC4C/"></a><span class="cm-keyword">function</span> <span class="cm-variable">ruidosa</span>(<span class="cm-def">f</span>) {
+<p><a class=p_ident id="p_MKDSIQ0X9D" href="#p_MKDSIQ0X9D"></a>And you can have functions that change other functions.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_JVArXJ1Pc1" href="#c_JVArXJ1Pc1"></a><span class="cm-keyword">function</span> <span class="cm-variable">noisy</span>(<span class="cm-def">f</span>) {
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">arg</span>) {
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"llamando con"</span>, <span class="cm-variable-2">arg</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"calling with"</span>, <span class="cm-variable-2">arg</span>);
     <span class="cm-keyword">var</span> <span class="cm-def">val</span> <span class="cm-operator">=</span> <span class="cm-variable-2">f</span>(<span class="cm-variable-2">arg</span>);
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"llamada con"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- resultado"</span>, <span class="cm-variable-2">val</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"called with"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- got"</span>, <span class="cm-variable-2">val</span>);
     <span class="cm-keyword">return</span> <span class="cm-variable-2">val</span>;
   };
 }
-<span class="cm-variable">ruidosa</span>(<span class="cm-variable">Boolean</span>)(<span class="cm-number">0</span>);
-<span class="cm-comment">// → llamando con 0</span>
-<span class="cm-comment">// → llamada con 0 - resultado false</span></pre>
-<p><a class=p_ident id="p_drvd7ppCfZ" href="#p_drvd7ppCfZ"></a>Incluso puedes escribir funciones que resulten en un nuevo tipo de control de flujo.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_5fF/jrHrW5" href="#c_5fF/jrHrW5"></a><span class="cm-keyword">function</span> <span class="cm-variable">si_es_falso</span>(<span class="cm-def">prueba</span>, <span class="cm-def">entonces</span>) {
-  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">test</span>) <span class="cm-variable-2">entonces</span>();
+<span class="cm-variable">noisy</span>(<span class="cm-variable">Boolean</span>)(<span class="cm-number">0</span>);
+<span class="cm-comment">// → calling with 0</span>
+<span class="cm-comment">// → called with 0 - got false</span></pre>
+<p><a class=p_ident id="p_2qBy/XBHVa" href="#p_2qBy/XBHVa"></a>You can even write functions that provide new types of control flow.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_IiJsXvslVu" href="#c_IiJsXvslVu"></a><span class="cm-keyword">function</span> <span class="cm-variable">unless</span>(<span class="cm-def">test</span>, <span class="cm-def">then</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">test</span>) <span class="cm-variable-2">then</span>();
 }
-<span class="cm-keyword">function</span> <span class="cm-variable">repetir</span>(<span class="cm-def">repeticiones</span>, <span class="cm-def">cuerpo</span>) {
-  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">repeticiones</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) <span class="cm-variable-2">cuerpo</span>(<span class="cm-variable-2">i</span>);
+<span class="cm-keyword">function</span> <span class="cm-variable">repeat</span>(<span class="cm-def">times</span>, <span class="cm-def">body</span>) {
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">times</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) <span class="cm-variable-2">body</span>(<span class="cm-variable-2">i</span>);
 }
 
-<span class="cm-variable">repetir</span>(<span class="cm-number">3</span>, <span class="cm-keyword">function</span>(<span class="cm-def">n</span>) {
-  <span class="cm-variable">si_es_falso</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">%</span> <span class="cm-number">2</span>, <span class="cm-keyword">function</span>() {
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">n</span>, <span class="cm-string">"es par"</span>);
+<span class="cm-variable">repeat</span>(<span class="cm-number">3</span>, <span class="cm-keyword">function</span>(<span class="cm-def">n</span>) {
+  <span class="cm-variable">unless</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">%</span> <span class="cm-number">2</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">n</span>, <span class="cm-string">"is even"</span>);
   });
 });
-<span class="cm-comment">// → 0 es par</span>
-<span class="cm-comment">// → 2 es par</span></pre>
-<p><a class=p_ident id="p_MhpG45TzHU" href="#p_MhpG45TzHU"></a>las reglas
-de ámbito léxico de las que hablamos en el <a href="03_functions.html#scoping">Capítulo 3</a>
-trabajan en nuestro favor cuando usamos las funciones de esta manera. En el ejemplo anterior,
-la variable <code>n</code> es un parámetro para la función externa.
-Debido a que la función interna vive dentro del entorno de la función externa,
-puede usar <code>n</code>. Los cuerpos de funciones internas semejantes pueden
-acceder a las variables que están alrededor de ellas. Estas pueden
-jugar un papel semejante a los bloques <code>{}</code> usados en los bucles regulares y
-en las sentencias condicionales. Una importante diferencia es que las
-variables declaradas edentro de loas funciones internas no terminan estando en el
-entorno de la función externa. Y eso es usualmente algo bueno.</p>
-<h2><a class=h_ident id="h_WkrfTSBqPH" href="#h_WkrfTSBqPH"></a>Pasando argumentos</h2>
-<p><a class=p_ident id="p_8n1MhxPa48" href="#p_8n1MhxPa48"></a>La función <code>ruidosa</code> definida antes,
-que envuelve el argumento en otra función, tiene una seria deficiencia.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7vPsqbGyAt" href="#c_7vPsqbGyAt"></a><span class="cm-keyword">function</span> <span class="cm-variable">ruidosa</span>(<span class="cm-def">f</span>) {
+<span class="cm-comment">// → 0 is even</span>
+<span class="cm-comment">// → 2 is even</span></pre>
+<p><a class=p_ident id="p_i6rGSdWQvz" href="#p_i6rGSdWQvz"></a>The lexical scoping
+rules that we discussed in <a href="03_functions.html#scoping">Chapter 3</a>
+work to our advantage when using functions in this way. In the previous example, the <code>n</code> variable is a parameter to the outer function.
+Because the inner function lives inside the environment of the outer
+one, it can use <code>n</code>. The bodies of such inner functions can access the
+variables around them. They can play a role similar to the <code>{}</code> blocks
+used in regular loops and conditional statements. An important
+difference is that variables declared inside inner functions do not
+end up in the environment of the outer function. And that is usually a
+good thing.</p>
+<h2><a class=h_ident id="h_7/X8BSjdvi" href="#h_7/X8BSjdvi"></a>Passing along arguments</h2>
+<p><a class=p_ident id="p_IYAO9/PwTt" href="#p_IYAO9/PwTt"></a>The <code>noisy</code> function
+defined earlier, which wraps its argument in another function, has a rather
+serious deficit.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9Deoi4g6M/" href="#c_9Deoi4g6M/"></a><span class="cm-keyword">function</span> <span class="cm-variable">noisy</span>(<span class="cm-def">f</span>) {
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">arg</span>) {
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"llamando con"</span>, <span class="cm-variable-2">arg</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"calling with"</span>, <span class="cm-variable-2">arg</span>);
     <span class="cm-keyword">var</span> <span class="cm-def">val</span> <span class="cm-operator">=</span> <span class="cm-variable-2">f</span>(<span class="cm-variable-2">arg</span>);
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"llamada con"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- resultado"</span>, <span class="cm-variable-2">val</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"called with"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- got"</span>, <span class="cm-variable-2">val</span>);
     <span class="cm-keyword">return</span> <span class="cm-variable-2">val</span>;
   };
 }</pre>
-<p><a class=p_ident id="p_VCXg9tH9pa" href="#p_VCXg9tH9pa"></a>Si <code>f</code> toma más de un parámtro, sólo sólo se le pasa el primero.
+<p><a class=p_ident id="p_xa/8T14jAc" href="#p_xa/8T14jAc"></a>If <code>f</code> takes more than one parameter, it gets only the first one.
 We could add a bunch of arguments to the inner function (<code>arg1</code>,
 <code>arg2</code>, and so on) and pass them all to <code>f</code>, but it is not clear how many
 would be enough. This solution would also deprive <code>f</code> of the

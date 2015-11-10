@@ -162,20 +162,20 @@ un profundo sentimiento de ser un poderoso mago. Y eso ha valido algo en
 términos de satisfacción en el trabajo.</p>
 <p><a class=p_ident id="p_6yKPy2wvIW" href="#p_6yKPy2wvIW"></a>Cada línea del programa anterior contiene una
 instrucción. Podría ser escrita en español como sigue:</p>
-<pre data-language="text/plain" class="snippet cm-s-default"><a class=c_ident id="c_EtCVtyGRNB" href="#c_EtCVtyGRNB"></a>1. Guarda el número 0 en la locación de memoria 0.
-2. Guarda el número 1 en la locación de memoria 1.
-3. Guarda el valor de la locación de memoria 1 en la locación 2.
-4. Resta 11 del valor en la locación de meoria 2.
-5. Si el valor en la locación de memoria 2 es el número 0,
+<pre data-language="text/plain" class="snippet cm-s-default"><a class=c_ident id="c_IaTJEkNo40" href="#c_IaTJEkNo40"></a>1. Guarda el número 0 en la dirección de memoria 0.
+2. Guarda el número 1 en la dirección de memoria 1.
+3. Guarda el valor de la dirección de memoria 1 en la dirección 2.
+4. Resta 11 del valor en la dirección de memoria 2.
+5. Si el valor en la dirección de memoria 2 es el número 0,
    continúa con la instrucción 9.
-6. Suma el valor de la locación de memoria 1 al valor de la
-   locación de memoria 0.
-7. Suma 1 al valor de la locación de memoria 1.
+6. Suma el valor de la dirección de memoria 1 al valor de la
+   dirección de memoria 0.
+7. Suma 1 al valor de la dirección de memoria 1.
 8. Continúa con la instrucción 3.
-9. Devuelve el valor de la locación de memoria 0.</pre>
-<p><a class=p_ident id="p_/6+oaljVfr" href="#p_/6+oaljVfr"></a>Aunque eso es más leíble que
+9. Devuelve el valor de la dirección de memoria 0.</pre>
+<p><a class=p_ident id="p_LiDfl8EbUh" href="#p_LiDfl8EbUh"></a>Aunque eso es más legible que
 una sopa de bits, sigue sin ser agradable. Podría ayudar usar nombres en los números
-para las instrucciones y locaciones de memoria.</p>
+para las instrucciones y direcciones de memoria.</p>
 <pre data-language="text/plain" class="snippet cm-s-default"><a class=c_ident id="c_RVNcaPQaEm" href="#c_RVNcaPQaEm"></a> Pon “total” igual a 0.
  Pon “conteo” igual a 1.
 [bucle]
@@ -195,7 +195,7 @@ trabajando en este momento. Las líneas que usan <code>comparación</code> son p
 las más raras. El programa quiere ver si <code>conteo</code> es igual a 11 para saber si
 puede terminar. A causa de que nuestra máquina hipotética es más bien primitiva,
 solo puede probar si un número es cero y tomar una decisión (o salto) basada
-en eso. Así que usa la locación de memoria etiquetada como <code>comparación</code> para
+en eso. Así que usa la dirección de memoria etiquetada como <code>comparación</code> para
 calcular el valor de <code>conteo - 11</code> y toma una decisión basada en ese valor.
 Las próximas dos líneas suman el valor de <code>conteo</code> al resultado e incrementan
 <code>conteo</code> en 1 cada vez que el programa ha decido que <code>conteo</code> no es todavía 11.</p>
