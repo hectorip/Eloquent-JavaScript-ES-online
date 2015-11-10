@@ -1,136 +1,136 @@
-function speak(line) {
-  console.log("The " + this.type + " rabbit says '" +
+function hablar(linea) {
+  console.log("El conejo " + this.tipo + " dice '" +
               line + "'");
 }
-var whiteRabbit = {type: "white", speak: speak};
-var fatRabbit = {type: "fat", speak: speak};
+var conejoBlanco = {tipo: "blanco", hablar: hablar};
+var conejoGordo = {tipo: "gordo", hablar: hablar};
 
-function Rabbit(type) {
-  this.type = type;
+function Conejo(tipo) {
+  this.tipo = tipo;
 }
 
-var killerRabbit = new Rabbit("killer");
-var blackRabbit = new Rabbit("black");
+var conejoAsesino = new Conejo("asesino");
+var conejoNegro = new Conejo("negro");
 
-Rabbit.prototype.speak = function(line) {
-  console.log("The " + this.type + " rabbit says '" +
-              line + "'");
+Conejo.prototype.hablar = function(linea) {
+  console.log("El conejo " + this.tipo + " dice '" +
+              linea + "'");
 };
 
-var map = {};
-function storePhi(event, phi) {
-  map[event] = phi;
+var mapa = {};
+function guardarPhi(evento, phi) {
+  mapa[evento] = phi;
 }
 
-storePhi("pizza", 0.069);
-storePhi("touched tree", -0.081);
+guardarPhi("pizza", 0.069);
+guardarPhi("árbol tocado", -0.081);
 
-function rowHeights(rows) {
-  return rows.map(function(row) {
-    return row.reduce(function(max, cell) {
-      return Math.max(max, cell.minHeight());
+function alturasFila(filas) {
+  return filas.map(function(fila) {
+    return fila.reduce(function(max, celda) {
+      return Math.max(max, celda.minAltura());
     }, 0);
   });
 }
 
-function colWidths(rows) {
-  return rows[0].map(function(_, i) {
-    return rows.reduce(function(max, row) {
-      return Math.max(max, row[i].minWidth());
+function anchurasColumna(filas) {
+  return filas[0].map(function(_, i) {
+    return filas.reduce(function(max, fila) {
+      return Math.max(max, fila[i].minAnchura());
     }, 0);
   });
 }
 
-function drawTable(rows) {
-  var heights = rowHeights(rows);
-  var widths = colWidths(rows);
+function dibujarTabla(filas) {
+  var alturas = alturasFilas(filas);
+  var anchuras = anchurasColumnas(filas);
 
-  function drawLine(blocks, lineNo) {
-    return blocks.map(function(block) {
-      return block[lineNo];
+  function dibujarLinea(bloques, numLinea) {
+    return bloques.map(function(bloque) {
+      return bloque[numLinea];
     }).join(" ");
   }
 
-  function drawRow(row, rowNum) {
-    var blocks = row.map(function(cell, colNum) {
-      return cell.draw(widths[colNum], heights[rowNum]);
+  function dibujarFila(fila, numFila) {
+    var bloques = fila.map(function(celda, numColumna) {
+      return celda.dibujar(anchuras[numColumna], alturas[numFila]);
     });
-    return blocks[0].map(function(_, lineNo) {
-      return drawLine(blocks, lineNo);
+    return bloques[0].map(function(_, numLinea) {
+      return dibujarLinea(bloques, numLinea);
     }).join("\n");
   }
 
-  return rows.map(drawRow).join("\n");
+  return filas.map(dibujarFila).join("\n");
 }
 
-function repeat(string, times) {
-  var result = "";
-  for (var i = 0; i < times; i++)
-    result += string;
-  return result;
+function repetir(cadena, veces) {
+  var resultado = "";
+  for (var i = 0; i < veces; i++)
+    resultado += cadena;
+  return resultado;
 }
 
-function TextCell(text) {
-  this.text = text.split("\n");
+function CeldaTexto(texto) {
+  this.texto = texto.split("\n");
 }
-TextCell.prototype.minWidth = function() {
-  return this.text.reduce(function(width, line) {
-    return Math.max(width, line.length);
+CeldaTexto.prototype.minAnchura = function() {
+  return this.texto.reduce(function(anchura, linea) {
+    return Math.max(anchura, linea.length);
   }, 0);
 };
-TextCell.prototype.minHeight = function() {
-  return this.text.length;
+CeldaTexto.prototype.minAltura = function() {
+  return this.texto.length;
 };
-TextCell.prototype.draw = function(width, height) {
-  var result = [];
-  for (var i = 0; i < height; i++) {
-    var line = this.text[i] || "";
-    result.push(line + repeat(" ", width - line.length));
+CeldaTexto.prototype.dibujar = function(anchura, altura) {
+  var resultado = [];
+  for (var i = 0; i < altura; i++) {
+    var linea = this.texto[i] || "";
+    resultado.push(linea + repetir(" ", anchura - linea.length));
   }
-  return result;
+  return resultado;
 };
 
-function UnderlinedCell(inner) {
-  this.inner = inner;
+function CeldaSubrayada(contenido) {
+  this.contenido = contenido;
 };
-UnderlinedCell.prototype.minWidth = function() {
-  return this.inner.minWidth();
+CeldaSubrayada.prototype.minAnchura = function() {
+  return this.contenido.minAnchura();
 };
-UnderlinedCell.prototype.minHeight = function() {
-  return this.inner.minHeight() + 1;
+CeldaSubrayada.prototype.minAltura = function() {
+  return this.contenido.minAltura() + 1;
 };
-UnderlinedCell.prototype.draw = function(width, height) {
-  return this.inner.draw(width, height - 1)
-    .concat([repeat("-", width)]);
+CeldaSubrayada.prototype.dibujar = function(anchura, altura) {
+  return this.contenido.dibujar(anchura, altura - 1)
+    .concat([repetir("-", anchura)]);
 };
 
-function RTextCell(text) {
-  TextCell.call(this, text);
+function DCeldaTexto(texto) {
+  CeldaTexto.call(this, texto);
 }
-RTextCell.prototype = Object.create(TextCell.prototype);
-RTextCell.prototype.draw = function(width, height) {
-  var result = [];
-  for (var i = 0; i < height; i++) {
-    var line = this.text[i] || "";
-    result.push(repeat(" ", width - line.length) + line);
+DCeldaTexto.prototype = Object.create(CeldaTexto.prototype);
+DCeldaTexto.prototype.dibujar = function(anchura, altura) {
+  var resultado = [];
+  for (var i = 0; i < altura; i++) {
+    var linea = this.text[i] || "";
+    resultado.push(repetir(" ", anchura - linea.length) + linea);
   }
-  return result;
+  return resultado;
 };
 
-function dataTable(data) {
-  var keys = Object.keys(data[0]);
-  var headers = keys.map(function(name) {
-    return new UnderlinedCell(new TextCell(name));
+function datosTabla(datos) {
+  var keys = Object.keys(datos[0]);
+  var encabezados = keys.map(function(nombre) {
+    return new CeldaSubrayada(new CeldaTexto(nombre));
   });
-  var body = data.map(function(row) {
-    return keys.map(function(name) {
-      var value = row[name];
-      // This was changed:
-      if (typeof value == "number")
-        return new RTextCell(String(value));
+  var cuerpo = datos.map(function(row) {
+    return keys.map(function(nombre) {
+      var valor = row[nombre];
+      // Esto ha cambiado:
+      if (typeof valor == "number")
+        return new DCeldaTexto(String(valor));
       else
-        return new TextCell(String(value));
+        return new CeldaTexto(String(valor));
     });
   });
-  return [headers].concat(body);
+  return [encabezados].concat(cuerpo);
 }
