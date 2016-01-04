@@ -204,27 +204,27 @@ son llamadas <em>funciones de orden superior</em>. Si ya has aceptado el hecho d
 valores reulares, no hay nada de especial en el hecho de que estas funciones
 existan. El términos viene de las matemáticas, en dónde la distinción
 entre las funciones y otros valores es tomado más seriamente.</p>
-<p><a class=p_ident id="p_+cgNTV2i2y" href="#p_+cgNTV2i2y"></a>Higher-order functions allow us to abstract over
-<em>actions</em>, not just values. They come in several forms. For example,
-you can have functions that create new functions.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9JAVbcWLFt" href="#c_9JAVbcWLFt"></a><span class="cm-keyword">function</span> <span class="cm-variable">greaterThan</span>(<span class="cm-def">n</span>) {
+<p><a class=p_ident id="p_SNqFdBkCjg" href="#p_SNqFdBkCjg"></a>Las funciones de orden superior nos permiten abstraer
+<em>acciones</em>, no sólo valores. Pueden venir en diferentes formas. Por ejemplo
+puedes tener funciones que creen nuevas funciones.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_U82OoqyT25" href="#c_U82OoqyT25"></a><span class="cm-keyword">function</span> <span class="cm-variable">mayorQue</span>(<span class="cm-def">n</span>) {
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">m</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">m</span> <span class="cm-operator">></span> <span class="cm-variable-2">n</span>; };
 }
-<span class="cm-keyword">var</span> <span class="cm-variable">greaterThan10</span> <span class="cm-operator">=</span> <span class="cm-variable">greaterThan</span>(<span class="cm-number">10</span>);
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">greaterThan10</span>(<span class="cm-number">11</span>));
+<span class="cm-keyword">var</span> <span class="cm-variable">mayorQue10</span> <span class="cm-operator">=</span> <span class="cm-variable">mayorQue</span>(<span class="cm-number">10</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mayorQue10</span>(<span class="cm-number">11</span>));
 <span class="cm-comment">// → true</span></pre>
-<p><a class=p_ident id="p_MKDSIQ0X9D" href="#p_MKDSIQ0X9D"></a>And you can have functions that change other functions.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_JVArXJ1Pc1" href="#c_JVArXJ1Pc1"></a><span class="cm-keyword">function</span> <span class="cm-variable">noisy</span>(<span class="cm-def">f</span>) {
+<p><a class=p_ident id="p_Q2brBZnlsJ" href="#p_Q2brBZnlsJ"></a>Y puedes tener funciones que cambien otras funciones.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1ZTqbAIReq" href="#c_1ZTqbAIReq"></a><span class="cm-keyword">function</span> <span class="cm-variable">ruidosa</span>(<span class="cm-def">f</span>) {
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">arg</span>) {
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"calling with"</span>, <span class="cm-variable-2">arg</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"llamando con"</span>, <span class="cm-variable-2">arg</span>);
     <span class="cm-keyword">var</span> <span class="cm-def">val</span> <span class="cm-operator">=</span> <span class="cm-variable-2">f</span>(<span class="cm-variable-2">arg</span>);
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"called with"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- got"</span>, <span class="cm-variable-2">val</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"llamada con"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- got"</span>, <span class="cm-variable-2">val</span>);
     <span class="cm-keyword">return</span> <span class="cm-variable-2">val</span>;
   };
 }
-<span class="cm-variable">noisy</span>(<span class="cm-variable">Boolean</span>)(<span class="cm-number">0</span>);
-<span class="cm-comment">// → calling with 0</span>
-<span class="cm-comment">// → called with 0 - got false</span></pre>
+<span class="cm-variable">ruidosa</span>(<span class="cm-variable">Boolean</span>)(<span class="cm-number">0</span>);
+<span class="cm-comment">// → llamando con 0</span>
+<span class="cm-comment">// → llamada con 0 - obtuve false</span></pre>
 <p><a class=p_ident id="p_2qBy/XBHVa" href="#p_2qBy/XBHVa"></a>You can even write functions that provide new types of control flow.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_IiJsXvslVu" href="#c_IiJsXvslVu"></a><span class="cm-keyword">function</span> <span class="cm-variable">unless</span>(<span class="cm-def">test</span>, <span class="cm-def">then</span>) {
   <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">test</span>) <span class="cm-variable-2">then</span>();
