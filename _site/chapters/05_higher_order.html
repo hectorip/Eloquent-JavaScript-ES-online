@@ -1,233 +1,245 @@
 <!doctype html>
 <head>
   <meta charset="utf-8">
-  <title>Higher-Order Functions :: Eloquent JavaScript</title>
+  <title>Funciones de Order Superior :: Eloquent JavaScript</title>
   <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
   <script src="js/acorn_codemirror.js"></script>
   <link rel=stylesheet href="css/ejs.css">
   <script src="js/sandbox.js"></script>
   <script src="js/ejs.js"></script>
   <script>var chapNum = 5;var sandboxLoadFiles = ["code/ancestry.js", "code/chapter/05_higher_order.js", "code/intro.js"];</script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53624335-3', 'auto');
+  ga('send', 'pageview');
+
+  </script>
 </head>
 
 <article>
 <nav>
-  <a href="04_data.html" title="previous chapter">◀</a>
+  <a href="04_data.html" title="capítulo previo">◀</a>
   <a href="index.html" title="cover">◆</a>
-  <a href="06_object.html" title="next chapter">▶</a>
+  <a href="06_object.html" title="capítulo siguiente">▶</a>
 </nav>
 
-<h1><div class=chap_num>Chapter 5</div>Higher-Order Functions</h1>
+<h1><div class=chap_num>Capítulo 5</div>Funciones de Order Superior</h1>
 <blockquote>
-<p><a class=p_ident id="p_18CYJsdOxo" href="#p_18CYJsdOxo"></a>Tzu-li and Tzu-ssu were
-boasting about the size of their latest programs. ‘Two-hundred
-thousand lines,’ said Tzu-li, ‘not counting comments!’ Tzu-ssu
-responded, ‘Pssh, mine is almost a <strong>million</strong> lines already.’ Master
-Yuan-Ma said, ‘My best program has five hundred lines.’ Hearing this,
-Tzu-li and Tzu-ssu were enlightened.</p>
+<p><a class=p_ident id="p_d9yJjP1rjg" href="#p_d9yJjP1rjg"></a>Tzu-li y Tzu-ssu estaban
+presumiendo acerca del tamaño de sus úlitmos programas. ‘Doscientas mil líneas
+,’ dijo Tzu-li, ‘¡sin contar los comentarios!’. Tzu-ssu
+respondió, ‘Pssh, el mío tiene ya casi <strong>un millión</strong> de líneas.’ El Maestro
+Yuan-Ma dijo, ‘Mi mejor programa tiene quinientas líneas’. Oyendo esto,
+Tzu-li y Tzu-ssu fueron iluminados.</p>
  <footer>Master Yuan-Ma, <cite>The Book of Programming</cite></footer>
 </blockquote>
 <blockquote>
-<p><a class=p_ident id="p_MZD8y19lPz" href="#p_MZD8y19lPz"></a>There are two ways of constructing a software
-design: One way is to make it so simple that there are obviously no
-deficiencies, and the other way is to make it so complicated that
-there are no obvious deficiencies.</p>
+<p><a class=p_ident id="p_vZQpWnRskH" href="#p_vZQpWnRskH"></a>Hay dos formas de construir un diseño de
+software: Una forma es hacerlo tan simple que obviamente no tenga
+deficiencias, y la otra forma es hacerlo tan complicado que
+no haya obvias deficiecias.</p>
  <footer>C.A.R. Hoare, <cite>1980 ACM Turing Award Lecture</cite></footer>
 </blockquote>
-<p><a class=p_ident id="p_1SpKr5NIrc" href="#p_1SpKr5NIrc"></a>A large program is a costly program, and not just
-because of the time it takes to build. Size almost always involves
-complexity, and complexity confuses programmers. Confused
-programmers, in turn, tend to introduce mistakes (<em>bugs</em>) into
-programs. A large program also provides a lot of space for these bugs
-to hide, making them hard to find.</p>
-<p><a class=p_ident id="p_ethH+CXxsM" href="#p_ethH+CXxsM"></a>Let&#8217;s briefly go back to the final two example
-programs in the introduction. The first is self-contained and six
-lines long.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_W93KRCwXP0" href="#c_W93KRCwXP0"></a><span class="cm-keyword">var</span> <span class="cm-variable">total</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>, <span class="cm-variable">count</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
-<span class="cm-keyword">while</span> (<span class="cm-variable">count</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">10</span>) {
-  <span class="cm-variable">total</span> <span class="cm-operator">+=</span> <span class="cm-variable">count</span>;
-  <span class="cm-variable">count</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+<p><a class=p_ident id="p_UkjkuKBNDn" href="#p_UkjkuKBNDn"></a>Un programa grande es costoso y no sólo
+por el tiempo que toma construirlo. El tamaño casi siempre involucra
+complejidad, y la complejidad confunde a los programadores. Los
+programadores confundidos, a su vez, tienden a introducir errores
+(<em>bugs</em>) en los programas. Un programa grande, además, da un amplio
+espacio para que estos bugs se oculten, haciéndolos difíciles de encontrar.</p>
+<p><a class=p_ident id="p_gTGC1t2oUz" href="#p_gTGC1t2oUz"></a>Regresemos brevemente a los dos programas finales
+en la introducción. El primero es auto-contenido y tiene seis líneas de longitud.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_p2MDtR7c49" href="#c_p2MDtR7c49"></a><span class="cm-keyword">var</span> <span class="cm-variable">total</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>, <span class="cm-variable">cuenta</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+<span class="cm-keyword">while</span> (<span class="cm-variable">cuenta</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">10</span>) {
+  <span class="cm-variable">total</span> <span class="cm-operator">+=</span> <span class="cm-variable">cuenta</span>;
+  <span class="cm-variable">cuenta</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
 }
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">total</span>);</pre>
-<p><a class=p_ident id="p_Sy8N6Qcb09" href="#p_Sy8N6Qcb09"></a>The second relies on two external functions and is one line long.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_OULOwD7HOm" href="#c_OULOwD7HOm"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>(<span class="cm-variable">range</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));</pre>
-<p><a class=p_ident id="p_srOi7846QY" href="#p_srOi7846QY"></a>Which one is more likely to contain a bug?</p>
-<p><a class=p_ident id="p_G+ApGqjOk4" href="#p_G+ApGqjOk4"></a>If we count the size of the definitions of <code>sum</code> and
-<code>range</code>, the second program is also big—even bigger than the first.
-But still, I&#8217;d argue that it is more likely to be correct.</p>
-<p><a class=p_ident id="p_pkQRvZqQ0u" href="#p_pkQRvZqQ0u"></a>It is more likely to
-be correct because the solution is expressed in a vocabulary that
-corresponds to the problem being solved. Summing a range of
-numbers isn&#8217;t about loops and counters. It is about ranges and sums.</p>
-<p><a class=p_ident id="p_VwxmDNivhe" href="#p_VwxmDNivhe"></a>The definitions of this vocabulary (the functions <code>sum</code> and <code>range</code>)
-will still involve loops, counters, and other incidental details. But
-because they are expressing simpler concepts than the program as a
-whole, they are easier to get right.</p>
-<h2><a class=h_ident id="h_j9ps8qrlyo" href="#h_j9ps8qrlyo"></a>Abstraction</h2>
-<p><a class=p_ident id="p_ZPK6t/LrMG" href="#p_ZPK6t/LrMG"></a>In the context of programming, these kinds of vocabularies are usually
-called <em>abstractions</em>. Abstractions hide details and give us the
-ability to talk about problems at a higher (or more abstract) level.</p>
-<p><a class=p_ident id="p_XMbJPaIiI4" href="#p_XMbJPaIiI4"></a>As an analogy, compare these two
-recipes for pea soup:</p>
+<p><a class=p_ident id="p_CAz3W6h9Mx" href="#p_CAz3W6h9Mx"></a>El segundo depende de dos funciones externas y es una sola línea</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_m18mTx5lPD" href="#c_m18mTx5lPD"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">suma</span>(<span class="cm-variable">rango</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>)));</pre>
+<p><a class=p_ident id="p_vcKbefQCCq" href="#p_vcKbefQCCq"></a>¿Cuál de los dos es más probable que tenga un bug?</p>
+<p><a class=p_ident id="p_kr8iBt6cDE" href="#p_kr8iBt6cDE"></a>Si contamos el tamaño de definición de
+<code>suma</code> y <code>rango</code>, el segungo programa también es grande–incluso más
+grande que el primero. Pero aún así, yo diría que es más probable
+que sea correcto.</p>
+<p><a class=p_ident id="p_IYD9ytOHV0" href="#p_IYD9ytOHV0"></a>Es más probable que
+sea correcto porque la solución es expresada en un vocabulario que
+corresponde al problema que está siendo resuelto. Sumar un rango de
+enteros no tiene que ver con bucles y contadores. Es acerca de
+rangos y sumas.</p>
+<p><a class=p_ident id="p_TqlE8hQPPv" href="#p_TqlE8hQPPv"></a>Las definiciones de este vocabulario (las funciones <code>suma</code> y <code>rango</code> )
+todavía incluirán bucles, contadores y otros detalles incidentales.
+Pero debido a que están expresando conceptos más simples que el
+programa como un todo, es más fácil acertar.</p>
+<h2><a class=h_ident id="h_pe3MZEOOie" href="#h_pe3MZEOOie"></a>Abstracción</h2>
+<p><a class=p_ident id="p_52TVMKkB+L" href="#p_52TVMKkB+L"></a>En el contexto de la programación, vocabularios de este estilo son usualmente
+llamados <em>abstracción</em>. Las abstracciones econden detalles y nos
+dan la habilidad de hablar de los problemas en un nivel más alto (o más
+abstracto).</p>
+<p><a class=p_ident id="p_h/6ZRS+XB2" href="#p_h/6ZRS+XB2"></a>Como una analogía,
+compara estas dos recetas para la sopa de guisantes:</p>
 <blockquote>
-<p><a class=p_ident id="p_F+PunfZCXq" href="#p_F+PunfZCXq"></a>Put 1 cup of dried peas per person into a container. Add water until
-the peas are well covered. Leave the peas in water for at least 12 hours.
-Take the peas out of the water and put them in a cooking pan. Add 4
-cups of water per person. Cover the pan and keep the peas
-simmering for two hours. Take half an onion per person. Cut it into
-pieces with a knife. Add it to the peas. Take a stalk of celery per
-person. Cut it into pieces with a knife. Add it to the peas. Take a
-carrot per person. Cut it into pieces. With a knife! Add it to the
-peas. Cook for 10 more minutes.</p>
+<p><a class=p_ident id="p_yskrJEO+mI" href="#p_yskrJEO+mI"></a>Pon una 1 taza de guisantes secos por persona en un contenedor. Agrega agua
+hasta que los guisantes estén cubiertos. Deja los guisantes en el agua
+por lo menos 12 horas. Saca los guisantes del agua y ponlos en en un
+sartén para cocer. Agrega 4 copas de agua por persona. Cubre el sartén y mantén
+los hirviéndose a fuego lento por dos horas. Agrega la mitad de una cebolla por
+persona. Córtala en piezas con un cuchillo. Agrégalas a los guisantes.
+Toma un diente de ajo por persona. Córtalos en piezas con un cuchillo.
+Agrégalos a los guisantes. Toma una zanahoria por persona. Córtalas
+en piezas. ¡Con un cuchillo! Agrégalas a los guisantes. Cocina por 10
+minutos más.</p>
 
 </blockquote>
-<p><a class=p_ident id="p_jOZH7oGiYb" href="#p_jOZH7oGiYb"></a>And the second recipe:</p>
+<p><a class=p_ident id="p_z7kQtEIwXR" href="#p_z7kQtEIwXR"></a>Y la segunda receta:</p>
 <blockquote>
-<p><a class=p_ident id="p_iNBZReprTd" href="#p_iNBZReprTd"></a>Per person: 1 cup dried split peas, half a chopped onion, a stalk of
-celery, and a carrot.</p>
-<p><a class=p_ident id="p_k5rI5P5p5u" href="#p_k5rI5P5p5u"></a>Soak peas for 12 hours. Simmer for 2 hours in 4 cups of water
-(per person). Chop and add vegetables. Cook for 10 more minutes.</p>
+<p><a class=p_ident id="p_saN1Za8Oc1" href="#p_saN1Za8Oc1"></a>Por persona: 1 taza de guisantes partidos secos, media cebolla picada, un
+diente de ajo y una zanohoria.</p>
+<p><a class=p_ident id="p_pWLdoICo3H" href="#p_pWLdoICo3H"></a>Remoja los guisantes por 12 horas
+Soak peas for 12 hours. Hierve a fuego lento por 2 horas en
+4 tazas(por persona). Pica y agrega los vegetales. Cocina por 10 minutos más.</p>
 
 </blockquote>
-<p><a class=p_ident id="p_cSeY164LbX" href="#p_cSeY164LbX"></a>The second is shorter and easier to interpret. But
-you do need to understand a few more cooking-related words—<em>soak</em>,
-<em>simmer</em>, <em>chop</em>, and, I guess, <em>vegetable</em>.</p>
-<p><a class=p_ident id="p_g/g3l7uyEG" href="#p_g/g3l7uyEG"></a>When programming, we can&#8217;t rely on all the words we need to be waiting
-for us in the dictionary. Thus, you might fall into the pattern of the
-first recipe—work out the precise steps the computer has to perform,
-one by one, blind to the higher-level concepts that they express.</p>
-<p><a class=p_ident id="p_SfvOkDsRNZ" href="#p_SfvOkDsRNZ"></a>It has to become second nature, for a programmer, to
-notice when a concept is begging to be abstracted into a new word.</p>
-<h2><a class=h_ident id="h_inPZJ813r4" href="#h_inPZJ813r4"></a>Abstracting array traversal</h2>
-<p><a class=p_ident id="p_kYV0l7wLUe" href="#p_kYV0l7wLUe"></a>Plain functions, as we&#8217;ve seen them so far, are a good
-way to build abstractions. But sometimes they fall short.</p>
-<p><a class=p_ident id="p_zubh2XbQ26" href="#p_zubh2XbQ26"></a>In the <a href="04_data.html#data">previous chapter</a>, this
-type of <code>for</code> loop made several appearances:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_LwyYCeYiUF" href="#c_LwyYCeYiUF"></a><span class="cm-keyword">var</span> <span class="cm-variable">array</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>];
+<p><a class=p_ident id="p_//EvaJgK1s" href="#p_//EvaJgK1s"></a>La segunda es más corta y más fácil de interpretar. Pero
+necesitas entender unos cuántas palabras relacionadas con la cocina-<em>remojar</em>,
+<em>picar</em> y, imagino, <em>vegetal</em>.</p>
+<p><a class=p_ident id="p_2GLKAqL5sr" href="#p_2GLKAqL5sr"></a>Cuando programamos, no podemos confiar en que todas las palbras que necesitamos
+estén esperándonos en el diccionario. Así que podrías caer en el patrón de
+la primera receta–trabajar en los pasos precisos que la computadora debe realizar,
+uno por uno, sin ver los conceptos de alto nivel que estos expresan.</p>
+<p><a class=p_ident id="p_/TcU5WtFOI" href="#p_/TcU5WtFOI"></a>Se tiene que convertir en una segunda naturaleza, para un
+programador, notar cuando un concepto está rogando ser abstraído en
+una nueva palabra.</p>
+<h2><a class=h_ident id="h_FATYBBZ/5D" href="#h_FATYBBZ/5D"></a>Abstrayendo transversal de array</h2>
+<p><a class=p_ident id="p_oOdAjCb+Gp" href="#p_oOdAjCb+Gp"></a>Las fuunciones planas, como hemos visto hasta ahora, son una buena forma
+de construir abstracciones. Pero algunas veces se quedan cortas.</p>
+<p><a class=p_ident id="p_1oHox16H3z" href="#p_1oHox16H3z"></a>En el <a href="04_data.html#data">capítulo antterior</a>, este tipo de
+bucle <code>for</code> apareció varias veces:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_4mYiy1PQWP" href="#c_4mYiy1PQWP"></a><span class="cm-keyword">var</span> <span class="cm-variable">array</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>];
 <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">array</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
-  <span class="cm-keyword">var</span> <span class="cm-variable">current</span> <span class="cm-operator">=</span> <span class="cm-variable">array</span>[<span class="cm-variable">i</span>];
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">current</span>);
+  <span class="cm-keyword">var</span> <span class="cm-variable">actual</span> <span class="cm-operator">=</span> <span class="cm-variable">array</span>[<span class="cm-variable">i</span>];
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">actual</span>);
 }</pre>
-<p><a class=p_ident id="p_NFtmq7O3su" href="#p_NFtmq7O3su"></a>It&#8217;s trying to say, “For
-each element in the array, log it to the console”. But it uses a
-roundabout way that involves a counter variable <code>i</code>, a check against
-the array&#8217;s length, and an extra variable declaration to pick out the
-current element. Apart from being a bit of an eyesore, this provides a
-lot of space for potential mistakes. We might accidentally reuse the
-<code>i</code> variable, misspell <code>length</code> as <code>lenght</code>, confuse the <code>i</code> and <code>current</code>
-variables, and so on.</p>
-<p><a class=p_ident id="p_Ij8hUSNURG" href="#p_Ij8hUSNURG"></a>So let&#8217;s try to abstract this into a function. Can you think of a way?</p>
-<p><a class=p_ident id="p_QZzSQpGUXs" href="#p_QZzSQpGUXs"></a>Well, it&#8217;s easy to write a function that goes over an array and calls
-<code>console.log</code> on every element.</p>
+<p><a class=p_ident id="p_CKmf6qUbfI" href="#p_CKmf6qUbfI"></a>Está tratando de decir,
+"Cada elemento, escríbelo en la consola". Pero usa una forma rebuscada que
+implica una variable <code>i</code>, una revisión del tamaño del array y una declaración
+de variable extra para guardar el elemento actual. A parte de causar un poco de
+dolor de ojos, esto nos da mucho espacio para errores potenciales. Podríamos
+qccidentalmente reusar la variable <code>i</code>, escribir mal <code>length</code> como <code>lenght</code>,
+confundir las variables <code>i</code> y <code>actual</code> y así por el estilo.
+Así que tratemos de abstraer esto en una función. ¿Puedes pensar en alguna forma?</p>
+<p><a class=p_ident id="p_tLbMqK38+l" href="#p_tLbMqK38+l"></a>Bueno, es fácil escribir una función que vaya a través de un array y llamar
+<code>console.log</code> en cada elemento.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_zrjk1tE+gJ" href="#c_zrjk1tE+gJ"></a><span class="cm-keyword">function</span> <span class="cm-variable">logEach</span>(<span class="cm-def">array</span>) {
   <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
     <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
 }</pre>
-<p id="forEach"><a class=p_ident id="p_q8hNTrfIYb" href="#p_q8hNTrfIYb"></a>But what
-if we want to do something other than logging the elements? Since
-“doing something” can be represented as a function and functions are
-just values, we can pass our action as a function value.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_on8vSTDMIU" href="#c_on8vSTDMIU"></a><span class="cm-keyword">function</span> <span class="cm-variable">forEach</span>(<span class="cm-def">array</span>, <span class="cm-def">action</span>) {
+<p id="forEach"><a class=p_ident id="p_7ujy8o+w1D" href="#p_7ujy8o+w1D"></a>Pero, ¿qué pasa si
+queremos hacer otra cosa que loggear los elementos? Debido a que "hacer algo"
+puede ser representado como una función y las funciones son sólo valores, podemos pasar
+nuestra acción como un valor función.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Tf45vj1ahg" href="#c_Tf45vj1ahg"></a><span class="cm-keyword">function</span> <span class="cm-variable">forEach</span>(<span class="cm-def">array</span>, <span class="cm-def">accion</span>) {
   <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>)
-    <span class="cm-variable-2">action</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
+    <span class="cm-variable-2">accion</span>(<span class="cm-variable-2">array</span>[<span class="cm-variable-2">i</span>]);
 }
 
 <span class="cm-variable">forEach</span>([<span class="cm-string">"Wampeter"</span>, <span class="cm-string">"Foma"</span>, <span class="cm-string">"Granfalloon"</span>], <span class="cm-variable">console</span>.<span class="cm-property">log</span>);
 <span class="cm-comment">// → Wampeter</span>
 <span class="cm-comment">// → Foma</span>
 <span class="cm-comment">// → Granfalloon</span></pre>
-<p><a class=p_ident id="p_TXDEyQXjy/" href="#p_TXDEyQXjy/"></a>Often, you don&#8217;t pass a predefined function to <code>forEach</code> but create
-a function value on the spot instead.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wRpVmSHeqP" href="#c_wRpVmSHeqP"></a><span class="cm-keyword">var</span> <span class="cm-variable">numbers</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>], <span class="cm-variable">sum</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
-<span class="cm-variable">forEach</span>(<span class="cm-variable">numbers</span>, <span class="cm-keyword">function</span>(<span class="cm-def">number</span>) {
-  <span class="cm-variable">sum</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">number</span>;
+<p><a class=p_ident id="p_LjPN3c0PYw" href="#p_LjPN3c0PYw"></a>A menudo, no le pasas una  función predefinida a <code>forEach</code> sino que
+creas una función en el acto.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_a6CP0H6Zq0" href="#c_a6CP0H6Zq0"></a><span class="cm-keyword">var</span> <span class="cm-variable">numeros</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>], <span class="cm-variable">suma</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-variable">forEach</span>(<span class="cm-variable">numeros</span>, <span class="cm-keyword">function</span>(<span class="cm-def">numero</span>) {
+  <span class="cm-variable">suma</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">numero</span>;
 });
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">sum</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">suma</span>);
 <span class="cm-comment">// → 15</span></pre>
-<p><a class=p_ident id="p_v2REJFVWCD" href="#p_v2REJFVWCD"></a>This looks quite a lot like the
-classical <code>for</code> loop, with its body written as a block below it.
-However, now the body is inside the function value, as well as
-inside the parentheses of the call to <code>forEach</code>. This is why it
-has to be closed with the closing brace <em>and</em> closing parenthesis.</p>
-<p><a class=p_ident id="p_u1F6T5TuZI" href="#p_u1F6T5TuZI"></a>Using this pattern, we can
-specify a variable name for the current element (<code>number</code>), rather
-than having to pick it out of the array manually.</p>
-<p><a class=p_ident id="p_w5leJJdYGK" href="#p_w5leJJdYGK"></a>In fact, we don&#8217;t need to write <code>forEach</code>
-ourselves. It is available as a standard method on arrays. Since the
-array is already provided as the thing the method acts on, <code>forEach</code>
-takes only one required argument: the function to be executed for each
-element.</p>
-<p><a class=p_ident id="p_BbxEeZ0Pmw" href="#p_BbxEeZ0Pmw"></a>To illustrate how helpful this is, let&#8217;s look back at a function
-from <a href="04_data.html#analysis">the previous chapter</a>. It contains two
-array-traversing loops.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1CXbGUgiP6" href="#c_1CXbGUgiP6"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
+<p><a class=p_ident id="p_L3L6QOAB4f" href="#p_L3L6QOAB4f"></a>Esto luce muy parecido al clásico
+bucle <code>for</code>, con su cuerpo escrito debajo de él. Sin embargo,
+ahora el cuerpo está dentro del valor función, así como
+dentro de los paréntesis de la llamada a <code>forEach</code>. Esta es la
+razón de que tenga que ser terminado con una llave <em>y</em> un paréntesis de cierre.</p>
+<p><a class=p_ident id="p_C+jp4w/YBo" href="#p_C+jp4w/YBo"></a>Usando este patrón, podemos especificar un nombre
+de variable para el elemento actual(<code>numero</code>), en vez de tener que
+tomarlo del array manuelmente.</p>
+<p><a class=p_ident id="p_uvvwX1X5PH" href="#p_uvvwX1X5PH"></a>De hecho, no necesitamos escribir <code>forEach</code>
+nosotros mismos. Está disponible como un método estándar en los arrays.
+Debido a que el array le es pasado como el elemento sobre el que actúa
+el método, <code>forEach</code> sólo recibe un argumento requerido: la función que será
+ejecutada para cada elemento.</p>
+<p><a class=p_ident id="p_gdPegQV2Ax" href="#p_gdPegQV2Ax"></a>Para ilustrar lo útil que esto es, miremos otra vez la función del
+<a href="04_data.html#analysis">capítulo anterior</a>. Contiene dos bucles que
+recorren un arreglo.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_lxKyXRwXZF" href="#c_lxKyXRwXZF"></a><span class="cm-keyword">function</span> <span class="cm-variable">reuneCorrelaciones</span>(<span class="cm-def">diario</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
-  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">entry</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">journal</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">entry</span><span class="cm-operator">++</span>) {
-    <span class="cm-keyword">var</span> <span class="cm-def">events</span> <span class="cm-operator">=</span> <span class="cm-variable-2">journal</span>[<span class="cm-variable-2">entry</span>].<span class="cm-property">events</span>;
-    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">events</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
-      <span class="cm-keyword">var</span> <span class="cm-def">event</span> <span class="cm-operator">=</span> <span class="cm-variable-2">events</span>[<span class="cm-variable-2">i</span>];
-      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">event</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
-        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">journal</span>));
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">entrada</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">entrada</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">diario</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">entrada</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">eventos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">diario</span>[<span class="cm-variable-2">entrada</span>].<span class="cm-property">events</span>;
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">events</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">evento</span> <span class="cm-operator">=</span> <span class="cm-variable-2">eventos</span>[<span class="cm-variable-2">i</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">evento</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
+        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">evento</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-variable-2">evento</span>, <span class="cm-variable-2">diario</span>));
     }
   }
   <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
 }</pre>
-<p><a class=p_ident id="p_CGf69rc/Yq" href="#p_CGf69rc/Yq"></a>Working with <code>forEach</code> makes it slightly shorter
-and quite a bit cleaner.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_gIY8Dk2DPY" href="#c_gIY8Dk2DPY"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
+<p><a class=p_ident id="p_UZLr79l0Rf" href="#p_UZLr79l0Rf"></a> <code>forEach</code> la hace un poco más corta y limpia.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wOcEc0iiCF" href="#c_wOcEc0iiCF"></a><span class="cm-keyword">function</span> <span class="cm-variable">reuneCorrelaciones</span>(<span class="cm-def">diario</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
-  <span class="cm-variable-2">journal</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">entry</span>) {
-    <span class="cm-variable-2">entry</span>.<span class="cm-property">events</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
-      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">event</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
-        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">journal</span>));
+  <span class="cm-variable-2">diario</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">entrada</span>) {
+    <span class="cm-variable-2">entrada</span>.<span class="cm-property">eventos</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">evento</span>) {
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">evento</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
+        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">evento</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-variable-2">evento</span>, <span class="cm-variable-2">diario</span>));
     });
   });
   <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
 }</pre>
-<h2><a class=h_ident id="h_xxCc98lOBK" href="#h_xxCc98lOBK"></a>Higher-order functions</h2>
-<p><a class=p_ident id="p_cao2fH68Tj" href="#p_cao2fH68Tj"></a>Functions that
-operate on other functions, either by taking them as arguments or by
-returning them, are called <em>higher-order functions</em>. If you have
-already accepted the fact that functions are regular values, there is
-nothing particularly remarkable about the fact that such functions
-exist. The term comes from mathematics, where the distinction
-between functions and other values is taken more seriously.</p>
-<p><a class=p_ident id="p_+cgNTV2i2y" href="#p_+cgNTV2i2y"></a>Higher-order functions allow us to abstract over
-<em>actions</em>, not just values. They come in several forms. For example,
-you can have functions that create new functions.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9JAVbcWLFt" href="#c_9JAVbcWLFt"></a><span class="cm-keyword">function</span> <span class="cm-variable">greaterThan</span>(<span class="cm-def">n</span>) {
+<h2><a class=h_ident id="h_iHaS8IghUj" href="#h_iHaS8IghUj"></a>Funciones de Orden Superior</h2>
+<p><a class=p_ident id="p_JM62QA+E8j" href="#p_JM62QA+E8j"></a>Las funciones que
+operan en otras funceiones, ya sea tomándolas como argumentos o regresándolas,
+son llamadas <em>funciones de orden superior</em>. Si ya has aceptado el hecho de que las funciones son
+valores reulares, no hay nada de especial en el hecho de que estas funciones
+existan. El términos viene de las matemáticas, en dónde la distinción
+entre las funciones y otros valores es tomado más seriamente.</p>
+<p><a class=p_ident id="p_SNqFdBkCjg" href="#p_SNqFdBkCjg"></a>Las funciones de orden superior nos permiten abstraer
+<em>acciones</em>, no sólo valores. Pueden venir en diferentes formas. Por ejemplo
+puedes tener funciones que creen nuevas funciones.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_U82OoqyT25" href="#c_U82OoqyT25"></a><span class="cm-keyword">function</span> <span class="cm-variable">mayorQue</span>(<span class="cm-def">n</span>) {
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">m</span>) { <span class="cm-keyword">return</span> <span class="cm-variable-2">m</span> <span class="cm-operator">></span> <span class="cm-variable-2">n</span>; };
 }
-<span class="cm-keyword">var</span> <span class="cm-variable">greaterThan10</span> <span class="cm-operator">=</span> <span class="cm-variable">greaterThan</span>(<span class="cm-number">10</span>);
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">greaterThan10</span>(<span class="cm-number">11</span>));
+<span class="cm-keyword">var</span> <span class="cm-variable">mayorQue10</span> <span class="cm-operator">=</span> <span class="cm-variable">mayorQue</span>(<span class="cm-number">10</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mayorQue10</span>(<span class="cm-number">11</span>));
 <span class="cm-comment">// → true</span></pre>
-<p><a class=p_ident id="p_MKDSIQ0X9D" href="#p_MKDSIQ0X9D"></a>And you can have functions that change other functions.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_JVArXJ1Pc1" href="#c_JVArXJ1Pc1"></a><span class="cm-keyword">function</span> <span class="cm-variable">noisy</span>(<span class="cm-def">f</span>) {
+<p><a class=p_ident id="p_Q2brBZnlsJ" href="#p_Q2brBZnlsJ"></a>Y puedes tener funciones que cambien otras funciones.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1ZTqbAIReq" href="#c_1ZTqbAIReq"></a><span class="cm-keyword">function</span> <span class="cm-variable">ruidosa</span>(<span class="cm-def">f</span>) {
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">arg</span>) {
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"calling with"</span>, <span class="cm-variable-2">arg</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"llamando con"</span>, <span class="cm-variable-2">arg</span>);
     <span class="cm-keyword">var</span> <span class="cm-def">val</span> <span class="cm-operator">=</span> <span class="cm-variable-2">f</span>(<span class="cm-variable-2">arg</span>);
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"called with"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- got"</span>, <span class="cm-variable-2">val</span>);
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"llamada con"</span>, <span class="cm-variable-2">arg</span>, <span class="cm-string">"- got"</span>, <span class="cm-variable-2">val</span>);
     <span class="cm-keyword">return</span> <span class="cm-variable-2">val</span>;
   };
 }
-<span class="cm-variable">noisy</span>(<span class="cm-variable">Boolean</span>)(<span class="cm-number">0</span>);
-<span class="cm-comment">// → calling with 0</span>
-<span class="cm-comment">// → called with 0 - got false</span></pre>
-<p><a class=p_ident id="p_2qBy/XBHVa" href="#p_2qBy/XBHVa"></a>You can even write functions that provide new types of control flow.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_IiJsXvslVu" href="#c_IiJsXvslVu"></a><span class="cm-keyword">function</span> <span class="cm-variable">unless</span>(<span class="cm-def">test</span>, <span class="cm-def">then</span>) {
-  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">test</span>) <span class="cm-variable-2">then</span>();
+<span class="cm-variable">ruidosa</span>(<span class="cm-variable">Boolean</span>)(<span class="cm-number">0</span>);
+<span class="cm-comment">// → llamando con 0</span>
+<span class="cm-comment">// → llamada con 0 - obtuve false</span></pre>
+<p><a class=p_ident id="p_drvd7ppCfZ" href="#p_drvd7ppCfZ"></a>Incluso puedes escribir funciones que creen nuevos tipos control de flujo.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_6kJDoqCIiQ" href="#c_6kJDoqCIiQ"></a><span class="cm-keyword">function</span> <span class="cm-variable">a_menos_que</span>(<span class="cm-def">condicion</span>, <span class="cm-def">entonces</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">condicion</span>) <span class="cm-variable-2">entonces</span>();
 }
-<span class="cm-keyword">function</span> <span class="cm-variable">repeat</span>(<span class="cm-def">times</span>, <span class="cm-def">body</span>) {
-  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">times</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) <span class="cm-variable-2">body</span>(<span class="cm-variable-2">i</span>);
+<span class="cm-keyword">function</span> <span class="cm-variable">repetir</span>(<span class="cm-def">veces</span>, <span class="cm-def">cuerpo</span>) {
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">veces</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) <span class="cm-variable-2">cuerpo</span>(<span class="cm-variable-2">i</span>);
 }
 
-<span class="cm-variable">repeat</span>(<span class="cm-number">3</span>, <span class="cm-keyword">function</span>(<span class="cm-def">n</span>) {
-  <span class="cm-variable">unless</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">%</span> <span class="cm-number">2</span>, <span class="cm-keyword">function</span>() {
-    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">n</span>, <span class="cm-string">"is even"</span>);
+<span class="cm-variable">repetir</span>(<span class="cm-number">3</span>, <span class="cm-keyword">function</span>(<span class="cm-def">n</span>) {
+  <span class="cm-variable">a_menos_que</span>(<span class="cm-variable-2">n</span> <span class="cm-operator">%</span> <span class="cm-number">2</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">n</span>, <span class="cm-string">"es par"</span>);
   });
 });
-<span class="cm-comment">// → 0 is even</span>
-<span class="cm-comment">// → 2 is even</span></pre>
+<span class="cm-comment">// → 0 es par</span>
+<span class="cm-comment">// → 2 es par</span></pre>
 <p><a class=p_ident id="p_i6rGSdWQvz" href="#p_i6rGSdWQvz"></a>The lexical scoping
 rules that we discussed in <a href="03_functions.html#scoping">Chapter 3</a>
 work to our advantage when using functions in this way. In the previous example, the <code>n</code> variable is a parameter to the outer function.
@@ -786,8 +798,8 @@ the function also returns the correct value when it reaches the end of
 the array.</p>
 </div></div>
 <nav>
-  <a href="04_data.html" title="previous chapter">◀</a>
+  <a href="04_data.html" title="capítulo previo">◀</a>
   <a href="index.html" title="cover">◆</a>
-  <a href="06_object.html" title="next chapter">▶</a>
+  <a href="06_object.html" title="capítulo siguiente">▶</a>
 </nav>
 </article>

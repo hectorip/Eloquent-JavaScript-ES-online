@@ -104,92 +104,92 @@ variable alberga actualmente. He aquí un ejemplo:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_v1fZTgCdHj" href="#c_v1fZTgCdHj"></a><span class="cm-keyword">var</span> <span class="cm-variable">ten</span> <span class="cm-operator">=</span> <span class="cm-number">10</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">ten</span> <span class="cm-operator">*</span> <span class="cm-variable">ten</span>);
 <span class="cm-comment">// → 100</span></pre>
-<p><a class=p_ident id="p_TPVvmRq49D" href="#p_TPVvmRq49D"></a>Variable names can be any word that isn&#8217;t
-a reserved word (such as <code>var</code>). They may not include spaces.
-Digits can also be part of variable names—<code>catch22</code> is a valid name,
-for example—but the name must not start with a digit. A variable name
-cannot include punctuation, except for the characters <code>$</code> and <code>_</code>.</p>
-<p><a class=p_ident id="p_ew9BThyy9D" href="#p_ew9BThyy9D"></a>When a
-variable points at a value, that does not mean it is tied to that
-value forever. The <code>=</code> operator can be used at any time on existing
-variables to disconnect them from their current value and have them
-point to a new one.</p>
+<p><a class=p_ident id="p_4yQS2CNr3V" href="#p_4yQS2CNr3V"></a>Los nombres de variables pueden ser cualquier palabra que no es
+una palabra reservada (tal como <code>var</code>). Ellos no pueden incluir espacios.
+Dígitos también pueden ser parte de la variable nombre—<code>catch22</code> es un nombre válido,
+por ejemplo-, pero el nombre no debe comenzar con un dígito. Un nombre de variable
+no puede incluir puntuacion, a excepción de los caracteres <code>$</code> y <code>_</code>.</p>
+<p><a class=p_ident id="p_EhiwnAEazK" href="#p_EhiwnAEazK"></a>(((variable,assignment))Cuando una
+variable apunta a un valor, eso no quiere decir que está ligado a ese
+valor para siempre. El operador de <code>=</code> se puede utilizar en cualquier momento en variables
+existentes para desconectarlas de su valor actual y etenerlas
+apuntando a una nueva.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DgDcf/xkZV" href="#c_DgDcf/xkZV"></a><span class="cm-keyword">var</span> <span class="cm-variable">mood</span> <span class="cm-operator">=</span> <span class="cm-string">"light"</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mood</span>);
 <span class="cm-comment">// → light</span>
 <span class="cm-variable">mood</span> <span class="cm-operator">=</span> <span class="cm-string">"dark"</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mood</span>);
 <span class="cm-comment">// → dark</span></pre>
-<p><a class=p_ident id="p_tdX1rrdcPQ" href="#p_tdX1rrdcPQ"></a>You should
-imagine variables as tentacles, rather than boxes. They do not
-<em>contain</em> values; they <em>grasp</em> them—two variables can refer to the
-same value. A program can access only the values that it still has a
-hold on. When you need to remember something, you grow a tentacle to
-hold on to it or you reattach one of your existing tentacles to it.</p>
+<p><a class=p_ident id="p_jcb0QN5H53" href="#p_jcb0QN5H53"></a> Debieras
+imaginar variables como tentáculos, en lugar de las cajas. Ellas no
+<em>contienen _ valores; ellas _grasp</em> them—two variables pueden referirse la
+mismo valor. Un programa puede acceder sólo los valores que todavía tiene a
+hold on. Cuando usted necesita recordar algo, haces crecer un tentáculo para
+afferarse a ello or you reattach one of your existing tentacles to it.</p>
 <div class="image">
   <img src="img/octopus.jpg" alt="Variables as tentacles">
 </div>
-<p><a class=p_ident id="p_bJwHD1AmQW" href="#p_bJwHD1AmQW"></a>Let&#8217;s look at an example. To remember the number of dollars that Luigi
-still owes you, you create a variable. And then when he pays back $35,
-you give this variable a new value.</p>
+<p><a class=p_ident id="p_yt1JaUclMh" href="#p_yt1JaUclMh"></a>Veamos un ejemplo. Para recordar el número de dólares que Luigi
+aún te debe, se crea una variable. Y luego, cuando él te paga $ 35,
+tu das a esta variable un valor nuevo.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_kgxqlrIFy2" href="#c_kgxqlrIFy2"></a><span class="cm-keyword">var</span> <span class="cm-variable">luigisDebt</span> <span class="cm-operator">=</span> <span class="cm-number">140</span>;
 <span class="cm-variable">luigisDebt</span> <span class="cm-operator">=</span> <span class="cm-variable">luigisDebt</span> <span class="cm-operator">-</span> <span class="cm-number">35</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">luigisDebt</span>);
 <span class="cm-comment">// → 105</span></pre>
-<p><a class=p_ident id="p_Kti5/Q6NH3" href="#p_Kti5/Q6NH3"></a>When you define a variable without giving it a value,
-the tentacle has nothing to grasp, so it ends in thin air. If you ask
-for the value of an empty variable, you&#8217;ll get the value <code>undefined</code>.</p>
-<p><a class=p_ident id="p_/AKSyKwnu0" href="#p_/AKSyKwnu0"></a>A single <code>var</code> statement may define multiple
-variables. The definitions must be separated by commas.</p>
+<p><a class=p_ident id="p_DjD2m94mVF" href="#p_DjD2m94mVF"></a>Cuando se define una variable sin darle un valor,
+el tentáculo no tiene nada de que enteder, por lo que termina en el aire. Si le preguntas
+por el valor de una variable vacía, obtendrá el valor de <code>undefined (indefinido)</code>.</p>
+<p><a class=p_ident id="p_UY+Hcq6MaL" href="#p_UY+Hcq6MaL"></a>Una sola <code>var</code> declaración puede definir múltiples
+variables. Las definiciones deben estar separados por comas.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3ZOoKK6DZQ" href="#c_3ZOoKK6DZQ"></a><span class="cm-keyword">var</span> <span class="cm-variable">one</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>, <span class="cm-variable">two</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">one</span> <span class="cm-operator">+</span> <span class="cm-variable">two</span>);
 <span class="cm-comment">// → 3</span></pre>
-<h2><a class=h_ident id="h_ko4pqLOTdI" href="#h_ko4pqLOTdI"></a>Keywords and reserved words</h2>
-<p><a class=p_ident id="p_GioEDRc+dl" href="#p_GioEDRc+dl"></a>Words with
-a special meaning, such as <code>var</code>, are <em>keywords</em>, and they may not
-be used as variable names. There are also a number of words that are
-“reserved for use” in future versions of JavaScript. These are also
-officially not allowed to be used as variable names, though some
-JavaScript environments do allow them. The full list of keywords and
-reserved words is rather long.</p>
+<h2><a class=h_ident id="h_8NNBb9ucwT" href="#h_8NNBb9ucwT"></a>Palabras clave y palabras reservadas</h2>
+<p><a class=p_ident id="p_jVZGDp93c2" href="#p_jVZGDp93c2"></a>Palabras con
+un significado especial, como <code>var</code>, son <em>palabra reservadas</em>, y no se pueden ser
+utilizadas como nombres de variables. También hay un número de palabras que son
+“reservado para uso” en futuras versiones de JavaScript. Estos también
+oficialmente no pueden ser utilizados como nombres de variables, aunque algunos
+entornos de JavaScript hacen que puedan. La lista completa de palabras clave y
+palabras reservadas es bastante larga.</p>
 <pre data-language="text/plain" class="snippet cm-s-default"><a class=c_ident id="c_DsAGZZBb8k" href="#c_DsAGZZBb8k"></a>break case catch class const continue debugger
 default delete do else enum export extends false
 finally for function if implements import in
 instanceof interface let new null package private
 protected public return static super switch this
 throw true try typeof var void while with yield</pre>
-<p><a class=p_ident id="p_0pDQHpgrM3" href="#p_0pDQHpgrM3"></a>Don&#8217;t worry about memorizing these, but remember that this might be
-the problem when a variable definition does not work as expected.</p>
-<h2><a class=h_ident id="h_2Tc54fkIgF" href="#h_2Tc54fkIgF"></a>The environment</h2>
-<p><a class=p_ident id="p_tJKFexJV/j" href="#p_tJKFexJV/j"></a>The collection of variables and their values
-that exist at a given time is called the <em>environment</em>. When a
-program starts up, this environment is not empty. It always contains
-variables that are part of the language standard, and most of the
-time, it has variables that provide ways to interact with the
-surrounding system. For example, in a browser, there are variables
-and functions to inspect and influence the currently loaded website
-and to read mouse and keyboard input.</p>
-<h2><a class=h_ident id="h_K5Yd6h3Axg" href="#h_K5Yd6h3Axg"></a>Functions</h2>
-<p><a class=p_ident id="p_S7KjMy3yAl" href="#p_S7KjMy3yAl"></a>A lot of the values provided in the
-default environment have the type <em>function</em>. A function is a
-piece of program wrapped in a value. Such values can be <em>applied</em> in
-order to run the wrapped program. For example, in a browser
-environment, the variable <code>alert</code> holds a function that shows a little
-dialog box with a message. It is used like this:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_/bha8x/lU5" href="#c_/bha8x/lU5"></a><span class="cm-variable">alert</span>(<span class="cm-string">"Good morning!"</span>);</pre>
+<p><a class=p_ident id="p_ZOf5+ujD1t" href="#p_ZOf5+ujD1t"></a>No te preocupes por la memorización de estos, pero recuerda que esto podría ser
+el problema cuando una definición de variable no funciona como se esperaba.</p>
+<h2><a class=h_ident id="h_QDYVZFuV/L" href="#h_QDYVZFuV/L"></a>El entorno</h2>
+<p><a class=p_ident id="p_GrFhgvq02p" href="#p_GrFhgvq02p"></a>La colección de variables y sus valores
+que existe en un momento dado se llama el <em>entorno</em>. cuando una
+programa se pone en marcha, este entorno no está vacío. Siempre contiene
+variables que forman parte de la lenguaje estándar, y la mayoría de la
+tiempo, tiene variables que proporcionan formas de interactuar con el
+sistema de alrededores. por ejemplo, en un navegador, hay variables
+y funciones para inspeccionar e influir en la página web cargada en ese momento
+y leer ratón and teclado entrada.</p>
+<h2><a class=h_ident id="h_H0l5He7QIh" href="#h_H0l5He7QIh"></a>Funciones</h2>
+<p><a class=p_ident id="p_oK0YY9qmp3" href="#p_oK0YY9qmp3"></a>Una gran cantidad de los valores proporcionada en el
+entorno por defecto tienen el tipo <em>funcion</em>. Una función es un
+pedazo de programa envuelto en un valor. Tales valores pueden ser <em>aplicado</em> con
+el fin de ejecutar el programa envuelta. Por ejemplo, en un navegador
+entorno, la variable <code>alert</code> ejerce una función que muestra un poco
+cuadro de diálogo con un mensaje. Se utiliza como esto:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Dl/6ccqFbT" href="#c_Dl/6ccqFbT"></a><span class="cm-variable">alert</span>(<span class="cm-string">"Buenos días!"</span>);</pre>
 <div class="image">
   <img src="img/alert.png" alt="An alert dialog">
 </div>
-<p><a class=p_ident id="p_9qu6Ki2/lH" href="#p_9qu6Ki2/lH"></a>Executing a function is
-called <em>invoking</em>, <em>calling</em>, or <em>applying</em> it. You can call a
-function by putting parentheses after an expression that produces a
-function value. Usually you&#8217;ll directly use the name of the variable
-that holds the function. The values between the parentheses are given to
-the program inside the function. In the example, the <code>alert</code> function
-uses the string that we give it as the text to show in the dialog box.
-Values given to functions are called <em>arguments</em>. The <code>alert</code>
-function needs only one of them, but other functions might need a
-different number or different types of arguments.</p>
+<p><a class=p_ident id="p_8srvvDUNAW" href="#p_8srvvDUNAW"></a>La ejecución de una función se
+llamado <em>invoking</em>, <em>llamar</em>, or <em>aplicar</em> la. Usted puede llamar a un
+función poniendo paréntesis después de una expresión que produce una
+valor de la función. Por lo general, vamos a usar directamente el nombre de la variable
+que mantiene la función de. Los valores entre paréntesis le dan a
+el programa dentro de la función. En el ejemplo, la funcion de <code>alert</code>
+utiliza la cadena que le damos como el texto que se mostrará en el cuadro de diálogo.
+Los valores dados a las funciones se denominan <em>argumentos</em>. La funcion
+de <code>alert</code> necesita solo uno de ellos, pero otras funciones pueden necesitar un
+número diferente o diferentes tipos de argumentos.</p>
 <h2><a class=h_ident id="h_6+Vb3XQoaa" href="#h_6+Vb3XQoaa"></a>The console.log function</h2>
 <p><a class=p_ident id="p_HDjV1sA8vQ" href="#p_HDjV1sA8vQ"></a>The <code>alert</code> function
 can be useful as an output device when experimenting, but clicking
