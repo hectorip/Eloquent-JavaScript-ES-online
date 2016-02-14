@@ -77,65 +77,66 @@ producen los valores <code>1</code> y <code>verdadero</code> y los desechan inme
 Esto no deja ningún cambio en el mundo en absoluto. Al ejecutar el programa,
 nada observable sucede.</p>
 <p><a class=p_ident id="p_cfI3s2SImw" href="#p_cfI3s2SImw"></a>En algunos casos, JavaScript te permite
-omitir el punto y coma al final de una instrucción. En otros casos, tiene que
-estar allí, o la siguiente linea serán tratados como parte de la misma
+omitir el punto y coma al final de una declaración. En otros casos, tiene que
+estar allí, o la siguiente linea será tratada como parte de la misma
 declaración. Las reglas para cuando se puede omitir con seguridad son algo
-complejas y es propenso a errores. En este libro, cada declaración que necesita un
-punto y coma siempre será terminada por un punto y coma. Te recomiendo que hagas lo
+complejas y propensas a errores. En este libro, cada declaración que necesite un
+punto y coma siempre será terminada por un punto y coma4. Te recomiendo que hagas lo
 mismo en tus propios programas, al menos hasta que hayas aprendido más sobre
 sutilezas involucradas en omitir el punto y coma.</p>
 <h2><a class=h_ident id="h_rAGNsfewCX" href="#h_rAGNsfewCX"></a>Variables</h2>
-<p><a class=p_ident id="p_23AAiBseHZ" href="#p_23AAiBseHZ"></a> ¿Cómo
-un programa de mantener un estado estado? ¿Cómo recuerda
-cosas? Hemos visto cómo producir nuevos valores de viejos valores, pero
+<p><a class=p_ident id="p_V27Ka42Lvw" href="#p_V27Ka42Lvw"></a> ¿Cómo
+mantiene un programa su estado interno? ¿Cómo recuerda algo?
+Hemos visto cómo producir nuevos valores de viejos valores, pero
 esto no cambia los valores antiguos, y el nuevo valor tiene que ser
 inmediatamente utilizado o se disipará de nuevo. Para atrapar y mantener los valores,
 JavaScript proporciona una cosa llamada <em>variable</em>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_eDAXp+U+Cr" href="#c_eDAXp+U+Cr"></a><span class="cm-keyword">var</span> <span class="cm-variable">caught</span> <span class="cm-operator">=</span> <span class="cm-number">5</span> <span class="cm-operator">*</span> <span class="cm-number">5</span>;</pre>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NkjyvO4fF/" href="#c_NkjyvO4fF/"></a><span class="cm-keyword">var</span> <span class="cm-variable">atrapado</span> <span class="cm-operator">=</span> <span class="cm-number">5</span> <span class="cm-operator">*</span> <span class="cm-number">5</span>;</pre>
 <p><a class=p_ident id="p_ZzDmGqjQiH" href="#p_ZzDmGqjQiH"></a>Y eso nos da nuestra segunda clase de declaración.
-La palabra especial (<em>keyword</em>) <code>var</code> indica que esta frase
-va a definir una variable. Es seguido por el nombre de la variable
+La palabra especial(<em>palabra reservada</em> o <em>keyword</em>) <code>var</code> indica que
+esta frase va a definir una variable. Es seguida por el nombre de la variable
 y, si queremos dar de inmediato un valor, con un operador de <code>=</code> y
 una expresión.</p>
-<p><a class=p_ident id="p_xQ9bkoRqPa" href="#p_xQ9bkoRqPa"></a>La declaración anterior crea una variable llamada <code>caught</code> y se usa
-para agarrar el número que se produce al multiplicar 5 por 5.</p>
+<p><a class=p_ident id="p_xQ9bkoRqPa" href="#p_xQ9bkoRqPa"></a>La declaración anterior crea una variable llamada <code>atrapado</code> y se usa
+para retener el número que se produce al multiplicar 5 por 5.</p>
 <p><a class=p_ident id="p_PhpIn27svc" href="#p_PhpIn27svc"></a>Después de que una variable se ha definido, su nombre puede ser usado como una
 expresión. El valor de esa expresión es el valor que la
 variable alberga actualmente. He aquí un ejemplo:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_v1fZTgCdHj" href="#c_v1fZTgCdHj"></a><span class="cm-keyword">var</span> <span class="cm-variable">ten</span> <span class="cm-operator">=</span> <span class="cm-number">10</span>;
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">ten</span> <span class="cm-operator">*</span> <span class="cm-variable">ten</span>);
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_5Fj2W0KUk/" href="#c_5Fj2W0KUk/"></a><span class="cm-keyword">var</span> <span class="cm-variable">diez</span> <span class="cm-operator">=</span> <span class="cm-number">10</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">diez</span> <span class="cm-operator">*</span> <span class="cm-variable">diez</span>);
 <span class="cm-comment">// → 100</span></pre>
-<p><a class=p_ident id="p_4yQS2CNr3V" href="#p_4yQS2CNr3V"></a>Los nombres de variables pueden ser cualquier palabra que no es
-una palabra reservada (tal como <code>var</code>). Ellos no pueden incluir espacios.
-Dígitos también pueden ser parte de la variable nombre—<code>catch22</code> es un nombre válido,
-por ejemplo-, pero el nombre no debe comenzar con un dígito. Un nombre de variable
-no puede incluir puntuacion, a excepción de los caracteres <code>$</code> y <code>_</code>.</p>
-<p><a class=p_ident id="p_EhiwnAEazK" href="#p_EhiwnAEazK"></a>(((variable,assignment))Cuando una
-variable apunta a un valor, eso no quiere decir que está ligado a ese
-valor para siempre. El operador de <code>=</code> se puede utilizar en cualquier momento en variables
-existentes para desconectarlas de su valor actual y etenerlas
-apuntando a una nueva.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DgDcf/xkZV" href="#c_DgDcf/xkZV"></a><span class="cm-keyword">var</span> <span class="cm-variable">mood</span> <span class="cm-operator">=</span> <span class="cm-string">"light"</span>;
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mood</span>);
-<span class="cm-comment">// → light</span>
-<span class="cm-variable">mood</span> <span class="cm-operator">=</span> <span class="cm-string">"dark"</span>;
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mood</span>);
-<span class="cm-comment">// → dark</span></pre>
-<p><a class=p_ident id="p_jcb0QN5H53" href="#p_jcb0QN5H53"></a> Debieras
-imaginar variables como tentáculos, en lugar de las cajas. Ellas no
-<em>contienen _ valores; ellas _grasp</em> them—two variables pueden referirse la
-mismo valor. Un programa puede acceder sólo los valores que todavía tiene a
-hold on. Cuando usted necesita recordar algo, haces crecer un tentáculo para
-afferarse a ello or you reattach one of your existing tentacles to it.</p>
+<p><a class=p_ident id="p_4yQS2CNr3V" href="#p_4yQS2CNr3V"></a>Los nombres de variables pueden ser cualquier
+palabra que no sea una palabra reservada (tal como <code>var</code>). Estos no pueden incluir
+espacios. Los dígitos también pueden ser parte de la variable nombre —<code>catch22</code>
+es un nombre válido, por ejemplo-, pero el nombre no debe comenzar con un dígito.
+Un nombre de variable no puede incluir puntuación, a excepción de los caracteres
+<code>$</code> y <code>_</code>.</p>
+<p><a class=p_ident id="p_g3gUrfJvu0" href="#p_g3gUrfJvu0"></a>(((variable,asiganción))Cuando una
+variable apunta a un valor, eso no quiere decir que está ligada a ese
+valor para siempre. El operador <code>=</code> se puede utilizar en cualquier momento
+en variables existentes para desconectarlas de su valor actual y apuntarlas
+a uno nuevo.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_jQkMoFVKfb" href="#c_jQkMoFVKfb"></a><span class="cm-keyword">var</span> <span class="cm-variable">tono</span> <span class="cm-operator">=</span> <span class="cm-string">"claro"</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tono</span>);
+<span class="cm-comment">// → claro</span>
+<span class="cm-variable">tono</span> <span class="cm-operator">=</span> <span class="cm-string">"oscuro"</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tono</span>);
+<span class="cm-comment">// → oscuro</span></pre>
+<p><a class=p_ident id="p_tiDzDIV7T/" href="#p_tiDzDIV7T/"></a> Podrías
+imaginar  las variables como tentáculos, en lugar de la cajas. Estas no
+<em>contienen _ valores; los _agarran</em> -dos variables pueden referirse al
+mismo valor. Un programa puede acceder sólo los valores que todavía mantiene detenidos.
+Cuando necesitas recordar algo, haces crecer un tentáculo para
+agarrarlo o cambias unos de tus tentáculos existentes para agarrarlo.</p>
 <div class="image">
   <img src="img/octopus.jpg" alt="Variables as tentacles">
 </div>
 <p><a class=p_ident id="p_yt1JaUclMh" href="#p_yt1JaUclMh"></a>Veamos un ejemplo. Para recordar el número de dólares que Luigi
 aún te debe, se crea una variable. Y luego, cuando él te paga $ 35,
-tu das a esta variable un valor nuevo.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_kgxqlrIFy2" href="#c_kgxqlrIFy2"></a><span class="cm-keyword">var</span> <span class="cm-variable">luigisDebt</span> <span class="cm-operator">=</span> <span class="cm-number">140</span>;
-<span class="cm-variable">luigisDebt</span> <span class="cm-operator">=</span> <span class="cm-variable">luigisDebt</span> <span class="cm-operator">-</span> <span class="cm-number">35</span>;
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">luigisDebt</span>);
+le das a esta variable un valor nuevo.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_GgOyJZDcSo" href="#c_GgOyJZDcSo"></a><span class="cm-keyword">var</span> <span class="cm-variable">deudaDeLuigi</span> <span class="cm-operator">=</span> <span class="cm-number">140</span>;
+<span class="cm-variable">deudaDeLuigi</span> <span class="cm-operator">=</span> <span class="cm-variable">deudaDeLuigi</span> <span class="cm-operator">-</span> <span class="cm-number">35</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">deudaDeLuigi</span>);
 <span class="cm-comment">// → 105</span></pre>
 <p><a class=p_ident id="p_DjD2m94mVF" href="#p_DjD2m94mVF"></a>Cuando se define una variable sin darle un valor,
 el tentáculo no tiene nada de que enteder, por lo que termina en el aire. Si le preguntas
