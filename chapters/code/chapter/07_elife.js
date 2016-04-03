@@ -263,9 +263,9 @@ actionTypes.reproduce = function(critter, vector, action) {
 function Plant() {
   this.energy = 3 + Math.random() * 4;
 }
-Plant.prototype.act = function(context) {
+Plant.prototype.act = function(view) {
   if (this.energy > 15) {
-    var space = context.find(" ");
+    var space = view.find(" ");
     if (space)
       return {type: "reproduce", direction: space};
   }
@@ -276,11 +276,11 @@ Plant.prototype.act = function(context) {
 function PlantEater() {
   this.energy = 20;
 }
-PlantEater.prototype.act = function(context) {
-  var space = context.find(" ");
+PlantEater.prototype.act = function(view) {
+  var space = view.find(" ");
   if (this.energy > 60 && space)
     return {type: "reproduce", direction: space};
-  var plant = context.find("*");
+  var plant = view.find("*");
   if (plant)
     return {type: "eat", direction: plant};
   if (space)

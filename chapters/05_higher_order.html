@@ -150,8 +150,17 @@ nuestra acción como un valor función.</p>
 <span class="cm-comment">// → Wampeter</span>
 <span class="cm-comment">// → Foma</span>
 <span class="cm-comment">// → Granfalloon</span></pre>
-<p><a class=p_ident id="p_LjPN3c0PYw" href="#p_LjPN3c0PYw"></a>A menudo, no le pasas una  función predefinida a <code>forEach</code> sino que
+<p><a class=p_ident id="p_k+14U6kHZ9" href="#p_k+14U6kHZ9"></a>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+A menudo, no le pasas una  función predefinida a <code>forEach</code> sino que
 creas una función en el acto.</p>
+<div class="exampleblock">
+<div class="content">
+<p><a class=p_ident id="p_gLkhZ+aBcQ" href="#p_gLkhZ+aBcQ"></a>(In some browsers, calling <code>console.log</code> in this way does not work.
+You can use <code>alert</code> instead of <code>console.log</code> if this example fails to
+work.)</p>
+<p><a class=p_ident id="p_wdngmP0tn9" href="#p_wdngmP0tn9"></a>Often, you don&#8217;t pass a predefined function to <code>forEach</code> but create
+a function value on the spot instead.
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; marijnh/master</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_a6CP0H6Zq0" href="#c_a6CP0H6Zq0"></a><span class="cm-keyword">var</span> <span class="cm-variable">numeros</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>, <span class="cm-number">5</span>], <span class="cm-variable">suma</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
 <span class="cm-variable">forEach</span>(<span class="cm-variable">numeros</span>, <span class="cm-keyword">function</span>(<span class="cm-def">numero</span>) {
   <span class="cm-variable">suma</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">numero</span>;
@@ -197,7 +206,6 @@ recorren un arreglo.</p>
   });
   <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
 }</pre>
-<h2><a class=h_ident id="h_iHaS8IghUj" href="#h_iHaS8IghUj"></a>Funciones de Orden Superior</h2>
 <p><a class=p_ident id="p_JM62QA+E8j" href="#p_JM62QA+E8j"></a>Las funciones que
 operan en otras funceiones, ya sea tomándolas como argumentos o regresándolas,
 son llamadas <em>funciones de orden superior</em>. Si ya has aceptado el hecho de que las funciones son
@@ -250,7 +258,6 @@ used in regular loops and conditional statements. An important
 difference is that variables declared inside inner functions do not
 end up in the environment of the outer function. And that is usually a
 good thing.</p>
-<h2><a class=h_ident id="h_7/X8BSjdvi" href="#h_7/X8BSjdvi"></a>Passing along arguments</h2>
 <p><a class=p_ident id="p_IYAO9/PwTt" href="#p_IYAO9/PwTt"></a>The <code>noisy</code> function
 defined earlier, which wraps its argument in another function, has a rather
 serious deficit.</p>
@@ -285,7 +292,6 @@ its own <code>arguments</code> object to <code>apply</code>. The first argument 
 for which we are passing <code>null</code> here, can be used to simulate a
 method call. We will come back to that in the
 <a href="06_object.html#call_method">next chapter</a>.</p>
-<h2><a class=h_ident id="h_AxpOdvCznQ" href="#h_AxpOdvCznQ"></a>JSON</h2>
 <p><a class=p_ident id="p_A2VaNOTR7R" href="#p_A2VaNOTR7R"></a>Higher-order functions that somehow apply a function to the
 elements of an array are widely used in JavaScript. The <code>forEach</code>
 method is the most primitive such function. There are a number of
@@ -339,7 +345,6 @@ many people it contains.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_iIU5d+0x1R" href="#c_iIU5d+0x1R"></a><span class="cm-keyword">var</span> <span class="cm-variable">ancestry</span> <span class="cm-operator">=</span> <span class="cm-variable">JSON</span>.<span class="cm-property">parse</span>(<span class="cm-variable">ANCESTRY_FILE</span>);
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">ancestry</span>.<span class="cm-property">length</span>);
 <span class="cm-comment">// → 39</span></pre>
-<h2><a class=h_ident id="h_1BJbwiI0gI" href="#h_1BJbwiI0gI"></a>Filtering an array</h2>
 <p><a class=p_ident id="p_Vpf83lHLbL" href="#p_Vpf83lHLbL"></a>To find
 the people in the ancestry data set who were young in 1924, the
 following function might be helpful. It filters out the elements in an
@@ -376,7 +381,6 @@ internally. From now on, we&#8217;ll use it like this instead:</p>
   <span class="cm-keyword">return</span> <span class="cm-variable-2">person</span>.<span class="cm-property">father</span> <span class="cm-operator">==</span> <span class="cm-string">"Carel Haverbeke"</span>;
 }));
 <span class="cm-comment">// → [{name: "Carolus Haverbeke", …}]</span></pre>
-<h2><a class=h_ident id="h_lJEtQ+qjXz" href="#h_lJEtQ+qjXz"></a>Transforming with map</h2>
 <p><a class=p_ident id="p_iZsa8JAje9" href="#p_iZsa8JAje9"></a>Say we
 have an array of objects representing people, produced by filtering
 the <code>ancestry</code> array somehow. But we want an array of names, which is
@@ -407,7 +411,6 @@ same three people who we saw before—the people who were young in the
 I guess medicine has come a long way.</p>
 <p><a class=p_ident id="p_kz8fxQbtBm" href="#p_kz8fxQbtBm"></a>Like <code>forEach</code> and <code>filter</code>, <code>map</code> is also a standard method on
 arrays.</p>
-<h2><a class=h_ident id="h_fx3e34kT/k" href="#h_fx3e34kT/k"></a>Summarizing with reduce</h2>
 <p><a class=p_ident id="p_jc3nW2aN35" href="#p_jc3nW2aN35"></a>Another common pattern of computation on arrays is computing
 a single value from them. Our recurring example, summing a collection
 of numbers, is an instance of this. Another example would be finding
@@ -444,7 +447,6 @@ ancient known ancestor, we can write something like this:</p>
   <span class="cm-keyword">else</span> <span class="cm-keyword">return</span> <span class="cm-variable-2">min</span>;
 }));
 <span class="cm-comment">// → {name: "Pauwels van Haverbeke", born: 1535, …}</span></pre>
-<h2><a class=h_ident id="h_+NeFt8aXxf" href="#h_+NeFt8aXxf"></a>Composability</h2>
 <p><a class=p_ident id="p_UHvCjnmGjM" href="#p_UHvCjnmGjM"></a>Consider how we would
 have written the previous example (finding the person with the
 earliest year of birth) without higher-order functions. The code is
@@ -485,7 +487,6 @@ interested in—determining sex, computing age, and averaging numbers. We
 can apply these one by one to get the result we are looking for.</p>
 <p><a class=p_ident id="p_ZOp8f8zApw" href="#p_ZOp8f8zApw"></a>This is <em>fabulous</em> for writing clear code. Unfortunately, this clarity
 comes at a cost.</p>
-<h2><a class=h_ident id="h_KTy9HpX3R4" href="#h_KTy9HpX3R4"></a>The cost</h2>
 <p><a class=p_ident id="p_ROxex88LkV" href="#p_ROxex88LkV"></a>In the happy land of elegant code
 and pretty rainbows, there lives a spoil-sport monster called
 <em>inefficiency</em>.</p>
@@ -522,7 +523,6 @@ of the outer loop. If that inner loop contains another loop that makes
 <em>P</em> rounds, its body will run <em>M</em>×<em>N</em>×<em>P</em> times, and so on. This
 can add up to large numbers, and when a program is slow, the problem
 can often be traced to only a small part of the code, which sits inside an inner loop.</p>
-<h2><a class=h_ident id="h_XnMZS4zMW6" href="#h_XnMZS4zMW6"></a>Great-great-great-great-...</h2>
 <p><a class=p_ident id="p_Typ91CWfYn" href="#p_Typ91CWfYn"></a>My grandfather, Philibert Haverbeke, is
 included in the data file. By starting with him, I can trace my
 lineage to find out whether the most ancient person in the data,
@@ -605,16 +605,16 @@ statistical approximation, not an exact amount. It is a rather small
 number, but given how much genetic material we carry (about 3 billion
 base pairs), there&#8217;s still probably some aspect in the biological
 machine that is me that originates with Pauwels.</p>
-<p><a class=p_ident id="p_GcwzcbaVkE" href="#p_GcwzcbaVkE"></a>We could also have computed this number
+<p><a class=p_ident id="p_9W8GK5HRM6" href="#p_9W8GK5HRM6"></a>We could also have computed this number
 without relying on <code>reduceAncestors</code>. But separating the general
 approach (condensing a family tree) from the specific case (computing
-shared DNA) can improve the clarity of the code and allows us to
-reuse the abstract part of the program for other cases. For example,
-the following code finds the percentage of known ancestors, for a
-given person, who lived past 70:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wz0PzuR/zD" href="#c_wz0PzuR/zD"></a><span class="cm-keyword">function</span> <span class="cm-variable">countAncestors</span>(<span class="cm-def">person</span>, <span class="cm-def">test</span>) {
-  <span class="cm-keyword">function</span> <span class="cm-def">combine</span>(<span class="cm-def">person</span>, <span class="cm-def">fromMother</span>, <span class="cm-def">fromFather</span>) {
-    <span class="cm-keyword">var</span> <span class="cm-def">thisOneCounts</span> <span class="cm-operator">=</span> <span class="cm-variable-2">test</span>(<span class="cm-variable-2">person</span>);
+shared DNA) can improve the clarity of the code and allows us to reuse
+the abstract part of the program for other cases. For example, the
+following code finds the percentage of a person&#8217;s known ancestors who
+lived past 70 (by lineage, so people may be counted multiple times):</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_8JFA4YEKi4" href="#c_8JFA4YEKi4"></a><span class="cm-keyword">function</span> <span class="cm-variable">countAncestors</span>(<span class="cm-def">person</span>, <span class="cm-def">test</span>) {
+  <span class="cm-keyword">function</span> <span class="cm-def">combine</span>(<span class="cm-def">current</span>, <span class="cm-def">fromMother</span>, <span class="cm-def">fromFather</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">thisOneCounts</span> <span class="cm-operator">=</span> <span class="cm-variable-2">current</span> <span class="cm-operator">!=</span> <span class="cm-variable-2">person</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">test</span>(<span class="cm-variable-2">current</span>);
     <span class="cm-keyword">return</span> <span class="cm-variable-2">fromMother</span> <span class="cm-operator">+</span> <span class="cm-variable-2">fromFather</span> <span class="cm-operator">+</span> (<span class="cm-variable-2">thisOneCounts</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">0</span>);
   }
   <span class="cm-keyword">return</span> <span class="cm-variable">reduceAncestors</span>(<span class="cm-variable-2">person</span>, <span class="cm-variable-2">combine</span>, <span class="cm-number">0</span>);
@@ -629,13 +629,12 @@ given person, who lived past 70:</p>
   <span class="cm-keyword">return</span> <span class="cm-variable-2">longLiving</span> <span class="cm-operator">/</span> <span class="cm-variable-2">all</span>;
 }
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">longLivingPercentage</span>(<span class="cm-variable">byName</span>[<span class="cm-string">"Emile Haverbeke"</span>]));
-<span class="cm-comment">// → 0.145</span></pre>
+<span class="cm-comment">// → 0.129</span></pre>
 <p><a class=p_ident id="p_yX3KPrQkep" href="#p_yX3KPrQkep"></a>Such numbers are not to be taken too seriously, given that
 our data set contains a rather arbitrary collection of people. But the
 code illustrates the fact that <code>reduceAncestors</code> gives us a useful
 piece of vocabulary for working with the family tree data
 structure.</p>
-<h2><a class=h_ident id="h_fwBD5oTMLl" href="#h_fwBD5oTMLl"></a>Binding</h2>
 <p><a class=p_ident id="p_JR92h9ZvcR" href="#p_JR92h9ZvcR"></a>The <code>bind</code> method, which all
 functions have, creates a new function that will call the original
 function but with some of the arguments already fixed.</p>
@@ -666,7 +665,6 @@ to the bound function.</p>
 for method calls, similar to the first argument to <code>apply</code>. I&#8217;ll
 describe this in more detail in the
 <a href="06_object.html#call_method">next chapter</a>.</p>
-<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
 <p><a class=p_ident id="p_EmYdYeFPjo" href="#p_EmYdYeFPjo"></a>Being able to pass function values to other functions is not just a
 gimmick but a deeply useful aspect of JavaScript. It allows us to
 write computations with “gaps” in them as functions and have the code
@@ -680,15 +678,12 @@ combine all an array&#8217;s elements into a single value.</p>
 <p><a class=p_ident id="p_3UBuCIfCEM" href="#p_3UBuCIfCEM"></a>Functions have an <code>apply</code> method that can be used to call them with an
 array specifying their arguments. They also have a <code>bind</code> method,
 which is used to create a partially applied version of the function.</p>
-<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
-<h3><a class=h_ident id="h_aIOczlLyX1" href="#h_aIOczlLyX1"></a>Flattening</h3>
 <p><a class=p_ident id="p_RqAkArolEa" href="#p_RqAkArolEa"></a>Use the <code>reduce</code> method in combination with
 the <code>concat</code> method to “flatten” an array of arrays into a single
 array that has all the elements of the input arrays.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HFu+EZSG8B" href="#c_HFu+EZSG8B"></a><span class="cm-keyword">var</span> <span class="cm-variable">arrays</span> <span class="cm-operator">=</span> [[<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>], [<span class="cm-number">4</span>, <span class="cm-number">5</span>], [<span class="cm-number">6</span>]];
 <span class="cm-comment">// Your code here.</span>
 <span class="cm-comment">// → [1, 2, 3, 4, 5, 6]</span></pre>
-<h3><a class=h_ident id="h_I9XoVSLsTV" href="#h_I9XoVSLsTV"></a>Mother-child age difference</h3>
 <p><a class=p_ident id="p_a44KIXR4aT" href="#p_a44KIXR4aT"></a>Using the example data set from this chapter, compute the
 average age difference between mothers and children (the age of the
 mother when the child is born). You can use the <code>average</code> function
@@ -722,7 +717,6 @@ filtering on that first. Alternatively, you could start by calling
 or <code>null</code> if no mother is known. Then, you can call <code>filter</code> to remove
 the <code>null</code> elements before passing the array to <code>average</code>.</p>
 </div></div>
-<h3><a class=h_ident id="h_FkNn96IrQe" href="#h_FkNn96IrQe"></a>Historical life expectancy</h3>
 <p><a class=p_ident id="p_ENbLeUYppS" href="#p_ENbLeUYppS"></a>When we looked up all the people in
 our data set that lived more than 90 years, only the latest
 generation in the data came out. Let&#8217;s take a closer look at that
@@ -764,7 +758,6 @@ bonus points, write a function <code>groupBy</code> that abstracts the grouping
 operation. It should accept as arguments an array and a function that
 computes the group for an element in the array and returns an object
 that maps group names to arrays of group members.</p>
-<h3><a class=h_ident id="h_jr7hZiuR7+" href="#h_jr7hZiuR7+"></a>Every and then some</h3>
 <p><a class=p_ident id="p_BZKBxgsPML" href="#p_BZKBxgsPML"></a>Arrays also come with the standard methods <code>every</code> and
 <code>some</code>. Both take a predicate function that, when called with an array
 element as argument, returns true or false. Just like <code>&amp;&amp;</code>
@@ -796,6 +789,7 @@ the right value) when the predicate function returns false—or true.
 Don&#8217;t forget to put another <code>return</code> statement after the loop so that
 the function also returns the correct value when it reaches the end of
 the array.</p>
+</div></div>
 </div></div>
 <nav>
   <a href="04_data.html" title="capítulo previo">◀</a>

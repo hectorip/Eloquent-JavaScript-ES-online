@@ -90,11 +90,19 @@ CeldaTexto.prototype.dibujar = function(anchura, altura) {
   return resultado;
 };
 
+<<<<<<< HEAD
 function CeldaSubrayada(contenido) {
   this.contenido = contenido;
 };
 CeldaSubrayada.prototype.minAnchura = function() {
   return this.contenido.minAnchura();
+=======
+function UnderlinedCell(inner) {
+  this.inner = inner;
+}
+UnderlinedCell.prototype.minWidth = function() {
+  return this.inner.minWidth();
+>>>>>>> marijnh/master
 };
 CeldaSubrayada.prototype.minAltura = function() {
   return this.contenido.minAltura() + 1;
