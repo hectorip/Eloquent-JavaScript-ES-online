@@ -283,14 +283,14 @@ se escribe con la palabra clave <code>if</code> en JavaScript. En el caso sencil
 queremos que algo de código se ejecute si, y sólo si, cierta condición se cumple.
 Por ejemplo, en el programa previo, podríamos querer mostrar el cuadrado de
 la entrada sólo si la entrada es un número.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DPOOzOEZf+" href="#c_DPOOzOEZf+"></a><span class="cm-keyword">var</span> <span class="cm-variable">theNumber</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Pick a number"</span>, <span class="cm-string">""</span>));
-<span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">isNaN</span>(<span class="cm-variable">theNumber</span>))
-  <span class="cm-variable">alert</span>(<span class="cm-string">"Your number is the square root of "</span> <span class="cm-operator">+</span>
-        <span class="cm-variable">theNumber</span> <span class="cm-operator">*</span> <span class="cm-variable">theNumber</span>);</pre>
-<p><a class=p_ident id="p_d0Z3YQB6e1" href="#p_d0Z3YQB6e1"></a>With this modification, if you enter “cheese”, no output will be shown.</p>
-<p><a class=p_ident id="p_QqE0pn6CUK" href="#p_QqE0pn6CUK"></a>The keyword <code>if</code> executes or skips a statement depending on the value
-of a Boolean expression. The deciding expression is written after the
-keyword, between parentheses, followed by the statement to execute.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_eQoA3o52ka" href="#c_eQoA3o52ka"></a><span class="cm-keyword">var</span> <span class="cm-variable">elNumero</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Dame un número"</span>, <span class="cm-string">""</span>));
+<span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">isNaN</span>(<span class="cm-variable">elNumero</span>))
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Tu número es la raíz cuadrada de "</span> <span class="cm-operator">+</span>
+        <span class="cm-variable">elNumero</span> <span class="cm-operator">*</span> <span class="cm-variable">elNumero</span>);</pre>
+<p><a class=p_ident id="p_wm40Jh5aS8" href="#p_wm40Jh5aS8"></a>Con esta modificación, si le das "queso", no se mostrará ninguna salida.</p>
+<p><a class=p_ident id="p_0+nvuqCmLz" href="#p_0+nvuqCmLz"></a>La palbra clave <code>if</code> ejecuta o salta una sentencia dependiendo del valor
+de una expresión Booleana. La expresión de decisión se escribe después de
+la palbra clave, entre parántesis, seguida por una sentencia a ejecutar.</p>
 <p><a class=p_ident id="p_nJcsWbCJmU" href="#p_nJcsWbCJmU"></a>The <code>isNaN</code> function is a standard JavaScript
 function that returns <code>true</code> only if the argument it is given is
 <code>NaN</code>. The <code>Number</code> function happens to return <code>NaN</code> when you give it
