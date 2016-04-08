@@ -291,22 +291,21 @@ la entrada sólo si la entrada es un número.</p>
 <p><a class=p_ident id="p_0+nvuqCmLz" href="#p_0+nvuqCmLz"></a>La palbra clave <code>if</code> ejecuta o salta una sentencia dependiendo del valor
 de una expresión Booleana. La expresión de decisión se escribe después de
 la palbra clave, entre parántesis, seguida por una sentencia a ejecutar.</p>
-<p><a class=p_ident id="p_nJcsWbCJmU" href="#p_nJcsWbCJmU"></a>The <code>isNaN</code> function is a standard JavaScript
-function that returns <code>true</code> only if the argument it is given is
-<code>NaN</code>. The <code>Number</code> function happens to return <code>NaN</code> when you give it
-a string that doesn&#8217;t represent a valid number. Thus, the condition
-translates to “unless <code>theNumber</code> is not-a-number, do this”.</p>
-<p><a class=p_ident id="p_l1EGERvXxU" href="#p_l1EGERvXxU"></a>You often won&#8217;t just have code that executes when a
-condition holds true, but also code that handles the other case. This
-alternate path is represented by the second arrow in the
-diagram. The <code>else</code> keyword can be used, together with <code>if</code>, to create
-two separate, alternative execution paths.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2BC2dE/U8L" href="#c_2BC2dE/U8L"></a><span class="cm-keyword">var</span> <span class="cm-variable">theNumber</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Pick a number"</span>, <span class="cm-string">""</span>));
-<span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">isNaN</span>(<span class="cm-variable">theNumber</span>))
-  <span class="cm-variable">alert</span>(<span class="cm-string">"Your number is the square root of "</span> <span class="cm-operator">+</span>
-        <span class="cm-variable">theNumber</span> <span class="cm-operator">*</span> <span class="cm-variable">theNumber</span>);
+<p><a class=p_ident id="p_y/wb7CS1CP" href="#p_y/wb7CS1CP"></a>La función <code>inNaN</code> es una función estándar de JavaScript
+que regresa <code>true</code> sólo si el argumento que le diste es <code>NaN</code>. Resulta que
+la función Number regresa <code>NaN</code> cuando le das una cadena que no
+“a menos que  <code>elNumero</code> no sea un número, has esto”.</p>
+<p><a class=p_ident id="p_314DXtvLuA" href="#p_314DXtvLuA"></a>A menudo no sólo tendrás código que se ejecute cuando
+una condición sea verdadera, sino también que maneje el otro caso. Este camino
+alternativo es representado por la segunda flecha en el diagrama. La palabra
+clave <code>else</code> puede ser usada, junto con <code>if</code>, para crear dos rutas de ejecución
+separadas y alternativas.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pmkXrplbFy" href="#c_pmkXrplbFy"></a><span class="cm-keyword">var</span> <span class="cm-variable">elNumero</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Dame un número"</span>, <span class="cm-string">""</span>));
+<span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">isNaN</span>(<span class="cm-variable">elNumero</span>))
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Tu número es la raíz cuadrada de "</span> <span class="cm-operator">+</span>
+        <span class="cm-variable">elNumero</span> <span class="cm-operator">*</span> <span class="cm-variable">elNumero</span>);
 <span class="cm-keyword">else</span>
-  <span class="cm-variable">alert</span>(<span class="cm-string">"Hey. Why didn't you give me a number?"</span>);</pre>
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Hey. ¿Por qué no me diste un número?"</span>);</pre>
 <p><a class=p_ident id="p_ZmJjq4NvCB" href="#p_ZmJjq4NvCB"></a>If we have more than two paths to choose
 from, multiple <code>if</code>/<code>else</code> pairs can be “chained” together. Here&#8217;s an
 example:</p>
