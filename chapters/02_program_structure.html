@@ -306,24 +306,22 @@ separadas y alternativas.</p>
         <span class="cm-variable">elNumero</span> <span class="cm-operator">*</span> <span class="cm-variable">elNumero</span>);
 <span class="cm-keyword">else</span>
   <span class="cm-variable">alert</span>(<span class="cm-string">"Hey. ¿Por qué no me diste un número?"</span>);</pre>
-<p><a class=p_ident id="p_ZmJjq4NvCB" href="#p_ZmJjq4NvCB"></a>If we have more than two paths to choose
-from, multiple <code>if</code>/<code>else</code> pairs can be “chained” together. Here&#8217;s an
-example:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9aykimugCx" href="#c_9aykimugCx"></a><span class="cm-keyword">var</span> <span class="cm-variable">num</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Pick a number"</span>, <span class="cm-string">"0"</span>));
+<p><a class=p_ident id="p_k8pO5L03X0" href="#p_k8pO5L03X0"></a>Si tenemos más de dos caminos a escoger,
+varios pares de <code>if</code>/<code>else</code> pueden ser "encadenados". Aquí hay un ejemplo:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_r2fLO+mz3m" href="#c_r2fLO+mz3m"></a><span class="cm-keyword">var</span> <span class="cm-variable">num</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Dame un número"</span>, <span class="cm-string">"0"</span>));
 
 <span class="cm-keyword">if</span> (<span class="cm-variable">num</span> <span class="cm-operator">&lt;</span> <span class="cm-number">10</span>)
-  <span class="cm-variable">alert</span>(<span class="cm-string">"Small"</span>);
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Chico"</span>);
 <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable">num</span> <span class="cm-operator">&lt;</span> <span class="cm-number">100</span>)
-  <span class="cm-variable">alert</span>(<span class="cm-string">"Medium"</span>);
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Mediano"</span>);
 <span class="cm-keyword">else</span>
-  <span class="cm-variable">alert</span>(<span class="cm-string">"Large"</span>);</pre>
-<p><a class=p_ident id="p_6w2546HxbK" href="#p_6w2546HxbK"></a>The program will first check whether <code>num</code> is less than 10. If it is,
-it chooses that branch, shows <code>"Small"</code>, and is done. If it isn&#8217;t, it
-takes the <code>else</code> branch, which itself contains a second <code>if</code>. If the
-second condition (<code>&lt; 100</code>) holds, that means the number is between 10
-and 100, and <code>"Medium"</code> is shown. If it doesn&#8217;t, the second, and last,
-<code>else</code> branch is chosen.</p>
-<p><a class=p_ident id="p_JniuPPdJZD" href="#p_JniuPPdJZD"></a>The flow chart for this program looks something like this:</p>
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Grande"</span>);</pre>
+<p><a class=p_ident id="p_bfciP0sfN8" href="#p_bfciP0sfN8"></a>El programa primero checará sí <code>num</code> es menor que 10. Si lo es, escoge
+ese camino, muestra <code>"Chico"</code> y termina. Si no lo es, toma el el branch
+<code>else</code>, que en sí mismo contiene un segundo <code>if</code>. Si la segunda condición
+(<code>&lt; 100</code>) se cumple, significa que el número está entre 10 y 100, y se
+muestra <code>"Mediano"</code>. Si no lo es, el segundo y último <code>else</code> es escogido.</p>
+<p><a class=p_ident id="p_AfmgemcNIW" href="#p_AfmgemcNIW"></a>El diagrama de flujo para este programa es algo así:</p>
 <div class="image">
   <img src="img/controlflow-nested-if.svg" alt="Nested if control flow">
 </div>
