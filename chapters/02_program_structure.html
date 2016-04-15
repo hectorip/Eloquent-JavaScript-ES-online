@@ -343,14 +343,14 @@ forma de repetir algo de código. Esta forma de control de flujo es llamada <em>
 <div class="image">
   <img src="img/controlflow-loop.svg" alt="Loop control flow">
 </div>
-<p><a class=p_ident id="p_1PXG58nhBq" href="#p_1PXG58nhBq"></a>Looping control flow allows us to go
-back to some point in the program where we were before and repeat it
-with our current program state. If we combine this with a variable
-that counts, we can do something like this:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_VdVRvg/hoC" href="#c_VdVRvg/hoC"></a><span class="cm-keyword">var</span> <span class="cm-variable">number</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
-<span class="cm-keyword">while</span> (<span class="cm-variable">number</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">12</span>) {
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">number</span>);
-  <span class="cm-variable">number</span> <span class="cm-operator">=</span> <span class="cm-variable">number</span> <span class="cm-operator">+</span> <span class="cm-number">2</span>;
+<p><a class=p_ident id="p_/afmCQgm3h" href="#p_/afmCQgm3h"></a>El control de flujo por bucles nos
+permite regresar a cierto punto en el progrma en el que estuvimos antes
+y repetirlo con nuestro estado actual. Si combinamos esto con una variable
+que mantenga una cuenta, podemos hacer algo como lo siguiente:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_alz9dziJCZ" href="#c_alz9dziJCZ"></a><span class="cm-keyword">var</span> <span class="cm-variable">numero</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-keyword">while</span> (<span class="cm-variable">numero</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">12</span>) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">numero</span>);
+  <span class="cm-variable">numero</span> <span class="cm-operator">=</span> <span class="cm-variable">numero</span> <span class="cm-operator">+</span> <span class="cm-number">2</span>;
 }
 <span class="cm-comment">// → 0</span>
 <span class="cm-comment">// → 2</span>
