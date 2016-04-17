@@ -373,24 +373,24 @@ y para evitar tener que añadir o quitar las llaves cuando el número de
 sentencias en el cuerpo cambie. En este libro escribiré la mayoría de los
 cuerpos de una sola sentencia sin bloques, porque value la brevedad.
 Tú eres libre de usar el estilo que prefieras.</p>
-<p><a class=p_ident id="p_5AsEqW7qSx" href="#p_5AsEqW7qSx"></a>The variable <code>number</code> demonstrates the way
-a variable can track the progress of a program. Every time the
-loop repeats, <code>number</code> is incremented by <code>2</code>. Then, at the beginning
-of every repetition, it is compared with the number <code>12</code> to decide
-whether the program has done all the work it intended to do.</p>
-<p><a class=p_ident id="p_eimxKSJFYF" href="#p_eimxKSJFYF"></a>As an example that actually does something useful,
-we can now write a program that calculates and shows the value of
-2<sup>10</sup> (2 to the 10th power). We use two variables: one to keep
-track of our result and one to count how often we have multiplied this
-result by 2. The loop tests whether the second variable has reached 10
-yet and then updates both variables.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Ec0TnYkpCa" href="#c_Ec0TnYkpCa"></a><span class="cm-keyword">var</span> <span class="cm-variable">result</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
-<span class="cm-keyword">var</span> <span class="cm-variable">counter</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
-<span class="cm-keyword">while</span> (<span class="cm-variable">counter</span> <span class="cm-operator">&lt;</span> <span class="cm-number">10</span>) {
-  <span class="cm-variable">result</span> <span class="cm-operator">=</span> <span class="cm-variable">result</span> <span class="cm-operator">*</span> <span class="cm-number">2</span>;
-  <span class="cm-variable">counter</span> <span class="cm-operator">=</span> <span class="cm-variable">counter</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>;
+<p><a class=p_ident id="p_rlQhxFeCG6" href="#p_rlQhxFeCG6"></a>La variable número demuestra la forma en que
+una variable puede dar seguimiento al progreso de un programa.
+Cada vez que el bucle se repite, <code>numero</code> se incrementa en <code>2</code>. Entonces,
+al principio de cada repetición. es comparada con el número <code>12</code> para decidir
+si el programa ha hecho todo el trabajo que tenía que hacer.</p>
+<p><a class=p_ident id="p_Tb03OS8kY4" href="#p_Tb03OS8kY4"></a>Coomo un ejemplo que hace realmente algo útil,
+podemos escribir un programa que calcula y mustra el valor de 2^10
+(dos a la décima potencia). Usamos dos varianles: una para mantener el
+resultado y una para contar cuantas veces hemos multiplicado este
+resultado por dos. El bucle verifica si la segunda variable ha llegado
+a 10 y entonces actualiza las dos variables.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_B8/btNu0AN" href="#c_B8/btNu0AN"></a><span class="cm-keyword">var</span> <span class="cm-variable">resultado</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">contador</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-keyword">while</span> (<span class="cm-variable">contador</span> <span class="cm-operator">&lt;</span> <span class="cm-number">10</span>) {
+  <span class="cm-variable">resultado</span> <span class="cm-operator">=</span> <span class="cm-variable">resultado</span> <span class="cm-operator">*</span> <span class="cm-number">2</span>;
+  <span class="cm-variable">contador</span> <span class="cm-operator">=</span> <span class="cm-variable">contador</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>;
 }
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">result</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">resultado</span>);
 <span class="cm-comment">// → 1024</span></pre>
 <p><a class=p_ident id="p_MERlXZu4+T" href="#p_MERlXZu4+T"></a>The counter could also start at <code>1</code> and check for <code>&lt;= 10</code>, but, for
 reasons that will become apparent in
