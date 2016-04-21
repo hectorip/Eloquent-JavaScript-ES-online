@@ -401,10 +401,10 @@ control structure similar to the <code>while</code> loop. It differs only on one
 point: a <code>do</code> loop always executes its body at least once, and it
 starts testing whether it should stop only after that first execution.
 To reflect this, the test appears after the body of the loop:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WhNPkjCnm1" href="#c_WhNPkjCnm1"></a><span class="cm-keyword">do</span> {
-  <span class="cm-keyword">var</span> <span class="cm-variable">yourName</span> <span class="cm-operator">=</span> <span class="cm-variable">prompt</span>(<span class="cm-string">"Who are you?"</span>);
-} <span class="cm-keyword">while</span> (<span class="cm-operator">!</span><span class="cm-variable">yourName</span>);
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">yourName</span>);</pre>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pEgq9OFBNM" href="#c_pEgq9OFBNM"></a><span class="cm-keyword">do</span> {
+  <span class="cm-keyword">var</span> <span class="cm-variable">tuNombre</span> <span class="cm-operator">=</span> <span class="cm-variable">prompt</span>(<span class="cm-string">"¿Quién eres?"</span>);
+} <span class="cm-keyword">while</span> (<span class="cm-operator">!</span><span class="cm-variable">tuNombre</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tuNombre</span>);</pre>
 <p><a class=p_ident id="p_gpU7uCWE2q" href="#p_gpU7uCWE2q"></a>This program will
 force you to enter a name. It will ask again and again until it gets
 something that is not an empty string. Applying the <code>!</code> operator will
