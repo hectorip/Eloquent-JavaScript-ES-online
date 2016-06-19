@@ -673,12 +673,12 @@ framework to simulate these more lifelike creatures. We could put
 the critters from the old world into it, but they would just die
 since they don&#8217;t have an energy property. So let&#8217;s make new ones.
 First we&#8217;ll write a plant, which is a rather simple life-form.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_whLOc9GYbf" href="#c_whLOc9GYbf"></a><span class="cm-keyword">function</span> <span class="cm-variable">Plant</span>() {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_RQsOcWcml/" href="#c_RQsOcWcml/"></a><span class="cm-keyword">function</span> <span class="cm-variable">Plant</span>() {
   <span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">=</span> <span class="cm-number">3</span> <span class="cm-operator">+</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">4</span>;
 }
-<span class="cm-variable">Plant</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">context</span>) {
+<span class="cm-variable">Plant</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">view</span>) {
   <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">></span> <span class="cm-number">15</span>) {
-    <span class="cm-keyword">var</span> <span class="cm-def">space</span> <span class="cm-operator">=</span> <span class="cm-variable-2">context</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>);
+    <span class="cm-keyword">var</span> <span class="cm-def">space</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>);
     <span class="cm-keyword">if</span> (<span class="cm-variable-2">space</span>)
       <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"reproduce"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">space</span>};
   }
@@ -692,14 +692,14 @@ space nearby, it reproduces into that empty space. If a plant can&#8217;t
 reproduce, it simply grows until it reaches energy level 20.</p>
 <p><a class=p_ident id="p_xjp5a11XH7" href="#p_xjp5a11XH7"></a>We
 now define a plant eater.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MEDKDm6H1A" href="#c_MEDKDm6H1A"></a><span class="cm-keyword">function</span> <span class="cm-variable">PlantEater</span>() {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ddgWDpbvSl" href="#c_ddgWDpbvSl"></a><span class="cm-keyword">function</span> <span class="cm-variable">PlantEater</span>() {
   <span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">=</span> <span class="cm-number">20</span>;
 }
-<span class="cm-variable">PlantEater</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">context</span>) {
-  <span class="cm-keyword">var</span> <span class="cm-def">space</span> <span class="cm-operator">=</span> <span class="cm-variable-2">context</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>);
+<span class="cm-variable">PlantEater</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">view</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">space</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>);
   <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">></span> <span class="cm-number">60</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">space</span>)
     <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"reproduce"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">space</span>};
-  <span class="cm-keyword">var</span> <span class="cm-def">plant</span> <span class="cm-operator">=</span> <span class="cm-variable-2">context</span>.<span class="cm-property">find</span>(<span class="cm-string">"*"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">plant</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">"*"</span>);
   <span class="cm-keyword">if</span> (<span class="cm-variable-2">plant</span>)
     <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"eat"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">plant</span>};
   <span class="cm-keyword">if</span> (<span class="cm-variable-2">space</span>)

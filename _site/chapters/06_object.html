@@ -592,11 +592,19 @@ web .</p>
 nombres de las columnas, subrayando las celdas con una serie de caracteres
 guión. No hay problema-simplemente escribiremos un tipo de celda que
 soporte subrayado.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WIKkw/wbX6" href="#c_WIKkw/wbX6"></a><span class="cm-keyword">function</span> <span class="cm-variable">CeldaSubrayada</span>(<span class="cm-def">contenido</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_8PGWqnBRUR" href="#c_8PGWqnBRUR"></a><span class="cm-operator">&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span> <span class="cm-variable">HEAD</span>
+<span class="cm-keyword">function</span> <span class="cm-variable">CeldaSubrayada</span>(<span class="cm-def">contenido</span>) {
   <span class="cm-keyword">this</span>.<span class="cm-property">contenido</span> <span class="cm-operator">=</span> <span class="cm-variable-2">contenido</span>;
 };
 <span class="cm-variable">CeldaSubrayada</span>.<span class="cm-property">prototype</span>.<span class="cm-property">minAnchura</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
   <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">contenido</span>.<span class="cm-property">minAnchura</span>();
+<span class="cm-operator">=======</span>
+<span class="cm-keyword">function</span> <span class="cm-def">UnderlinedCell</span>(<span class="cm-def">inner</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">inner</span> <span class="cm-operator">=</span> <span class="cm-variable-2">inner</span>;
+}
+<span class="cm-variable-2">UnderlinedCell</span>.<span class="cm-property">prototype</span>.<span class="cm-property">minWidth</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">inner</span>.<span class="cm-property">minWidth</span>();
+<span class="cm-operator">>>>>>>></span> <span class="cm-variable">marijnh</span><span class="cm-operator">/</span><span class="cm-variable">master</span>
 };
 <span class="cm-variable">CeldaSubrayada</span>.<span class="cm-property">prototype</span>.<span class="cm-property">minAltura</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
   <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">contenido</span>.<span class="cm-property">minAltura</span>() <span class="cm-operator">+</span> <span class="cm-number">1</span>;

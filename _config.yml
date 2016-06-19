@@ -1,6 +1,6 @@
 # Site settings
 title: Eloquent JavaScript en Español
-email: hectorivanapatriciomoreno@gmail.com
+email: hectorivanpatriciomoreno@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Libro Eloquent JavaScript traducido al español
 baseurl: "/Eloquent-JavaScript-ES-online/" # the subpath of your site, e.g. /blog/

@@ -232,7 +232,7 @@ and including its last slash character is put in front of the relative
 URL.</p>
 <p><a class=p_ident id="p_AodYq0EUqt" href="#p_AodYq0EUqt"></a>After opening the request, we can send it with the <code>send</code>
 method. The argument to send is the request body. For <code>GET</code> requests,
-we can pass null. If the third argument to <code>open</code> was <code>false</code>, <code>send</code>
+we can pass <code>null</code>. If the third argument to <code>open</code> was <code>false</code>, <code>send</code>
 will return only  after the response to our request was received. We
 can read the request object&#8217;s <code>responseText</code> property to get the
 response body.</p>
@@ -263,7 +263,7 @@ does not know how to handle.</p>
 <p><a class=p_ident id="p_xK9lUJ4zpm" href="#p_xK9lUJ4zpm"></a>In the examples we
 saw, the request has finished when the call to <code>send</code> returns. This is
 convenient because it means properties such as <code>responseText</code> are
-available immediately. But it also mean that our program is suspended
+available immediately. But it also means that our program is suspended
 as long as the browser and server are communicating. When the
 connection is bad, the server is slow, or the file is big, that
 might take quite a while. Worse, because no event handlers can fire
@@ -301,7 +301,7 @@ the DOM discussed in <a href="13_dom.html#dom">Chapter 13</a>, except that
 it doesn&#8217;t have HTML-specific functionality like the <code>style</code> property.
 The object that <code>responseXML</code> holds corresponds to the <code>document</code>
 object. Its <code>documentElement</code> property refers to the outer tag of the
-XML document. In the following document (<em>example/fruit.xml</em>), that would
+XML document. In the following document (<em>example/fruit.xml</em>), that
 would be the <code>&lt;fruits&gt;</code> tag:</p>
 <pre data-language="application/xml" class="snippet cm-s-default"><a class=c_ident id="c_RtdE6qlfWc" href="#c_RtdE6qlfWc"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">fruits</span><span class="cm-tag cm-bracket">></span>
   <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">fruit</span> <span class="cm-attribute">name</span>=<span class="cm-string">"banana"</span> <span class="cm-attribute">color</span>=<span class="cm-string">"yellow"</span><span class="cm-tag cm-bracket">/></span>
