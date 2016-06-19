@@ -4,10 +4,10 @@
     <title>Eloquent JavaScript en Español</title>
     <description>Libro Eloquent JavaScript traducido al español
 </description>
-    <link>http://hectorip.github.io/Eloquent-JavaScript-ES-online//</link>
-    <atom:link href="http://hectorip.github.io/Eloquent-JavaScript-ES-online//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 19 Jun 2016 00:14:38 -0500</pubDate>
-    <lastBuildDate>Sun, 19 Jun 2016 00:14:38 -0500</lastBuildDate>
+    <link>http://hectorip.github.io//</link>
+    <atom:link href="http://hectorip.github.io//feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sun, 19 Jun 2016 00:25:42 -0500</pubDate>
+    <lastBuildDate>Sun, 19 Jun 2016 00:25:42 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -25,8 +25,8 @@
 
 </description>
         <pubDate>Sun, 17 Jan 2016 17:48:48 -0600</pubDate>
-        <link>http://hectorip.github.io/Eloquent-JavaScript-ES-online//noticias/2016/01/17/actualizaciones-sobre-eloquent.html</link>
-        <guid isPermaLink="true">http://hectorip.github.io/Eloquent-JavaScript-ES-online//noticias/2016/01/17/actualizaciones-sobre-eloquent.html</guid>
+        <link>http://hectorip.github.io//noticias/2016/01/17/actualizaciones-sobre-eloquent.html</link>
+        <guid isPermaLink="true">http://hectorip.github.io//noticias/2016/01/17/actualizaciones-sobre-eloquent.html</guid>
         
         
         <category>noticias</category>
@@ -49,8 +49,8 @@
 
 </description>
         <pubDate>Sat, 11 Jul 2015 15:32:00 -0500</pubDate>
-        <link>http://hectorip.github.io/Eloquent-JavaScript-ES-online//noticias/2015/07/11/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">http://hectorip.github.io/Eloquent-JavaScript-ES-online//noticias/2015/07/11/welcome-to-jekyll.html</guid>
+        <link>http://hectorip.github.io//noticias/2015/07/11/welcome-to-jekyll.html</link>
+        <guid isPermaLink="true">http://hectorip.github.io//noticias/2015/07/11/welcome-to-jekyll.html</guid>
         
         
         <category>noticias</category>
