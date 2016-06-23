@@ -1,0 +1,12 @@
+# Site settings
+title: Eloquent JavaScript en Español
+email: hectorivanpatriciomoreno@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  Libro Eloquent JavaScript traducido al español
+baseurl: "/Eloquent-JavaScript-ES-online/" # the subpath of your site, e.g. /blog/
+url: "http://hectorip.github.io" # the base hostname & protocol for your site
+twitter_username: hectorip
+github_username:  hectorip
+
+# Build settings
+markdown: kramdown

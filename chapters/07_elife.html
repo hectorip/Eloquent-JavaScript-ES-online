@@ -1,0 +1,862 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Project: Electronic Life :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 7;var sandboxLoadFiles = ["code/chapter/07_elife.js", "code/animateworld.js"];</script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53624335-3', 'auto');
+  ga('send', 'pageview');
+
+  </script>
+</head>
+
+<article>
+<nav>
+  <a href="06_object.html" title="capítulo previo">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="08_error.html" title="capítulo siguiente">▶</a>
+</nav>
+
+<h1><div class=chap_num>Capítulo 7</div>Project: Electronic Life</h1>
+<blockquote>
+<p><a class=p_ident id="p_uJUZHUrdPa" href="#p_uJUZHUrdPa"></a>[...] the question of whether Machines Can Think [...] is about as
+relevant as the question of whether Submarines Can Swim.</p>
+ <footer>Edsger Dijkstra, <cite>The Threats to Computing Science</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_DNRnU3ddVS" href="#p_DNRnU3ddVS"></a>In “project” chapters,
+I&#8217;ll stop pummeling you with new theory for a brief moment and
+instead work through a program with you. Theory is indispensable when
+learning to program, but it should be accompanied by reading and
+understanding nontrivial programs.</p>
+<p><a class=p_ident id="p_R5hb9BKRqf" href="#p_R5hb9BKRqf"></a>Our
+project in this chapter is to build a virtual ecosystem, a little
+world populated with critters that move around and struggle for
+survival.</p>
+<h2><a class=h_ident id="h_vxvit60Huu" href="#h_vxvit60Huu"></a>Definition</h2>
+<p><a class=p_ident id="p_h6wKLP2RRa" href="#p_h6wKLP2RRa"></a>To make this
+task manageable, we will radically simplify the concept of a
+<em>world</em>. Namely, a world will be a two-dimensional grid where
+each entity takes up one full square of the grid. On every <em>turn</em>,
+the critters all get a chance to take some action.</p>
+<p><a class=p_ident id="p_M69iRDzFTU" href="#p_M69iRDzFTU"></a>Thus, we chop both time and space
+into units with a fixed size: squares for space and turns for time. Of
+course, this is a somewhat crude and inaccurate approximation. But
+our simulation is intended to be amusing, not accurate, so we can
+freely cut such corners.</p>
+<p id="plan"><a class=p_ident id="p_LQyST0HVVt" href="#p_LQyST0HVVt"></a>We can define a world with a <em>plan</em>, an array of
+strings that lays out the world&#8217;s grid using one character per square.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_YSHh4Dww1G" href="#c_YSHh4Dww1G"></a><span class="cm-keyword">var</span> <span class="cm-variable">plan</span> <span class="cm-operator">=</span> [<span class="cm-string">"############################"</span>,
+            <span class="cm-string">"#      #    #      o      ##"</span>,
+            <span class="cm-string">"#                          #"</span>,
+            <span class="cm-string">"#          #####           #"</span>,
+            <span class="cm-string">"##         #   #    ##     #"</span>,
+            <span class="cm-string">"###           ##     #     #"</span>,
+            <span class="cm-string">"#           ###      #     #"</span>,
+            <span class="cm-string">"#   ####                   #"</span>,
+            <span class="cm-string">"#   ##       o             #"</span>,
+            <span class="cm-string">"# o  #         o       ### #"</span>,
+            <span class="cm-string">"#    #                     #"</span>,
+            <span class="cm-string">"############################"</span>];</pre>
+<p><a class=p_ident id="p_fLAu6TuC/p" href="#p_fLAu6TuC/p"></a>The “#” characters in this plan represent walls and rocks, and the
+“o” characters represent critters. The spaces, as you might have
+guessed, are empty space.</p>
+<p><a class=p_ident id="p_zsYxlvNAj4" href="#p_zsYxlvNAj4"></a>A plan array can be
+used to create a world object. Such an object keeps track of the
+size and content of the world. It has a <code>toString</code> method, which
+converts the world back to a printable string (similar to the plan it
+was based on) so that we can see what&#8217;s going on inside. The world
+object also has a <code>turn</code> method, which allows all the critters in it to
+take one turn and updates the world to reflect their actions.</p>
+<h2 id="grid"><a class=h_ident id="h_Xm5GEUJ7Zs" href="#h_Xm5GEUJ7Zs"></a>Representing space</h2>
+<p><a class=p_ident id="p_oFrPkPfpOk" href="#p_oFrPkPfpOk"></a>The grid
+that models the world has a fixed width and height. Squares are
+identified by their x- and y-coordinates. We use a simple type,
+<code>Vector</code> (as seen in the exercises for the
+<a href="06_object.html#exercise_vector">previous chapter</a>), to represent
+these coordinate pairs.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_mciWzOsKpc" href="#c_mciWzOsKpc"></a><span class="cm-keyword">function</span> <span class="cm-variable">Vector</span>(<span class="cm-def">x</span>, <span class="cm-def">y</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">x</span> <span class="cm-operator">=</span> <span class="cm-variable-2">x</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">y</span> <span class="cm-operator">=</span> <span class="cm-variable-2">y</span>;
+}
+<span class="cm-variable">Vector</span>.<span class="cm-property">prototype</span>.<span class="cm-property">plus</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">other</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-keyword">this</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">other</span>.<span class="cm-property">x</span>, <span class="cm-keyword">this</span>.<span class="cm-property">y</span> <span class="cm-operator">+</span> <span class="cm-variable-2">other</span>.<span class="cm-property">y</span>);
+};</pre>
+<p><a class=p_ident id="p_XfoPZurQDA" href="#p_XfoPZurQDA"></a>Next, we need an object type that
+models the grid itself. A grid is part of a world, but we are making
+it a separate object (which will be a property of a world object)
+to keep the world object itself simple. The world should concern
+itself with world-related things, and the grid should concern itself with grid-related things.</p>
+<p><a class=p_ident id="p_wCk8yM/+PK" href="#p_wCk8yM/+PK"></a>To store a grid of values, we have
+several options. We can use an array of row arrays and use two
+property accesses to get to a specific square, like this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_4Mn1dYi2sq" href="#c_4Mn1dYi2sq"></a><span class="cm-keyword">var</span> <span class="cm-variable">grid</span> <span class="cm-operator">=</span> [[<span class="cm-string">"top left"</span>,    <span class="cm-string">"top middle"</span>,    <span class="cm-string">"top right"</span>],
+            [<span class="cm-string">"bottom left"</span>, <span class="cm-string">"bottom middle"</span>, <span class="cm-string">"bottom right"</span>]];
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">grid</span>[<span class="cm-number">1</span>][<span class="cm-number">2</span>]);
+<span class="cm-comment">// → bottom right</span></pre>
+<p><a class=p_ident id="p_ltezQzq/yp" href="#p_ltezQzq/yp"></a>Or we can use a
+single array, with size width × height, and decide that the element at
+(<em>x</em>,<em>y</em>) is found at position <em>x</em> + (<em>y</em> × width) in the array.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_t14rdf0XRH" href="#c_t14rdf0XRH"></a><span class="cm-keyword">var</span> <span class="cm-variable">grid</span> <span class="cm-operator">=</span> [<span class="cm-string">"top left"</span>,    <span class="cm-string">"top middle"</span>,    <span class="cm-string">"top right"</span>,
+            <span class="cm-string">"bottom left"</span>, <span class="cm-string">"bottom middle"</span>, <span class="cm-string">"bottom right"</span>];
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">grid</span>[<span class="cm-number">2</span> <span class="cm-operator">+</span> (<span class="cm-number">1</span> <span class="cm-operator">*</span> <span class="cm-number">3</span>)]);
+<span class="cm-comment">// → bottom right</span></pre>
+<p><a class=p_ident id="p_L+hHKfbXDj" href="#p_L+hHKfbXDj"></a>Since the actual access to this array will be wrapped in methods
+on the grid object type, it doesn&#8217;t matter to outside code which
+approach we take. I chose the second representation because it makes
+it much easier to create the array. When calling the <code>Array</code>
+constructor with a single number as an argument, it creates a new empty
+array of the given length.</p>
+<p><a class=p_ident id="p_WhnH9cyDGI" href="#p_WhnH9cyDGI"></a>This code defines the <code>Grid</code> object, with some basic
+methods:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ygwzXGZzJU" href="#c_ygwzXGZzJU"></a><span class="cm-keyword">function</span> <span class="cm-variable">Grid</span>(<span class="cm-def">width</span>, <span class="cm-def">height</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">space</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Array</span>(<span class="cm-variable-2">width</span> <span class="cm-operator">*</span> <span class="cm-variable-2">height</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">width</span> <span class="cm-operator">=</span> <span class="cm-variable-2">width</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">height</span> <span class="cm-operator">=</span> <span class="cm-variable-2">height</span>;
+}
+<span class="cm-variable">Grid</span>.<span class="cm-property">prototype</span>.<span class="cm-property">isInside</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">vector</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">vector</span>.<span class="cm-property">x</span> <span class="cm-operator">>=</span> <span class="cm-number">0</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">vector</span>.<span class="cm-property">x</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">width</span> <span class="cm-operator">&amp;&amp;</span>
+         <span class="cm-variable-2">vector</span>.<span class="cm-property">y</span> <span class="cm-operator">>=</span> <span class="cm-number">0</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">vector</span>.<span class="cm-property">y</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">height</span>;
+};
+<span class="cm-variable">Grid</span>.<span class="cm-property">prototype</span>.<span class="cm-property">get</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">vector</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">space</span>[<span class="cm-variable-2">vector</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-keyword">this</span>.<span class="cm-property">width</span> <span class="cm-operator">*</span> <span class="cm-variable-2">vector</span>.<span class="cm-property">y</span>];
+};
+<span class="cm-variable">Grid</span>.<span class="cm-property">prototype</span>.<span class="cm-property">set</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">vector</span>, <span class="cm-def">value</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">space</span>[<span class="cm-variable-2">vector</span>.<span class="cm-property">x</span> <span class="cm-operator">+</span> <span class="cm-keyword">this</span>.<span class="cm-property">width</span> <span class="cm-operator">*</span> <span class="cm-variable-2">vector</span>.<span class="cm-property">y</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">value</span>;
+};</pre>
+<p><a class=p_ident id="p_Nyp/8drByS" href="#p_Nyp/8drByS"></a>And here is a trivial test:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_vDMWFe7n9A" href="#c_vDMWFe7n9A"></a><span class="cm-keyword">var</span> <span class="cm-variable">grid</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Grid</span>(<span class="cm-number">5</span>, <span class="cm-number">5</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">grid</span>.<span class="cm-property">get</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">1</span>, <span class="cm-number">1</span>)));
+<span class="cm-comment">// → undefined</span>
+<span class="cm-variable">grid</span>.<span class="cm-property">set</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">1</span>, <span class="cm-number">1</span>), <span class="cm-string">"X"</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">grid</span>.<span class="cm-property">get</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-number">1</span>, <span class="cm-number">1</span>)));
+<span class="cm-comment">// → X</span></pre>
+<h2><a class=h_ident id="h_OpRteCjOxs" href="#h_OpRteCjOxs"></a>A critter&#8217;s programming interface</h2>
+<p><a class=p_ident id="p_AVQE8U7Nsn" href="#p_AVQE8U7Nsn"></a>Before we can
+start on the <code>World</code> constructor, we must get more specific about
+the critter objects that will be living inside it. I mentioned
+that the world will ask the critters what actions they want to take.
+This works as follows: each critter object has an <code>act</code> method
+that, when called, returns an <em>action</em>. An action is an object with a
+<code>type</code> property, which names the type of action the critter wants to
+take, for example <code>"move"</code>. The action may also contain extra
+information, such as the direction the critter wants to move in.</p>
+<p id="directions"><a class=p_ident id="p_K7ngGZ/StH" href="#p_K7ngGZ/StH"></a>Critters are terribly myopic and can see only the
+squares directly around them on the grid. But even this limited vision
+can be useful when deciding which action to take. When the <code>act</code>
+method is called, it is given a <em>view</em> object that allows the critter
+to inspect its surroundings. We name the eight surrounding squares by
+their compass directions: <code>"n"</code> for north, <code>"ne"</code> for northeast,
+and so on. Here&#8217;s the object we will use to map from direction names
+to coordinate offsets:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_c47GSqHmYK" href="#c_c47GSqHmYK"></a><span class="cm-keyword">var</span> <span class="cm-variable">directions</span> <span class="cm-operator">=</span> {
+  <span class="cm-string cm-property">"n"</span>:  <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>( <span class="cm-number">0</span>, <span class="cm-operator">-</span><span class="cm-number">1</span>),
+  <span class="cm-string cm-property">"ne"</span>: <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>( <span class="cm-number">1</span>, <span class="cm-operator">-</span><span class="cm-number">1</span>),
+  <span class="cm-string cm-property">"e"</span>:  <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>( <span class="cm-number">1</span>,  <span class="cm-number">0</span>),
+  <span class="cm-string cm-property">"se"</span>: <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>( <span class="cm-number">1</span>,  <span class="cm-number">1</span>),
+  <span class="cm-string cm-property">"s"</span>:  <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>( <span class="cm-number">0</span>,  <span class="cm-number">1</span>),
+  <span class="cm-string cm-property">"sw"</span>: <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-operator">-</span><span class="cm-number">1</span>,  <span class="cm-number">1</span>),
+  <span class="cm-string cm-property">"w"</span>:  <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-operator">-</span><span class="cm-number">1</span>,  <span class="cm-number">0</span>),
+  <span class="cm-string cm-property">"nw"</span>: <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-operator">-</span><span class="cm-number">1</span>, <span class="cm-operator">-</span><span class="cm-number">1</span>)
+};</pre>
+<p><a class=p_ident id="p_g3a7FTfLaJ" href="#p_g3a7FTfLaJ"></a>The view object has a method <code>look</code>, which takes a
+direction and returns a character, for example <code>"#"</code> when there is a
+wall in that direction, or <code>" "</code> (space) when there is nothing there.
+The object also provides the convenient methods <code>find</code> and <code>findAll</code>.
+Both take a map character as an argument. The first returns a direction
+in which the character can be found next to the critter or returns <code>null</code> if
+no such direction exists. The second returns an array containing all
+directions with that character. For example, a creature sitting left
+(west) of a wall will get <code>["ne", "e", "se"]</code> when calling <code>findAll</code>
+on its view object with the <code>"#"</code> character as argument.</p>
+<p><a class=p_ident id="p_HNBrqFmcYV" href="#p_HNBrqFmcYV"></a>Here is a
+simple, stupid critter that just follows its nose until it hits an
+obstacle and then bounces off in a random open direction:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DFH+MZaTtO" href="#c_DFH+MZaTtO"></a><span class="cm-keyword">function</span> <span class="cm-variable">randomElement</span>(<span class="cm-def">array</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>[<span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-variable-2">array</span>.<span class="cm-property">length</span>)];
+}
+
+<span class="cm-keyword">var</span> <span class="cm-variable">directionNames</span> <span class="cm-operator">=</span> <span class="cm-string">"n ne e se s sw w nw"</span>.<span class="cm-property">split</span>(<span class="cm-string">" "</span>);
+
+<span class="cm-keyword">function</span> <span class="cm-variable">BouncingCritter</span>() {
+  <span class="cm-keyword">this</span>.<span class="cm-property">direction</span> <span class="cm-operator">=</span> <span class="cm-variable">randomElement</span>(<span class="cm-variable">directionNames</span>);
+};
+
+<span class="cm-variable">BouncingCritter</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">view</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">view</span>.<span class="cm-property">look</span>(<span class="cm-keyword">this</span>.<span class="cm-property">direction</span>) <span class="cm-operator">!=</span> <span class="cm-string">" "</span>)
+    <span class="cm-keyword">this</span>.<span class="cm-property">direction</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>) <span class="cm-operator">||</span> <span class="cm-string">"s"</span>;
+  <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"move"</span>, <span class="cm-property">direction</span>: <span class="cm-keyword">this</span>.<span class="cm-property">direction</span>};
+};</pre>
+<p><a class=p_ident id="p_WzFfJ2mQq9" href="#p_WzFfJ2mQq9"></a>The <code>randomElement</code> helper
+function simply picks a random element from an array, using
+<code>Math.random</code> plus some arithmetic to get a random index. We&#8217;ll use
+this again later because randomness can be useful in simulations.</p>
+<p><a class=p_ident id="p_pwO1hCYROA" href="#p_pwO1hCYROA"></a>To pick a random direction, the
+<code>BouncingCritter</code> constructor calls <code>randomElement</code> on an array of
+direction names. We could also have used <code>Object.keys</code> to get this
+array from the <code>directions</code> object we defined
+<a href="07_elife.html#directions">earlier</a>, but that provides no
+guarantees about the order in which the properties are listed. In most
+situations, modern JavaScript engines will return properties in the
+order they were defined, but they are not required to.</p>
+<p><a class=p_ident id="p_fi4mft+UlD" href="#p_fi4mft+UlD"></a>The “<code>|| "s"</code>” in the <code>act</code> method is
+there to prevent <code>this.direction</code> from getting the value <code>null</code> if the
+critter is somehow trapped with no empty space around it (for example
+when crowded into a corner by other critters).</p>
+<h2><a class=h_ident id="h_4ewxuNkubc" href="#h_4ewxuNkubc"></a>The world object</h2>
+<p><a class=p_ident id="p_ik4sLr54Yk" href="#p_ik4sLr54Yk"></a>Now we can start on the
+<code>World</code> object type. The constructor takes a plan (the array of
+strings representing the world&#8217;s grid, described
+<a href="07_elife.html#grid">earlier</a>) and a <em>legend</em> as arguments. A
+legend is an object that tells us what each character in the map
+means. It contains a constructor for every character—except for the
+space character, which always refers to <code>null</code>, the value we&#8217;ll use to
+represent empty space.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_p2N2N4tOq2" href="#c_p2N2N4tOq2"></a><span class="cm-keyword">function</span> <span class="cm-variable">elementFromChar</span>(<span class="cm-def">legend</span>, <span class="cm-def">ch</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">ch</span> <span class="cm-operator">==</span> <span class="cm-string">" "</span>)
+    <span class="cm-keyword">return</span> <span class="cm-atom">null</span>;
+  <span class="cm-keyword">var</span> <span class="cm-def">element</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable-2">legend</span>[<span class="cm-variable-2">ch</span>]();
+  <span class="cm-variable-2">element</span>.<span class="cm-property">originChar</span> <span class="cm-operator">=</span> <span class="cm-variable-2">ch</span>;
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">element</span>;
+}
+
+<span class="cm-keyword">function</span> <span class="cm-variable">World</span>(<span class="cm-def">map</span>, <span class="cm-def">legend</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">grid</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Grid</span>(<span class="cm-variable-2">map</span>[<span class="cm-number">0</span>].<span class="cm-property">length</span>, <span class="cm-variable-2">map</span>.<span class="cm-property">length</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span> <span class="cm-operator">=</span> <span class="cm-variable-2">grid</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">legend</span> <span class="cm-operator">=</span> <span class="cm-variable-2">legend</span>;
+
+  <span class="cm-variable-2">map</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">line</span>, <span class="cm-def">y</span>) {
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">x</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">x</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">line</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">x</span><span class="cm-operator">++</span>)
+      <span class="cm-variable-2">grid</span>.<span class="cm-property">set</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-variable-2">x</span>, <span class="cm-variable-2">y</span>),
+               <span class="cm-variable">elementFromChar</span>(<span class="cm-variable-2">legend</span>, <span class="cm-variable-2">line</span>[<span class="cm-variable-2">x</span>]));
+  });
+}</pre>
+<p><a class=p_ident id="p_0JVotAPiPQ" href="#p_0JVotAPiPQ"></a>In <code>elementFromChar</code>,
+first we create an instance of the right type by looking up the
+character&#8217;s constructor and applying <code>new</code> to it. Then we add an
+<code>originChar</code> property to it to make it easy to find out what
+character the element was originally created from.</p>
+<p><a class=p_ident id="p_y7y9KPcPVM" href="#p_y7y9KPcPVM"></a>We need this <code>originChar</code> property when
+implementing the world&#8217;s <code>toString</code> method. This method builds up a
+maplike string from the world&#8217;s current state by performing a
+two-dimensional loop over the squares on the grid.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_eUl3+53vHg" href="#c_eUl3+53vHg"></a><span class="cm-keyword">function</span> <span class="cm-variable">charFromElement</span>(<span class="cm-def">element</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">element</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span>)
+    <span class="cm-keyword">return</span> <span class="cm-string">" "</span>;
+  <span class="cm-keyword">else</span>
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">element</span>.<span class="cm-property">originChar</span>;
+}
+
+<span class="cm-variable">World</span>.<span class="cm-property">prototype</span>.<span class="cm-property">toString</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">var</span> <span class="cm-def">output</span> <span class="cm-operator">=</span> <span class="cm-string">""</span>;
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">y</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">y</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">height</span>; <span class="cm-variable-2">y</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">x</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">x</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">width</span>; <span class="cm-variable-2">x</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">element</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-variable-2">x</span>, <span class="cm-variable-2">y</span>));
+      <span class="cm-variable-2">output</span> <span class="cm-operator">+=</span> <span class="cm-variable">charFromElement</span>(<span class="cm-variable-2">element</span>);
+    }
+    <span class="cm-variable-2">output</span> <span class="cm-operator">+=</span> <span class="cm-string">"\n"</span>;
+  }
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">output</span>;
+};</pre>
+<p><a class=p_ident id="p_H37YR7T8/r" href="#p_H37YR7T8/r"></a>A wall is
+a simple object—it is used only for taking up space and has no
+<code>act</code> method.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ouajOZJ4Gg" href="#c_ouajOZJ4Gg"></a><span class="cm-keyword">function</span> <span class="cm-variable">Wall</span>() {}</pre>
+<p><a class=p_ident id="p_OW2cfuBxbV" href="#p_OW2cfuBxbV"></a>When we try the <code>World</code> object by creating an
+instance based on the plan from <a href="07_elife.html#plan">earlier in the
+chapter</a> and then calling <code>toString</code> on it, we get a string very
+similar to the plan we put in.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pBmLgnKtsS" href="#c_pBmLgnKtsS"></a><span class="cm-keyword">var</span> <span class="cm-variable">world</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">World</span>(<span class="cm-variable">plan</span>, {<span class="cm-string cm-property">"#"</span>: <span class="cm-variable">Wall</span>,
+                             <span class="cm-string cm-property">"o"</span>: <span class="cm-variable">BouncingCritter</span>});
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">world</span>.<span class="cm-property">toString</span>());
+<span class="cm-comment">// → ############################</span>
+<span class="cm-comment">//   #      #    #      o      ##</span>
+<span class="cm-comment">//   #                          #</span>
+<span class="cm-comment">//   #          #####           #</span>
+<span class="cm-comment">//   ##         #   #    ##     #</span>
+<span class="cm-comment">//   ###           ##     #     #</span>
+<span class="cm-comment">//   #           ###      #     #</span>
+<span class="cm-comment">//   #   ####                   #</span>
+<span class="cm-comment">//   #   ##       o             #</span>
+<span class="cm-comment">//   # o  #         o       ### #</span>
+<span class="cm-comment">//   #    #                     #</span>
+<span class="cm-comment">//   ############################</span></pre>
+<h2><a class=h_ident id="h_EoVtgPzygv" href="#h_EoVtgPzygv"></a>this and its scope</h2>
+<p><a class=p_ident id="p_QcRBGpv5Fi" href="#p_QcRBGpv5Fi"></a>The <code>World</code> constructor contains a
+call to <code>forEach</code>. One interesting thing to note is that inside the
+function passed to <code>forEach</code>, we are no longer directly in the
+function scope of the constructor. Each function call gets its own
+<code>this</code> binding, so the <code>this</code> in the inner function does <em>not</em>
+refer to the newly constructed object that the outer <code>this</code> refers to.
+In fact, when a function isn&#8217;t called as a method, <code>this</code> will refer
+to the global object.</p>
+<p><a class=p_ident id="p_NZC77y3jw6" href="#p_NZC77y3jw6"></a>This means that we can&#8217;t write <code>this.grid</code> to access the grid from
+inside the loop. Instead, the outer function creates a normal
+local variable, <code>grid</code>, through which the inner function gets access
+to the grid.</p>
+<p><a class=p_ident id="p_nCmQW78Pl2" href="#p_nCmQW78Pl2"></a>This is a bit of a design blunder in JavaScript.
+Fortunately, the next version of the language provides a solution for
+this problem. Meanwhile, there are workarounds. A common pattern is to
+say <code>var self = this</code> and from then on refer to <code>self</code>, which is a
+normal variable and thus visible to inner functions.</p>
+<p><a class=p_ident id="p_Rh0gGyd888" href="#p_Rh0gGyd888"></a>Another solution is to use the <code>bind</code>
+method, which allows us to provide an explicit <code>this</code> object to bind
+to.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_i+EFiyy5fv" href="#c_i+EFiyy5fv"></a><span class="cm-keyword">var</span> <span class="cm-variable">test</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">prop</span>: <span class="cm-number">10</span>,
+  <span class="cm-property">addPropTo</span>: <span class="cm-keyword">function</span>(<span class="cm-def">array</span>) {
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>.<span class="cm-property">map</span>(<span class="cm-keyword">function</span>(<span class="cm-def">elt</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">prop</span> <span class="cm-operator">+</span> <span class="cm-variable-2">elt</span>;
+    }.<span class="cm-property">bind</span>(<span class="cm-keyword">this</span>));
+  }
+};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">test</span>.<span class="cm-property">addPropTo</span>([<span class="cm-number">5</span>]));
+<span class="cm-comment">// → [15]</span></pre>
+<p><a class=p_ident id="p_goPioKvWJ+" href="#p_goPioKvWJ+"></a>The function passed to <code>map</code> is the result of the
+<code>bind</code> call and thus has its <code>this</code> bound to the first argument given
+to <code>bind</code>—the outer function&#8217;s <code>this</code> value (which holds the <code>test</code>
+object).</p>
+<p><a class=p_ident id="p_6Is4vwcRpS" href="#p_6Is4vwcRpS"></a>Most standard
+higher-order methods on arrays, such as <code>forEach</code> and <code>map</code>, take an
+optional second argument that can also be used to provide a <code>this</code> for
+the calls to the iteration function. So you could express the previous example
+in a slightly simpler way.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_T0cVC+JMz3" href="#c_T0cVC+JMz3"></a><span class="cm-keyword">var</span> <span class="cm-variable">test</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">prop</span>: <span class="cm-number">10</span>,
+  <span class="cm-property">addPropTo</span>: <span class="cm-keyword">function</span>(<span class="cm-def">array</span>) {
+    <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>.<span class="cm-property">map</span>(<span class="cm-keyword">function</span>(<span class="cm-def">elt</span>) {
+      <span class="cm-keyword">return</span> <span class="cm-keyword">this</span>.<span class="cm-property">prop</span> <span class="cm-operator">+</span> <span class="cm-variable-2">elt</span>;
+    }, <span class="cm-keyword">this</span>); <span class="cm-comment">// ← no bind</span>
+  }
+};
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">test</span>.<span class="cm-property">addPropTo</span>([<span class="cm-number">5</span>]));
+<span class="cm-comment">// → [15]</span></pre>
+<p><a class=p_ident id="p_IJrpC7ALpA" href="#p_IJrpC7ALpA"></a>This works only for higher-order functions that
+support such a <em>context</em> parameter. When they don&#8217;t, you&#8217;ll need to
+use one of the other approaches.</p>
+<p><a class=p_ident id="p_/IbAQkWKaF" href="#p_/IbAQkWKaF"></a>In
+our own higher-order functions, we can support such a context
+parameter by using the <code>call</code> method to call the function given as an
+argument. For example, here is a <code>forEach</code> method for our <code>Grid</code> type,
+which calls a given function for each element in the grid that isn&#8217;t
+null or undefined:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_tJQCEockLE" href="#c_tJQCEockLE"></a><span class="cm-variable">Grid</span>.<span class="cm-property">prototype</span>.<span class="cm-property">forEach</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">f</span>, <span class="cm-def">context</span>) {
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">y</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">y</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">height</span>; <span class="cm-variable-2">y</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">x</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">x</span> <span class="cm-operator">&lt;</span> <span class="cm-keyword">this</span>.<span class="cm-property">width</span>; <span class="cm-variable-2">x</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">value</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">space</span>[<span class="cm-variable-2">x</span> <span class="cm-operator">+</span> <span class="cm-variable-2">y</span> <span class="cm-operator">*</span> <span class="cm-keyword">this</span>.<span class="cm-property">width</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">value</span> <span class="cm-operator">!=</span> <span class="cm-atom">null</span>)
+        <span class="cm-variable-2">f</span>.<span class="cm-property">call</span>(<span class="cm-variable-2">context</span>, <span class="cm-variable-2">value</span>, <span class="cm-keyword">new</span> <span class="cm-variable">Vector</span>(<span class="cm-variable-2">x</span>, <span class="cm-variable-2">y</span>));
+    }
+  }
+};</pre>
+<h2><a class=h_ident id="h_6OGIzAd5Tr" href="#h_6OGIzAd5Tr"></a>Animating life</h2>
+<p><a class=p_ident id="p_fHIh5+R55Q" href="#p_fHIh5+R55Q"></a>The next
+step is to write a <code>turn</code> method for the world object that gives the
+critters a chance to act. It will go over the grid using the
+<code>forEach</code> method we just defined, looking for objects with an <code>act</code>
+method. When it finds one, <code>turn</code> calls that method to get an action
+object and carries out the action when it is valid. For now, only
+<code>"move"</code> actions are understood.</p>
+<p><a class=p_ident id="p_iE5jpow+CQ" href="#p_iE5jpow+CQ"></a>There is one potential problem with this approach. Can you
+spot it? If we let critters move as we come across them, they may move
+to a square that we haven&#8217;t looked at yet, and we&#8217;ll allow them to
+move <em>again</em> when we reach that square. Thus, we have to keep an array
+of critters that have already had their turn and ignore them when we
+see them again.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Uiw3etHkwj" href="#c_Uiw3etHkwj"></a><span class="cm-variable">World</span>.<span class="cm-property">prototype</span>.<span class="cm-property">turn</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+  <span class="cm-keyword">var</span> <span class="cm-def">acted</span> <span class="cm-operator">=</span> [];
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">critter</span>.<span class="cm-property">act</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">acted</span>.<span class="cm-property">indexOf</span>(<span class="cm-variable-2">critter</span>) <span class="cm-operator">==</span> <span class="cm-operator">-</span><span class="cm-number">1</span>) {
+      <span class="cm-variable-2">acted</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">critter</span>);
+      <span class="cm-keyword">this</span>.<span class="cm-property">letAct</span>(<span class="cm-variable-2">critter</span>, <span class="cm-variable-2">vector</span>);
+    }
+  }, <span class="cm-keyword">this</span>);
+};</pre>
+<p><a class=p_ident id="p_Aa9iyVeBsc" href="#p_Aa9iyVeBsc"></a>We use the second parameter to the grid&#8217;s <code>forEach</code> method
+to be able to access the correct <code>this</code> inside the inner function.
+The <code>letAct</code> method contains the actual logic that allows the critters
+to move.</p>
+<pre id="checkDestination" data-language="javascript" class="snippet cm-s-default"><span class="cm-variable">World</span>.<span class="cm-property">prototype</span>.<span class="cm-property">letAct</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">action</span> <span class="cm-operator">=</span> <span class="cm-variable-2">critter</span>.<span class="cm-property">act</span>(<span class="cm-keyword">new</span> <span class="cm-variable">View</span>(<span class="cm-keyword">this</span>, <span class="cm-variable-2">vector</span>));
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">action</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">action</span>.<span class="cm-property">type</span> <span class="cm-operator">==</span> <span class="cm-string">"move"</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">dest</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">checkDestination</span>(<span class="cm-variable-2">action</span>, <span class="cm-variable-2">vector</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">dest</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">dest</span>) <span class="cm-operator">==</span> <span class="cm-atom">null</span>) {
+      <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">vector</span>, <span class="cm-atom">null</span>);
+      <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">dest</span>, <span class="cm-variable-2">critter</span>);
+    }
+  }
+};
+
+<span class="cm-variable">World</span>.<span class="cm-property">prototype</span>.<span class="cm-property">checkDestination</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">action</span>, <span class="cm-def">vector</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable">directions</span>.<span class="cm-property">hasOwnProperty</span>(<span class="cm-variable-2">action</span>.<span class="cm-property">direction</span>)) {
+    <span class="cm-keyword">var</span> <span class="cm-def">dest</span> <span class="cm-operator">=</span> <span class="cm-variable-2">vector</span>.<span class="cm-property">plus</span>(<span class="cm-variable">directions</span>[<span class="cm-variable-2">action</span>.<span class="cm-property">direction</span>]);
+    <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">isInside</span>(<span class="cm-variable-2">dest</span>))
+      <span class="cm-keyword">return</span> <span class="cm-variable-2">dest</span>;
+  }
+};</pre>
+<p><a class=p_ident id="p_UrtcsyHVBc" href="#p_UrtcsyHVBc"></a>First, we simply ask the
+critter to act, passing it a view object that knows about the world
+and the critter&#8217;s current position in that world (we&#8217;ll define <code>View</code>
+in a <a href="07_elife.html#view">moment</a>). The <code>act</code> method returns an
+action of some kind.</p>
+<p><a class=p_ident id="p_WfOP6E9DAW" href="#p_WfOP6E9DAW"></a>If the action&#8217;s <code>type</code> is not <code>"move"</code>, it is ignored. If it <em>is</em>
+<code>"move"</code>,  if it has a <code>direction</code> property that refers to a valid
+direction, <em>and</em> if the square in that direction is empty (null), we set
+the square where the critter used to be to hold null and store the
+critter in the destination square.</p>
+<p><a class=p_ident id="p_k+MCUoR4aQ" href="#p_k+MCUoR4aQ"></a>Note that <code>letAct</code> takes care to ignore
+nonsense input—it doesn&#8217;t assume that the action&#8217;s <code>direction</code>
+property is valid or that the <code>type</code> property makes sense. This kind
+of <em>defensive</em> programming makes sense in some situations. The main
+reason for doing it is to validate inputs coming from sources you
+don&#8217;t control (such as user or file input), but it can also be useful
+to isolate subsystems from each other. In this case, the intention is
+that the critters themselves can be programmed sloppily—they don&#8217;t
+have to verify if their intended actions make sense. They can just
+request an action, and the world will figure out whether to allow it.</p>
+<p><a class=p_ident id="p_4tMXZtdiIU" href="#p_4tMXZtdiIU"></a>These two methods are not part of the external interface of a
+<code>World</code> object. They are an internal detail. Some languages provide
+ways to explicitly declare certain methods and properties <em>private</em>
+and signal an error when you try to use them from outside the object.
+JavaScript does not, so you will have to rely on some other form of
+communication to describe what is part of an object&#8217;s interface.
+Sometimes it can help to use a naming scheme to distinguish between
+external and internal properties, for example by prefixing all
+internal ones with an underscore character (_). This will make
+accidental uses of properties that are not part of an object&#8217;s
+interface easier to spot.</p>
+<p id="view"><a class=p_ident id="p_CEJTIYaI46" href="#p_CEJTIYaI46"></a>The one missing part, the <code>View</code> type, looks like this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1AHaBWMXKm" href="#c_1AHaBWMXKm"></a><span class="cm-keyword">function</span> <span class="cm-variable">View</span>(<span class="cm-def">world</span>, <span class="cm-def">vector</span>) {
+  <span class="cm-keyword">this</span>.<span class="cm-property">world</span> <span class="cm-operator">=</span> <span class="cm-variable-2">world</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">vector</span> <span class="cm-operator">=</span> <span class="cm-variable-2">vector</span>;
+}
+<span class="cm-variable">View</span>.<span class="cm-property">prototype</span>.<span class="cm-property">look</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">dir</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">target</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">vector</span>.<span class="cm-property">plus</span>(<span class="cm-variable">directions</span>[<span class="cm-variable-2">dir</span>]);
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">world</span>.<span class="cm-property">grid</span>.<span class="cm-property">isInside</span>(<span class="cm-variable-2">target</span>))
+    <span class="cm-keyword">return</span> <span class="cm-variable">charFromElement</span>(<span class="cm-keyword">this</span>.<span class="cm-property">world</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">target</span>));
+  <span class="cm-keyword">else</span>
+    <span class="cm-keyword">return</span> <span class="cm-string">"#"</span>;
+};
+<span class="cm-variable">View</span>.<span class="cm-property">prototype</span>.<span class="cm-property">findAll</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">ch</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">found</span> <span class="cm-operator">=</span> [];
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">dir</span> <span class="cm-keyword">in</span> <span class="cm-variable">directions</span>)
+    <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">look</span>(<span class="cm-variable-2">dir</span>) <span class="cm-operator">==</span> <span class="cm-variable-2">ch</span>)
+      <span class="cm-variable-2">found</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">dir</span>);
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">found</span>;
+};
+<span class="cm-variable">View</span>.<span class="cm-property">prototype</span>.<span class="cm-property">find</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">ch</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">found</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">findAll</span>(<span class="cm-variable-2">ch</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">found</span>.<span class="cm-property">length</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>) <span class="cm-keyword">return</span> <span class="cm-atom">null</span>;
+  <span class="cm-keyword">return</span> <span class="cm-variable">randomElement</span>(<span class="cm-variable-2">found</span>);
+};</pre>
+<p><a class=p_ident id="p_Yr7JFXwnP2" href="#p_Yr7JFXwnP2"></a>The <code>look</code> method figures out the
+coordinates that we are trying to look at and, if they are inside the
+grid, finds the character corresponding to the element that sits
+there. For coordinates outside the grid, <code>look</code> simply pretends that
+there is a wall there so that if you define a world that isn&#8217;t walled
+in, the critters still won&#8217;t be tempted to try to walk off the edges.</p>
+<h2><a class=h_ident id="h_d0UsPgSWRD" href="#h_d0UsPgSWRD"></a>It moves</h2>
+<p><a class=p_ident id="p_BQnR0yHaOY" href="#p_BQnR0yHaOY"></a>We instantiated a world
+object earlier. Now that we&#8217;ve added all the necessary methods, it
+should be possible to actually make the world move.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2KvMtxPjPO" href="#c_2KvMtxPjPO"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-number">5</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
+  <span class="cm-variable">world</span>.<span class="cm-property">turn</span>();
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">world</span>.<span class="cm-property">toString</span>());
+}
+<span class="cm-comment">// → … five turns of moving critters</span></pre>
+<p><a class=p_ident id="p_HwVEJ+g6z5" href="#p_HwVEJ+g6z5"></a>Simply printing out many copies of the map is a rather unpleasant
+way to observe a world, though. That&#8217;s why the sandbox provides an
+<code>animateWorld</code> function that will run a world as an onscreen
+animation, moving three turns per second, until you hit the stop
+button.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Ll8uem89AC" href="#c_Ll8uem89AC"></a><span class="cm-variable">animateWorld</span>(<span class="cm-variable">world</span>);
+<span class="cm-comment">// → … life!</span></pre>
+<p><a class=p_ident id="p_jGPHPftEGJ" href="#p_jGPHPftEGJ"></a>The implementation of <code>animateWorld</code> will remain a mystery for now,
+but after you&#8217;ve read the <a href="13_dom.html#dom">later chapters</a> of this
+book, which discuss JavaScript integration in web browsers, it won&#8217;t
+look so magical anymore.</p>
+<h2><a class=h_ident id="h_r85xE+rzsD" href="#h_r85xE+rzsD"></a>More life forms</h2>
+<p><a class=p_ident id="p_aVv117kVSp" href="#p_aVv117kVSp"></a>The dramatic highlight of our world, if you watch for a bit, is when
+two critters bounce off each other. Can you think of another
+interesting form of behavior?</p>
+<p><a class=p_ident id="p_ZzTWUs5sdf" href="#p_ZzTWUs5sdf"></a>The one I came up with is a critter that moves
+along walls. Conceptually, the critter keeps its left hand (paw,
+tentacle, whatever) to the wall and follows along. This turns out to
+be not entirely trivial to implement.</p>
+<p><a class=p_ident id="p_+nyDt2anla" href="#p_+nyDt2anla"></a>We need to be
+able to “compute” with compass directions. Since directions are
+modeled by a set of strings, we need to define our own operation
+(<code>dirPlus</code>) to calculate relative directions. So <code>dirPlus("n", 1)</code>
+means one 45-degree turn clockwise from north, giving <code>"ne"</code>.
+Similarly, <code>dirPlus("s", -2)</code> means 90 degrees counterclockwise from
+south, which is east.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_/f16aAnRw9" href="#c_/f16aAnRw9"></a><span class="cm-keyword">function</span> <span class="cm-variable">dirPlus</span>(<span class="cm-def">dir</span>, <span class="cm-def">n</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">index</span> <span class="cm-operator">=</span> <span class="cm-variable">directionNames</span>.<span class="cm-property">indexOf</span>(<span class="cm-variable-2">dir</span>);
+  <span class="cm-keyword">return</span> <span class="cm-variable">directionNames</span>[(<span class="cm-variable-2">index</span> <span class="cm-operator">+</span> <span class="cm-variable-2">n</span> <span class="cm-operator">+</span> <span class="cm-number">8</span>) <span class="cm-operator">%</span> <span class="cm-number">8</span>];
+}
+
+<span class="cm-keyword">function</span> <span class="cm-variable">WallFollower</span>() {
+  <span class="cm-keyword">this</span>.<span class="cm-property">dir</span> <span class="cm-operator">=</span> <span class="cm-string">"s"</span>;
+}
+
+<span class="cm-variable">WallFollower</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">view</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">start</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">dir</span>;
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">view</span>.<span class="cm-property">look</span>(<span class="cm-variable">dirPlus</span>(<span class="cm-keyword">this</span>.<span class="cm-property">dir</span>, <span class="cm-operator">-</span><span class="cm-number">3</span>)) <span class="cm-operator">!=</span> <span class="cm-string">" "</span>)
+    <span class="cm-variable-2">start</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">dir</span> <span class="cm-operator">=</span> <span class="cm-variable">dirPlus</span>(<span class="cm-keyword">this</span>.<span class="cm-property">dir</span>, <span class="cm-operator">-</span><span class="cm-number">2</span>);
+  <span class="cm-keyword">while</span> (<span class="cm-variable-2">view</span>.<span class="cm-property">look</span>(<span class="cm-keyword">this</span>.<span class="cm-property">dir</span>) <span class="cm-operator">!=</span> <span class="cm-string">" "</span>) {
+    <span class="cm-keyword">this</span>.<span class="cm-property">dir</span> <span class="cm-operator">=</span> <span class="cm-variable">dirPlus</span>(<span class="cm-keyword">this</span>.<span class="cm-property">dir</span>, <span class="cm-number">1</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">dir</span> <span class="cm-operator">==</span> <span class="cm-variable-2">start</span>) <span class="cm-keyword">break</span>;
+  }
+  <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"move"</span>, <span class="cm-property">direction</span>: <span class="cm-keyword">this</span>.<span class="cm-property">dir</span>};
+};</pre>
+<p><a class=p_ident id="p_vLV21F0iBf" href="#p_vLV21F0iBf"></a>The <code>act</code>
+method only has to “scan” the critter&#8217;s surroundings, starting from
+its left side and going clockwise until it finds an empty square.
+It then moves in the direction of that empty square.</p>
+<p><a class=p_ident id="p_KvheizXuRR" href="#p_KvheizXuRR"></a>What complicates things is that a critter may end up in the middle of
+empty space, either as its start position or as a result of walking
+around another critter. If we apply the approach I just described in
+empty space, the poor critter will just keep on turning left at every
+step, running in circles.</p>
+<p><a class=p_ident id="p_TzIxUwgqju" href="#p_TzIxUwgqju"></a>So there is an extra check (the <code>if</code> statement) to start scanning to
+the left only if it looks like the critter has just passed some kind
+of obstacle—that is, if the space behind and to the left of the
+critter is not empty. Otherwise, the critter starts scanning directly
+ahead, so that it&#8217;ll walk straight when in empty space.</p>
+<p><a class=p_ident id="p_h7LZenYvtj" href="#p_h7LZenYvtj"></a>And finally, there&#8217;s a test comparing <code>this.dir</code> to
+<code>start</code> after every pass through the loop to make sure that the loop
+won&#8217;t run forever when the critter is walled in or crowded in by other
+critters and can&#8217;t find an empty square.</p>
+<p><a class=p_ident id="p_+rUHxdy6xc" href="#p_+rUHxdy6xc"></a>This small world demonstrates the wall-following creatures:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_bE8wiFAYHa" href="#c_bE8wiFAYHa"></a><span class="cm-variable">animateWorld</span>(<span class="cm-keyword">new</span> <span class="cm-variable">World</span>(
+  [<span class="cm-string">"############"</span>,
+   <span class="cm-string">"#     #    #"</span>,
+   <span class="cm-string">"#   ~    ~ #"</span>,
+   <span class="cm-string">"#  ##      #"</span>,
+   <span class="cm-string">"#  ##  o####"</span>,
+   <span class="cm-string">"#          #"</span>,
+   <span class="cm-string">"############"</span>],
+  {<span class="cm-string cm-property">"#"</span>: <span class="cm-variable">Wall</span>,
+   <span class="cm-string cm-property">"~"</span>: <span class="cm-variable">WallFollower</span>,
+   <span class="cm-string cm-property">"o"</span>: <span class="cm-variable">BouncingCritter</span>}
+));</pre>
+<h2><a class=h_ident id="h_yTrS5ee3KB" href="#h_yTrS5ee3KB"></a>A more lifelike simulation</h2>
+<p><a class=p_ident id="p_WyKE9k0MVM" href="#p_WyKE9k0MVM"></a>To make life in our world
+more interesting, we will add the concepts of food and
+reproduction. Each living thing in the world gets a new property,
+<code>energy</code>, which is reduced by performing actions and increased by
+eating things. When the critter has enough energy, it can
+reproduce, generating a new critter of the same kind. To keep things
+simple, the critters in our world reproduce asexually, all by
+themselves.</p>
+<p><a class=p_ident id="p_W7zSlnat3V" href="#p_W7zSlnat3V"></a>If critters only move around and eat one
+another, the world will soon succumb to the law of increasing entropy,
+run out of energy, and become a lifeless wasteland. To prevent this
+from happening (too quickly, at least), we add plants to the
+world. Plants do not move. They just use photosynthesis to grow
+(that is, increase their energy) and reproduce.</p>
+<p><a class=p_ident id="p_94pQzOmOVM" href="#p_94pQzOmOVM"></a>To make this work, we&#8217;ll need a world with a different
+<code>letAct</code> method. We could just replace the method of the <code>World</code>
+prototype, but I&#8217;ve become very attached to our simulation with the
+wall-following critters and would hate to break that old world.</p>
+<p><a class=p_ident id="p_v0IDjeo0fS" href="#p_v0IDjeo0fS"></a>One solution is to use
+inheritance. We create a new constructor, <code>LifelikeWorld</code>,
+whose prototype is based on the <code>World</code> prototype but which overrides
+the <code>letAct</code> method. The new <code>letAct</code> method delegates the work of
+actually performing an action to various functions stored in the
+<code>actionTypes</code> object.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Xq/SMOEf8t" href="#c_Xq/SMOEf8t"></a><span class="cm-keyword">function</span> <span class="cm-variable">LifelikeWorld</span>(<span class="cm-def">map</span>, <span class="cm-def">legend</span>) {
+  <span class="cm-variable">World</span>.<span class="cm-property">call</span>(<span class="cm-keyword">this</span>, <span class="cm-variable-2">map</span>, <span class="cm-variable-2">legend</span>);
+}
+<span class="cm-variable">LifelikeWorld</span>.<span class="cm-property">prototype</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-variable">World</span>.<span class="cm-property">prototype</span>);
+
+<span class="cm-keyword">var</span> <span class="cm-variable">actionTypes</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-atom">null</span>);
+
+<span class="cm-variable">LifelikeWorld</span>.<span class="cm-property">prototype</span>.<span class="cm-property">letAct</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">action</span> <span class="cm-operator">=</span> <span class="cm-variable-2">critter</span>.<span class="cm-property">act</span>(<span class="cm-keyword">new</span> <span class="cm-variable">View</span>(<span class="cm-keyword">this</span>, <span class="cm-variable-2">vector</span>));
+  <span class="cm-keyword">var</span> <span class="cm-def">handled</span> <span class="cm-operator">=</span> <span class="cm-variable-2">action</span> <span class="cm-operator">&amp;&amp;</span>
+    <span class="cm-variable-2">action</span>.<span class="cm-property">type</span> <span class="cm-keyword">in</span> <span class="cm-variable">actionTypes</span> <span class="cm-operator">&amp;&amp;</span>
+    <span class="cm-variable">actionTypes</span>[<span class="cm-variable-2">action</span>.<span class="cm-property">type</span>].<span class="cm-property">call</span>(<span class="cm-keyword">this</span>, <span class="cm-variable-2">critter</span>,
+                                  <span class="cm-variable-2">vector</span>, <span class="cm-variable-2">action</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">handled</span>) {
+    <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">-=</span> <span class="cm-number">0.2</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">0</span>)
+      <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">vector</span>, <span class="cm-atom">null</span>);
+  }
+};</pre>
+<p><a class=p_ident id="p_yUSwDSWWG/" href="#p_yUSwDSWWG/"></a>The new <code>letAct</code> method first checks whether an
+action was returned at all, then whether a handler function for this
+type of action exists, and finally whether that handler returned
+true, indicating that it successfully handled the action. Note the use
+of <code>call</code> to give the handler access to the world, through its <code>this</code>
+binding.</p>
+<p><a class=p_ident id="p_XIDOYUJ2VB" href="#p_XIDOYUJ2VB"></a>If the action didn&#8217;t work for whatever reason, the default action is
+for the creature to simply wait. It loses one-fifth point of energy,
+and if its energy level drops to zero or below, the creature dies and
+is removed from the grid.</p>
+<h2><a class=h_ident id="h_s7VEeFM4T2" href="#h_s7VEeFM4T2"></a>Action handlers</h2>
+<p><a class=p_ident id="p_RE6to1zSFD" href="#p_RE6to1zSFD"></a>The simplest action a creature can perform is
+<code>"grow"</code>, used by plants. When an action object like <code>{type:
+"grow"}</code> is returned, the following handler method will be called:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wHH+c78jV5" href="#c_wHH+c78jV5"></a><span class="cm-variable">actionTypes</span>.<span class="cm-property">grow</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>) {
+  <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">+=</span> <span class="cm-number">0.5</span>;
+  <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+};</pre>
+<p><a class=p_ident id="p_6k/ZhdfEll" href="#p_6k/ZhdfEll"></a>Growing always succeeds and adds half a point to the plant&#8217;s
+energy level.</p>
+<p><a class=p_ident id="p_JTfOBvLWbR" href="#p_JTfOBvLWbR"></a>Moving is more involved.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_EgcpmD74TO" href="#c_EgcpmD74TO"></a><span class="cm-variable">actionTypes</span>.<span class="cm-property">move</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>, <span class="cm-def">action</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">dest</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">checkDestination</span>(<span class="cm-variable-2">action</span>, <span class="cm-variable-2">vector</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">dest</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span> <span class="cm-operator">||</span>
+      <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">1</span> <span class="cm-operator">||</span>
+      <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">dest</span>) <span class="cm-operator">!=</span> <span class="cm-atom">null</span>)
+    <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+  <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">-=</span> <span class="cm-number">1</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">vector</span>, <span class="cm-atom">null</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">dest</span>, <span class="cm-variable-2">critter</span>);
+  <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+};</pre>
+<p><a class=p_ident id="p_OyaLcjtdgw" href="#p_OyaLcjtdgw"></a>This action first checks, using the <code>checkDestination</code>
+method defined <a href="07_elife.html#checkDestination">earlier</a>, whether
+the action provides a valid destination. If not, or if the
+destination isn&#8217;t empty, or if the critter lacks the required
+energy, <code>move</code> returns false to indicate no action was taken.
+Otherwise, it moves the critter and subtracts the energy cost.</p>
+<p><a class=p_ident id="p_0Wdb2GCOkE" href="#p_0Wdb2GCOkE"></a>In addition to moving, critters can eat.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_cQhl6uK2Jo" href="#c_cQhl6uK2Jo"></a><span class="cm-variable">actionTypes</span>.<span class="cm-property">eat</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>, <span class="cm-def">action</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">dest</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">checkDestination</span>(<span class="cm-variable-2">action</span>, <span class="cm-variable-2">vector</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">atDest</span> <span class="cm-operator">=</span> <span class="cm-variable-2">dest</span> <span class="cm-operator">!=</span> <span class="cm-atom">null</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">dest</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">atDest</span> <span class="cm-operator">||</span> <span class="cm-variable-2">atDest</span>.<span class="cm-property">energy</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span>)
+    <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+  <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">atDest</span>.<span class="cm-property">energy</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">dest</span>, <span class="cm-atom">null</span>);
+  <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+};</pre>
+<p><a class=p_ident id="p_I63DQNJFYJ" href="#p_I63DQNJFYJ"></a>Eating another critter also involves providing a
+valid destination square. This time, the destination must not be
+empty and must contain something with energy, like a critter (but
+not a wall—walls are not edible). If so, the energy from the eaten is
+transferred to the eater, and the victim is removed from the grid.</p>
+<p><a class=p_ident id="p_aDjES09ZCB" href="#p_aDjES09ZCB"></a>And finally, we allow our critters to reproduce.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_0hQdcXq3OA" href="#c_0hQdcXq3OA"></a><span class="cm-variable">actionTypes</span>.<span class="cm-property">reproduce</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>, <span class="cm-def">action</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">baby</span> <span class="cm-operator">=</span> <span class="cm-variable">elementFromChar</span>(<span class="cm-keyword">this</span>.<span class="cm-property">legend</span>,
+                             <span class="cm-variable-2">critter</span>.<span class="cm-property">originChar</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">dest</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">checkDestination</span>(<span class="cm-variable-2">action</span>, <span class="cm-variable-2">vector</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">dest</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span> <span class="cm-operator">||</span>
+      <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">2</span> <span class="cm-operator">*</span> <span class="cm-variable-2">baby</span>.<span class="cm-property">energy</span> <span class="cm-operator">||</span>
+      <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">dest</span>) <span class="cm-operator">!=</span> <span class="cm-atom">null</span>)
+    <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+  <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">-=</span> <span class="cm-number">2</span> <span class="cm-operator">*</span> <span class="cm-variable-2">baby</span>.<span class="cm-property">energy</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">dest</span>, <span class="cm-variable-2">baby</span>);
+  <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+};</pre>
+<p><a class=p_ident id="p_iznW2m8B2U" href="#p_iznW2m8B2U"></a>Reproducing costs twice the energy
+level of the newborn critter. So we first create a (hypothetical) baby
+using <code>elementFromChar</code> on the critter&#8217;s own origin character. Once we
+have a baby, we can find its energy level and test whether the parent
+has enough energy to successfully bring it into the world. We also
+require a valid (and empty) destination.</p>
+<p><a class=p_ident id="p_stSVDa0fH8" href="#p_stSVDa0fH8"></a>If everything is okay, the baby is put onto the grid
+(it is now no longer hypothetical), and the energy is spent.</p>
+<h2><a class=h_ident id="h_vziJXy2ZdX" href="#h_vziJXy2ZdX"></a>Populating the new world</h2>
+<p><a class=p_ident id="p_vGmE0fy2RS" href="#p_vGmE0fy2RS"></a>We now have a
+framework to simulate these more lifelike creatures. We could put
+the critters from the old world into it, but they would just die
+since they don&#8217;t have an energy property. So let&#8217;s make new ones.
+First we&#8217;ll write a plant, which is a rather simple life-form.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_RQsOcWcml/" href="#c_RQsOcWcml/"></a><span class="cm-keyword">function</span> <span class="cm-variable">Plant</span>() {
+  <span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">=</span> <span class="cm-number">3</span> <span class="cm-operator">+</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">4</span>;
+}
+<span class="cm-variable">Plant</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">view</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">></span> <span class="cm-number">15</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">space</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">space</span>)
+      <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"reproduce"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">space</span>};
+  }
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">&lt;</span> <span class="cm-number">20</span>)
+    <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"grow"</span>};
+};</pre>
+<p><a class=p_ident id="p_OCJXcCZPZm" href="#p_OCJXcCZPZm"></a>Plants start with an energy level
+between 3 and 7, randomized so that they don&#8217;t all reproduce in the
+same turn. When a plant reaches 15 energy points and there is empty
+space nearby, it reproduces into that empty space. If a plant can&#8217;t
+reproduce, it simply grows until it reaches energy level 20.</p>
+<p><a class=p_ident id="p_xjp5a11XH7" href="#p_xjp5a11XH7"></a>We
+now define a plant eater.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ddgWDpbvSl" href="#c_ddgWDpbvSl"></a><span class="cm-keyword">function</span> <span class="cm-variable">PlantEater</span>() {
+  <span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">=</span> <span class="cm-number">20</span>;
+}
+<span class="cm-variable">PlantEater</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">view</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">space</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">></span> <span class="cm-number">60</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">space</span>)
+    <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"reproduce"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">space</span>};
+  <span class="cm-keyword">var</span> <span class="cm-def">plant</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">"*"</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">plant</span>)
+    <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"eat"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">plant</span>};
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">space</span>)
+    <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"move"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">space</span>};
+};</pre>
+<p><a class=p_ident id="p_JYpELDqyyT" href="#p_JYpELDqyyT"></a>We&#8217;ll use the <code>*</code> character for plants, so that&#8217;s what this
+creature will look for when it searches for food.</p>
+<h2><a class=h_ident id="h_pxU2HNE0gc" href="#h_pxU2HNE0gc"></a>Bringing it to life</h2>
+<p><a class=p_ident id="p_/pimHqjNal" href="#p_/pimHqjNal"></a>And that gives us enough elements to try
+our new world. Imagine the following map as a grassy valley with a herd of
+herbivores in it, some boulders, and lush plant life
+everywhere.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_uxbbeqRjLM" href="#c_uxbbeqRjLM"></a><span class="cm-keyword">var</span> <span class="cm-variable">valley</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">LifelikeWorld</span>(
+  [<span class="cm-string">"############################"</span>,
+   <span class="cm-string">"#####                 ######"</span>,
+   <span class="cm-string">"##   ***                **##"</span>,
+   <span class="cm-string">"#   *##**         **  O  *##"</span>,
+   <span class="cm-string">"#    ***     O    ##**    *#"</span>,
+   <span class="cm-string">"#       O         ##***    #"</span>,
+   <span class="cm-string">"#                 ##**     #"</span>,
+   <span class="cm-string">"#   O       #*             #"</span>,
+   <span class="cm-string">"#*          #**       O    #"</span>,
+   <span class="cm-string">"#***        ##**    O    **#"</span>,
+   <span class="cm-string">"##****     ###***       *###"</span>,
+   <span class="cm-string">"############################"</span>],
+  {<span class="cm-string cm-property">"#"</span>: <span class="cm-variable">Wall</span>,
+   <span class="cm-string cm-property">"O"</span>: <span class="cm-variable">PlantEater</span>,
+   <span class="cm-string cm-property">"*"</span>: <span class="cm-variable">Plant</span>}
+);</pre>
+<p><a class=p_ident id="p_XZiEmlppan" href="#p_XZiEmlppan"></a>Let&#8217;s see what happens if we run this.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ryt21fIzYu" href="#c_ryt21fIzYu"></a><span class="cm-variable">animateWorld</span>(<span class="cm-variable">valley</span>);</pre>
+<p><a class=p_ident id="p_1fhW4rcJRU" href="#p_1fhW4rcJRU"></a>Most
+of the time, the plants multiply and expand quite quickly, but then
+the abundance of food causes a population explosion of the
+herbivores, who proceed to wipe out all or nearly all of the
+plants, resulting in a mass starvation of the critters. Sometimes,
+the ecosystem recovers and another cycle starts. At other times,
+one of the species dies out completely. If it&#8217;s the herbivores, the
+whole space will fill with plants. If it&#8217;s the plants, the remaining
+critters starve, and the valley becomes a desolate wasteland. Ah, the
+cruelty of nature.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<h3><a class=h_ident id="h_lU2HuCXhbH" href="#h_lU2HuCXhbH"></a>Artificial stupidity</h3>
+<p><a class=p_ident id="p_w0CByGW7g5" href="#p_w0CByGW7g5"></a>Having the inhabitants of our world go
+extinct after a few minutes is kind of depressing. To deal with this,
+we could try to create a smarter plant eater.</p>
+<p><a class=p_ident id="p_G39rqGC9Ql" href="#p_G39rqGC9Ql"></a>There are several obvious
+problems with our herbivores. First, they are terribly greedy,
+stuffing themselves with every plant they see until they have wiped
+out the local plant life. Second, their randomized movement (recall
+that the <code>view.find</code> method returns a random direction when multiple
+directions match) causes them to stumble around ineffectively and
+starve if there don&#8217;t happen to be any plants nearby. And finally,
+they breed very fast, which makes the cycles between abundance and
+famine quite intense.</p>
+<p><a class=p_ident id="p_RoYABqty7W" href="#p_RoYABqty7W"></a>Write a new critter type that tries to address one or more of these
+points and substitute it for the old <code>PlantEater</code> type in the valley
+world. See how it fares. Tweak it some more if necessary.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7OKWiyCd1B" href="#c_7OKWiyCd1B"></a><span class="cm-comment">// Your code here</span>
+<span class="cm-keyword">function</span> <span class="cm-variable">SmartPlantEater</span>() {}
+
+<span class="cm-variable">animateWorld</span>(<span class="cm-keyword">new</span> <span class="cm-variable">LifelikeWorld</span>(
+  [<span class="cm-string">"############################"</span>,
+   <span class="cm-string">"#####                 ######"</span>,
+   <span class="cm-string">"##   ***                **##"</span>,
+   <span class="cm-string">"#   *##**         **  O  *##"</span>,
+   <span class="cm-string">"#    ***     O    ##**    *#"</span>,
+   <span class="cm-string">"#       O         ##***    #"</span>,
+   <span class="cm-string">"#                 ##**     #"</span>,
+   <span class="cm-string">"#   O       #*             #"</span>,
+   <span class="cm-string">"#*          #**       O    #"</span>,
+   <span class="cm-string">"#***        ##**    O    **#"</span>,
+   <span class="cm-string">"##****     ###***       *###"</span>,
+   <span class="cm-string">"############################"</span>],
+  {<span class="cm-string cm-property">"#"</span>: <span class="cm-variable">Wall</span>,
+   <span class="cm-string cm-property">"O"</span>: <span class="cm-variable">SmartPlantEater</span>,
+   <span class="cm-string cm-property">"*"</span>: <span class="cm-variable">Plant</span>}
+));</pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_opSDCAfj1y" href="#p_opSDCAfj1y"></a>The greediness problem can be
+attacked in several ways. The critters could stop eating when they
+reach a certain energy level. Or they could eat only every N turns (by
+keeping a counter of the turns since their last meal in a property on
+the creature object). Or, to make sure plants never go entirely
+extinct, the animals could refuse to eat a plant unless they see
+at least one other plant nearby (using the <code>findAll</code> method on the
+view). A combination of these, or some entirely different strategy,
+might also work.</p>
+<p><a class=p_ident id="p_oozF6+toSs" href="#p_oozF6+toSs"></a>Making the critters move more
+effectively could be done by stealing one of the movement strategies
+from the critters in our old, energyless world. Both the bouncing
+behavior and the wall-following behavior showed a much wider range of
+movement than completely random staggering.</p>
+<p><a class=p_ident id="p_Gao/HNyaKe" href="#p_Gao/HNyaKe"></a>Making creatures breed more slowly is
+trivial. Just increase the minimum energy level at which they
+reproduce. Of course, making the ecosystem more stable also makes it
+more boring. If you have a handful of fat, immobile critters forever
+munching on a sea of plants and never reproducing, that makes for a
+very stable ecosystem. But no one wants to watch that.</p>
+</div></div>
+<h3><a class=h_ident id="h_QUnD2hCBv4" href="#h_QUnD2hCBv4"></a>Predators</h3>
+<p><a class=p_ident id="p_wLAPo3ZZqC" href="#p_wLAPo3ZZqC"></a>Any serious
+ecosystem has a food chain longer than a single link. Write
+another critter that survives by eating the herbivore critter.
+You&#8217;ll notice that stability is even harder to achieve now that there
+are cycles at multiple levels. Try to find a strategy to make the
+ecosystem run smoothly for at least a little while.</p>
+<p><a class=p_ident id="p_jEi7Cawsdy" href="#p_jEi7Cawsdy"></a>One thing that will help is to make the world bigger.
+This way, local population booms or busts are less likely to wipe out
+a species entirely, and there is space for the relatively large prey
+population needed to sustain a small predator population.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ub1nEhU4ti" href="#c_ub1nEhU4ti"></a><span class="cm-comment">// Your code here</span>
+<span class="cm-keyword">function</span> <span class="cm-variable">Tiger</span>() {}
+
+<span class="cm-variable">animateWorld</span>(<span class="cm-keyword">new</span> <span class="cm-variable">LifelikeWorld</span>(
+  [<span class="cm-string">"####################################################"</span>,
+   <span class="cm-string">"#                 ####         ****              ###"</span>,
+   <span class="cm-string">"#   *  @  ##                 ########       OO    ##"</span>,
+   <span class="cm-string">"#   *    ##        O O                 ****       *#"</span>,
+   <span class="cm-string">"#       ##*                        ##########     *#"</span>,
+   <span class="cm-string">"#      ##***  *         ****                     **#"</span>,
+   <span class="cm-string">"#* **  #  *  ***      #########                  **#"</span>,
+   <span class="cm-string">"#* **  #      *               #   *              **#"</span>,
+   <span class="cm-string">"#     ##              #   O   #  ***          ######"</span>,
+   <span class="cm-string">"#*            @       #       #   *        O  #    #"</span>,
+   <span class="cm-string">"#*                    #  ######                 ** #"</span>,
+   <span class="cm-string">"###          ****          ***                  ** #"</span>,
+   <span class="cm-string">"#       O                        @         O       #"</span>,
+   <span class="cm-string">"#   *     ##  ##  ##  ##               ###      *  #"</span>,
+   <span class="cm-string">"#   **         #              *       #####  O     #"</span>,
+   <span class="cm-string">"##  **  O   O  #  #    ***  ***        ###      ** #"</span>,
+   <span class="cm-string">"###               #   *****                    ****#"</span>,
+   <span class="cm-string">"####################################################"</span>],
+  {<span class="cm-string cm-property">"#"</span>: <span class="cm-variable">Wall</span>,
+   <span class="cm-string cm-property">"@"</span>: <span class="cm-variable">Tiger</span>,
+   <span class="cm-string cm-property">"O"</span>: <span class="cm-variable">SmartPlantEater</span>, <span class="cm-comment">// from previous exercise</span>
+   <span class="cm-string cm-property">"*"</span>: <span class="cm-variable">Plant</span>}
+));</pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_JUs/FVKOo4" href="#p_JUs/FVKOo4"></a>Many of
+the same tricks that worked for the previous exercise also apply here.
+Making the predators big (lots of energy) and having them reproduce
+slowly is recommended. That&#8217;ll make them less vulnerable to periods of
+starvation when the herbivores are scarce.</p>
+<p><a class=p_ident id="p_za3nm9yDGX" href="#p_za3nm9yDGX"></a>Beyond staying alive, keeping its food stock alive is a
+predator&#8217;s main objective. Find some way to make predators hunt
+more aggressively when there are a lot of herbivores and hunt more
+slowly (or not at all) when prey is rare. Since plant eaters move
+around, the simple trick of eating one only when others are nearby is
+unlikely to work—that&#8217;ll happen so rarely that your predator will
+starve. But you could keep track of observations in previous turns, in
+some data structure kept on the predator objects, and have it base
+its behavior on what it has seen recently.</p>
+</div></div>
+<nav>
+  <a href="06_object.html" title="capítulo previo">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="08_error.html" title="capítulo siguiente">▶</a>
+</nav>
+</article>

@@ -1,0 +1,746 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Forms and Form Fields :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 18;var sandboxLoadFiles = ["code/promise.js"];</script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53624335-3', 'auto');
+  ga('send', 'pageview');
+
+  </script>
+</head>
+
+<article>
+<nav>
+  <a href="17_http.html" title="capítulo previo">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="19_paint.html" title="capítulo siguiente">▶</a>
+</nav>
+
+<h1><div class=chap_num>Capítulo 18</div>Forms and Form Fields</h1>
+<blockquote>
+<p><a class=p_ident id="p_HT1/Oht2V3" href="#p_HT1/Oht2V3"></a>I shall this very day, at Doctor&#8217;s feast,<br>
+My bounden service duly pay thee.<br>
+But one thing!—For insurance’ sake, I pray thee,<br>
+Grant me a line or two, at least.</p>
+ <footer>Mephistopheles, <cite>in Goethe's Faust</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_7R2RnNlXWq" href="#p_7R2RnNlXWq"></a>Forms were introduced briefly in the
+<a href="17_http.html#http_forms">previous chapter</a> as a way to
+<em>submit</em> information provided by the user over HTTP. They were
+designed for a pre-JavaScript Web, assuming that interaction with the
+server always happens by navigating to a new page.</p>
+<p><a class=p_ident id="p_j1nZNHqVd+" href="#p_j1nZNHqVd+"></a>But their elements are part of the DOM like the rest of the page,
+and the DOM elements that represent form fields support a number
+of properties and events that are not present on other elements. These
+make it possible to inspect and control such input fields with JavaScript programs
+and do things such as adding functionality to a traditional form or using forms
+and fields as building blocks in a JavaScript application.</p>
+<h2><a class=h_ident id="h_6LaFJxI4rf" href="#h_6LaFJxI4rf"></a>Fields</h2>
+<p><a class=p_ident id="p_pfSLM800x5" href="#p_pfSLM800x5"></a>A web form consists of any number of input
+fields grouped in a <code>&lt;form&gt;</code> tag. HTML allows a number of
+different styles of fields, ranging from simple on/off checkboxes to
+drop-down menus and fields for text input. This book won&#8217;t try to
+comprehensively discuss all field types, but we will start with a rough
+overview.</p>
+<p><a class=p_ident id="p_BtwDLFMJGW" href="#p_BtwDLFMJGW"></a>A lot of field types use the
+<code>&lt;input&gt;</code> tag. This tag&#8217;s <code>type</code> attribute is used to select the
+field&#8217;s style. These are some commonly used <code>&lt;input&gt;</code> types:</p>
+<table>
+<tr>
+<td><code>text</code></td>
+<td>A single-line text field</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td>Same as <code>text</code> but hides the text that is typed</td>
+</tr>
+<tr>
+<td><code>checkbox</code></td>
+<td>An on/off switch</td>
+</tr>
+<tr>
+<td><code>radio</code></td>
+<td>(Part of) a multiple-choice field</td>
+</tr>
+<tr>
+<td><code>file</code></td>
+<td>Allows the user to choose a file from their computer</td>
+</tr>
+</table>
+<p><a class=p_ident id="p_LZvIgLQRq6" href="#p_LZvIgLQRq6"></a>Form
+fields do not necessarily have to appear in a <code>&lt;form&gt;</code> tag. You can
+put them anywhere in a page. Such fields cannot be submitted
+(only a form as a whole can), but when responding to input with
+JavaScript, we often do not want to submit our fields normally anyway.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_JdU7BGrO0R" href="#c_JdU7BGrO0R"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">value</span>=<span class="cm-string">"abc"</span><span class="cm-tag cm-bracket">></span> (text)<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"password"</span> <span class="cm-attribute">value</span>=<span class="cm-string">"abc"</span><span class="cm-tag cm-bracket">></span> (password)<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"checkbox"</span> <span class="cm-attribute">checked</span><span class="cm-tag cm-bracket">></span> (checkbox)<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"radio"</span> <span class="cm-attribute">value</span>=<span class="cm-string">"A"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"choice"</span><span class="cm-tag cm-bracket">></span>
+   <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"radio"</span> <span class="cm-attribute">value</span>=<span class="cm-string">"B"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"choice"</span> <span class="cm-attribute">checked</span><span class="cm-tag cm-bracket">></span>
+   <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"radio"</span> <span class="cm-attribute">value</span>=<span class="cm-string">"C"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"choice"</span><span class="cm-tag cm-bracket">></span> (radio)<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"file"</span><span class="cm-tag cm-bracket">></span> (file)<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">p</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_F4A/ei02Wb" href="#p_F4A/ei02Wb"></a>The JavaScript interface for such elements differs with the type of
+the element. We&#8217;ll go over each of them later in the chapter.</p>
+<p><a class=p_ident id="p_dU8xgBYYQy" href="#p_dU8xgBYYQy"></a>Multiline text fields have
+their own tag, <code>&lt;textarea&gt;</code>, mostly because using an attribute to
+specify a multiline starting value would be awkward. The <code>&lt;textarea&gt;</code>
+requires a matching <code>&lt;/textarea&gt;</code> closing tag and uses the text
+between those two, instead of using its <code>value</code> attribute, as starting
+text.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_aAsPR9klWW" href="#c_aAsPR9klWW"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">textarea</span><span class="cm-tag cm-bracket">></span>
+one
+two
+three
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">textarea</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_df6Ss3FBHe" href="#p_df6Ss3FBHe"></a>Finally, the <code>&lt;select&gt;</code> tag is used to
+create a field that allows the user to select from a number of
+predefined options.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_RjEtWnu+1N" href="#c_RjEtWnu+1N"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">select</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>Pancakes<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>Pudding<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>Ice cream<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">select</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_Po+2LjUu/R" href="#p_Po+2LjUu/R"></a>Whenever the value of a form field changes, it fires
+a <code>"change"</code> event.</p>
+<h2><a class=h_ident id="h_/n9VuL9o/U" href="#h_/n9VuL9o/U"></a>Focus</h2>
+<p><a class=p_ident id="p_sv9Kp9pqvi" href="#p_sv9Kp9pqvi"></a>Unlike most elements in an HTML document,
+form fields can get <em>keyboard focus</em>. When clicked—or activated in
+some other way—they become the currently active element, the main
+recipient of keyboard input.</p>
+<p><a class=p_ident id="p_sPi491t84y" href="#p_sPi491t84y"></a>If a document has a
+text field, text typed will end up in there only  when the field is
+focused. Other fields respond differently to keyboard events. For
+example, a <code>&lt;select&gt;</code> menu tries to move to the option that contains
+the text the user typed and responds to the arrow keys by moving its
+selection up and down.</p>
+<p><a class=p_ident id="p_bTNSIbb+d4" href="#p_bTNSIbb+d4"></a>We can
+control focus from JavaScript with the <code>focus</code> and <code>blur</code> methods.
+The first moves focus to the DOM element it is called on, and the second
+removes focus. The value in <code>document.activeElement</code> corresponds to
+the currently focused element.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_0/XL0FGtcl" href="#c_0/XL0FGtcl"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"input"</span>).<span class="cm-property">focus</span>();
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">document</span>.<span class="cm-property">activeElement</span>.<span class="cm-property">tagName</span>);
+  <span class="cm-comment">// → INPUT</span>
+  <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"input"</span>).<span class="cm-property">blur</span>();
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">document</span>.<span class="cm-property">activeElement</span>.<span class="cm-property">tagName</span>);
+  <span class="cm-comment">// → BODY</span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_5/Idt5wdrL" href="#p_5/Idt5wdrL"></a>For some pages, the user is expected to
+want to interact with a form field immediately.
+JavaScript can be used to focus this field when the document is
+loaded, but HTML also provides the <code>autofocus</code> attribute, which
+produces the same effect but lets the browser know what we are trying
+to achieve. This makes it possible for the browser to disable the
+behavior when it is not appropriate, such as when the user has focused
+something else.</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-focus="true"><a class=c_ident id="c_iwjnAcBDbo" href="#c_iwjnAcBDbo"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">autofocus</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_IgspvfRub5" href="#p_IgspvfRub5"></a>Browsers traditionally also allow the user to move the focus
+through the document by pressing the Tab key. We can influence the
+order in which elements receive focus with the <code>tabindex</code> attribute.
+The following example document will let focus jump from the text input to
+the OK button, rather than going through the help link first:</p>
+<pre data-language="text/html" class="snippet cm-s-default" data-focus="true"><a class=c_ident id="c_17Gw7jWqVc" href="#c_17Gw7jWqVc"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">tabindex</span>=<span class="cm-string">1</span><span class="cm-tag cm-bracket">></span> <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">a</span> <span class="cm-attribute">href</span>=<span class="cm-string">"."</span><span class="cm-tag cm-bracket">></span>(help)<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">a</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">onclick</span>=<span class="cm-string">"console.log('ok')"</span> <span class="cm-attribute">tabindex</span>=<span class="cm-string">2</span><span class="cm-tag cm-bracket">></span>OK<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_CSZoExUC/a" href="#p_CSZoExUC/a"></a>By default, most types of HTML elements cannot
+be focused. But you can add a <code>tabindex</code> attribute to any element,
+which will make it focusable.</p>
+<h2><a class=h_ident id="h_l2z9T1FDym" href="#h_l2z9T1FDym"></a>Disabled fields</h2>
+<p><a class=p_ident id="p_yO5FA2RLmN" href="#p_yO5FA2RLmN"></a>All form fields can be <em>disabled</em>
+through their <code>disabled</code> attribute, which also exists as a property on
+the element&#8217;s DOM object.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_8I51RKfnyr" href="#c_8I51RKfnyr"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>I'm all right<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">disabled</span><span class="cm-tag cm-bracket">></span>I'm out<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_GR2MtLESGu" href="#p_GR2MtLESGu"></a>Disabled fields cannot be focused or changed, and unlike active
+fields, they usually look gray and faded.</p>
+<p><a class=p_ident id="p_xuHzLzjgZ1" href="#p_xuHzLzjgZ1"></a>When a program is
+in the process of handling an action caused by some button or other control,
+which might require communication with the server and thus take a
+while, it can be a good idea to
+disable the control until the action finishes. That way, when the user
+gets impatient and clicks it again, they don&#8217;t accidentally repeat
+their action.</p>
+<h2><a class=h_ident id="h_R8SZxHmDt0" href="#h_R8SZxHmDt0"></a>The form as a whole</h2>
+<p><a class=p_ident id="p_G8aitsjxoL" href="#p_G8aitsjxoL"></a>When a field is contained in a
+<code>&lt;form&gt;</code> element, its DOM element will have a property <code>form</code> linking
+back to the form&#8217;s DOM element. The <code>&lt;form&gt;</code> element, in turn, has a
+property called <code>elements</code> that contains an array-like collection of the fields
+inside it.</p>
+<p><a class=p_ident id="p_7Ds/EaFyX5" href="#p_7Ds/EaFyX5"></a>The <code>name</code> attribute of a
+form field determines the way its value will be identified when the
+form is submitted. It can also be used as a property name when
+accessing the form&#8217;s <code>elements</code> property, which acts both as an
+array-like object (accessible by number) and a map (accessible by
+name).</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_toJqXrg6vf" href="#c_toJqXrg6vf"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">form</span> <span class="cm-attribute">action</span>=<span class="cm-string">"example/submit.html"</span><span class="cm-tag cm-bracket">></span>
+  Name: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"name"</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">br</span><span class="cm-tag cm-bracket">></span>
+  Password: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"password"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"password"</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">br</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">type</span>=<span class="cm-string">"submit"</span><span class="cm-tag cm-bracket">></span>Log in<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">form</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">form</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"form"</span>);
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">form</span>.<span class="cm-property">elements</span>[<span class="cm-number">1</span>].<span class="cm-property">type</span>);
+  <span class="cm-comment">// → password</span>
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">form</span>.<span class="cm-property">elements</span>.<span class="cm-property">password</span>.<span class="cm-property">type</span>);
+  <span class="cm-comment">// → password</span>
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">form</span>.<span class="cm-property">elements</span>.<span class="cm-property">name</span>.<span class="cm-property">form</span> <span class="cm-operator">==</span> <span class="cm-variable">form</span>);
+  <span class="cm-comment">// → true</span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_DOQDGp4ZWr" href="#p_DOQDGp4ZWr"></a>A button with a <code>type</code> attribute of <code>submit</code> will, when pressed,
+cause the form to be submitted. Pressing Enter when a form field is
+focused has the same effect.</p>
+<p><a class=p_ident id="p_MVbboPCoBM" href="#p_MVbboPCoBM"></a>Submitting
+a form normally means that the
+browser navigates to the page indicated by the form&#8217;s <code>action</code>
+attribute, using either a <code>GET</code> or a <code>POST</code> request. But before
+that happens, a <code>"submit"</code> event is fired. This event can be handled
+by JavaScript, and the handler can prevent the default behavior by
+calling <code>preventDefault</code> on the event object.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_PXLNjO6XsV" href="#c_PXLNjO6XsV"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">form</span> <span class="cm-attribute">action</span>=<span class="cm-string">"example/submit.html"</span><span class="cm-tag cm-bracket">></span>
+  Value: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"value"</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">type</span>=<span class="cm-string">"submit"</span><span class="cm-tag cm-bracket">></span>Save<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">form</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">form</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"form"</span>);
+  <span class="cm-variable">form</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"submit"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Saving value"</span>, <span class="cm-variable">form</span>.<span class="cm-property">elements</span>.<span class="cm-property">value</span>.<span class="cm-property">value</span>);
+    <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>();
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_s3PgVwicoH" href="#p_s3PgVwicoH"></a>Intercepting
+<code>"submit"</code> events in JavaScript has various uses. We can write code to
+verify that the values the user entered make sense and immediately
+show an error message instead of submitting the form when they don&#8217;t.
+Or we can disable the regular way of submitting the form entirely, as
+in the previous example, and have our program handle the input, possibly
+using <code>XMLHttpRequest</code> to send it over to a server without reloading
+the page.</p>
+<h2><a class=h_ident id="h_+RaBROT23F" href="#h_+RaBROT23F"></a>Text fields</h2>
+<p><a class=p_ident id="p_yXEHtldoGS" href="#p_yXEHtldoGS"></a>Fields created by <code>&lt;input&gt;</code> tags with a type of <code>text</code> or
+<code>password</code>, as well as <code>textarea</code> tags, share a common interface.
+Their DOM elements have a <code>value</code> property that holds their
+current content as a string value. Setting this property to another string
+changes the field&#8217;s content.</p>
+<p><a class=p_ident id="p_L8Jf4YksDD" href="#p_L8Jf4YksDD"></a>The
+<code>selectionStart</code> and <code>selectionEnd</code> properties of text fields give
+us information about the cursor and selection in the text.
+When nothing is selected, these two properties hold the same number,
+indicating the position of the cursor. For example, 0 indicates the
+start of the text, and 10 indicates the cursor is after the 10<sup>th</sup> character.
+When part of the field is selected, the two properties will differ, giving us the
+start and end of the selected text. Like <code>value</code>, these properties may
+also be written to.</p>
+<p><a class=p_ident id="p_xbJja7lj1o" href="#p_xbJja7lj1o"></a>As an example, imagine you
+are writing an article about Khasekhemwy but have some
+trouble spelling his name. The following code wires up a <code>&lt;textarea&gt;</code> tag
+with an event handler that, when you press F2, inserts the string
+“Khasekhemwy” for you.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_NyuUIijlnq" href="#c_NyuUIijlnq"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">textarea</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">textarea</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">textarea</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"textarea"</span>);
+  <span class="cm-variable">textarea</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"keydown"</span>, <span class="cm-keyword">function</span>(<span class="cm-def">event</span>) {
+    <span class="cm-comment">// The key code for F2 happens to be 113</span>
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">event</span>.<span class="cm-property">keyCode</span> <span class="cm-operator">==</span> <span class="cm-number">113</span>) {
+      <span class="cm-variable">replaceSelection</span>(<span class="cm-variable">textarea</span>, <span class="cm-string">"Khasekhemwy"</span>);
+      <span class="cm-variable-2">event</span>.<span class="cm-property">preventDefault</span>();
+    }
+  });
+  <span class="cm-keyword">function</span> <span class="cm-variable">replaceSelection</span>(<span class="cm-def">field</span>, <span class="cm-def">word</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">from</span> <span class="cm-operator">=</span> <span class="cm-variable-2">field</span>.<span class="cm-property">selectionStart</span>, <span class="cm-def">to</span> <span class="cm-operator">=</span> <span class="cm-variable-2">field</span>.<span class="cm-property">selectionEnd</span>;
+    <span class="cm-variable-2">field</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-variable-2">field</span>.<span class="cm-property">value</span>.<span class="cm-property">slice</span>(<span class="cm-number">0</span>, <span class="cm-variable-2">from</span>) <span class="cm-operator">+</span> <span class="cm-variable-2">word</span> <span class="cm-operator">+</span>
+                  <span class="cm-variable-2">field</span>.<span class="cm-property">value</span>.<span class="cm-property">slice</span>(<span class="cm-variable-2">to</span>);
+    <span class="cm-comment">// Put the cursor after the word</span>
+    <span class="cm-variable-2">field</span>.<span class="cm-property">selectionStart</span> <span class="cm-operator">=</span> <span class="cm-variable-2">field</span>.<span class="cm-property">selectionEnd</span> <span class="cm-operator">=</span>
+      <span class="cm-variable-2">from</span> <span class="cm-operator">+</span> <span class="cm-variable-2">word</span>.<span class="cm-property">length</span>;
+  }
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_Gwpy8qmRbK" href="#p_Gwpy8qmRbK"></a>The <code>replaceSelection</code>
+function replaces the currently selected part of a text field&#8217;s
+content with the given word and then moves the cursor after that
+word so that the user can continue typing.</p>
+<p><a class=p_ident id="p_n9HEUfXSP7" href="#p_n9HEUfXSP7"></a>The <code>"change"</code> event for a text field does not fire every time something is typed. Rather, it
+fires when the field loses focus after its content was changed.
+To respond immediately to changes in a text field, you should register
+a handler for the <code>"input"</code> event instead, which fires for every
+time the user types a character, deletes text, or otherwise manipulates
+the field&#8217;s content.</p>
+<p><a class=p_ident id="p_EA90jWvW4M" href="#p_EA90jWvW4M"></a>The following example  shows a text field and a counter showing the current
+length of the text entered:</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_A5KP6SC+kD" href="#c_A5KP6SC+kD"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span><span class="cm-tag cm-bracket">></span> length: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">span</span> <span class="cm-attribute">id</span>=<span class="cm-string">"length"</span><span class="cm-tag cm-bracket">></span>0<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">span</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">text</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"input"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-variable">output</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#length"</span>);
+  <span class="cm-variable">text</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"input"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">output</span>.<span class="cm-property">textContent</span> <span class="cm-operator">=</span> <span class="cm-variable">text</span>.<span class="cm-property">value</span>.<span class="cm-property">length</span>;
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<h2><a class=h_ident id="h_axUK+XNvTN" href="#h_axUK+XNvTN"></a>Checkboxes and radio buttons</h2>
+<p><a class=p_ident id="p_DFZwKUx9E+" href="#p_DFZwKUx9E+"></a>A checkbox field is a
+simple binary toggle. Its value can be extracted or changed through
+its <code>checked</code> property, which holds a Boolean value.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_hJgh0RAc5v" href="#c_hJgh0RAc5v"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"checkbox"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"purple"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">label</span> <span class="cm-attribute">for</span>=<span class="cm-string">"purple"</span><span class="cm-tag cm-bracket">></span>Make this page purple<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">label</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">checkbox</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#purple"</span>);
+  <span class="cm-variable">checkbox</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">style</span>.<span class="cm-property">background</span> <span class="cm-operator">=</span>
+      <span class="cm-variable">checkbox</span>.<span class="cm-property">checked</span> <span class="cm-operator">?</span> <span class="cm-string">"mediumpurple"</span> : <span class="cm-string">""</span>;
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_AcH0aFeYIj" href="#p_AcH0aFeYIj"></a>The <code>&lt;label&gt;</code> tag is used to associate a piece of
+text with an input field. Its <code>for</code> attribute should refer to the
+<code>id</code> of the field. Clicking the label will activate the field, which focuses
+it and toggles its value when it is a checkbox or radio button.</p>
+<p><a class=p_ident id="p_vNsiBxZlre" href="#p_vNsiBxZlre"></a>A radio button is
+similar to a checkbox, but it&#8217;s implicitly linked to other radio buttons
+with the same <code>name</code> attribute so that only one of them can be active
+at any time.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_P3tSzP314m" href="#c_P3tSzP314m"></a>Color:
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"radio"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"color"</span> <span class="cm-attribute">value</span>=<span class="cm-string">"mediumpurple"</span><span class="cm-tag cm-bracket">></span> Purple
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"radio"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"color"</span> <span class="cm-attribute">value</span>=<span class="cm-string">"lightgreen"</span><span class="cm-tag cm-bracket">></span> Green
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"radio"</span> <span class="cm-attribute">name</span>=<span class="cm-string">"color"</span> <span class="cm-attribute">value</span>=<span class="cm-string">"lightblue"</span><span class="cm-tag cm-bracket">></span> Blue
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">buttons</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">getElementsByName</span>(<span class="cm-string">"color"</span>);
+  <span class="cm-keyword">function</span> <span class="cm-variable">setColor</span>(<span class="cm-def">event</span>) {
+    <span class="cm-variable">document</span>.<span class="cm-property">body</span>.<span class="cm-property">style</span>.<span class="cm-property">background</span> <span class="cm-operator">=</span> <span class="cm-variable-2">event</span>.<span class="cm-property">target</span>.<span class="cm-property">value</span>;
+  }
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">buttons</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>)
+    <span class="cm-variable">buttons</span>[<span class="cm-variable">i</span>].<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-variable">setColor</span>);
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_TLnCgOnKU5" href="#p_TLnCgOnKU5"></a>The
+<code>document.getElementsByName</code> method gives us all elements with a given
+<code>name</code> attribute. The example loops over those (with a regular <code>for</code>
+loop, not <code>forEach</code>, because the returned collection is not a real
+array) and registers an event handler for each element. Remember that
+event objects have a <code>target</code> property referring to the element that
+triggered the event. This is often useful in event handlers like this
+one, which will be called on different elements and need some way to
+access the current target.</p>
+<h2><a class=h_ident id="h_eaB6RprDK3" href="#h_eaB6RprDK3"></a>Select fields</h2>
+<p><a class=p_ident id="p_C43QMBKrcK" href="#p_C43QMBKrcK"></a>Select fields are conceptually similar to radio buttons—they
+also allow the user to choose from a set of options. But where a radio
+button puts the layout of the options under our control, the
+appearance of a <code>&lt;select&gt;</code> tag is determined by the browser.</p>
+<p><a class=p_ident id="p_NtH8drqnHG" href="#p_NtH8drqnHG"></a>Select fields also have a variant that is more
+akin to a list of checkboxes, rather than radio boxes. When given the
+<code>multiple</code> attribute, a <code>&lt;select&gt;</code> tag will allow the user to select
+any number of options, rather than just a single option.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_DU0yKS293E" href="#c_DU0yKS293E"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">select</span> <span class="cm-attribute">multiple</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>Pancakes<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>Pudding<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>Ice cream<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">select</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_ZdHBLZYAi8" href="#p_ZdHBLZYAi8"></a>This
+will, in most browsers, show up differently than a non-<code>multiple</code>
+select field, which is commonly drawn as a <em>drop-down</em> control that
+shows the options only when you open it.</p>
+<p><a class=p_ident id="p_Hyw0pVZgH2" href="#p_Hyw0pVZgH2"></a>The <code>size</code> attribute to the
+<code>&lt;select&gt;</code> tag is used to set the number of options that are visible at
+the same time, which gives you explicit control over the drop-down&#8217;s appearance. For example,
+setting the <code>size</code> attribute to <code>"3"</code> will make the field show three lines, whether it
+has the <code>multiple</code> option enabled or not.</p>
+<p><a class=p_ident id="p_6B1JfRLbxg" href="#p_6B1JfRLbxg"></a>Each <code>&lt;option&gt;</code> tag has a
+value. This value can be defined with a <code>value</code> attribute, but when
+that is not given, the text inside the option will count as the
+option&#8217;s value. The <code>value</code> property of a <code>&lt;select&gt;</code> element reflects
+the currently selected option. For a <code>multiple</code> field, though, this
+property doesn&#8217;t mean much since it will give the value of only <em>one</em>
+of the currently selected options.</p>
+<p><a class=p_ident id="p_Aum9ltngdE" href="#p_Aum9ltngdE"></a>The <code>&lt;option&gt;</code> tags for a <code>&lt;select&gt;</code> field can be accessed
+as an array-like object through the field&#8217;s <code>options</code> property. Each option
+has a property called <code>selected</code>, which indicates whether that option is
+currently selected. The property can also be written to select or
+deselect an option.</p>
+<p><a class=p_ident id="p_IxfFgaCJNR" href="#p_IxfFgaCJNR"></a>The following example extracts
+the selected values from a <code>multiple</code> select field and uses them to
+compose a binary number from individual bits. Hold Ctrl (or Command
+on a Mac) to select multiple options.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_71aTiF2Jay" href="#c_71aTiF2Jay"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">select</span> <span class="cm-attribute">multiple</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span> <span class="cm-attribute">value</span>=<span class="cm-string">"1"</span><span class="cm-tag cm-bracket">></span>0001<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span> <span class="cm-attribute">value</span>=<span class="cm-string">"2"</span><span class="cm-tag cm-bracket">></span>0010<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span> <span class="cm-attribute">value</span>=<span class="cm-string">"4"</span><span class="cm-tag cm-bracket">></span>0100<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">option</span> <span class="cm-attribute">value</span>=<span class="cm-string">"8"</span><span class="cm-tag cm-bracket">></span>1000<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">option</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">select</span><span class="cm-tag cm-bracket">></span> = <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">span</span> <span class="cm-attribute">id</span>=<span class="cm-string">"output"</span><span class="cm-tag cm-bracket">></span>0<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">span</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">select</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"select"</span>);
+  <span class="cm-keyword">var</span> <span class="cm-variable">output</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#output"</span>);
+  <span class="cm-variable">select</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">var</span> <span class="cm-def">number</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">select</span>.<span class="cm-property">options</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">option</span> <span class="cm-operator">=</span> <span class="cm-variable">select</span>.<span class="cm-property">options</span>[<span class="cm-variable-2">i</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">option</span>.<span class="cm-property">selected</span>)
+        <span class="cm-variable-2">number</span> <span class="cm-operator">+=</span> <span class="cm-variable">Number</span>(<span class="cm-variable-2">option</span>.<span class="cm-property">value</span>);
+    }
+    <span class="cm-variable">output</span>.<span class="cm-property">textContent</span> <span class="cm-operator">=</span> <span class="cm-variable-2">number</span>;
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<h2><a class=h_ident id="h_tK84z183/8" href="#h_tK84z183/8"></a>File fields</h2>
+<p><a class=p_ident id="p_12DuX873Jk" href="#p_12DuX873Jk"></a>File fields were originally designed as
+a way to upload files from the browser&#8217;s machine through a form.
+In modern browsers, they also provide a way to read such files from
+JavaScript programs. The field acts as a manner of gatekeeper. The
+script cannot simply start reading private files from the user&#8217;s
+computer, but if the user selects a file in such a field, the browser
+interprets that action to mean that the script may read the file.</p>
+<p><a class=p_ident id="p_poF7nvM5XY" href="#p_poF7nvM5XY"></a>A file field usually looks like a button labeled with something like
+“choose file” or “browse”, with information about the chosen file next
+to it.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_XxlcS1DiHf" href="#c_XxlcS1DiHf"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"file"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">input</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"input"</span>);
+  <span class="cm-variable">input</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-keyword">if</span> (<span class="cm-variable">input</span>.<span class="cm-property">files</span>.<span class="cm-property">length</span> <span class="cm-operator">></span> <span class="cm-number">0</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">file</span> <span class="cm-operator">=</span> <span class="cm-variable">input</span>.<span class="cm-property">files</span>[<span class="cm-number">0</span>];
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You chose"</span>, <span class="cm-variable-2">file</span>.<span class="cm-property">name</span>);
+      <span class="cm-keyword">if</span> (<span class="cm-variable-2">file</span>.<span class="cm-property">type</span>)
+        <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"It has type"</span>, <span class="cm-variable-2">file</span>.<span class="cm-property">type</span>);
+    }
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_J8fD00m75/" href="#p_J8fD00m75/"></a>The <code>files</code> property of a
+file field element is an array-like object (again, not a real
+array) containing the files chosen in the field. It is initially
+empty. The reason there isn&#8217;t simply a <code>file</code> property is that file
+fields also support a <code>multiple</code> attribute, which makes it possible to
+select multiple files at the same time.</p>
+<p><a class=p_ident id="p_VjLruEMwm5" href="#p_VjLruEMwm5"></a>Objects in the <code>files</code> property have properties such as
+<code>name</code> (the filename), <code>size</code> (the file&#8217;s size in bytes), and <code>type</code>
+(the media type of the file, such as <code>text/plain</code> or <code>image/jpeg</code>).</p>
+<p id="filereader"><a class=p_ident id="p_ezd+X1Rw54" href="#p_ezd+X1Rw54"></a>What it does not have is a property that contains the content
+of the file. Getting at that is a little more involved. Since reading
+a file from disk can take time, the interface will have to be
+asynchronous to avoid freezing the document. You can think of the
+<code>FileReader</code> constructor as being similar to <code>XMLHttpRequest</code> but for
+files.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_eDdgcCTx3j" href="#c_eDdgcCTx3j"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"file"</span> <span class="cm-attribute">multiple</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">input</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"input"</span>);
+  <span class="cm-variable">input</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">Array</span>.<span class="cm-property">prototype</span>.<span class="cm-property">forEach</span>.<span class="cm-property">call</span>(<span class="cm-variable">input</span>.<span class="cm-property">files</span>, <span class="cm-keyword">function</span>(<span class="cm-def">file</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">reader</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">FileReader</span>();
+      <span class="cm-variable-2">reader</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"load"</span>, <span class="cm-keyword">function</span>() {
+        <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"File"</span>, <span class="cm-variable-2">file</span>.<span class="cm-property">name</span>, <span class="cm-string">"starts with"</span>,
+                    <span class="cm-variable-2">reader</span>.<span class="cm-property">result</span>.<span class="cm-property">slice</span>(<span class="cm-number">0</span>, <span class="cm-number">20</span>));
+      });
+      <span class="cm-variable-2">reader</span>.<span class="cm-property">readAsText</span>(<span class="cm-variable-2">file</span>);
+    });
+  });
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_ig0flob0QZ" href="#p_ig0flob0QZ"></a>Reading a file is done by creating a <code>FileReader</code> object,
+registering a <code>"load"</code> event handler for it, and calling its
+<code>readAsText</code> method, giving it the file we want to read. Once loading
+finishes, the reader&#8217;s <code>result</code> property contains the file&#8217;s content.</p>
+<p><a class=p_ident id="p_mwjAqF7An3" href="#p_mwjAqF7An3"></a>The example
+uses <code>Array.prototype.forEach</code> to iterate over the array since in a
+normal loop it would be awkward to get the correct <code>file</code> and <code>reader</code>
+objects from the event handler. The variables would be shared by all
+iterations of the loop.</p>
+<p><a class=p_ident id="p_f5Kaoq//VK" href="#p_f5Kaoq//VK"></a><code>FileReader</code>s
+also fire an <code>"error"</code> event when reading the file fails for any
+reason. The error object itself will end up in the reader&#8217;s <code>error</code>
+property. If you don&#8217;t want to remember the details of yet another
+inconsistent asynchronous interface, you could wrap it in a <code>Promise</code> (see
+<a href="17_http.html#promises">Chapter 17</a>) like this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZypgMPtwaf" href="#c_ZypgMPtwaf"></a><span class="cm-keyword">function</span> <span class="cm-variable">readFile</span>(<span class="cm-def">file</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-keyword">new</span> <span class="cm-variable">Promise</span>(<span class="cm-keyword">function</span>(<span class="cm-def">succeed</span>, <span class="cm-def">fail</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">reader</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">FileReader</span>();
+    <span class="cm-variable-2">reader</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"load"</span>, <span class="cm-keyword">function</span>() {
+      <span class="cm-variable-2">succeed</span>(<span class="cm-variable-2">reader</span>.<span class="cm-property">result</span>);
+    });
+    <span class="cm-variable-2">reader</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"error"</span>, <span class="cm-keyword">function</span>() {
+      <span class="cm-variable-2">fail</span>(<span class="cm-variable-2">reader</span>.<span class="cm-property">error</span>);
+    });
+    <span class="cm-variable-2">reader</span>.<span class="cm-property">readAsText</span>(<span class="cm-variable-2">file</span>);
+  });
+}</pre>
+<p><a class=p_ident id="p_IGRea9SXwb" href="#p_IGRea9SXwb"></a>It is possible to read only part of a
+file by calling <code>slice</code> on it and passing the result (a
+so-called <em>blob</em> object) to the file reader.</p>
+<h2><a class=h_ident id="h_xMhbz7W4BY" href="#h_xMhbz7W4BY"></a>Storing data client-side</h2>
+<p><a class=p_ident id="p_JABB1DfeON" href="#p_JABB1DfeON"></a>Simple HTML pages with a bit of JavaScript
+can be a great medium for “mini applications”—small helper programs
+that automate everyday things. By connecting a few form fields
+with event handlers, you can do anything from converting between
+degrees Celsius and Fahrenheit to computing passwords from a master
+password and a website name.</p>
+<p><a class=p_ident id="p_jnKM+3wefQ" href="#p_jnKM+3wefQ"></a>When such an application needs to
+remember something between sessions, you cannot use JavaScript
+variables since those are thrown away every time a page is
+closed. You could set up a server, connect it to the Internet, and
+have your application store something there. We will see how to do
+that in <a href="20_node.html#node">Chapter 20</a>. But this adds a lot of
+extra work and complexity. Sometimes it is enough to just keep the
+data in the browser. But how?</p>
+<p><a class=p_ident id="p_Coj/4Qj2Wo" href="#p_Coj/4Qj2Wo"></a>You can store string data in a way
+that survives page reloads by putting it in the <code>localStorage</code>
+object. This object allows you to file string values under names (also
+strings), as in this example:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_o4vSpqCBWE" href="#c_o4vSpqCBWE"></a><span class="cm-variable">localStorage</span>.<span class="cm-property">setItem</span>(<span class="cm-string">"username"</span>, <span class="cm-string">"marijn"</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">localStorage</span>.<span class="cm-property">getItem</span>(<span class="cm-string">"username"</span>));
+<span class="cm-comment">// → marijn</span>
+<span class="cm-variable">localStorage</span>.<span class="cm-property">removeItem</span>(<span class="cm-string">"username"</span>);</pre>
+<p><a class=p_ident id="p_6Jr54na1O5" href="#p_6Jr54na1O5"></a>A value in <code>localStorage</code> sticks around until
+it is overwritten, it is removed with <code>removeItem</code>, or the user clears
+their local data.</p>
+<p><a class=p_ident id="p_QTrhARZTb/" href="#p_QTrhARZTb/"></a>Sites from different domains get different storage
+compartments. That means data stored in <code>localStorage</code> by a given
+website can, in principle, only be read (and overwritten) by scripts on
+that same site.</p>
+<p><a class=p_ident id="p_s4JKCuTdO4" href="#p_s4JKCuTdO4"></a>Browsers also enforce a limit on the size of
+the data a site can store in <code>localStorage</code>, typically on the order of
+a few megabytes. That restriction, along with the fact that filling up
+people&#8217;s hard drives with junk is not really profitable, prevents
+this feature from eating up too much space.</p>
+<p><a class=p_ident id="p_YJCl32s1ep" href="#p_YJCl32s1ep"></a>The following code
+implements a simple note-taking application. It keeps the user&#8217;s notes
+as an object, associating note titles with content strings. This object
+is encoded as JSON and stored in <code>localStorage</code>. The user can
+select a note from a <code>&lt;select&gt;</code> field and change that note&#8217;s text in
+a <code>&lt;textarea&gt;</code>. A note can be added by clicking a button.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_KWMxwv14ip" href="#c_KWMxwv14ip"></a>Notes: <span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">select</span> <span class="cm-attribute">id</span>=<span class="cm-string">"list"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">select</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">onclick</span>=<span class="cm-string">"addNote()"</span><span class="cm-tag cm-bracket">></span>new<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">>&lt;</span><span class="cm-tag">br</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">textarea</span> <span class="cm-attribute">id</span>=<span class="cm-string">"currentnote"</span> <span class="cm-attribute">style</span>=<span class="cm-string">"width: 100%; height: 10em"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">textarea</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">list</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#list"</span>);
+  <span class="cm-keyword">function</span> <span class="cm-variable">addToList</span>(<span class="cm-def">name</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">option</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">createElement</span>(<span class="cm-string">"option"</span>);
+    <span class="cm-variable-2">option</span>.<span class="cm-property">textContent</span> <span class="cm-operator">=</span> <span class="cm-variable-2">name</span>;
+    <span class="cm-variable">list</span>.<span class="cm-property">appendChild</span>(<span class="cm-variable-2">option</span>);
+  }
+
+  <span class="cm-comment">// Initialize the list from localStorage</span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">notes</span> <span class="cm-operator">=</span> <span class="cm-variable">JSON</span>.<span class="cm-property">parse</span>(<span class="cm-variable">localStorage</span>.<span class="cm-property">getItem</span>(<span class="cm-string">"notes"</span>)) <span class="cm-operator">||</span>
+              {<span class="cm-string cm-property">"shopping list"</span>: <span class="cm-string">""</span>};
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">name</span> <span class="cm-keyword">in</span> <span class="cm-variable">notes</span>)
+    <span class="cm-keyword">if</span> (<span class="cm-variable">notes</span>.<span class="cm-property">hasOwnProperty</span>(<span class="cm-variable">name</span>))
+      <span class="cm-variable">addToList</span>(<span class="cm-variable">name</span>);
+
+  <span class="cm-keyword">function</span> <span class="cm-variable">saveToStorage</span>() {
+    <span class="cm-variable">localStorage</span>.<span class="cm-property">setItem</span>(<span class="cm-string">"notes"</span>, <span class="cm-variable">JSON</span>.<span class="cm-property">stringify</span>(<span class="cm-variable">notes</span>));
+  }
+
+  <span class="cm-keyword">var</span> <span class="cm-variable">current</span> <span class="cm-operator">=</span> <span class="cm-variable">document</span>.<span class="cm-property">querySelector</span>(<span class="cm-string">"#currentnote"</span>);
+  <span class="cm-variable">current</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-variable">notes</span>[<span class="cm-variable">list</span>.<span class="cm-property">value</span>];
+
+  <span class="cm-variable">list</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">current</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-variable">notes</span>[<span class="cm-variable">list</span>.<span class="cm-property">value</span>];
+  });
+  <span class="cm-variable">current</span>.<span class="cm-property">addEventListener</span>(<span class="cm-string">"change"</span>, <span class="cm-keyword">function</span>() {
+    <span class="cm-variable">notes</span>[<span class="cm-variable">list</span>.<span class="cm-property">value</span>] <span class="cm-operator">=</span> <span class="cm-variable">current</span>.<span class="cm-property">value</span>;
+    <span class="cm-variable">saveToStorage</span>();
+  });
+
+  <span class="cm-keyword">function</span> <span class="cm-variable">addNote</span>() {
+    <span class="cm-keyword">var</span> <span class="cm-def">name</span> <span class="cm-operator">=</span> <span class="cm-variable">prompt</span>(<span class="cm-string">"Note name"</span>, <span class="cm-string">""</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">name</span>) <span class="cm-keyword">return</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">notes</span>.<span class="cm-property">hasOwnProperty</span>(<span class="cm-variable-2">name</span>)) {
+      <span class="cm-variable">notes</span>[<span class="cm-variable-2">name</span>] <span class="cm-operator">=</span> <span class="cm-string">""</span>;
+      <span class="cm-variable">addToList</span>(<span class="cm-variable-2">name</span>);
+      <span class="cm-variable">saveToStorage</span>();
+    }
+    <span class="cm-variable">list</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-variable-2">name</span>;
+    <span class="cm-variable">current</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-variable">notes</span>[<span class="cm-variable-2">name</span>];
+  }
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<p><a class=p_ident id="p_IXFtJG2tv8" href="#p_IXFtJG2tv8"></a>The
+script initializes the <code>notes</code> variable to the value stored in
+<code>localStorage</code> or, if that is missing, to a simple object with only an
+empty <code>"shopping list"</code> note in it. Reading a field that does not
+exist from <code>localStorage</code> will yield <code>null</code>. Passing <code>null</code> to
+<code>JSON.parse</code> will make it parse the string <code>"null"</code> and return
+<code>null</code>. Thus, the <code>||</code> operator can be used to provide a default value
+in a situation like this.</p>
+<p><a class=p_ident id="p_JoUCwxZ7ZG" href="#p_JoUCwxZ7ZG"></a>Whenever the note data changes (when a new note is added or
+an existing note changed), the <code>saveToStorage</code> function is called to
+update the storage field. If this application was intended to handle
+thousands of notes, rather than a handful, this would be too
+expensive, and we&#8217;d have to come up with a more complicated way to
+store them, such as giving each note its own storage field.</p>
+<p><a class=p_ident id="p_jDISw6dQzZ" href="#p_jDISw6dQzZ"></a>When the user adds a new note, the code must update
+the text field explicitly, even though the <code>&lt;select&gt;</code> field has a
+<code>"change"</code> handler that does the same thing. This is necessary because
+<code>"change"</code> events fire only when the <em>user</em> changes the field&#8217;s value,
+not when a script does it.</p>
+<p><a class=p_ident id="p_McB+3/vKwy" href="#p_McB+3/vKwy"></a>There is another object similar to
+<code>localStorage</code> called <code>sessionStorage</code>. The difference between the two
+is that the content of <code>sessionStorage</code> is forgotten at the end of
+each session, which for most browsers means whenever the
+browser is closed.</p>
+<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
+<p><a class=p_ident id="p_ZKWYUfmZEa" href="#p_ZKWYUfmZEa"></a>HTML can express various types of form fields, such as text fields,
+checkboxes, multiple-choice fields, and file pickers.</p>
+<p><a class=p_ident id="p_1zn4gfsnbO" href="#p_1zn4gfsnbO"></a>Such fields can be inspected and manipulated with JavaScript. They
+fire the <code>"change"</code> event when changed, the <code>"input"</code> event when text is
+typed, and  various keyboard events. These events allow us to
+notice when the user is interacting with the fields. Properties like <code>value</code>
+(for text and select fields) or <code>checked</code> (for checkboxes and radio
+buttons) are used to read or set the field&#8217;s content.</p>
+<p><a class=p_ident id="p_ga1YeRsvqD" href="#p_ga1YeRsvqD"></a>When a form is submitted, its <code>"submit"</code> event fires. A JavaScript
+handler can call <code>preventDefault</code> on that event to prevent the submission from
+happening. Form field elements do not have to be wrapped in <code>&lt;form&gt;</code>
+tags.</p>
+<p><a class=p_ident id="p_4GN43j/R8o" href="#p_4GN43j/R8o"></a>When the user has selected a file from their local file system in a
+file picker field, the <code>FileReader</code> interface can be used to access
+the content of this file from a JavaScript program.</p>
+<p><a class=p_ident id="p_KjH+jrxywQ" href="#p_KjH+jrxywQ"></a>The <code>localStorage</code> and <code>sessionStorage</code> objects can be used to save
+information in a way that survives page reloads. The first saves the
+data forever (or until the user decides to clear it), and the second saves
+it until the browser is closed.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<h3><a class=h_ident id="h_wTXvIH5Wds" href="#h_wTXvIH5Wds"></a>A JavaScript workbench</h3>
+<p><a class=p_ident id="p_EyD8Y/DOXP" href="#p_EyD8Y/DOXP"></a>Build an interface
+that allows people to type and run pieces of JavaScript code.</p>
+<p><a class=p_ident id="p_eGmPVJLy/G" href="#p_eGmPVJLy/G"></a>Put a button next to a <code>&lt;textarea&gt;</code>
+field, which, when pressed, uses the <code>Function</code> constructor we saw in
+<a href="10_modules.html#eval">Chapter 10</a> to wrap the text in a function
+and call it. Convert the return value of the function, or any error it
+raised, to a string and display it after the text field.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_VLd5vS1u8A" href="#c_VLd5vS1u8A"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">textarea</span> <span class="cm-attribute">id</span>=<span class="cm-string">"code"</span><span class="cm-tag cm-bracket">></span>return "hi";<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">textarea</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">id</span>=<span class="cm-string">"button"</span><span class="cm-tag cm-bracket">></span>Run<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">pre</span> <span class="cm-attribute">id</span>=<span class="cm-string">"output"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">pre</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-comment">// Your code here.</span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_UvZ1ElIw3/" href="#p_UvZ1ElIw3/"></a>Use <code>document.querySelector</code>
+or <code>document.getElementById</code> to get access to the elements defined in
+your HTML. An event handler for <code>"click"</code> or <code>"mousedown"</code> events on
+the button can get the <code>value</code> property of the text field and call
+<code>new Function</code> on it.</p>
+<p><a class=p_ident id="p_uLWfzgaSrI" href="#p_uLWfzgaSrI"></a>Make sure you wrap both the
+call to <code>new Function</code> and the call to its result in a <code>try</code> block so
+that you can catch exceptions that it produces. In this case, we
+really don&#8217;t know what type of exception we are looking for, so catch
+everything.</p>
+<p><a class=p_ident id="p_TWN0owIpP4" href="#p_TWN0owIpP4"></a>The <code>textContent</code> property of the
+output element can be used to fill it with a string message. Or, if
+you want to keep the old content around, create a new text node using
+<code>document.createTextNode</code> and append it to the element. Remember to
+add a newline character to the end so that not all output appears on
+a single line.</p>
+</div></div>
+<h3><a class=h_ident id="h_pGljYPYc57" href="#h_pGljYPYc57"></a>Autocompletion</h3>
+<p><a class=p_ident id="p_xkMXec3dUE" href="#p_xkMXec3dUE"></a>Extend a text field
+so that when the user types, a list of suggested values is shown below
+the field. You have an array of possible values available and should show those
+that start with the text that was typed. When a suggestion is
+clicked, replace the text field&#8217;s current value with it.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_PuMC7wrWAj" href="#c_PuMC7wrWAj"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">input</span> <span class="cm-attribute">type</span>=<span class="cm-string">"text"</span> <span class="cm-attribute">id</span>=<span class="cm-string">"field"</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">id</span>=<span class="cm-string">"suggestions"</span> <span class="cm-attribute">style</span>=<span class="cm-string">"cursor: pointer"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-comment">// Builds up an array with global variable names, like</span>
+  <span class="cm-comment">// 'alert', 'document', and 'scrollTo'</span>
+  <span class="cm-keyword">var</span> <span class="cm-variable">terms</span> <span class="cm-operator">=</span> [];
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">name</span> <span class="cm-keyword">in</span> <span class="cm-variable">window</span>)
+    <span class="cm-variable">terms</span>.<span class="cm-property">push</span>(<span class="cm-variable">name</span>);
+
+  <span class="cm-comment">// Your code here.</span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_Z5ghBcgWqZ" href="#p_Z5ghBcgWqZ"></a>The best event for
+updating the suggestion list is <code>"input"</code> since that will fire
+immediately when the content of the field is changed.</p>
+<p><a class=p_ident id="p_2CLauByVZn" href="#p_2CLauByVZn"></a>Then loop over the array
+of terms and see whether they start with the given string. For example, you
+could call <code>indexOf</code> and see whether the result is zero. For each matching
+string, add an element to the suggestions <code>&lt;div&gt;</code>. You should probably
+also empty that each time you start updating the suggestions, for
+example by setting its <code>textContent</code> to the empty string.</p>
+<p><a class=p_ident id="p_5rUQoI8gua" href="#p_5rUQoI8gua"></a>You could either add
+a <code>"click"</code> event handler to every suggestion element or add a single
+one to the outer <code>&lt;div&gt;</code> that holds them and look at the <code>target</code>
+property of the event to find out which suggestion was clicked.</p>
+<p><a class=p_ident id="p_JhSLvfJ/T9" href="#p_JhSLvfJ/T9"></a>To get the suggestion text out of a DOM node, you could
+look at its <code>textContent</code> or set an attribute to explicitly store the
+text when you create the element.</p>
+</div></div>
+<h3><a class=h_ident id="h_wZdunPqDkM" href="#h_wZdunPqDkM"></a>Conway&#8217;s Game of Life</h3>
+<p><a class=p_ident id="p_Jvg4FGRdgU" href="#p_Jvg4FGRdgU"></a>Conway&#8217;s Game of Life is a simple simulation that creates
+artificial “life” on a grid, each cell of which is either live or
+not. Each generation (turn), the following rules are applied:</p>
+<div class="ulist"><ul>
+<li>
+<p><a class=p_ident id="p_H6UexnLxhi" href="#p_H6UexnLxhi"></a>
+Any live cell with fewer than two or more than three live
+  neighbors dies.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_jSyY/y/HMp" href="#p_jSyY/y/HMp"></a>
+Any live cell with two or three live neighbors lives on to the
+  next generation.
+</p>
+</li>
+<li>
+<p><a class=p_ident id="p_y/DnAd+/CJ" href="#p_y/DnAd+/CJ"></a>
+Any dead cell with exactly three live neighbors becomes a live
+  cell.
+</p>
+</li>
+</ul></div>
+<p><a class=p_ident id="p_iKiryFZsbT" href="#p_iKiryFZsbT"></a>A neighbor is defined as any adjacent cell, including diagonally
+adjacent ones.</p>
+<p><a class=p_ident id="p_9dLS2RK5SZ" href="#p_9dLS2RK5SZ"></a>Note that these rules are applied to the whole grid
+at once, not one square at a time. That means the counting of
+neighbors is based on the situation at the start of the generation,
+and changes happening to neighbor cells during this generation should not
+influence the new state of a given cell.</p>
+<p><a class=p_ident id="p_W0m8oVpi7M" href="#p_W0m8oVpi7M"></a>Implement this game using whichever data structure you find appropriate. Use <code>Math.random</code> to populate the
+grid with a random pattern initially. Display it as a grid of
+checkbox fields, with a button next to it to advance to
+the next generation. When the user checks or unchecks the
+checkboxes, their changes should be included when computing the next
+generation.</p>
+<pre data-language="text/html" class="snippet cm-s-default"><a class=c_ident id="c_8a3OdQKUdc" href="#c_8a3OdQKUdc"></a><span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">div</span> <span class="cm-attribute">id</span>=<span class="cm-string">"grid"</span><span class="cm-tag cm-bracket">>&lt;/</span><span class="cm-tag">div</span><span class="cm-tag cm-bracket">></span>
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">button</span> <span class="cm-attribute">id</span>=<span class="cm-string">"next"</span><span class="cm-tag cm-bracket">></span>Next generation<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">button</span><span class="cm-tag cm-bracket">></span>
+
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span>
+  <span class="cm-comment">// Your code here.</span>
+<span class="cm-tag cm-bracket">&lt;/</span><span class="cm-tag">script</span><span class="cm-tag cm-bracket">></span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_Aww6OjjuYz" href="#p_Aww6OjjuYz"></a>To solve the problem of having the
+changes conceptually happen at the same time, try to see the
+computation of a generation as a pure function, which takes
+one grid and produces a new grid that represents the next turn.</p>
+<p><a class=p_ident id="p_xuG6OwlRd8" href="#p_xuG6OwlRd8"></a>Representing the grid can be done in any of the ways shown in Chapters
+<a href="07_elife.html#grid">7</a> and <a href="15_game.html#level">15</a>. Counting
+live neighbors can be done with two nested loops, looping over
+adjacent coordinates. Take care not to count cells outside of the
+field and to ignore the cell in the center, whose neighbors we are
+counting.</p>
+<p><a class=p_ident id="p_KHncyuOOIQ" href="#p_KHncyuOOIQ"></a>Making changes to checkboxes
+take effect on the next generation can be done in two ways. An event
+handler could notice these changes and update the current grid to
+reflect them, or you could generate a fresh grid from the values in
+the checkboxes before computing the next turn.</p>
+<p><a class=p_ident id="p_wu3Ty9I4d4" href="#p_wu3Ty9I4d4"></a>If you choose to go with event handlers, you might want to attach
+attributes that identify the position that each checkbox
+corresponds to so that it is easy to find out which cell to change.</p>
+<p><a class=p_ident id="p_XFp+gOIONt" href="#p_XFp+gOIONt"></a>To draw the grid
+of checkboxes, you either can use  a <code>&lt;table&gt;</code> element (see
+<a href="13_dom.html#exercise_table">Chapter 13</a>) or simply put them all in
+the same element and put <code>&lt;br&gt;</code> (line break) elements between the
+rows.</p>
+</div></div>
+<nav>
+  <a href="17_http.html" title="capítulo previo">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="19_paint.html" title="capítulo siguiente">▶</a>
+</nav>
+</article>

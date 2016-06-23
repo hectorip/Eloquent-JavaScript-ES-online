@@ -1,0 +1,727 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>Estructura del Programa :: Eloquent JavaScript</title>
+  <link rel=stylesheet href="js/node_modules/codemirror/lib/codemirror.css">
+  <script src="js/acorn_codemirror.js"></script>
+  <link rel=stylesheet href="css/ejs.css">
+  <script src="js/sandbox.js"></script>
+  <script src="js/ejs.js"></script>
+  <script>var chapNum = 2;</script>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53624335-3', 'auto');
+  ga('send', 'pageview');
+
+  </script>
+</head>
+
+<article>
+<nav>
+  <a href="01_values.html" title="capítulo previo">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="03_functions.html" title="capítulo siguiente">▶</a>
+</nav>
+
+<h1><div class=chap_num>Capítulo 2</div>Estructura del Programa</h1>
+<blockquote>
+<p><a class=p_ident id="p_NN4OA9Jguf" href="#p_NN4OA9Jguf"></a>Y mi corazón brilla rojo debajo de mi
+delgada, translúcida piel y tienen que administrarme 10cc de JavaScript
+para hacerme regresar (respondo bien a las toxinas en la sangre). ¡Hombre,
+esa cosa te sacará de tus casillas!</p>
+ <footer>_why, <cite>Why's (Poignant) Guide to Ruby</cite></footer>
+</blockquote>
+<p><a class=p_ident id="p_mI3eElMLTP" href="#p_mI3eElMLTP"></a>En este capítulo, vamos a empezar a hacer
+cosas que realmente pueden ser llamadas <em>programación</em>. Vamos a ampliar
+nuestro conocimiento del lenguaje JavaScript, más allá de los sustantivos
+y fragmentos de oraciones que hemos visto hasta ahora,
+hasta el punto en que podamos expresar alguna prosa significativa.</p>
+<h2><a class=h_ident id="h_oqfl+ptPGG" href="#h_oqfl+ptPGG"></a>Expresiones y declaraciones</h2>
+<p><a class=p_ident id="p_j9hyJXcePk" href="#p_j9hyJXcePk"></a>En el
+<a href="01_values.html#values">Capítulo 1</a>, creamos algunos valores y después
+les aplicamos operadores para obtener nuevos valores. Crear valores de esta forma
+es una parte esencial de cada programa de JavaScript, pero esto es sólo
+una parte.</p>
+<p><a class=p_ident id="p_ziZtbSBWhm" href="#p_ziZtbSBWhm"></a>Un fragmento de código que produce un valor es
+llamado una <em>expresión</em>. Cada valor que se escribe literalmente
+(tal como <code>22</code> o <code>"psicoanálisis"</code>) es una expresión. Una expresión
+entre paréntesis es también una expresión, como un operador binario aplicado a dos expresiones o un operador unario aplicado a
+una expresion.</p>
+<p><a class=p_ident id="p_UqOwwtmeFY" href="#p_UqOwwtmeFY"></a>Esto muestra parte de la
+belleza de una interfaz basada en el lenguaje. Las expresiones se pueden anidar
+en una forma muy similar a la forma de sub-frases en la que las lenguas humanas
+son anidadas, y las sub-frases pueden contener sus propias sub-frases, etc.
+Esto nos permite combinar expresiones para expresar cálculos
+arbitrariamente complejos.</p>
+<p><a class=p_ident id="p_ZVBoR+/oNP" href="#p_ZVBoR+/oNP"></a>Si una expresión
+corresponde a un fragmento de frase, una <em>declaración</em> en JavaScript
+corresponde a una frase completa en un lenguaje humano. Un programa es
+simplemente una lista de declaraciones.</p>
+<p><a class=p_ident id="p_VEI0X64AX2" href="#p_VEI0X64AX2"></a>El tipo más simple de declaración es una expresión con un
+punto y coma después de ella. Esto es un programa:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ShAmL4Xddd" href="#c_ShAmL4Xddd"></a><span class="cm-number">1</span>;
+<span class="cm-operator">!</span><span class="cm-atom">false</span>;</pre>
+<p><a class=p_ident id="p_OeUEeUHQnp" href="#p_OeUEeUHQnp"></a>Es un programa inútil, sin embargo. Una expresión puede estar presente para
+sólo producir un valor, que puede entonces ser utilizado por la expresión que
+la contiene. Una declaración existe por sí sola y que equivale a algo
+sólo si afecta al mundo. Podría mostrar algo en la
+pantalla -que cuenta como cambiar el mundo_ o podría cambiar el
+estado interno de la máquina de estados de manera que afectará las
+declaraciones que vienen despues de ella. Estos cambios se
+llaman <em>efectos colaterales</em>. Las declaraciones en el ejemplo anterior solo
+producen los valores <code>1</code> y <code>verdadero</code> y los desechan inmediatamente.
+Esto no deja ningún cambio en el mundo en absoluto. Al ejecutar el programa,
+nada observable sucede.</p>
+<p><a class=p_ident id="p_cfI3s2SImw" href="#p_cfI3s2SImw"></a>En algunos casos, JavaScript te permite
+omitir el punto y coma al final de una declaración. En otros casos, tiene que
+estar allí, o la siguiente linea será tratada como parte de la misma
+declaración. Las reglas para cuando se puede omitir con seguridad son algo
+complejas y propensas a errores. En este libro, cada declaración que necesite un
+punto y coma siempre será terminada por un punto y coma4. Te recomiendo que hagas lo
+mismo en tus propios programas, al menos hasta que hayas aprendido más sobre
+sutilezas involucradas en omitir el punto y coma.</p>
+<h2><a class=h_ident id="h_rAGNsfewCX" href="#h_rAGNsfewCX"></a>Variables</h2>
+<p><a class=p_ident id="p_V27Ka42Lvw" href="#p_V27Ka42Lvw"></a> ¿Cómo
+mantiene un programa su estado interno? ¿Cómo recuerda algo?
+Hemos visto cómo producir nuevos valores de viejos valores, pero
+esto no cambia los valores antiguos, y el nuevo valor tiene que ser
+inmediatamente utilizado o se disipará de nuevo. Para atrapar y mantener los valores,
+JavaScript proporciona una cosa llamada <em>variable</em>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NkjyvO4fF/" href="#c_NkjyvO4fF/"></a><span class="cm-keyword">var</span> <span class="cm-variable">atrapado</span> <span class="cm-operator">=</span> <span class="cm-number">5</span> <span class="cm-operator">*</span> <span class="cm-number">5</span>;</pre>
+<p><a class=p_ident id="p_ZzDmGqjQiH" href="#p_ZzDmGqjQiH"></a>Y eso nos da nuestra segunda clase de declaración.
+La palabra especial(<em>palabra clave</em> o <em>keyword</em>) <code>var</code> indica que
+esta frase va a definir una variable. Es seguida por el nombre de la variable
+y, si queremos dar de inmediato un valor, con un operador de <code>=</code> y
+una expresión.</p>
+<p><a class=p_ident id="p_xQ9bkoRqPa" href="#p_xQ9bkoRqPa"></a>La declaración anterior crea una variable llamada <code>atrapado</code> y se usa
+para retener el número que se produce al multiplicar 5 por 5.</p>
+<p><a class=p_ident id="p_PhpIn27svc" href="#p_PhpIn27svc"></a>Después de que una variable se ha definido, su nombre puede ser usado como una
+expresión. El valor de esa expresión es el valor que la
+variable alberga actualmente. He aquí un ejemplo:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_5Fj2W0KUk/" href="#c_5Fj2W0KUk/"></a><span class="cm-keyword">var</span> <span class="cm-variable">diez</span> <span class="cm-operator">=</span> <span class="cm-number">10</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">diez</span> <span class="cm-operator">*</span> <span class="cm-variable">diez</span>);
+<span class="cm-comment">// → 100</span></pre>
+<p><a class=p_ident id="p_4yQS2CNr3V" href="#p_4yQS2CNr3V"></a>Los nombres de variables pueden ser cualquier
+palabra que no sea una palabra clave (tal como <code>var</code>). Estos no pueden incluir
+espacios. Los dígitos también pueden ser parte de la variable nombre —<code>catch22</code>
+es un nombre válido, por ejemplo-, pero el nombre no debe comenzar con un dígito.
+Un nombre de variable no puede incluir puntuación, a excepción de los caracteres
+<code>$</code> y <code>_</code>.</p>
+<p><a class=p_ident id="p_g3gUrfJvu0" href="#p_g3gUrfJvu0"></a>(((variable,asiganción))Cuando una
+variable apunta a un valor, eso no quiere decir que está ligada a ese
+valor para siempre. El operador <code>=</code> se puede utilizar en cualquier momento
+en variables existentes para desconectarlas de su valor actual y apuntarlas
+a uno nuevo.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_jQkMoFVKfb" href="#c_jQkMoFVKfb"></a><span class="cm-keyword">var</span> <span class="cm-variable">tono</span> <span class="cm-operator">=</span> <span class="cm-string">"claro"</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tono</span>);
+<span class="cm-comment">// → claro</span>
+<span class="cm-variable">tono</span> <span class="cm-operator">=</span> <span class="cm-string">"oscuro"</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tono</span>);
+<span class="cm-comment">// → oscuro</span></pre>
+<p><a class=p_ident id="p_tiDzDIV7T/" href="#p_tiDzDIV7T/"></a> Podrías
+imaginar  las variables como tentáculos, en lugar de la cajas. Estas no
+<em>contienen</em> valores; los <em>agarran</em>; dos variables pueden referirse al
+mismo valor. Un programa puede acceder sólo los valores que todavía mantiene detenidos.
+Cuando necesitas recordar algo, haces crecer un tentáculo para
+agarrarlo o cambias unos de tus tentáculos existentes para agarrarlo.</p>
+<div class="image">
+  <img src="img/octopus.jpg" alt="Variables as tentacles">
+</div>
+<p><a class=p_ident id="p_yt1JaUclMh" href="#p_yt1JaUclMh"></a>Veamos un ejemplo. Para recordar el número de dólares que Luigi
+aún te debe, se crea una variable. Y luego, cuando te paga $35,
+le das a esta variable un valor nuevo.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_GgOyJZDcSo" href="#c_GgOyJZDcSo"></a><span class="cm-keyword">var</span> <span class="cm-variable">deudaDeLuigi</span> <span class="cm-operator">=</span> <span class="cm-number">140</span>;
+<span class="cm-variable">deudaDeLuigi</span> <span class="cm-operator">=</span> <span class="cm-variable">deudaDeLuigi</span> <span class="cm-operator">-</span> <span class="cm-number">35</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">deudaDeLuigi</span>);
+<span class="cm-comment">// → 105</span></pre>
+<p><a class=p_ident id="p_I1i2FVbPrc" href="#p_I1i2FVbPrc"></a>Cuando se define una variable sin darle un valor,
+el tentáculo no tiene nada que sostener, por lo que termina en el aire. Si preguntas
+por el valor de una variable vacía, obtendrás el valor <code>undefined</code> (indefinido).</p>
+<p><a class=p_ident id="p_DLfCJkR9mx" href="#p_DLfCJkR9mx"></a>Una sola declaración <code>var</code> puede definir múltiples
+variables. Las definiciones deben estar separadas por comas.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_th+WbrvC0I" href="#c_th+WbrvC0I"></a><span class="cm-keyword">var</span> <span class="cm-variable">uno</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>, <span class="cm-variable">dos</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">uno</span> <span class="cm-operator">+</span> <span class="cm-variable">dos</span>);
+<span class="cm-comment">// → 3</span></pre>
+<h2><a class=h_ident id="h_8NNBb9ucwT" href="#h_8NNBb9ucwT"></a>Palabras clave y palabras reservadas</h2>
+<p><a class=p_ident id="p_jVZGDp93c2" href="#p_jVZGDp93c2"></a>Palabras con
+un significado especial, como <code>var</code>, son <em>palabras clave</em>, y no pueden ser
+utilizadas como nombres de variables. También hay un número de palabras que son
+“reservadas para uso” en futuras versiones de JavaScript. Estas también
+están oficialmente no permitidas como nombres de variables, aunque algunos
+entornos de JavaScript las permiten. La lista completa de palabras clave y
+palabras reservadas es bastante larga.</p>
+<pre data-language="text/plain" class="snippet cm-s-default"><a class=c_ident id="c_DsAGZZBb8k" href="#c_DsAGZZBb8k"></a>break case catch class const continue debugger
+default delete do else enum export extends false
+finally for function if implements import in
+instanceof interface let new null package private
+protected public return static super switch this
+throw true try typeof var void while with yield</pre>
+<p><a class=p_ident id="p_ZOf5+ujD1t" href="#p_ZOf5+ujD1t"></a>No te preocupes por memorizarlas, pero recuerda que esto podría ser
+el problema cuando una definición de variable no funcione como se esperaba.</p>
+<h2><a class=h_ident id="h_QDYVZFuV/L" href="#h_QDYVZFuV/L"></a>El entorno</h2>
+<p><a class=p_ident id="p_zaY8cQQE1v" href="#p_zaY8cQQE1v"></a>La colección de variables y sus valores
+que existe en un momento dado se llama el <em>entorno</em>. Cuando un
+programa se pone en marcha, este entorno no está vacío. Siempre contiene
+variables que forman parte del lenguaje estándar, y la mayoría del
+tiempo, contiene variables que proporcionan formas de interactuar con el
+sistema que lo contiene. Por ejemplo, en un navegador, existen variables
+y funciones para inspeccionar e influir en la página web cargada en ese momento
+y leer entrada del ratón y del teclado.</p>
+<h2><a class=h_ident id="h_H0l5He7QIh" href="#h_H0l5He7QIh"></a>Funciones</h2>
+<p><a class=p_ident id="p_1dtnt00r9v" href="#p_1dtnt00r9v"></a>Una gran cantidad de los valores proporcionados en el
+entorno por defecto tienen el tipo <em>function</em>. Una función(function) es un
+pedazo de programa encerrado en un valor. Tales valores pueden ser <em>aplicados</em> con
+el fin de ejecutar el programa envuelto. Por ejemplo, en un entorno de
+navegador, la variable <code>alert</code> contiene una función que muestra un pequeño
+cuadro de diálogo con un mensaje. Se utiliza como sigue:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_gVO3MFrm/9" href="#c_gVO3MFrm/9"></a><span class="cm-variable">alert</span>(<span class="cm-string">"¡Good Morning!"</span>);</pre>
+<div class="image">
+  <img src="img/alert.png" alt="An alert dialog">
+</div>
+<p><a class=p_ident id="p_8srvvDUNAW" href="#p_8srvvDUNAW"></a>La ejecución de una función es denominada
+<em>invocar</em>, <em>llamar</em>, o <em>aplicar</em> la función. Puedes llamar a una
+función poniendo paréntesis después de una expresión que produce un
+valor de la función. Por lo general, se usa directamente el nombre de la variable
+que contiene la función. Los valores entre paréntesis se le pasan a
+el programa dentro de la función. En el ejemplo, la función <code>alert</code>
+utiliza la cadena que le damos como el texto que se mostrará en el cuadro de diálogo.
+Los valores dados a las funciones se denominan <em>argumentos</em>. La función <code>alert</code>
+necesita solo uno, pero otras funciones pueden necesitar un
+número diferente o diferentes tipos de argumentos.</p>
+<h2><a class=h_ident id="h_GmyhuRuAtM" href="#h_GmyhuRuAtM"></a>La función console.log</h2>
+<p><a class=p_ident id="p_5J4TqoCRXg" href="#p_5J4TqoCRXg"></a>La función <code>alert</code>
+puede ser útil para imprimir cuando estamos experimentando, pero quitar del camino
+todas esas pequeñas ventanas puede desesperarte. En ejemplos pasados, hemos usado
+<code>console.log</code> para devolver valores. La mayoría sistemas JavaScript (incluyendo a
+todos los navegadores web modernos y a Node.js) nos dan una función <code>console.log</code>
+que imprime sus argumentos en <em>algún</em> dispositivo de salida de texto. En los navegadores
+la salida queda en la consola de JavaScript. Esta parte del navegador está
+escondida por defecto, pero la mayoría de los navegadores la abren cuando presionas
+F12 o, en Mac, cuando presionas Command-Option-I. Si esto no funciona, busca en los
+menús un item llamado "Consola Web" o "Herramientas de Desarrollador".</p>
+<p><a class=p_ident id="p_zfqBfWEVr3" href="#p_zfqBfWEVr3"></a>Cuando corras los ejemplos, o tu propio código, en las páginas de este libro,
+la salida de <code>console.log</code> será mostrada después del ejemplo, en vez de en la
+consola de JavaScript del navegador.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_T+VLJmSkkQ" href="#c_T+VLJmSkkQ"></a><span class="cm-keyword">var</span> <span class="cm-variable">x</span> <span class="cm-operator">=</span> <span class="cm-number">30</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"el valor de x es"</span>, <span class="cm-variable">x</span>);
+<span class="cm-comment">// → el valor de x es 30</span></pre>
+<p><a class=p_ident id="p_JPyb64dLzL" href="#p_JPyb64dLzL"></a>Aunque los nombres de variable no pueden contener
+el caracter punto, <code>console.log</code> claramente tiene uno. Esto es
+porque <code>console.log</code> no es una variable simple. Es en realidad una
+expresión que trae la propiedad <code>log</code> del valor mantenido por la
+variable <code>console</code>. Veremos que significa exactamente en el
+<a href="04_data.html#properties">Capítulo 4</a>.</p>
+<h2 id="return_values"><a class=h_ident id="h_owYIQivxLz" href="#h_owYIQivxLz"></a>Valores de Retorno</h2>
+<p><a class=p_ident id="p_hNq0d3p4gu" href="#p_hNq0d3p4gu"></a>Mostrar un cuadro de diálogo o escribir texto
+en la pantalla es un <em>efecto secundario</em>. Muchas funciones son útiles porque
+producen valores, y en ese caso, no necesitan tener un efecto secundario para
+ser útiles. Por ejemplo, la función <code>Math.max</code> toma un número indeterminado de
+números y regresa el más grande.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_KDqbDlOaSI" href="#c_KDqbDlOaSI"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">max</span>(<span class="cm-number">2</span>, <span class="cm-number">4</span>));
+<span class="cm-comment">// → 4</span></pre>
+<p><a class=p_ident id="p_HBpAith662" href="#p_HBpAith662"></a> Cuando una función produce un valor, se dice que <em>regresa</em>
+ese valor. Cualquier cosa que produce un valor es una expresión en
+JavaScript, lo que significa que puede ser usada dentro de expresiones
+más grandes. Aquí, una llamada a <code>Math.min</code>, que es lo opuesto a
+<code>Math.max</code>, es usada como entrada de un operador de suma:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_huNtX2skdz" href="#c_huNtX2skdz"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">min</span>(<span class="cm-number">2</span>, <span class="cm-number">4</span>) <span class="cm-operator">+</span> <span class="cm-number">100</span>);
+<span class="cm-comment">// → 102</span></pre>
+<p><a class=p_ident id="p_Zwu1c7cEBS" href="#p_Zwu1c7cEBS"></a>El <a href="03_functions.html#functions">próximo capítulo</a> explica como escribir
+tus propias funciones.</p>
+<h2><a class=h_ident id="h_WhSh29MUlv" href="#h_WhSh29MUlv"></a>Pedir información y confirmar</h2>
+<p><a class=p_ident id="p_Zl67VHke5C" href="#p_Zl67VHke5C"></a>Los
+entornos de navegador tienen otras funciones más allá de <code>alert</code> para mostrar
+ventanas. Puedes preguntar al usuario una cuestión estilo OK/Cancelar usando
+<code>confirm</code>. Esto regresa un Booleano: <code>true</code> si el usuario hace click en OK y
+<code>false</code> si el usuario presiona en Cancelar.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_RO4Aaexnd9" href="#c_RO4Aaexnd9"></a><span class="cm-variable">confirm</span>(<span class="cm-string">"¿Entonces, deberíamos?"</span>);</pre>
+<div class="image">
+  <img src="img/confirm.png" alt="A confirm dialog">
+</div>
+<p><a class=p_ident id="p_jJ5ZIwOfZY" href="#p_jJ5ZIwOfZY"></a>La función <code>prompt</code>
+puede ser usada para hacer una pregunta "abierta". El primer argumento
+es la pregunta, el segundo es un texto con el que usuario inicia. Se puede
+escribir una línea de texto en el cuadro de diálogo, y la función regresará
+este texto como una cadena.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_zvjwz8HPIq" href="#c_zvjwz8HPIq"></a><span class="cm-variable">prompt</span>(<span class="cm-string">"Tell me everything you know."</span>, <span class="cm-string">"..."</span>);</pre>
+<div class="image">
+  <img src="img/prompt.png" alt="An prompt dialog">
+</div>
+<p><a class=p_ident id="p_K844FdTf7Z" href="#p_K844FdTf7Z"></a>Estas dos funciones no son usadas mucho en la programación web moderna,
+principalmente porque no tienes control sobre la forma en que las ventanas
+resultantes se verán, pero son útiles para programas de prueba y experimentos.</p>
+<h2><a class=h_ident id="h_T9Yc/t6Db4" href="#h_T9Yc/t6Db4"></a>Control de flujo</h2>
+<p><a class=p_ident id="p_9EgKeHK0je" href="#p_9EgKeHK0je"></a>Cuando tu
+programa contiene más de una sentencia, las sentencias son ejecutadas (fácil de predecir), de arriba hacia abajo. Como un ejemplo básico, este programa
+tiene dos sentencias. La primera le pide un número al usuario, y la
+segunda, que se ejecuta después, muestra el cuadrado de ese número</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_1ppeHdg4A+" href="#c_1ppeHdg4A+"></a><span class="cm-keyword">var</span> <span class="cm-variable">elNumero</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Dame un número"</span>, <span class="cm-string">""</span>));
+<span class="cm-variable">alert</span>(<span class="cm-string">"Tú número es la raíz cuadrada de "</span> <span class="cm-operator">+</span>
+      <span class="cm-variable">elNumero</span> <span class="cm-operator">*</span> <span class="cm-variable">elNumero</span>);</pre>
+<p><a class=p_ident id="p_l4G/QiN3y8" href="#p_l4G/QiN3y8"></a> La función <code>Numero</code> convierte un valor a un número.
+Necesitamos esa conversión porque el resultado de <code>prompt</code> es un valor
+de cadena de texto (string), y queremos un número. Hay funciones similares
+llamadas <code>String</code> y <code>Boolean</code> que convierten valores a estos tipos.</p>
+<p><a class=p_ident id="p_g2yS4kBkxO" href="#p_g2yS4kBkxO"></a>Aquí está la trivial representación esquemática de un flojo de control recto.</p>
+<div class="image">
+  <img src="img/controlflow-straight.svg" alt="Trivial control flow">
+</div>
+<h2><a class=h_ident id="h_RJY7cjjmxG" href="#h_RJY7cjjmxG"></a>Ejecución Condicional</h2>
+<p><a class=p_ident id="p_KductHnSO/" href="#p_KductHnSO/"></a>Ejecutar sentencia en línea recta no es
+la íunica opción que tenemos. Una alternativa es la <em>ejecución condicional</em>,
+en dondne escogemos entre dos rutas diferentes basados en un valor Booleano,
+como el siguiente:</p>
+<div class="image">
+  <img src="img/controlflow-if.svg" alt="Conditional control flow">
+</div>
+<p><a class=p_ident id="p_fZc5KedAGN" href="#p_fZc5KedAGN"></a>La ejecución condicional
+se escribe con la palabra clave <code>if</code> en JavaScript. En el caso sencillo,
+queremos que algo de código se ejecute si, y sólo si, cierta condición se cumple.
+Por ejemplo, en el programa previo, podríamos querer mostrar el cuadrado de
+la entrada sólo si la entrada es un número.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_eQoA3o52ka" href="#c_eQoA3o52ka"></a><span class="cm-keyword">var</span> <span class="cm-variable">elNumero</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Dame un número"</span>, <span class="cm-string">""</span>));
+<span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">isNaN</span>(<span class="cm-variable">elNumero</span>))
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Tu número es la raíz cuadrada de "</span> <span class="cm-operator">+</span>
+        <span class="cm-variable">elNumero</span> <span class="cm-operator">*</span> <span class="cm-variable">elNumero</span>);</pre>
+<p><a class=p_ident id="p_wm40Jh5aS8" href="#p_wm40Jh5aS8"></a>Con esta modificación, si le das "queso", no se mostrará ninguna salida.</p>
+<p><a class=p_ident id="p_0+nvuqCmLz" href="#p_0+nvuqCmLz"></a>La palbra clave <code>if</code> ejecuta o salta una sentencia dependiendo del valor
+de una expresión Booleana. La expresión de decisión se escribe después de
+la palbra clave, entre parántesis, seguida por una sentencia a ejecutar.</p>
+<p><a class=p_ident id="p_y/wb7CS1CP" href="#p_y/wb7CS1CP"></a>La función <code>inNaN</code> es una función estándar de JavaScript
+que regresa <code>true</code> sólo si el argumento que le diste es <code>NaN</code>. Resulta que
+la función Number regresa <code>NaN</code> cuando le das una cadena que no
+“a menos que  <code>elNumero</code> no sea un número, has esto”.</p>
+<p><a class=p_ident id="p_314DXtvLuA" href="#p_314DXtvLuA"></a>A menudo no sólo tendrás código que se ejecute cuando
+una condición sea verdadera, sino también que maneje el otro caso. Este camino
+alternativo es representado por la segunda flecha en el diagrama. La palabra
+clave <code>else</code> puede ser usada, junto con <code>if</code>, para crear dos rutas de ejecución
+separadas y alternativas.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pmkXrplbFy" href="#c_pmkXrplbFy"></a><span class="cm-keyword">var</span> <span class="cm-variable">elNumero</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Dame un número"</span>, <span class="cm-string">""</span>));
+<span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">isNaN</span>(<span class="cm-variable">elNumero</span>))
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Tu número es la raíz cuadrada de "</span> <span class="cm-operator">+</span>
+        <span class="cm-variable">elNumero</span> <span class="cm-operator">*</span> <span class="cm-variable">elNumero</span>);
+<span class="cm-keyword">else</span>
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Hey. ¿Por qué no me diste un número?"</span>);</pre>
+<p><a class=p_ident id="p_k8pO5L03X0" href="#p_k8pO5L03X0"></a>Si tenemos más de dos caminos a escoger,
+varios pares de <code>if</code>/<code>else</code> pueden ser "encadenados". Aquí hay un ejemplo:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_r2fLO+mz3m" href="#c_r2fLO+mz3m"></a><span class="cm-keyword">var</span> <span class="cm-variable">num</span> <span class="cm-operator">=</span> <span class="cm-variable">Number</span>(<span class="cm-variable">prompt</span>(<span class="cm-string">"Dame un número"</span>, <span class="cm-string">"0"</span>));
+
+<span class="cm-keyword">if</span> (<span class="cm-variable">num</span> <span class="cm-operator">&lt;</span> <span class="cm-number">10</span>)
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Chico"</span>);
+<span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable">num</span> <span class="cm-operator">&lt;</span> <span class="cm-number">100</span>)
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Mediano"</span>);
+<span class="cm-keyword">else</span>
+  <span class="cm-variable">alert</span>(<span class="cm-string">"Grande"</span>);</pre>
+<p><a class=p_ident id="p_bfciP0sfN8" href="#p_bfciP0sfN8"></a>El programa primero checará sí <code>num</code> es menor que 10. Si lo es, escoge
+ese camino, muestra <code>"Chico"</code> y termina. Si no lo es, toma el el branch
+<code>else</code>, que en sí mismo contiene un segundo <code>if</code>. Si la segunda condición
+(<code>&lt; 100</code>) se cumple, significa que el número está entre 10 y 100, y se
+muestra <code>"Mediano"</code>. Si no lo es, el segundo y último <code>else</code> es escogido.</p>
+<p><a class=p_ident id="p_AfmgemcNIW" href="#p_AfmgemcNIW"></a>El diagrama de flujo para este programa es algo así:</p>
+<div class="image">
+  <img src="img/controlflow-nested-if.svg" alt="Nested if control flow">
+</div>
+<h2 id="bucles"><a class=h_ident id="h_GOwIDimzEs" href="#h_GOwIDimzEs"></a>bucles while y do</h2>
+<p><a class=p_ident id="p_bhDRKPBblX" href="#p_bhDRKPBblX"></a>Piensa en un programa que imprima todos
+los números primos del 1 al 12. Una manera de escribirlo
+sería como sigue:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ciaCwGgFZR" href="#c_ciaCwGgFZR"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">0</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">2</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">4</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">6</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">8</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">10</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">12</span>);</pre>
+<p><a class=p_ident id="p_6phUto+FD7" href="#p_6phUto+FD7"></a>Eso funciona, pero la idea de escribir un programa es
+trabajar <em>menos</em>, no más. Si necesitamos todos los números menores que
+1,000, lo anterior sería imposible de trabajar. Lo que necesitamos es una
+forma de repetir algo de código. Esta forma de control de flujo es llamada <em>bucle</em>:</p>
+<div class="image">
+  <img src="img/controlflow-loop.svg" alt="Loop control flow">
+</div>
+<p><a class=p_ident id="p_/afmCQgm3h" href="#p_/afmCQgm3h"></a>El control de flujo por bucles nos
+permite regresar a cierto punto en el progrma en el que estuvimos antes
+y repetirlo con nuestro estado actual. Si combinamos esto con una variable
+que mantenga una cuenta, podemos hacer algo como lo siguiente:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_alz9dziJCZ" href="#c_alz9dziJCZ"></a><span class="cm-keyword">var</span> <span class="cm-variable">numero</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-keyword">while</span> (<span class="cm-variable">numero</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">12</span>) {
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">numero</span>);
+  <span class="cm-variable">numero</span> <span class="cm-operator">=</span> <span class="cm-variable">numero</span> <span class="cm-operator">+</span> <span class="cm-number">2</span>;
+}
+<span class="cm-comment">// → 0</span>
+<span class="cm-comment">// → 2</span>
+<span class="cm-comment">//   … etcetera</span></pre>
+<p><a class=p_ident id="p_AutEV8PJur" href="#p_AutEV8PJur"></a>Una sentencia que comienza con la palabra
+clave <code>while</code> crea un bucle. Después de <code>while</code> viene una expresión en
+paréntesis y después una sentencia, muy parecido a el <code>if</code>. El bucle
+ejecuta la sentencia mientras la expresión produzca un valor que sea
+<code>true</code> cuando se convierta a un tipo Booleano.</p>
+<p><a class=p_ident id="p_N9VXGY81eY" href="#p_N9VXGY81eY"></a>En este bucle, queremos
+tanto imprimir el número como sumar dos a nuestra variable. Cuando necesitamos
+ejecutar múltiples sentencias dentro de un bucle, lo encerramos
+en llaves (<code>{</code> y <code>}</code>). Las llaves hacen por las sentencias lo que
+los paréntesis hacen por las expresiones: las agrupan, haciéndolos
+valer por una sola sentencia. Una secuencia de sentencias encerradas
+en llaves es llamada un <em>bloque</em>.</p>
+<p><a class=p_ident id="p_v0XEt5BRqc" href="#p_v0XEt5BRqc"></a>Muchos programadores de JavaScript encierran
+cada cuerpo de un bucle o <code>if</code> en llaves. Lo hacen en nombre de la consistencia
+y para evitar tener que añadir o quitar las llaves cuando el número de
+sentencias en el cuerpo cambie. En este libro escribiré la mayoría de los
+cuerpos de una sola sentencia sin bloques, porque value la brevedad.
+Tú eres libre de usar el estilo que prefieras.</p>
+<p><a class=p_ident id="p_rlQhxFeCG6" href="#p_rlQhxFeCG6"></a>La variable número demuestra la forma en que
+una variable puede dar seguimiento al progreso de un programa.
+Cada vez que el bucle se repite, <code>numero</code> se incrementa en <code>2</code>. Entonces,
+al principio de cada repetición. es comparada con el número <code>12</code> para decidir
+si el programa ha hecho todo el trabajo que tenía que hacer.</p>
+<p><a class=p_ident id="p_Tb03OS8kY4" href="#p_Tb03OS8kY4"></a>Coomo un ejemplo que hace realmente algo útil,
+podemos escribir un programa que calcula y mustra el valor de 2^10
+(dos a la décima potencia). Usamos dos varianles: una para mantener el
+resultado y una para contar cuantas veces hemos multiplicado este
+resultado por dos. El bucle verifica si la segunda variable ha llegado
+a 10 y entonces actualiza las dos variables.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_B8/btNu0AN" href="#c_B8/btNu0AN"></a><span class="cm-keyword">var</span> <span class="cm-variable">resultado</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">contador</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+<span class="cm-keyword">while</span> (<span class="cm-variable">contador</span> <span class="cm-operator">&lt;</span> <span class="cm-number">10</span>) {
+  <span class="cm-variable">resultado</span> <span class="cm-operator">=</span> <span class="cm-variable">resultado</span> <span class="cm-operator">*</span> <span class="cm-number">2</span>;
+  <span class="cm-variable">contador</span> <span class="cm-operator">=</span> <span class="cm-variable">contador</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>;
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">resultado</span>);
+<span class="cm-comment">// → 1024</span></pre>
+<p><a class=p_ident id="p_UENdfVolSZ" href="#p_UENdfVolSZ"></a>El contador pudo también empezar en <code>1</code> y verificar que <code>&lt;=10</code>, pero,
+por razones que se aclararán en el
+<a href="04_data.html#array_indexing">Capítulo 4</a>, es una buena idea acostumbrarse
+a contar desde 0.</p>
+<p><a class=p_ident id="p_kbMZjYX10U" href="#p_kbMZjYX10U"></a>El bucle <code>do</code> es una
+estructura de control similar al bucle <code>while</code>. Se diferencia en sólo
+un punto: un bucle <code>do</code> siempre ejecuta su cuerpo por lo menos una vez y
+empieza a verificar si debería para sólo después de la primera ejecución.
+Para reflejar esto, la condición aprece después del cuerpo del bucle:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pEgq9OFBNM" href="#c_pEgq9OFBNM"></a><span class="cm-keyword">do</span> {
+  <span class="cm-keyword">var</span> <span class="cm-variable">tuNombre</span> <span class="cm-operator">=</span> <span class="cm-variable">prompt</span>(<span class="cm-string">"¿Quién eres?"</span>);
+} <span class="cm-keyword">while</span> (<span class="cm-operator">!</span><span class="cm-variable">tuNombre</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tuNombre</span>);</pre>
+<p><a class=p_ident id="p_hS28pYJZoD" href="#p_hS28pYJZoD"></a>Este programa te obligará a
+introducir un nombre. Preguntará una y otra vez hasta que obtenga algo que
+no sea una cadena vacía. Aplicar el operador <code>!</code> convierte un valor a Booleano
+negándolo y todas las cadenas excepto <code>""</code> se convierten a <code>true</code>. Esto significa
+qie el bucle continúa corriendo hasta que des un nombre que no sea una cadena vacía.</p>
+<h2><a class=h_ident id="h_7pPzWHRb5m" href="#h_7pPzWHRb5m"></a>Indentando código</h2>
+<p><a class=p_ident id="p_+kVHUFpSWF" href="#p_+kVHUFpSWF"></a> Probablemente has notado los espacios que pongo en frente
+de algunas sentencias. En JavaScript, no son requeridos, la computadora
+aceptaré el programa bien sin ellos. De hecho, incluso los saltos de línea
+en los programas son opcionales. Puedes escribir un programa en una sola línea
+si así lo prefieres. El rol de la indentación dentro de los
+bloques es hacer notar la estructura del código. En código complejo,
+en dónde nuevos bloques son abiertos dentro de otros bloques, puede ser difícil
+de ver en dónde termina uno y empieza otro. Con la indentación correcta,
+la forma visual del programa se corresponde con la forma de los bloques dentro
+de él. A mí me gusta usae dos espacios por cada bloque abierto, pero los gustos
+varían; algunas personas usan cuatro espacios, y algunas
+otras usan el carácter tab.</p>
+<h2><a class=h_ident id="h_mgPDSpUcUD" href="#h_mgPDSpUcUD"></a>Bucles for</h2>
+<p><a class=p_ident id="p_l2QOPNi4iO" href="#p_l2QOPNi4iO"></a>Muchos bucles siguen el
+patrón de los ejemplos previos del <code>while</code>. Primero, una variable “contador”
+es creada para dar seguimiento al progreso del bucle. Entonces viene el
+bucle <code>while</code>, cuya expresión condicional normamelte verifica si el
+contador ha alcanzafo cierto límite. El final del cuerpo del bucle, el
+contador es actualizado para dar seguimiento al progreso.</p>
+<p><a class=p_ident id="p_i8KoivP+MV" href="#p_i8KoivP+MV"></a>Because this pattern is so common, JavaScript and
+similar languages provide a slightly shorter and more comprehensive
+form, the <code>for</code> loop.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3Azuln38qw" href="#c_3Azuln38qw"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">number</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">number</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">12</span>; <span class="cm-variable">number</span> <span class="cm-operator">=</span> <span class="cm-variable">number</span> <span class="cm-operator">+</span> <span class="cm-number">2</span>)
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">number</span>);
+<span class="cm-comment">// → 0</span>
+<span class="cm-comment">// → 2</span>
+<span class="cm-comment">//   … etcetera</span></pre>
+<p><a class=p_ident id="p_dGpYwDLcUj" href="#p_dGpYwDLcUj"></a>This program is exactly equivalent to the
+<a href="02_program_structure.html#loops">earlier</a> even-number-printing
+example. The only change is that all the statements that are
+related to the “state” of the loop are now grouped together.</p>
+<p><a class=p_ident id="p_LW20YJQoF9" href="#p_LW20YJQoF9"></a>The parentheses after a <code>for</code> keyword must contain two
+semicolons. The part before the first semicolon <em>initializes</em> the
+loop, usually by defining a variable. The second part is the
+expression that <em>checks</em> whether the loop must continue. The final
+part <em>updates</em> the state of the loop after every iteration. In most
+cases, this is shorter and clearer than a <code>while</code> construct.</p>
+<p><a class=p_ident id="p_Rst5RlpePZ" href="#p_Rst5RlpePZ"></a>Here is the code that computes 2<sup>10</sup>, using <code>for</code>
+instead of <code>while</code>:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_0irNU0p0MR" href="#c_0irNU0p0MR"></a><span class="cm-keyword">var</span> <span class="cm-variable">result</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
+<span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">counter</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">counter</span> <span class="cm-operator">&lt;</span> <span class="cm-number">10</span>; <span class="cm-variable">counter</span> <span class="cm-operator">=</span> <span class="cm-variable">counter</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>)
+  <span class="cm-variable">result</span> <span class="cm-operator">=</span> <span class="cm-variable">result</span> <span class="cm-operator">*</span> <span class="cm-number">2</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">result</span>);
+<span class="cm-comment">// → 1024</span></pre>
+<p><a class=p_ident id="p_pNim3UxKW2" href="#p_pNim3UxKW2"></a>Note that even though no block
+is opened with a <code>{</code>, the statement in the loop is still indented two
+spaces to make it clear that it “belongs” to the line before it.</p>
+<h2><a class=h_ident id="h_WWKAoSPJ47" href="#h_WWKAoSPJ47"></a>Breaking Out of a Loop</h2>
+<p><a class=p_ident id="p_ct/RAqWly8" href="#p_ct/RAqWly8"></a>Having the loop&#8217;s
+condition produce <code>false</code> is not the only way a loop can finish. There
+is a special statement called <code>break</code> that has the effect of
+immediately jumping out of the enclosing loop.</p>
+<p><a class=p_ident id="p_Vnm45Nv5hS" href="#p_Vnm45Nv5hS"></a>This program illustrates the <code>break</code> statement. It finds the first number
+that is both greater than or equal to 20 and divisible by 7.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7paajfWUVm" href="#c_7paajfWUVm"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">current</span> <span class="cm-operator">=</span> <span class="cm-number">20</span>; ; <span class="cm-variable">current</span><span class="cm-operator">++</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable">current</span> <span class="cm-operator">%</span> <span class="cm-number">7</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
+    <span class="cm-keyword">break</span>;
+}
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">current</span>);
+<span class="cm-comment">// → 21</span></pre>
+<p><a class=p_ident id="p_6KpM9sBZ2r" href="#p_6KpM9sBZ2r"></a>Using the remainder
+(<code>%</code>) operator is an easy way to test whether a number is divisible by
+another number. If it is, the remainder of their division is zero.</p>
+<p><a class=p_ident id="p_3UnZkFW7lj" href="#p_3UnZkFW7lj"></a>The <code>for</code> construct in the example does not have a part
+that checks for the end of the loop. This means that the loop will
+never stop unless the <code>break</code> statement inside is executed.</p>
+<p><a class=p_ident id="p_2mGltrXORo" href="#p_2mGltrXORo"></a>If you were to leave out that <code>break</code> statement or accidentally write
+a condition that always produces <code>true</code>, your program would get stuck
+in an <em>infinite loop</em>. A program stuck in an infinite loop will
+never finish running, which is usually a bad thing.</p>
+<p><a class=p_ident id="p_0F9xH2r4jT" href="#p_0F9xH2r4jT"></a>If you create an infinite loop in one of the examples on these pages,
+you&#8217;ll usually be asked whether you want to stop the script after a
+few seconds. If that fails, you will have to close the tab that you&#8217;re
+working in, or on some browsers close your whole browser, in order to
+recover.</p>
+<p><a class=p_ident id="p_f7LsUmJq1I" href="#p_f7LsUmJq1I"></a>The <code>continue</code> keyword is similar to <code>break</code>, in
+that it influences the progress of a loop. When <code>continue</code> is
+encountered in a loop body, control jumps out of the body and
+continues with the loop&#8217;s next iteration.</p>
+<h2><a class=h_ident id="h_TGUhwjSkqm" href="#h_TGUhwjSkqm"></a>Updating variables succinctly</h2>
+<p><a class=p_ident id="p_4XaFXVHI9b" href="#p_4XaFXVHI9b"></a>Especially
+when looping, a program often needs to “update” a variable to hold a
+value based on that variable&#8217;s previous value.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2I9qAKEFto" href="#c_2I9qAKEFto"></a><span class="cm-variable">counter</span> <span class="cm-operator">=</span> <span class="cm-variable">counter</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>;</pre>
+<p><a class=p_ident id="p_n9PMtWEgzN" href="#p_n9PMtWEgzN"></a>JavaScript provides a shortcut for this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+5YpCv/iKG" href="#c_+5YpCv/iKG"></a><span class="cm-variable">counter</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;</pre>
+<p><a class=p_ident id="p_3IlWnnMlMo" href="#p_3IlWnnMlMo"></a>Similar shortcuts work for many other operators, such as <code>result *= 2</code> to
+double <code>result</code> or <code>counter -= 1</code> to count downward.</p>
+<p><a class=p_ident id="p_+odXBLNKvV" href="#p_+odXBLNKvV"></a>This allows us to shorten our counting example a little more.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_tBGVwznf7K" href="#c_tBGVwznf7K"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">number</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">number</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">12</span>; <span class="cm-variable">number</span> <span class="cm-operator">+=</span> <span class="cm-number">2</span>)
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">number</span>);</pre>
+<p><a class=p_ident id="p_jpGEbhH1GX" href="#p_jpGEbhH1GX"></a>For <code>counter += 1</code> and <code>counter -=
+1</code>, there are even shorter equivalents: <code>counter++</code> and <code>counter--</code>.</p>
+<h2><a class=h_ident id="h_jMKsa0SXdL" href="#h_jMKsa0SXdL"></a>Dispatching on a value with switch</h2>
+<p><a class=p_ident id="p_t3Fw/3tp0F" href="#p_t3Fw/3tp0F"></a>It is common for code to look like this:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_A9TwfNNqCW" href="#c_A9TwfNNqCW"></a><span class="cm-keyword">if</span> (<span class="cm-variable">variable</span> <span class="cm-operator">==</span> <span class="cm-string">"value1"</span>) <span class="cm-variable">action1</span>();
+<span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable">variable</span> <span class="cm-operator">==</span> <span class="cm-string">"value2"</span>) <span class="cm-variable">action2</span>();
+<span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable">variable</span> <span class="cm-operator">==</span> <span class="cm-string">"value3"</span>) <span class="cm-variable">action3</span>();
+<span class="cm-keyword">else</span> <span class="cm-variable">defaultAction</span>();</pre>
+<p><a class=p_ident id="p_NAtglzdIez" href="#p_NAtglzdIez"></a>There is a construct called
+<code>switch</code> that is intended to solve such a “dispatch” in a more direct
+way. Unfortunately, the syntax JavaScript uses for this (which it
+inherited from the C/Java line of programming languages) is somewhat
+awkward—a chain of <code>if</code> statements often looks better. Here is an
+example:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_algpo6jq8U" href="#c_algpo6jq8U"></a><span class="cm-keyword">switch</span> (<span class="cm-variable">prompt</span>(<span class="cm-string">"What is the weather like?"</span>)) {
+  <span class="cm-keyword">case</span> <span class="cm-string">"rainy"</span>:
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Remember to bring an umbrella."</span>);
+    <span class="cm-keyword">break</span>;
+  <span class="cm-keyword">case</span> <span class="cm-string">"sunny"</span>:
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Dress lightly."</span>);
+  <span class="cm-keyword">case</span> <span class="cm-string">"cloudy"</span>:
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Go outside."</span>);
+    <span class="cm-keyword">break</span>;
+  <span class="cm-keyword">default</span>:
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Unknown weather type!"</span>);
+    <span class="cm-keyword">break</span>;
+}</pre>
+<p><a class=p_ident id="p_25X42G30Nq" href="#p_25X42G30Nq"></a>You may put any number of <code>case</code> labels
+inside the block opened by <code>switch</code>. The program will jump to the
+label that corresponds to the value that <code>switch</code> was given or to
+<code>default</code> if no matching value is found. It starts executing
+statements there, even if they&#8217;re under another label, until it
+reaches a <code>break</code> statement. In some cases, such as the <code>"sunny"</code> case
+in the example, this can be used to share some code between cases (it
+recommends going outside for both sunny and cloudy weather). But
+beware: it is easy to forget such a <code>break</code>, which will cause the
+program to execute code you do not want executed.</p>
+<h2><a class=h_ident id="h_t54vuASjLD" href="#h_t54vuASjLD"></a>Capitalization</h2>
+<p><a class=p_ident id="p_3D9T5AdSU0" href="#p_3D9T5AdSU0"></a>Variable
+names may not contain spaces, yet it is often helpful to use multiple
+words to clearly describe what the variable represents. These are
+pretty much your choices for writing a variable name with several
+words in it:</p>
+<pre>fuzzylittleturtle
+fuzzy_little_turtle
+FuzzyLittleTurtle
+fuzzyLittleTurtle</pre>
+<p><a class=p_ident id="p_iHeX2bOrpK" href="#p_iHeX2bOrpK"></a>The
+first style can be hard to read. Personally, I like the look of the
+underscores, though that style is a little painful to type. The
+standard JavaScript functions, and most JavaScript programmers,
+follow the bottom style—they capitalize every word except the first.
+It is not hard to get used to little things like that, and code with
+mixed naming styles can be jarring to read, so we will just follow
+this convention.</p>
+<p><a class=p_ident id="p_zMlRK/pymj" href="#p_zMlRK/pymj"></a>In a few cases, such as the
+<code>Number</code> function, the first letter of a variable is also capitalized.
+This was done to mark this function as a constructor. What a
+constructor is will become clear in
+<a href="06_object.html#constructors">Chapter 6</a>. For now, the important
+thing is not to be bothered by this apparent lack of consistency.</p>
+<h2><a class=h_ident id="h_/OBuIOX390" href="#h_/OBuIOX390"></a>Comments</h2>
+<p><a class=p_ident id="p_0/Ms9AYRwI" href="#p_0/Ms9AYRwI"></a>Often, raw code does not convey all the information
+you want a program to convey to human readers, or it conveys it in
+such a cryptic way that people might not understand it. At other
+times, you might just feel poetic or want to include some thoughts as
+part of your program. This is what <em>comments</em> are for.</p>
+<p><a class=p_ident id="p_c5N0ebF2ts" href="#p_c5N0ebF2ts"></a>A comment is a piece of text
+that is part of a program but is completely ignored by the computer.
+JavaScript has two ways of writing comments. To write a single-line
+comment, you can use two slash characters (<code>//</code>) and then the comment
+text after it.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_0ZikuiZ4zg" href="#c_0ZikuiZ4zg"></a><span class="cm-keyword">var</span> <span class="cm-variable">accountBalance</span> <span class="cm-operator">=</span> <span class="cm-variable">calculateBalance</span>(<span class="cm-variable">account</span>);
+<span class="cm-comment">// It's a green hollow where a river sings</span>
+<span class="cm-variable">accountBalance</span>.<span class="cm-property">adjust</span>();
+<span class="cm-comment">// Madly catching white tatters in the grass.</span>
+<span class="cm-keyword">var</span> <span class="cm-variable">report</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">Report</span>();
+<span class="cm-comment">// Where the sun on the proud mountain rings:</span>
+<span class="cm-variable">addToReport</span>(<span class="cm-variable">accountBalance</span>, <span class="cm-variable">report</span>);
+<span class="cm-comment">// It's a little valley, foaming like light in a glass.</span></pre>
+<p><a class=p_ident id="p_UD6DcJKN/S" href="#p_UD6DcJKN/S"></a>A <code>//</code> comment goes only to the end of the line. A
+section of text between <code>/*</code> and <code>*/</code> will be ignored, regardless of
+whether it contains line breaks. This is often useful for adding
+blocks of information about a file or a chunk of program.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qmmXe1V0mf" href="#c_qmmXe1V0mf"></a><span class="cm-comment">/*</span>
+<span class="cm-comment"> I first found this number scrawled on the back of one of</span>
+<span class="cm-comment"> my notebooks a few years ago. Since then, it has often</span>
+<span class="cm-comment"> dropped by, showing up in phone numbers and the serial</span>
+<span class="cm-comment"> numbers of products that I've bought. It obviously likes</span>
+<span class="cm-comment"> me, so I've decided to keep it.</span>
+<span class="cm-comment">*/</span>
+<span class="cm-keyword">var</span> <span class="cm-variable">myNumber</span> <span class="cm-operator">=</span> <span class="cm-number">11213</span>;</pre>
+<h2><a class=h_ident id="h_ErccPg/l98" href="#h_ErccPg/l98"></a>Summary</h2>
+<p><a class=p_ident id="p_qenTzu+nvg" href="#p_qenTzu+nvg"></a>You now know that a program is built out of statements, which
+themselves sometimes contain more statements. Statements tend to
+contain expressions, which themselves can be built out of smaller
+expressions.</p>
+<p><a class=p_ident id="p_KbysBfaBh4" href="#p_KbysBfaBh4"></a>Putting statements after one another gives you a program that is
+executed from top to bottom. You can introduce disturbances in the
+flow of control by using conditional (<code>if</code>, <code>else</code>, and <code>switch</code>) and
+looping (<code>while</code>, <code>do</code>, and <code>for</code>) statements.</p>
+<p><a class=p_ident id="p_cDVCQB0d+r" href="#p_cDVCQB0d+r"></a>Variables can be used to file pieces of data under a name, and they
+are useful for tracking state in your program. The environment is the
+set of variables that are defined. JavaScript systems
+always put a number of useful standard variables into your
+environment.</p>
+<p><a class=p_ident id="p_zgNEy0za9M" href="#p_zgNEy0za9M"></a>Functions are special values that encapsulate a piece of program. You
+can invoke them by writing <code>functionName(argument1, argument2)</code>. Such
+a function call is an expression, and may produce a value.</p>
+<h2><a class=h_ident id="h_TcUD2vzyMe" href="#h_TcUD2vzyMe"></a>Exercises</h2>
+<p><a class=p_ident id="p_Uj/Ehlt+c3" href="#p_Uj/Ehlt+c3"></a>If you are unsure how to try your solutions to
+exercises, refer to the <a href="00_intro.html#intro">introduction</a>.</p>
+<p><a class=p_ident id="p_VR0+805/R0" href="#p_VR0+805/R0"></a>Each exercise starts with a problem description. Read that and try to
+solve the exercise. If you run into problems, consider reading the
+hints after the exercise.
+Full solutions to the exercises are not included in this
+book, but you can find them online at
+<a href="http://eloquentjavascript.net/code"><em>eloquentjavascript.net/code</em></a>.
+If you want to learn something from the exercises, I recommend looking
+at the solutions only after you&#8217;ve solved the exercise, or at least
+after you&#8217;ve attacked it long and hard enough to have a slight
+headache.</p>
+<h3><a class=h_ident id="h_umoXp9u0e7" href="#h_umoXp9u0e7"></a>Looping a triangle</h3>
+<p><a class=p_ident id="p_pP646YLlGy" href="#p_pP646YLlGy"></a>Write a loop that makes seven calls to
+<code>console.log</code> to output the following triangle:</p>
+<pre>#
+##
+###
+####
+#####
+######
+#######</pre>
+<p><a class=p_ident id="p_hwij+BD/vz" href="#p_hwij+BD/vz"></a>It may be useful to know that you can find the length of a string by
+writing <code>.length</code> after it.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_UHjV4GXoBw" href="#c_UHjV4GXoBw"></a><span class="cm-keyword">var</span> <span class="cm-variable">abc</span> <span class="cm-operator">=</span> <span class="cm-string">"abc"</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">abc</span>.<span class="cm-property">length</span>);
+<span class="cm-comment">// → 3</span></pre>
+<p><a class=p_ident id="p_hzLkQ7lBb5" href="#p_hzLkQ7lBb5"></a>Most exercises contain a piece of code that you can modify to solve
+the exercise. Remember that you can click code blocks to edit them.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_CfkOp8tkUe" href="#c_CfkOp8tkUe"></a><span class="cm-comment">// Your code here.</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_4G9czVhC4S" href="#p_4G9czVhC4S"></a>You can start with a program that simply
+prints out the numbers 1 to 7, which you can derive by making a few
+modifications to the
+<a href="02_program_structure.html#loops">even number printing example</a>
+given earlier in the chapter, where the <code>for</code> loop was introduced.</p>
+<p><a class=p_ident id="p_Cfhk1uLlnS" href="#p_Cfhk1uLlnS"></a>Now consider the equivalence between numbers and strings of hash
+characters. You can go from 1 to 2 by adding 1 (<code>+= 1</code>). You can go
+from <code>"#"</code> to <code>"##"</code> by adding a character (<code>+= "#"</code>). Thus, your
+solution can closely follow the number-printing program.</p>
+</div></div>
+<h3><a class=h_ident id="h_rebKE3gdjV" href="#h_rebKE3gdjV"></a>FizzBuzz</h3>
+<p><a class=p_ident id="p_i0Cvwf75cQ" href="#p_i0Cvwf75cQ"></a>Write a
+program that uses <code>console.log</code> to print all the numbers from 1 to
+100, with two exceptions. For numbers divisible by 3, print <code>"Fizz"</code>
+instead of the number, and for numbers divisible by 5 (and not 3),
+print <code>"Buzz"</code> instead.</p>
+<p><a class=p_ident id="p_fJ/4Bt0n0A" href="#p_fJ/4Bt0n0A"></a>When you have that working, modify your program to print <code>"FizzBuzz"</code>,
+for numbers that are divisible by both 3 and 5 (and still print
+<code>"Fizz"</code> or <code>"Buzz"</code> for numbers divisible by only one of those).</p>
+<p><a class=p_ident id="p_ixkJ0lwGKY" href="#p_ixkJ0lwGKY"></a>(This is actually an interview question that has been claimed to
+weed out a significant percentage of programmer candidates. So if you
+solved it, you&#8217;re now allowed to feel good about yourself.)</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_CfkOp8tkUe" href="#c_CfkOp8tkUe"></a><span class="cm-comment">// Your code here.</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_eChcRqNQtZ" href="#p_eChcRqNQtZ"></a>Going
+over the numbers is clearly a looping job, and selecting what to print
+is a matter of conditional execution. Remember the trick of using the
+remainder (<code>%</code>) operator for checking whether a number is divisible by
+another number (has a remainder of zero).</p>
+<p><a class=p_ident id="p_6QvPT/yNQ2" href="#p_6QvPT/yNQ2"></a>In the first version, there are three possible outcomes for every
+number, so you&#8217;ll have to create an <code>if</code>/<code>else if</code>/<code>else</code> chain.</p>
+<p><a class=p_ident id="p_Oma/sCzEw+" href="#p_Oma/sCzEw+"></a>The second version of the
+program has a straightforward solution and a clever one. The simple
+way is to add another “branch” to precisely test the given condition.
+For the clever method, build up a string containing the word or words
+to output, and print either this word or the number if there is no
+word, potentially by making elegant use of the <code>||</code> operator.</p>
+</div></div>
+<h3><a class=h_ident id="h_5Hz2kiaaXp" href="#h_5Hz2kiaaXp"></a>Chess board</h3>
+<p><a class=p_ident id="p_uH3DV6RVnV" href="#p_uH3DV6RVnV"></a>Write a program that creates a string that represents an
+8×8 grid, using newline characters to separate lines. At each position
+of the grid there is either a space or a “#” character. The characters
+should form a chess board.</p>
+<p><a class=p_ident id="p_9kgrie1A2f" href="#p_9kgrie1A2f"></a>Passing this string to <code>console.log</code> should show something like this:</p>
+<pre> # # # #
+# # # #
+ # # # #
+# # # #
+ # # # #
+# # # #
+ # # # #
+# # # #</pre>
+<p><a class=p_ident id="p_8n1E0bRGiW" href="#p_8n1E0bRGiW"></a>When you have a program that generates this pattern, define a
+variable <code>size = 8</code> and change the program so that it works for
+any <code>size</code>, outputting a grid of the given width and height.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_CfkOp8tkUe" href="#c_CfkOp8tkUe"></a><span class="cm-comment">// Your code here.</span></pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_+7IWmz4GNn" href="#p_+7IWmz4GNn"></a>The string can be built by starting with
+an empty one (<code>""</code>) and repeatedly adding characters. A newline
+character is written <code>"\n"</code>.</p>
+<p><a class=p_ident id="p_d+ioCL2/4t" href="#p_d+ioCL2/4t"></a>Use <code>console.log</code> to inspect the output of your program.</p>
+<p><a class=p_ident id="p_8UZmClB+c6" href="#p_8UZmClB+c6"></a>To work with two dimensions, you will need a
+loop inside of a loop. Put curly braces around the bodies of
+both loops to make it easy to see where they start and end. Try to
+properly indent these bodies. The order of the loops must follow the
+order in which we build up the string (line by line, left to right,
+top to bottom). So the outer loop handles the lines and the inner loop
+handles the characters on a line.</p>
+<p><a class=p_ident id="p_rEz9p9ipPK" href="#p_rEz9p9ipPK"></a>You&#8217;ll
+need two variables to track your progress. To know whether to put a
+space or a hash sign at a given position, you could test whether the
+sum of the two counters is even (<code>% 2</code>).</p>
+<p><a class=p_ident id="p_9FaUCRZviB" href="#p_9FaUCRZviB"></a>Terminating a line by adding a newline character happens after the
+line has been built up, so do this after the inner loop but inside of
+the outer loop.</p>
+</div></div>
+<nav>
+  <a href="01_values.html" title="capítulo previo">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="03_functions.html" title="capítulo siguiente">▶</a>
+</nav>
+</article>
