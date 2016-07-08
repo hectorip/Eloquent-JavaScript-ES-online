@@ -459,29 +459,28 @@ en vez del <code>while</code>.</p>
 abrió ningún bloque con un <code>{</code>, la sentencia del bucle está indentada dos
 espacios para dejar claro que "pertenece" al la línea que está antes de
 ella.</p>
-<h2><a class=h_ident id="h_WWKAoSPJ47" href="#h_WWKAoSPJ47"></a>Breaking Out of a Loop</h2>
-<p><a class=p_ident id="p_ct/RAqWly8" href="#p_ct/RAqWly8"></a>Having the loop&#8217;s
-condition produce <code>false</code> is not the only way a loop can finish. There
-is a special statement called <code>break</code> that has the effect of
-immediately jumping out of the enclosing loop.</p>
-<p><a class=p_ident id="p_Vnm45Nv5hS" href="#p_Vnm45Nv5hS"></a>This program illustrates the <code>break</code> statement. It finds the first number
-that is both greater than or equal to 20 and divisible by 7.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7paajfWUVm" href="#c_7paajfWUVm"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">current</span> <span class="cm-operator">=</span> <span class="cm-number">20</span>; ; <span class="cm-variable">current</span><span class="cm-operator">++</span>) {
-  <span class="cm-keyword">if</span> (<span class="cm-variable">current</span> <span class="cm-operator">%</span> <span class="cm-number">7</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
+<h2><a class=h_ident id="h_zAaVJnYh7o" href="#h_zAaVJnYh7o"></a>Rompiendo un bucle</h2>
+<p><a class=p_ident id="p_Nm6+cAMfsQ" href="#p_Nm6+cAMfsQ"></a>Hacer que la condición del bucle produzca <code>false</code> no es la única forma de que un loop termine.
+Existe una una sentencia especial llamada <code>break</code> que tiene el
+efecto de salir inmediatamente del bucle que la esté encerrando.</p>
+<p><a class=p_ident id="p_eTVybviQVG" href="#p_eTVybviQVG"></a>El siguiente programa ilustra la sentencia <code>break</code>. Encuentra el primer
+número que es más grande o igual que 20 y divisible por 7.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_sCD4M6qIqF" href="#c_sCD4M6qIqF"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">actual</span> <span class="cm-operator">=</span> <span class="cm-number">20</span>; ; <span class="cm-variable">actual</span><span class="cm-operator">++</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable">actual</span> <span class="cm-operator">%</span> <span class="cm-number">7</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
     <span class="cm-keyword">break</span>;
 }
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">current</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">actual</span>);
 <span class="cm-comment">// → 21</span></pre>
-<p><a class=p_ident id="p_6KpM9sBZ2r" href="#p_6KpM9sBZ2r"></a>Using the remainder
-(<code>%</code>) operator is an easy way to test whether a number is divisible by
-another number. If it is, the remainder of their division is zero.</p>
-<p><a class=p_ident id="p_3UnZkFW7lj" href="#p_3UnZkFW7lj"></a>The <code>for</code> construct in the example does not have a part
-that checks for the end of the loop. This means that the loop will
-never stop unless the <code>break</code> statement inside is executed.</p>
-<p><a class=p_ident id="p_2mGltrXORo" href="#p_2mGltrXORo"></a>If you were to leave out that <code>break</code> statement or accidentally write
-a condition that always produces <code>true</code>, your program would get stuck
-in an <em>infinite loop</em>. A program stuck in an infinite loop will
-never finish running, which is usually a bad thing.</p>
+<p><a class=p_ident id="p_SatU3DM22D" href="#p_SatU3DM22D"></a>Usar el operador de sobrante o
+módulo (<code>%</code>) es una forma fácil de probar si un número es divisible por
+otro. Si lo es, el sobrante de la división es cero.</p>
+<p><a class=p_ident id="p_JKQTzethVy" href="#p_JKQTzethVy"></a>La construcción <code>for</code> en este ejemplo no tiene la parte
+que verifica si el bucle debe terminar. Esto significa que el loop nunca
+terminará hasta que la sentencia <code>break</code> que está adentro sea ejecutada.</p>
+<p><a class=p_ident id="p_U1G3bRQePq" href="#p_U1G3bRQePq"></a>Si dejaras afuera esa sentencia <code>break</code> o accidentalmente escribieras una
+condición que siempre produzca <code>true</code>, tu programa se quedaría atorado en
+un <em>bucle infinito</em>. Un programa que se queda en un bucle infinito
+nunca terminará de correr, y eso usualmente es malo.</p>
 <p><a class=p_ident id="p_0F9xH2r4jT" href="#p_0F9xH2r4jT"></a>If you create an infinite loop in one of the examples on these pages,
 you&#8217;ll usually be asked whether you want to stop the script after a
 few seconds. If that fails, you will have to close the tab that you&#8217;re
