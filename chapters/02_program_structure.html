@@ -459,8 +459,8 @@ en vez del <code>while</code>.</p>
 abrió ningún bloque con un <code>{</code>, la sentencia del bucle está indentada dos
 espacios para dejar claro que "pertenece" al la línea que está antes de
 ella.</p>
-<h2><a class=h_ident id="h_zAaVJnYh7o" href="#h_zAaVJnYh7o"></a>Rompiendo un bucle</h2>
-<p><a class=p_ident id="p_Nm6+cAMfsQ" href="#p_Nm6+cAMfsQ"></a>Hacer que la condición del bucle produzca <code>false</code> no es la única forma de que un loop termine.
+<h2><a class=h_ident id="h_4zu2B28Y8I" href="#h_4zu2B28Y8I"></a>Forzando la salida de un bucle</h2>
+<p><a class=p_ident id="p_Nm6+cAMfsQ" href="#p_Nm6+cAMfsQ"></a>Hacer que la condición del bucle produzca <code>false</code> no es la única forma de que un bucle termine.
 Existe una una sentencia especial llamada <code>break</code> que tiene el
 efecto de salir inmediatamente del bucle que la esté encerrando.</p>
 <p><a class=p_ident id="p_eTVybviQVG" href="#p_eTVybviQVG"></a>El siguiente programa ilustra la sentencia <code>break</code>. Encuentra el primer
@@ -481,15 +481,15 @@ terminará hasta que la sentencia <code>break</code> que está adentro sea ejecu
 condición que siempre produzca <code>true</code>, tu programa se quedaría atorado en
 un <em>bucle infinito</em>. Un programa que se queda en un bucle infinito
 nunca terminará de correr, y eso usualmente es malo.</p>
-<p><a class=p_ident id="p_0F9xH2r4jT" href="#p_0F9xH2r4jT"></a>If you create an infinite loop in one of the examples on these pages,
-you&#8217;ll usually be asked whether you want to stop the script after a
-few seconds. If that fails, you will have to close the tab that you&#8217;re
-working in, or on some browsers close your whole browser, in order to
-recover.</p>
-<p><a class=p_ident id="p_f7LsUmJq1I" href="#p_f7LsUmJq1I"></a>The <code>continue</code> keyword is similar to <code>break</code>, in
-that it influences the progress of a loop. When <code>continue</code> is
-encountered in a loop body, control jumps out of the body and
-continues with the loop&#8217;s next iteration.</p>
+<p><a class=p_ident id="p_Kyj2y1LLx4" href="#p_Kyj2y1LLx4"></a>Si creas un bucle infinito en uno de los ejemplos de estas páginas,
+usualmente se te preguntará si quieres detener el script después de unos
+cuantos segundos. Si eso falla, tendrás que cerrar la pestaña en la que
+estás trabajando, o, en otros nevagadores, cerrar el navegador entero para
+recuperarte.</p>
+<p><a class=p_ident id="p_SpplRbvKVL" href="#p_SpplRbvKVL"></a>La palabra clave <code>continue</code> es similar a
+<code>break</code> en que influencia el progreso del bucle. Cuando se encuentra
+<code>continue</code> en el cuerpo de un bucle, el control sale del curpo del
+bucle inmediatamente y continúa en la próxima iteración del bucle.</p>
 <h2><a class=h_ident id="h_TGUhwjSkqm" href="#h_TGUhwjSkqm"></a>Updating variables succinctly</h2>
 <p><a class=p_ident id="p_4XaFXVHI9b" href="#p_4XaFXVHI9b"></a>Especially
 when looping, a program often needs to “update” a variable to hold a
