@@ -490,20 +490,20 @@ recuperarte.</p>
 <code>break</code> en que influencia el progreso del bucle. Cuando se encuentra
 <code>continue</code> en el cuerpo de un bucle, el control sale del curpo del
 bucle inmediatamente y continúa en la próxima iteración del bucle.</p>
-<h2><a class=h_ident id="h_TGUhwjSkqm" href="#h_TGUhwjSkqm"></a>Updating variables succinctly</h2>
-<p><a class=p_ident id="p_4XaFXVHI9b" href="#p_4XaFXVHI9b"></a>Especially
-when looping, a program often needs to “update” a variable to hold a
-value based on that variable&#8217;s previous value.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2I9qAKEFto" href="#c_2I9qAKEFto"></a><span class="cm-variable">counter</span> <span class="cm-operator">=</span> <span class="cm-variable">counter</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>;</pre>
-<p><a class=p_ident id="p_n9PMtWEgzN" href="#p_n9PMtWEgzN"></a>JavaScript provides a shortcut for this:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+5YpCv/iKG" href="#c_+5YpCv/iKG"></a><span class="cm-variable">counter</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;</pre>
-<p><a class=p_ident id="p_3IlWnnMlMo" href="#p_3IlWnnMlMo"></a>Similar shortcuts work for many other operators, such as <code>result *= 2</code> to
-double <code>result</code> or <code>counter -= 1</code> to count downward.</p>
-<p><a class=p_ident id="p_+odXBLNKvV" href="#p_+odXBLNKvV"></a>This allows us to shorten our counting example a little more.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_tBGVwznf7K" href="#c_tBGVwznf7K"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">number</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">number</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">12</span>; <span class="cm-variable">number</span> <span class="cm-operator">+=</span> <span class="cm-number">2</span>)
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">number</span>);</pre>
-<p><a class=p_ident id="p_jpGEbhH1GX" href="#p_jpGEbhH1GX"></a>For <code>counter += 1</code> and <code>counter -=
-1</code>, there are even shorter equivalents: <code>counter++</code> and <code>counter--</code>.</p>
+<h2><a class=h_ident id="h_Qf5trXITDO" href="#h_Qf5trXITDO"></a>Actualizando variables sucintamente</h2>
+<p><a class=p_ident id="p_bvZ6AR5nyh" href="#p_bvZ6AR5nyh"></a>Especialmente
+cuando estamos en un bucle, un programa necesita "actualizar" una variable
+para mantener un valor basado en el valor previo de esa variable.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_L3jfINNNXj" href="#c_L3jfINNNXj"></a><span class="cm-variable">contador</span> <span class="cm-operator">=</span> <span class="cm-variable">contador</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>;</pre>
+<p><a class=p_ident id="p_QdKROc9QOW" href="#p_QdKROc9QOW"></a>JavaScript nos da un atajo para esto:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_PvmuhPrwkH" href="#c_PvmuhPrwkH"></a><span class="cm-variable">contador</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;</pre>
+<p><a class=p_ident id="p_TFQcIiAxmj" href="#p_TFQcIiAxmj"></a>Atajos similares funcionan igual para muchos otros operadores, como
+<code>resultado *= 2</code> para duplicar <code>resultado</code> o <code>counter -= 1</code> para restar uno.</p>
+<p><a class=p_ident id="p_yr11NivZCB" href="#p_yr11NivZCB"></a>Esto nos permite acortar nuestro ejemplo de la cuenta un poco más.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_BPEzrGjPrp" href="#c_BPEzrGjPrp"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">numero</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">numero</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">12</span>; <span class="cm-variable">numero</span> <span class="cm-operator">+=</span> <span class="cm-number">2</span>)
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">numero</span>);</pre>
+<p><a class=p_ident id="p_FfbvtxPJa+" href="#p_FfbvtxPJa+"></a>Para <code>contador += 1</code> y <code>contador -= 1</code>,
+hay incluso equivalentes más cortos: <code>contador+=</code> y <code>contador--</code>.</p>
 <h2><a class=h_ident id="h_jMKsa0SXdL" href="#h_jMKsa0SXdL"></a>Dispatching on a value with switch</h2>
 <p><a class=p_ident id="p_t3Fw/3tp0F" href="#p_t3Fw/3tp0F"></a>It is common for code to look like this:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_A9TwfNNqCW" href="#c_A9TwfNNqCW"></a><span class="cm-keyword">if</span> (<span class="cm-variable">variable</span> <span class="cm-operator">==</span> <span class="cm-string">"value1"</span>) <span class="cm-variable">action1</span>();
@@ -670,16 +670,16 @@ solved it, you&#8217;re now allowed to feel good about yourself.)</p>
 <p><a class=p_ident id="p_eChcRqNQtZ" href="#p_eChcRqNQtZ"></a>Going
 over the numbers is clearly a looping job, and selecting what to print
 is a matter of conditional execution. Remember the trick of using the
-remainder (<code>%</code>) operator for checking whether a number is divisible by
+remainder (<code>%</code>) operador for checking whether a number is divisible by
 another number (has a remainder of zero).</p>
 <p><a class=p_ident id="p_6QvPT/yNQ2" href="#p_6QvPT/yNQ2"></a>In the first version, there are three possible outcomes for every
 number, so you&#8217;ll have to create an <code>if</code>/<code>else if</code>/<code>else</code> chain.</p>
-<p><a class=p_ident id="p_Oma/sCzEw+" href="#p_Oma/sCzEw+"></a>The second version of the
+<p><a class=p_ident id="p_oypkJZ5MS3" href="#p_oypkJZ5MS3"></a>The second version of the
 program has a straightforward solution and a clever one. The simple
 way is to add another “branch” to precisely test the given condition.
 For the clever method, build up a string containing the word or words
 to output, and print either this word or the number if there is no
-word, potentially by making elegant use of the <code>||</code> operator.</p>
+word, potentially by making elegant use of the <code>||</code> operador.</p>
 </div></div>
 <h3><a class=h_ident id="h_5Hz2kiaaXp" href="#h_5Hz2kiaaXp"></a>Chess board</h3>
 <p><a class=p_ident id="p_uH3DV6RVnV" href="#p_uH3DV6RVnV"></a>Write a program that creates a string that represents an
