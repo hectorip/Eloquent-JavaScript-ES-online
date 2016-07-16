@@ -1,4 +1,4 @@
-02_1_looping_a_triangle.js
+02_1_iterando_un_tringulo.js
 02_2_fizzbuzz.js
 02_3_chess_board.js
 03_1_mnimo.js
