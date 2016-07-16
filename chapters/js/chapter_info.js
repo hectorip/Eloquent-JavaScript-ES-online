@@ -1,3 +1,6 @@
+02_1_looping_a_triangle.js
+02_2_fizzbuzz.js
+02_3_chess_board.js
 03_1_mnimo.js
 03_2_recursin.js
 03_3_contando_frijoles.js
