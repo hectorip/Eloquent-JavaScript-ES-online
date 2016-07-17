@@ -706,24 +706,25 @@ que trabaje para cualquier <code>tamano</code>, produciendo una cuadrícula
 del ancho y alto dado.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_CfkOp8tkUe" href="#c_CfkOp8tkUe"></a><span class="cm-comment">// Your code here.</span></pre>
 <div class=solution><div class=solution-text>
-<p><a class=p_ident id="p_+7IWmz4GNn" href="#p_+7IWmz4GNn"></a>The string can be built by starting with
-an empty one (<code>""</code>) and repeatedly adding characters. A newline
-character is written <code>"\n"</code>.</p>
-<p><a class=p_ident id="p_d+ioCL2/4t" href="#p_d+ioCL2/4t"></a>Use <code>console.log</code> to inspect the output of your program.</p>
-<p><a class=p_ident id="p_8UZmClB+c6" href="#p_8UZmClB+c6"></a>To work with two dimensions, you will need a
-loop inside of a loop. Put curly braces around the bodies of
-both loops to make it easy to see where they start and end. Try to
-properly indent these bodies. The order of the loops must follow the
-order in which we build up the string (line by line, left to right,
-top to bottom). So the outer loop handles the lines and the inner loop
-handles the characters on a line.</p>
-<p><a class=p_ident id="p_rEz9p9ipPK" href="#p_rEz9p9ipPK"></a>You&#8217;ll
-need two variables to track your progress. To know whether to put a
-space or a hash sign at a given position, you could test whether the
-sum of the two counters is even (<code>% 2</code>).</p>
-<p><a class=p_ident id="p_9FaUCRZviB" href="#p_9FaUCRZviB"></a>Terminating a line by adding a newline character happens after the
-line has been built up, so do this after the inner loop but inside of
-the outer loop.</p>
+<p><a class=p_ident id="p_wONAnKn4aE" href="#p_wONAnKn4aE"></a>La cadena puede ser construida
+empezando con una vacía (<code>""</code>) y agregando caracteres repetidamente.
+Un carácter de nueva línea se escribe <code>"\n"</code>.</p>
+<p><a class=p_ident id="p_qCQPxnxrDM" href="#p_qCQPxnxrDM"></a>Usa <code>console.log</code> para inspeccionar la salida de tu programa.</p>
+<p><a class=p_ident id="p_Gr7cParUG1" href="#p_Gr7cParUG1"></a>Para trabajar con dos dimensiones, necesitarás
+un bucle adentro de un bucle. Coloca llaves alrededor de los
+cuerpos de los dos bucles para hacer fácil ver dónde empiezan y dónde
+terminan. Intenta indentar propieamente los cuerpos. El orden de los
+bucles debe seguir el orden en el que construimos la cadena (línea por
+línea, de izquierda a derecha, de arriba hacia abajo). Así que el bucle
+de afuera maneja la línea y el bucle interno maneja los caracteres en
+una línea.</p>
+<p><a class=p_ident id="p_lwm0TBFbwC" href="#p_lwm0TBFbwC"></a>Necesitarás
+dos variables para dar seguimiento al progreso. Para saber si debes poner
+un espacio o un símbolo de número en una posición dada, puedes probar si
+la suma de los contadores es par (<code>%2</code>)</p>
+<p><a class=p_ident id="p_YhRlDyis8S" href="#p_YhRlDyis8S"></a>Terminar una línea al añadir un carácter de nueva línea sucede después de
+que la línea ha sido construida, así que haz esto después del bucle interno
+pero dentro del bucle externo.</p>
 </div></div>
 <nav>
   <a href="01_values.html" title="capítulo previo">◀</a>
