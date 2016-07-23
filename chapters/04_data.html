@@ -110,20 +110,20 @@ funciona bien.</p>
 <p><a class=p_ident id="p_QWfY9lqvUg" href="#p_QWfY9lqvUg"></a>Hemos visto algunas expresiones
 sospechosas como <code>myString.length</code> (para obtener la longitud de una cadena) y
 <code>Math.max</code> (la función máximo) en ejemplos pasados. Estas son expresiones que
-accesan una <em>propiedad</em> de algún valor. En el primer caso, accesamos la
-propiedad <code>length</code> de el valor en <code>myString</code>. En el segundo, accesamos la
+acceden una <em>propiedad</em> de algún valor. En el primer caso, accedemos a la
+propiedad <code>length</code> de el valor en <code>myString</code>. En el segundo, accedemos a la
 propiedad llamada <code>max</code> en el objeto <code>Math</code> (que es una colección de valores y
 funciones relacionadas con las matemáticas).</p>
-<p><a class=p_ident id="p_+scqPh9V5v" href="#p_+scqPh9V5v"></a>Casi todos los valores de Javascript tienen
+<p><a class=p_ident id="p_+scqPh9V5v" href="#p_+scqPh9V5v"></a>Casi todos los valores de JavaScript tienen
 propiedades. Las excepciones son <code>null</code> y <code>undefined</code>. Si intentas acceder una
-propiedad de alguno de estos nonvalues, recibirás un error.</p>
+propiedad de alguno de estos valores inválidos recibirás un error.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZEvFsOQLc8" href="#c_ZEvFsOQLc8"></a><span class="cm-atom">null</span>.<span class="cm-property">length</span>;
 <span class="cm-comment">// → TypeError: Cannot read property 'length' of null</span></pre>
-<p><a class=p_ident id="p_7d7s0A0x5C" href="#p_7d7s0A0x5C"></a>Las dos maneras comúnes de accesar propiedades
-en Javascript es con un punto y con corchetes. Ambas <code>value.x</code> y <code>value[x]</code>
-accesan una propiedad en <code>value</code>—pero no necesariamente la misma propiedad.
+<p><a class=p_ident id="p_7d7s0A0x5C" href="#p_7d7s0A0x5C"></a>Las dos maneras comúnes de acceder a propiedades
+en Javascript son con un punto y con corchetes. Ambas <code>value.x</code> y <code>value[x]</code>
+acceden a una propiedad en <code>value</code>, pero no necesariamente la misma propiedad.
 La diferencia radica en cómo se interpreta <code>x</code>. Cuando usamos un punto, la parte
-después del punto debe ser un nombre de variable válido y nombra de maner a
+después del punto debe ser un nombre de variable válido y nombra de manera
 directa a la propiedad. Cuando usamos corchetes, la expresión dentro de los
 corchetes es <em>evaluada</em> para obtener el nombre de la propiedad. Mientras que
 <code>value.x</code> busca la propiedad de <code>value</code> llamada “x”, <code>value[x]</code> intenta evaluar
