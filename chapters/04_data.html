@@ -208,32 +208,32 @@ Cada propiedad está escritra como un nombre seguido por dos puntos, seguidos
 pos una expresión que le asigna el valor a esa propiedad. Los espacios
 y saltos de línea no son afectan. Cunado un objeto tiene múltiples líneas,
 indentarlas como en el ejemplo previo mejora la legibilidad. Las propiedades
-que tengan nombres que no sean nombres de variable válidos o número válidos
+que tengan nombres que no sean nombres de variable válidos o números válidos
 tienen que estar entrecomilladas.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qCSUuJmkj7" href="#c_qCSUuJmkj7"></a><span class="cm-keyword">var</span> <span class="cm-variable">descripciones</span> <span class="cm-operator">=</span> {
   <span class="cm-property">trabajo</span>: <span class="cm-string">"Fui al trabajo"</span>,
   <span class="cm-string cm-property">"toqué un arbol"</span>: <span class="cm-string">"Toqué el arbol del vecino"</span>
 };</pre>
-<p><a class=p_ident id="p_muKvKdGc+G" href="#p_muKvKdGc+G"></a>This means that curly braces have <em>two</em> meanings in JavaScript. At
-the start of a statement, they start a block of statements. In any
-other position, they describe an object. Fortunately, it is almost
-never useful to start a statement with a curly-brace object, and in
-typical programs, there is no ambiguity between these two uses.</p>
-<p><a class=p_ident id="p_04jR2jxhZ9" href="#p_04jR2jxhZ9"></a>Reading a property that doesn&#8217;t exist will produce the
-value <code>undefined</code>, which happens the first time we try to read the <code>wolf</code>
-property in the previous example.</p>
-<p><a class=p_ident id="p_oxubJ4TSX5" href="#p_oxubJ4TSX5"></a>It is
-possible to assign a value to a property expression with the <code>=</code>
-operator. This will replace the property&#8217;s value if it already existed
-or create a new property on the object if it didn&#8217;t.</p>
-<p><a class=p_ident id="p_FolCMJfte3" href="#p_FolCMJfte3"></a>To briefly return to
-our tentacle model of variable bindings—property bindings are
-similar. They <em>grasp</em> values, but other variables and properties might
-be holding onto those same values. You may think of objects as
-octopuses with any number of tentacles, each of which has a name
-inscribed on it.</p>
+<p><a class=p_ident id="p_Wc7iSsORLR" href="#p_Wc7iSsORLR"></a>Esto significa que las llaves tienen <em>dos</em> significados en JavaScript.
+Al principio de una sentencia, empiezan un bloque de sentencia. En cualquier
+otra posición, describen un objeto. Afortunadamente, casi nunca es útil
+empezar una sentencia con un objeto declarado con llaves, y en programas típicos,
+no hay ambigüedad entre esos dos usos.</p>
+<p><a class=p_ident id="p_7W0tQwA2Xp" href="#p_7W0tQwA2Xp"></a>Al leer una propiedad que no existe se produce el
+valor <code>undefined</code>, es lo que pasa la primera vez que intentamos leer
+la propiedad <code>lobo</code> en el ejemplo previo.</p>
+<p><a class=p_ident id="p_Jzed9fnBmS" href="#p_Jzed9fnBmS"></a>Es posible asignar
+un valor a una expresión de propiedad con el operador <code>=</code>. Esto
+reemplazará el valor de la propiedad si ya existía o creará una nueva propiedad
+en el objeto si no.</p>
+<p><a class=p_ident id="p_PgI7/wYhcJ" href="#p_PgI7/wYhcJ"></a>Para regresar brevemente a nuestro
+modelo de tentáculos de  asignaciones de variable, la asignación de
+propiedades es parecida. Estas <em>agarran</em> valores, pero otras variables y
+propiedades pudieran estar agarrando estos mismos valores. Puedes pensar
+que los objetos son pulpos con un número indefinido de tentáculos, cada uno
+de los cuales tiene un nombre escrito en él.</p>
 <div class="image">
-  <img src="img/octopus-object.jpg" alt="Artist's representation of an object">
+  <img src="img/octopus-object.jpg" alt="Representación de un objeto de un artista.">
 </div>
 <p><a class=p_ident id="p_0r+HcrZzZJ" href="#p_0r+HcrZzZJ"></a>The <code>delete</code> operator cuts
 off a tentacle from such an octopus. It is a unary operator that, when
