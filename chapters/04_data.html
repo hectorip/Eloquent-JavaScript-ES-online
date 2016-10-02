@@ -179,28 +179,28 @@ array. El método <code>pop</code> hace lo contrario: elimina el valor al final
 del array y lo regresa. Un array de cadenas puede ser transformado a
 una sola cadena con el método <code>join</code>. El argumento que se da a <code>join</code>
 determina el texto que se usa entre los elementos del array.</p>
-<h2><a class=h_ident id="h_cqg63Sxe3o" href="#h_cqg63Sxe3o"></a>Objects</h2>
-<p><a class=p_ident id="p_D8cm1kz0P8" href="#p_D8cm1kz0P8"></a>Back to the weresquirrel. A set of daily log
-entries can be represented as an array. But the entries do not consist
-of just a number or a string—each entry needs to store a list of
-activities and a Boolean value that indicates whether Jacques turned
-into a squirrel. Ideally, we would like to group these values together
-into a single value and then put these grouped values into an array of
-log entries.</p>
-<p><a class=p_ident id="p_aZEa6qyMum" href="#p_aZEa6qyMum"></a>Values of the type <em>object</em> are arbitrary collections of
-properties, and we can add or remove these properties as we please.
-One way to create an object is by using a curly brace notation.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pSAc4ib983" href="#c_pSAc4ib983"></a><span class="cm-keyword">var</span> <span class="cm-variable">day1</span> <span class="cm-operator">=</span> {
-  <span class="cm-property">squirrel</span>: <span class="cm-atom">false</span>,
-  <span class="cm-property">events</span>: [<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"running"</span>,
-           <span class="cm-string">"television"</span>]
+<h2><a class=h_ident id="h_WSNvRpk0Lx" href="#h_WSNvRpk0Lx"></a>Objetos</h2>
+<p><a class=p_ident id="p_J6k8j2Njng" href="#p_J6k8j2Njng"></a>De
+regreso con el hombre ardilla. Un conjunto de entradas diaras de registro
+pueden ser representadas como un array. Pero las entradas no consisten
+de sólo un número o una cadena, cada entrada necesita guarda una lista de
+actividades y un valor Booleano que indica si Jacques se convirtió en
+ardilla. Idealmente, nos gustaría agrupar estos valores juntos en un solo
+valor y poner estos valores agrupados en un array de entradas del registro.</p>
+<p><a class=p_ident id="p_oeA3xDAjHt" href="#p_oeA3xDAjHt"></a>Los valores del tipo <em>objeto</em> son colecciones arbitrarias
+de propiedades, y podemos añadir o remover estas propiedades a placer.
+Una manera de crear un objeto es usando la notación de llaves.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_s5Ouk9PhYE" href="#c_s5Ouk9PhYE"></a><span class="cm-keyword">var</span> <span class="cm-variable">dia1</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">ardilla</span>: <span class="cm-atom">false</span>,
+  <span class="cm-property">eventos</span>: [<span class="cm-string">"trabajo"</span>, <span class="cm-string">"toqué un arbol"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"correr"</span>,
+           <span class="cm-string">"televisión"</span>]
 };
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">day1</span>.<span class="cm-property">squirrel</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">dia1</span>.<span class="cm-property">ardilla</span>);
 <span class="cm-comment">// → false</span>
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">day1</span>.<span class="cm-property">wolf</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">dia1</span>.<span class="cm-property">lobo</span>);
 <span class="cm-comment">// → undefined</span>
-<span class="cm-variable">day1</span>.<span class="cm-property">wolf</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">day1</span>.<span class="cm-property">wolf</span>);
+<span class="cm-variable">dia1</span>.<span class="cm-property">lobo</span> <span class="cm-operator">=</span> <span class="cm-atom">false</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">dia1</span>.<span class="cm-property">lobo</span>);
 <span class="cm-comment">// → false</span></pre>
 <p><a class=p_ident id="p_hxTCt8woA9" href="#p_hxTCt8woA9"></a>Inside the
 curly braces, we can give a list of properties separated by commas.
@@ -210,8 +210,8 @@ breaks are not significant. When an object spans multiple lines,
 indenting it like in the previous example improves readability.
 Properties whose names are not valid variable names or valid numbers
 have to be quoted.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7B49gkBNPX" href="#c_7B49gkBNPX"></a><span class="cm-keyword">var</span> <span class="cm-variable">descriptions</span> <span class="cm-operator">=</span> {
-  <span class="cm-property">work</span>: <span class="cm-string">"Went to work"</span>,
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_V6pD6uT9m/" href="#c_V6pD6uT9m/"></a><span class="cm-keyword">var</span> <span class="cm-variable">descriptions</span> <span class="cm-operator">=</span> {
+  <span class="cm-property">trabajo</span>: <span class="cm-string">"Went to trabajo"</span>,
   <span class="cm-string cm-property">"touched tree"</span>: <span class="cm-string">"Touched a tree"</span>
 };</pre>
 <p><a class=p_ident id="p_muKvKdGc+G" href="#p_muKvKdGc+G"></a>This means that curly braces have <em>two</em> meanings in JavaScript. At
