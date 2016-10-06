@@ -263,19 +263,19 @@ todos sus tentáculos en una fila limpia, etiquetados con números.</p>
 <div class="image">
   <img src="img/octopus-array.jpg" alt="Artist's representation of an array">
 </div>
-<p><a class=p_ident id="p_/qn/Ibmvdm" href="#p_/qn/Ibmvdm"></a>So we can represent Jacques’
-journal as an array of objects.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_hO78QsnSY4" href="#c_hO78QsnSY4"></a><span class="cm-keyword">var</span> <span class="cm-variable">journal</span> <span class="cm-operator">=</span> [
-  {<span class="cm-property">events</span>: [<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>,
-            <span class="cm-string">"running"</span>, <span class="cm-string">"television"</span>],
-   <span class="cm-property">squirrel</span>: <span class="cm-atom">false</span>},
-  {<span class="cm-property">events</span>: [<span class="cm-string">"work"</span>, <span class="cm-string">"ice cream"</span>, <span class="cm-string">"cauliflower"</span>,
-            <span class="cm-string">"lasagna"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"brushed teeth"</span>],
-   <span class="cm-property">squirrel</span>: <span class="cm-atom">false</span>},
-  {<span class="cm-property">events</span>: [<span class="cm-string">"weekend"</span>, <span class="cm-string">"cycling"</span>, <span class="cm-string">"break"</span>,
-            <span class="cm-string">"peanuts"</span>, <span class="cm-string">"beer"</span>],
-   <span class="cm-property">squirrel</span>: <span class="cm-atom">true</span>},
-  <span class="cm-comment">/* and so on... */</span>
+<p><a class=p_ident id="p_M/klGP/xw3" href="#p_M/klGP/xw3"></a>Así que podemos representar el
+diario de Jacques coomo un array de objetos.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7pBK7ktb3z" href="#c_7pBK7ktb3z"></a><span class="cm-keyword">var</span> <span class="cm-variable">diario</span> <span class="cm-operator">=</span> [
+  {<span class="cm-property">eventos</span>: [<span class="cm-string">"trabajo"</span>, <span class="cm-string">"tocar un arbol"</span>, <span class="cm-string">"pizza"</span>,
+            <span class="cm-string">"correr"</span>, <span class="cm-string">"televisión"</span>],
+   <span class="cm-property">ardilla</span>: <span class="cm-atom">false</span>},
+  {<span class="cm-property">eventos</span>: [<span class="cm-string">"trabajo"</span>, <span class="cm-string">"helado"</span>, <span class="cm-string">"coliflor"</span>,
+            <span class="cm-string">"lasagna"</span>, <span class="cm-string">"tocar un arbol"</span>, <span class="cm-string">"lavarse los dientes"</span>],
+   <span class="cm-property">ardilla</span>: <span class="cm-atom">false</span>},
+  {<span class="cm-property">eventos</span>: [<span class="cm-string">"fin de seamana"</span>, <span class="cm-string">"bicicleta"</span>, <span class="cm-string">"descanso"</span>,
+            <span class="cm-string">"cacahuates"</span>, <span class="cm-string">"cerveza"</span>],
+   <span class="cm-property">ardilla</span>: <span class="cm-atom">true</span>},
+  <span class="cm-comment">/* y continúa... */</span>
 ];</pre>
 <h2><a class=h_ident id="h_C3n45IkMhg" href="#h_C3n45IkMhg"></a>Mutability</h2>
 <p><a class=p_ident id="p_HZ50qDRWmj" href="#p_HZ50qDRWmj"></a>We will get to actual programming <em>real</em> soon now. But first, there&#8217;s
@@ -338,9 +338,9 @@ environment he needs to keep his journal.</p>
 }</pre>
 <p><a class=p_ident id="p_6o6Q7TaG26" href="#p_6o6Q7TaG26"></a>And then, every evening at ten—or sometimes the next morning, after
 climbing down from the top shelf of his bookcase—he records the day.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_FvNHZMxEXr" href="#c_FvNHZMxEXr"></a><span class="cm-variable">addEntry</span>([<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"running"</span>,
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_86c1Ni7t3w" href="#c_86c1Ni7t3w"></a><span class="cm-variable">addEntry</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"running"</span>,
           <span class="cm-string">"television"</span>], <span class="cm-atom">false</span>);
-<span class="cm-variable">addEntry</span>([<span class="cm-string">"work"</span>, <span class="cm-string">"ice cream"</span>, <span class="cm-string">"cauliflower"</span>, <span class="cm-string">"lasagna"</span>,
+<span class="cm-variable">addEntry</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"ice cream"</span>, <span class="cm-string">"cauliflower"</span>, <span class="cm-string">"lasagna"</span>,
           <span class="cm-string">"touched tree"</span>, <span class="cm-string">"brushed teeth"</span>], <span class="cm-atom">false</span>);
 <span class="cm-variable">addEntry</span>([<span class="cm-string">"weekend"</span>, <span class="cm-string">"cycling"</span>, <span class="cm-string">"break"</span>, <span class="cm-string">"peanuts"</span>,
           <span class="cm-string">"beer"</span>], <span class="cm-atom">true</span>);</pre>
