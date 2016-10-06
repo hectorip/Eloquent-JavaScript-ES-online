@@ -277,20 +277,20 @@ diario de Jacques coomo un array de objetos.</p>
    <span class="cm-property">ardilla</span>: <span class="cm-atom">true</span>},
   <span class="cm-comment">/* y continúa... */</span>
 ];</pre>
-<h2><a class=h_ident id="h_C3n45IkMhg" href="#h_C3n45IkMhg"></a>Mutability</h2>
-<p><a class=p_ident id="p_HZ50qDRWmj" href="#p_HZ50qDRWmj"></a>We will get to actual programming <em>real</em> soon now. But first, there&#8217;s
-one last piece of theory to understand.</p>
-<p><a class=p_ident id="p_zvnMtK4gE8" href="#p_zvnMtK4gE8"></a>We&#8217;ve seen that object
-values can be modified. The types of values discussed in earlier
-chapters, such as numbers, strings, and Booleans, are all
-<em>immutable</em>—it is impossible to change an existing value of those
-types. You can combine them and derive new values from them, but when
-you take a specific string value, that value will always remain the
-same. The text inside it cannot be changed. If you have reference to a
-string that contains <code>"cat"</code>, it is not possible for other code to
-change a character in <em>that</em> string to make it spell <code>"rat"</code>.</p>
-<p><a class=p_ident id="p_pwnQ1xNUOh" href="#p_pwnQ1xNUOh"></a>With objects, on the other hand, the content of a value <em>can</em> be
-modified by changing its properties.</p>
+<h2><a class=h_ident id="h_/KYBvi2eEd" href="#h_/KYBvi2eEd"></a>Mutabilidad</h2>
+<p><a class=p_ident id="p_q4A/RAizOl" href="#p_q4A/RAizOl"></a>Nos meteremos en la programación de verdad pronto. Pero primero,
+hay una última pieza de teoría que entender.</p>
+<p><a class=p_ident id="p_Kn7fupaHCZ" href="#p_Kn7fupaHCZ"></a>Hemos
+visto que los valores objeto pueden ser modificados. Los tipos de
+valores de los que platicamos en capítulos anteriores, como números,
+cadenas, Booleanos son todos <em>inmutables</em>; es imposible cambiar un
+valor existente de esos tipos. Puedes combinarlos y derivar nuevos valores de
+ellos, pero cuando tomas un valor cadena específico, ese valor siempre
+permanecerá igual. El texto que está adentro no puede ser cambiado. Si
+tienes una referencia a una cadena que contiene <code>"cat"</code>, no se posible
+para el código cambiar un caráctes en <em>esa</em> cadena para hacerlo decir <code>"rat"</code>.</p>
+<p><a class=p_ident id="p_HFAgIyb6gX" href="#p_HFAgIyb6gX"></a>Con los objeto, por otro lado, el contenido de un valor <em>puede</em> ser
+modificado al cambiar sus propiedades.</p>
 <p><a class=p_ident id="p_fVZ1xXAqW5" href="#p_fVZ1xXAqW5"></a>When we have two
 numbers, 120 and 120, we can consider them precisely the same number,
 whether or not they refer to the same physical bits. But with objects,
