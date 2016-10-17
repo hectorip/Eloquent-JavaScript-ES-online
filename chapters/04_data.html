@@ -291,25 +291,24 @@ tienes una referencia a una cadena que contiene <code>"cat"</code>, no se posibl
 para el código cambiar un caráctes en <em>esa</em> cadena para hacerlo decir <code>"rat"</code>.</p>
 <p><a class=p_ident id="p_HFAgIyb6gX" href="#p_HFAgIyb6gX"></a>Con los objeto, por otro lado, el contenido de un valor <em>puede</em> ser
 modificado al cambiar sus propiedades.</p>
-<p><a class=p_ident id="p_fVZ1xXAqW5" href="#p_fVZ1xXAqW5"></a>When we have two
-numbers, 120 and 120, we can consider them precisely the same number,
-whether or not they refer to the same physical bits. But with objects,
-there is a difference between having two references to the same object
-and having two different objects that contain the same properties.
-Consider the following code:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_WVXvnjG5+i" href="#c_WVXvnjG5+i"></a><span class="cm-keyword">var</span> <span class="cm-variable">object1</span> <span class="cm-operator">=</span> {<span class="cm-property">value</span>: <span class="cm-number">10</span>};
-<span class="cm-keyword">var</span> <span class="cm-variable">object2</span> <span class="cm-operator">=</span> <span class="cm-variable">object1</span>;
-<span class="cm-keyword">var</span> <span class="cm-variable">object3</span> <span class="cm-operator">=</span> {<span class="cm-property">value</span>: <span class="cm-number">10</span>};
+<p><a class=p_ident id="p_ulxBQ5Ge7V" href="#p_ulxBQ5Ge7V"></a>Cuando tenemos dos
+números,, 120 y 120, podemos considerar que son precisamente el mismo número
+independientemente si se refieren o no a los mismos bits físicos. Pero
+con los objetos, hay una diferencia entre tener la dos referencias al mismo objeto y tener dos objetos que contienen las mismas propiedades.
+Considera el siguiente código:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Wz+Bp98GTU" href="#c_Wz+Bp98GTU"></a><span class="cm-keyword">var</span> <span class="cm-variable">objeto1</span> <span class="cm-operator">=</span> {<span class="cm-property">valor</span>: <span class="cm-number">10</span>};
+<span class="cm-keyword">var</span> <span class="cm-variable">objeto2</span> <span class="cm-operator">=</span> <span class="cm-variable">objeto1</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">objeto3</span> <span class="cm-operator">=</span> {<span class="cm-property">valor</span>: <span class="cm-number">10</span>};
 
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">object1</span> <span class="cm-operator">==</span> <span class="cm-variable">object2</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objeto1</span> <span class="cm-operator">==</span> <span class="cm-variable">objeto2</span>);
 <span class="cm-comment">// → true</span>
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">object1</span> <span class="cm-operator">==</span> <span class="cm-variable">object3</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objeto1</span> <span class="cm-operator">==</span> <span class="cm-variable">objeto3</span>);
 <span class="cm-comment">// → false</span>
 
-<span class="cm-variable">object1</span>.<span class="cm-property">value</span> <span class="cm-operator">=</span> <span class="cm-number">15</span>;
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">object2</span>.<span class="cm-property">value</span>);
+<span class="cm-variable">objeto1</span>.<span class="cm-property">valor</span> <span class="cm-operator">=</span> <span class="cm-number">15</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objeto2</span>.<span class="cm-property">valor</span>);
 <span class="cm-comment">// → 15</span>
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">object3</span>.<span class="cm-property">value</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objeto3</span>.<span class="cm-property">valor</span>);
 <span class="cm-comment">// → 10</span></pre>
 <p><a class=p_ident id="p_RhD+qPB3F0" href="#p_RhD+qPB3F0"></a>The <code>object1</code> and
 <code>object2</code> variables grasp the <em>same</em> object, which is why changing
