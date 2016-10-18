@@ -310,19 +310,19 @@ Considera el siguiente código:</p>
 <span class="cm-comment">// → 15</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">objeto3</span>.<span class="cm-property">valor</span>);
 <span class="cm-comment">// → 10</span></pre>
-<p><a class=p_ident id="p_RhD+qPB3F0" href="#p_RhD+qPB3F0"></a>The <code>object1</code> and
-<code>object2</code> variables grasp the <em>same</em> object, which is why changing
-<code>object1</code> also changes the value of <code>object2</code>. The variable <code>object3</code>
-points to a different object, which initially contains the same
-properties as <code>object1</code> but lives a separate life.</p>
-<p><a class=p_ident id="p_S6PAaKQoFH" href="#p_S6PAaKQoFH"></a>JavaScript&#8217;s <code>==</code> operator, when comparing objects, will
-return <code>true</code> only if both objects are precisely the same value.
-Comparing different objects will return <code>false</code>, even if they have
-identical contents. There is no “deep” comparison operation built into
-JavaScript, which looks at object&#8217;s contents, but it is possible to
-write it yourself (which will be one of the
-<a href="04_data.html#exercise_deep_compare">exercises</a> at the end of this
-chapter).</p>
+<p><a class=p_ident id="p_kLu4a1N+IO" href="#p_kLu4a1N+IO"></a>Las variables
+<code>objeto1</code> y <code>objeto2</code> agarran el <em>mismo</em> objeto, ésta es la razón
+de que al cambiar <code>objeto1</code> también se cambia el valor del <code>objeto2</code>.
+La variable <code>objeto3</code> apunta a un objeto diferente, que inicialmente
+contiene las mismas propiedades que el <code>objeto1</code> pero vive una vida
+separada.</p>
+<p><a class=p_ident id="p_jb/zBwcdL3" href="#p_jb/zBwcdL3"></a>El operador <code>==</code> de JavaScript, cuando compara objetos
+regresará <code>true</code> sólo si los dos objetos son precisamente el mismo
+valor. Comparar diferentes objetos regresará <code>false</code>, incluso si
+tienen contenidos idénticos. No existe comparación "profunda" construida en
+JavaScript, la cual se basa en el contenido de los objetos, pero puedes
+escribirla tú mismo (que será uno de los
+<a href="04_data.html#exercise_deep_compare">ejercicios</a> al final de este capítulo).</p>
 <h2><a class=h_ident id="h_+q4Ck0/tFV" href="#h_+q4Ck0/tFV"></a>The lycanthrope&#8217;s log</h2>
 <p><a class=p_ident id="p_z1vPsL0dwv" href="#p_z1vPsL0dwv"></a>So
 Jacques starts up his JavaScript interpreter and sets up the
