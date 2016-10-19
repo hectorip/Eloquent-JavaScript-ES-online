@@ -323,29 +323,30 @@ tienen contenidos idénticos. No existe comparación "profunda" construida en
 JavaScript, la cual se basa en el contenido de los objetos, pero puedes
 escribirla tú mismo (que será uno de los
 <a href="04_data.html#exercise_deep_compare">ejercicios</a> al final de este capítulo).</p>
-<h2><a class=h_ident id="h_+q4Ck0/tFV" href="#h_+q4Ck0/tFV"></a>The lycanthrope&#8217;s log</h2>
-<p><a class=p_ident id="p_z1vPsL0dwv" href="#p_z1vPsL0dwv"></a>So
-Jacques starts up his JavaScript interpreter and sets up the
-environment he needs to keep his journal.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_TfYH6uEY6i" href="#c_TfYH6uEY6i"></a><span class="cm-keyword">var</span> <span class="cm-variable">journal</span> <span class="cm-operator">=</span> [];
+<h2><a class=h_ident id="h_xzZeKSY/lk" href="#h_xzZeKSY/lk"></a>El registro del licántropo</h2>
+<p><a class=p_ident id="p_8/0TGF5auf" href="#p_8/0TGF5auf"></a>Así,
+Jacques inicia su intérprete de JavaScript y configura el entorno
+que necesita para llevar su diario.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9th6Xkmi9j" href="#c_9th6Xkmi9j"></a><span class="cm-keyword">var</span> <span class="cm-variable">diario</span> <span class="cm-operator">=</span> [];
 
-<span class="cm-keyword">function</span> <span class="cm-variable">addEntry</span>(<span class="cm-def">events</span>, <span class="cm-def">didITurnIntoASquirrel</span>) {
-  <span class="cm-variable">journal</span>.<span class="cm-property">push</span>({
-    <span class="cm-property">events</span>: <span class="cm-variable-2">events</span>,
-    <span class="cm-property">squirrel</span>: <span class="cm-variable-2">didITurnIntoASquirrel</span>
+<span class="cm-keyword">function</span> <span class="cm-variable">agregarEntrada</span>(<span class="cm-def">eventos</span>, <span class="cm-def">meVolviArdilla</span>) {
+  <span class="cm-variable">diario</span>.<span class="cm-property">push</span>({
+    <span class="cm-property">eventos</span>: <span class="cm-variable-2">eventos</span>,
+    <span class="cm-property">ardilla</span>: <span class="cm-variable-2">meVolviArdilla</span>
   });
 }</pre>
-<p><a class=p_ident id="p_6o6Q7TaG26" href="#p_6o6Q7TaG26"></a>And then, every evening at ten—or sometimes the next morning, after
-climbing down from the top shelf of his bookcase—he records the day.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_86c1Ni7t3w" href="#c_86c1Ni7t3w"></a><span class="cm-variable">addEntry</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"running"</span>,
-          <span class="cm-string">"television"</span>], <span class="cm-atom">false</span>);
-<span class="cm-variable">addEntry</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"ice cream"</span>, <span class="cm-string">"cauliflower"</span>, <span class="cm-string">"lasagna"</span>,
-          <span class="cm-string">"touched tree"</span>, <span class="cm-string">"brushed teeth"</span>], <span class="cm-atom">false</span>);
-<span class="cm-variable">addEntry</span>([<span class="cm-string">"weekend"</span>, <span class="cm-string">"cycling"</span>, <span class="cm-string">"break"</span>, <span class="cm-string">"peanuts"</span>,
-          <span class="cm-string">"beer"</span>], <span class="cm-atom">true</span>);</pre>
-<p><a class=p_ident id="p_+Ih1dpMwEH" href="#p_+Ih1dpMwEH"></a>Once he has enough data points, he intends to compute the
-correlation between his squirrelification and each of the day&#8217;s
-events and ideally learn something useful from those correlations.</p>
+<p><a class=p_ident id="p_NqldmGIIn/" href="#p_NqldmGIIn/"></a>Y después, cada noche a las 10, o algunas veces la mañana siguiente,
+después de haber bajado de la parte superior de su librero, registra
+el día.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3TBrjVPy48" href="#c_3TBrjVPy48"></a><span class="cm-variable">agregarEntrada</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"toqué un árbol"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"correr"</span>,
+          <span class="cm-string">"televisión"</span>], <span class="cm-atom">false</span>);
+<span class="cm-variable">agregarEntrada</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"helado"</span>, <span class="cm-string">"coliflor"</span>, <span class="cm-string">"lasagna"</span>,
+          <span class="cm-string">"toqué un árbol"</span>, <span class="cm-string">"me lavé los dientes"</span>], <span class="cm-atom">false</span>);
+<span class="cm-variable">agregarEntrada</span>([<span class="cm-string">"fin de semana"</span>, <span class="cm-string">"bicicleta"</span>, <span class="cm-string">"descanso"</span>, <span class="cm-string">"cacachuates"</span>,
+          <span class="cm-string">"cerveza"</span>], <span class="cm-atom">true</span>);</pre>
+<p><a class=p_ident id="p_ITwYvwUuID" href="#p_ITwYvwUuID"></a>Una vez que tiene suficientes datos, quiere calcular la correlación
+entre su ardillamiento y cada uno de los eventos e, idealmente, aprender
+algo útil de esas correlaciones.</p>
 <p><a class=p_ident id="p_EedDVNQ30H" href="#p_EedDVNQ30H"></a><em>Correlation</em> is a measure of dependence between
 variables (“variables” in the statistical sense, not the
 JavaScript sense). It is usually expressed as a coefficient that
@@ -478,13 +479,13 @@ and the computer would be doing more work than necessary.</p>
 event types. We can use the square bracket access notation to create
 and read the properties and can use the <code>in</code> operator to test whether
 a given property exists.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+2/ib0YcAS" href="#c_+2/ib0YcAS"></a><span class="cm-keyword">var</span> <span class="cm-variable">map</span> <span class="cm-operator">=</span> {};
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_0q+8ig85i+" href="#c_0q+8ig85i+"></a><span class="cm-keyword">var</span> <span class="cm-variable">map</span> <span class="cm-operator">=</span> {};
 <span class="cm-keyword">function</span> <span class="cm-variable">storePhi</span>(<span class="cm-def">event</span>, <span class="cm-def">phi</span>) {
   <span class="cm-variable">map</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">phi</span>;
 }
 
 <span class="cm-variable">storePhi</span>(<span class="cm-string">"pizza"</span>, <span class="cm-number">0.069</span>);
-<span class="cm-variable">storePhi</span>(<span class="cm-string">"touched tree"</span>, <span class="cm-operator">-</span><span class="cm-number">0.081</span>);
+<span class="cm-variable">storePhi</span>(<span class="cm-string">"toqué un árbol"</span>, <span class="cm-operator">-</span><span class="cm-number">0.081</span>);
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"pizza"</span> <span class="cm-keyword">in</span> <span class="cm-variable">map</span>);
 <span class="cm-comment">// → true</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">map</span>[<span class="cm-string">"touched tree"</span>]);
@@ -708,7 +709,7 @@ can take any number of arguments, like <code>console.log</code>. These typically
 loop over the values in their <code>arguments</code> object. They can be used to
 create very pleasant interfaces. For example, remember how we created
 the entries to Jacques’ journal.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HkIRWLvq7y" href="#c_HkIRWLvq7y"></a><span class="cm-variable">addEntry</span>([<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"running"</span>,
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+nwtWR/ELx" href="#c_+nwtWR/ELx"></a><span class="cm-variable">addEntry</span>([<span class="cm-string">"work"</span>, <span class="cm-string">"touched tree"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"correr"</span>,
           <span class="cm-string">"television"</span>], <span class="cm-atom">false</span>);</pre>
 <p><a class=p_ident id="p_2WHMCXaaIn" href="#p_2WHMCXaaIn"></a>Since he is going to be calling this function a lot, we could create
 an alternative that is easier to call.</p>

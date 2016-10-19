@@ -1,9 +1,9 @@
-var journal = [];
+var diario = [];
 
-function addEntry(events, didITurnIntoASquirrel) {
-  journal.push({
-    events: events,
-    squirrel: didITurnIntoASquirrel
+function agregarEntrada(eventos, meVolviArdilla) {
+  diario.push({
+    eventos: eventos,
+    ardilla: meVolviArdilla
   });
 }
 
