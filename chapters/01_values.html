@@ -87,7 +87,7 @@ próxima generación de valores.</p>
 <p><a class=p_ident id="p_Ug5egI/knJ" href="#p_Ug5egI/knJ"></a>Este capítulo introduce los elementos atómicos de los programas en
 JavaScript, los tipos de valores simples y los operadores que pueden
 actuar sobre tales valores.</p>
-<h2><a class=h_ident id="h_BPeI5tySz2" href="#h_BPeI5tySz2"></a>Números</h2>
+<h2><a class=h_ident id="h_2eDSr4FTTr" href="#h_2eDSr4FTTr"></a>Números</h2>
 <p><a class=p_ident id="p_/BWrVUBa16" href="#p_/BWrVUBa16"></a>Los valores de tipo
 <em>número</em>(number) son, sin sorpresa alguna, valores numéricos.
 En un programa en JavaScript, se escriben de la siguiente forma:</p>
@@ -136,7 +136,7 @@ para guardarlos. Esto es una pena, pero causa problemas prácticos sólo en
 algunas situaciones específicas. Lo importante es estar al tanto de
 esto y tratar a los números digitales fraccionarios como aproximaciones
 y no como valores precisos.</p>
-<h3><a class=h_ident id="h_k3aFxhy61f" href="#h_k3aFxhy61f"></a>Aritmética</h3>
+<h3><a class=h_ident id="h_aIf95z3S0d" href="#h_aIf95z3S0d"></a>Aritmética</h3>
 <p><a class=p_ident id="p_S7wYjRnC6Q" href="#p_S7wYjRnC6Q"></a>Lo principal que
 se hace con los números es la aritmética. Las operaciones aritméticas
 como la suma o la multiplicación toman dos valores y producen uno
@@ -169,7 +169,7 @@ operación <em>sobrante</em>. <code>X % Y</code> es el sobrante de dividir <code
 La precedencia del sobrante es la misma que la de la multiplicación
 y división. Verás a menudo este operador referido como <em>módulo</em>,
 aunque técnicamente <em>sobrante</em> es más preciso.</p>
-<h3><a class=h_ident id="h_sYN/a5tEtK" href="#h_sYN/a5tEtK"></a>Números Especiales</h3>
+<h3><a class=h_ident id="h_knrbsVUHDE" href="#h_knrbsVUHDE"></a>Números Especiales</h3>
 <p><a class=p_ident id="p_r1h5R57kme" href="#p_r1h5R57kme"></a>Hay tres valores especiales en JavaScript
 que son considerados números pero no se comportan como números
 normales.</p>
@@ -209,7 +209,7 @@ no terminará la cadena, sino que será parte de ella. Cuando un
 carácter <code>n</code> sigue a una diagonal invertida, se interpreta como
 una nueva línea. Similarmente, un <code>t</code> después de la diagonal invertida
 significa un tabulador. Tomemos la siguiente cadena:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_lsOc69n5DE" href="#c_lsOc69n5DE"></a><span class="cm-string">"Esta es la primera línea\nY esta la segunda"</span></pre>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_f8aqSPHy6t" href="#c_f8aqSPHy6t"></a><span class="cm-string">"Esta es la primera línea\nY esta la segunda"</span></pre>
 <p><a class=p_ident id="p_PCqDLOd8Eb" href="#p_PCqDLOd8Eb"></a>El verdadero texto contenido es:</p>
 <pre>Esta es la primera línea
 Y esta la segunda</pre>
@@ -219,7 +219,7 @@ código especial. Si dos diagonales invertidas están juntas, se volverán
 una, y sólo eso quedará como resultado en el valor de la cadena.
 Así es como la cadena "<code>Un carácter de nueva línea es escrito "\n".</code>"
 puede ser expresada:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7bqtRFh+d7" href="#c_7bqtRFh+d7"></a><span class="cm-string">"Un carácter de nueva línea es escrito \"\\n\"."</span></pre>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_0GUH3TQgWw" href="#c_0GUH3TQgWw"></a><span class="cm-string">"Un carácter de nueva línea es escrito \"\\n\"."</span></pre>
 <p><a class=p_ident id="p_QQ64wkUTvA" href="#p_QQ64wkUTvA"></a>Las cadenas de texto no pueden ser
 divididas numéricamente, multiplicadas, o restadas, pero el carácter
 <code>+</code> <em>puede</em> ser usado en ellas. No suma, sino que <em>concatena</em>; pega dos
@@ -232,7 +232,7 @@ lleguemos a los métodos en el <a href="04_data.html#methods">Capítulo 4</a>.</
 son símbolos. Algunos son escritos como palabras. Un ejemplo es el
 operador <code>typeof</code>, que produce una cadena de texto que representa el
 tipo del valor que le pasaste.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_cbV8yHeFlx" href="#c_cbV8yHeFlx"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-number">4.5</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_m3evbcY3Xl" href="#c_m3evbcY3Xl"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-number">4.5</span>)
 <span class="cm-comment">// → number</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-string">"x"</span>)
 <span class="cm-comment">// → string</span></pre>
@@ -246,7 +246,7 @@ dos valores, pero <code>typeof</code> sólamente toma uno. Los operadores que us
 dos valores son llamados operadores <em>binarios</em>, mientras que aquellos
 que sólo toman uno son llamados operadores <em>unarios</em>. El operador menos
 puede usar tanto como operador binario como operador unario.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_I6DXnYgW4r" href="#c_I6DXnYgW4r"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-operator">-</span> (<span class="cm-number">10</span> <span class="cm-operator">-</span> <span class="cm-number">2</span>))
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HNC/sdnj1P" href="#c_HNC/sdnj1P"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-operator">-</span> (<span class="cm-number">10</span> <span class="cm-operator">-</span> <span class="cm-number">2</span>))
 <span class="cm-comment">// → -8</span></pre>
 <h2><a class=h_ident id="h_qmf/1Mk6oH" href="#h_qmf/1Mk6oH"></a>Valores Booleanos</h2>
 <p><a class=p_ident id="p_e6ChSmQR9t" href="#p_e6ChSmQR9t"></a>A menudo,
@@ -256,7 +256,7 @@ tiene un tipo <em>Booleano</em>, que tiene sólo dos valores, verdadero (true)
 y falso (false), que son simplemente estas palabras en inglés.</p>
 <h3><a class=h_ident id="h_z2NZH4aCDj" href="#h_z2NZH4aCDj"></a>Comparaciones</h3>
 <p><a class=p_ident id="p_gSOiffsN0O" href="#p_gSOiffsN0O"></a>Esta es una forma de producir valores booleanos:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_xiXHb34xBv" href="#c_xiXHb34xBv"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">3</span> <span class="cm-operator">></span> <span class="cm-number">2</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_jwJnmQWKbP" href="#c_jwJnmQWKbP"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">3</span> <span class="cm-operator">></span> <span class="cm-number">2</span>)
 <span class="cm-comment">// → true</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">3</span> <span class="cm-operator">&lt;</span> <span class="cm-number">2</span>)
 <span class="cm-comment">// → false</span></pre>
@@ -265,14 +265,14 @@ para "es mayor que" y "es menor que", respectivamente. Estos son
 operadores binarios. Aplicarlos resulta en un valor Booleano que indica
 si son ciertos en ese caso.</p>
 <p><a class=p_ident id="p_TyPq4tTXwj" href="#p_TyPq4tTXwj"></a>Las cadenas de texto pueden ser comparadas de la misma manera.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_VDjRyWchqq" href="#c_VDjRyWchqq"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Aardvark"</span> <span class="cm-operator">&lt;</span> <span class="cm-string">"Zoroaster"</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ekPJRT+gDt" href="#c_ekPJRT+gDt"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Aardvark"</span> <span class="cm-operator">&lt;</span> <span class="cm-string">"Zoroaster"</span>)
 <span class="cm-comment">// → true</span></pre>
 <p><a class=p_ident id="p_kmuU2qmb3q" href="#p_kmuU2qmb3q"></a>La manera en que las cadenas son ordenadas
 es más o menos alfabética: las letras mayúsculas son siempre "menores"
 que las minúsculas, así que <code>"Z" &lt; "a"</code> es verdad, y los caracteres no
 alfabéticos (!, -, y así por el estilo) son también incluidos en el
 ordenamiento. La comparación real está basada en el estándar
-<em>Unicode</em>. Este estándar asigna un número a virtualemente cada
+<em>Unicode</em>. Este estándar asigna un número virtualmente a cada
 carácter que alguna vez necesitarás, incluyendo caracteres del griego,
 árabe, japonés, tamil, y otros alfabetos. Tener tales números es
 útil para guardar las cadenas de texto dentro de la computadora porque
@@ -282,17 +282,17 @@ los códigos numéricos de los caracteres uno por uno.</p>
 <p><a class=p_ident id="p_j3zg9Fj2If" href="#p_j3zg9Fj2If"></a> Otros operadores similares son <code>&gt;=</code> (mayor o
 igual a), <code>&lt;=</code> (menor o igual a), <code>==</code> (igual a), y <code>!=</code> (no es igual
 a).</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2rW/lxam/h" href="#c_2rW/lxam/h"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Itchy"</span> <span class="cm-operator">!=</span> <span class="cm-string">"Scratchy"</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_B/WcXGKndT" href="#c_B/WcXGKndT"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Itchy"</span> <span class="cm-operator">!=</span> <span class="cm-string">"Scratchy"</span>)
 <span class="cm-comment">// → true</span></pre>
-<p><a class=p_ident id="p_/li64nGlif" href="#p_/li64nGlif"></a>Sólo esxiste un valor en JavaScript
+<p><a class=p_ident id="p_7UQyQrKqpl" href="#p_7UQyQrKqpl"></a>Sólo existe un valor en JavaScript
 que no es igual a sí mismo, y este es <code>NaN</code>, que significa "no es un
 número".</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ipVz0wMIWL" href="#c_ipVz0wMIWL"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">NaN</span> <span class="cm-operator">==</span> <span class="cm-atom">NaN</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_V+a2W06+Ks" href="#c_V+a2W06+Ks"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">NaN</span> <span class="cm-operator">==</span> <span class="cm-atom">NaN</span>)
 <span class="cm-comment">// → false</span></pre>
 <p><a class=p_ident id="p_g38Y3i4Uzg" href="#p_g38Y3i4Uzg"></a>La intención de <code>NaN</code> es representar el resultado de un cálculo sin
 sentido y como tal, no es igual al resultado de cualquier <em>otro</em>
 cálculo sin sentido.</p>
-<h3><a class=h_ident id="h_/PyO55ICk8" href="#h_/PyO55ICk8"></a>Operadores Lógicos</h3>
+<h3><a class=h_ident id="h_WcBLx3xSsS" href="#h_WcBLx3xSsS"></a>Operadores Lógicos</h3>
 <p><a class=p_ident id="p_8wCAxk/Boo" href="#p_8wCAxk/Boo"></a>Hay también algunas operaciones
 que pueden ser aplicadas a los valores Booleanos. JavaScript soporta
 tres operadores lógicos: <em>and</em>, <em>or</em> y <em>not</em>. Estos pueden ser usados para
@@ -300,14 +300,14 @@ tres operadores lógicos: <em>and</em>, <em>or</em> y <em>not</em>. Estos pueden
 <p><a class=p_ident id="p_IlZiB/NoWt" href="#p_IlZiB/NoWt"></a>El operador <code>&amp;&amp;</code> representa la operación
 lógica <em>and</em> ("y"). Es un operador binario, y su resultado es verdadero(true)
 sólo si los dos valores dados son verdaderos.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_t4ZiXDWhwB" href="#c_t4ZiXDWhwB"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-atom">false</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_k/YtJyF/Ik" href="#c_k/YtJyF/Ik"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-atom">false</span>)
 <span class="cm-comment">// → false</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-atom">true</span>)
 <span class="cm-comment">// → true</span></pre>
 <p><a class=p_ident id="p_MEpVurVr3V" href="#p_MEpVurVr3V"></a>El operador <code>||</code> denota la operación
 lógica <em>or</em> ("o"). Devuelve verdadero si cualquiera de los dos valores
 dados es verdadero.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MyM/xeosFi" href="#c_MyM/xeosFi"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">||</span> <span class="cm-atom">true</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_hxauJAXpkk" href="#c_hxauJAXpkk"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">||</span> <span class="cm-atom">true</span>)
 <span class="cm-comment">// → true</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">||</span> <span class="cm-atom">false</span>)
 <span class="cm-comment">// → false</span></pre>
@@ -326,7 +326,7 @@ paréntesis como sea posible:</p>
 <p><a class=p_ident id="p_Wlk+fDzW24" href="#p_Wlk+fDzW24"></a>El último operador lógico del que hablaré no es unario,
 ni binario, sino <em>ternario</em>, opera en tres valores. Este es escrito con
 un símbolo de interrogación  y dos puntos, como sigue:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_S1KcGPZ6au" href="#c_S1KcGPZ6au"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">2</span>);
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_YOrtV7Q6n7" href="#c_YOrtV7Q6n7"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">true</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">2</span>);
 <span class="cm-comment">// → 1</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">false</span> <span class="cm-operator">?</span> <span class="cm-number">1</span> : <span class="cm-number">2</span>);
 <span class="cm-comment">// → 2</span></pre>
@@ -347,11 +347,11 @@ ninguna información.</p>
 diseño de JavaScript, y no importa la mayoría del tiempo. En los casos en
 dónde realmente te tienes que preocupar de estos valores, te recomiendo tratarlos
 como intercambiables (más de esto en un momento).</p>
-<h2><a class=h_ident id="h_LIw5kpsNI6" href="#h_LIw5kpsNI6"></a>Conversión automática de tipos</h2>
+<h2><a class=h_ident id="h_d0EfIV+05Q" href="#h_d0EfIV+05Q"></a>Conversión automática de tipos</h2>
 <p><a class=p_ident id="p_yCaM9fZN3I" href="#p_yCaM9fZN3I"></a>En la introducción, mencioné que
 JavaScript acepta casi cualquier programa que le des, incluso programas que
 hagan cosas raras. Esto es muy bien demostrado por las siguientes expresiones:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_te+D+nzz1Z" href="#c_te+D+nzz1Z"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">8</span> <span class="cm-operator">*</span> <span class="cm-atom">null</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_By5YL29zLM" href="#c_By5YL29zLM"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-number">8</span> <span class="cm-operator">*</span> <span class="cm-atom">null</span>)
 <span class="cm-comment">// → 0</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"5"</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>)
 <span class="cm-comment">// → 4</span>
@@ -385,7 +385,7 @@ de los casos, sólo trata de convertir uno de los valores al tipo de
 dato del otro valor. Sin embargo, cuando <code>null</code> o <code>undefined</code> están
 en cualquier lado de la operación, resulta verdadero sólo en el caso
 de que los dos lados sean <code>null</code> o <code>undefined</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_OhN7QQZzYz" href="#c_OhN7QQZzYz"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">==</span> <span class="cm-atom">undefined</span>);
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_xzYhvkKEme" href="#c_xzYhvkKEme"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">==</span> <span class="cm-atom">undefined</span>);
 <span class="cm-comment">// → true</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>);
 <span class="cm-comment">// → false</span></pre>
@@ -407,7 +407,7 @@ se espera.</p>
 evitar que conversiones de tipos inesperadas te causen problemas. Pero
 cuando estás seguro de que los tipos en ambos lados serán los mismos,
 no hay problema con usar los operadores más cortos.</p>
-<h3><a class=h_ident id="h_F+MTKuzCze" href="#h_F+MTKuzCze"></a>Corto circuito de operadores lógicos</h3>
+<h3><a class=h_ident id="h_nAm5vED6NZ" href="#h_nAm5vED6NZ"></a>Corto circuito de operadores lógicos</h3>
 <p><a class=p_ident id="p_uieZyUDZJD" href="#p_uieZyUDZJD"></a>Los
 operadores lógicos <code>&amp;&amp;</code> and <code>||</code> manejan los valores de diferentes
 tipos de un modo peculiar. Convertirán el valor de su lado izquierdo
@@ -419,7 +419,7 @@ la izquierda cuando pueda ser convertido a <code>true</code> y regresará el val
 a la derecha en cualquier otro caso. Esta conversión funciona como
 esperarías con valores Booleanos y debería hacer algo análogo con
 valores de otros tipos.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ME/mwf+CCF" href="#c_ME/mwf+CCF"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">||</span> <span class="cm-string">"user"</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DB46Mdsy9Q" href="#c_DB46Mdsy9Q"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-atom">null</span> <span class="cm-operator">||</span> <span class="cm-string">"user"</span>)
 <span class="cm-comment">// → user</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Karl"</span> <span class="cm-operator">||</span> <span class="cm-string">"user"</span>)
 <span class="cm-comment">// → Karl</span></pre>
