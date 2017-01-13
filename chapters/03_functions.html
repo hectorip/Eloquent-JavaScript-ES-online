@@ -53,13 +53,13 @@ definido de forma más precisa, así que es menos flexible
 que en un lenguaje humano. En consecuencia, usualmente <em>tenemos</em>
 que añadir algo de nuestro propio vocabulario para evitar repetirnos
 demasiado.</p>
-<h2><a class=h_ident id="h_j3HvZo/C/K" href="#h_j3HvZo/C/K"></a>Definiendo una función</h2>
+<h2><a class=h_ident id="h_/pp2bjTW5S" href="#h_/pp2bjTW5S"></a>Definiendo una función</h2>
 <p><a class=p_ident id="p_5jo0JygqfX" href="#p_5jo0JygqfX"></a>Una definición de una función
 es sólo una definición regular de una variable cuando ocurre que el
 valor dado a la variable es una función. Por ejemplo, el siguiente código
 define la variable <code>cuadrado</code> para referirse a la función que produce
 el cuadrado de un número dado:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_8H/K+uBft0" href="#c_8H/K+uBft0"></a><span class="cm-keyword">var</span> <span class="cm-variable">cuadrado</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">x</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_q5D4YX8+9q" href="#c_q5D4YX8+9q"></a><span class="cm-keyword">var</span> <span class="cm-variable">cuadrado</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">x</span>) {
   <span class="cm-keyword">return</span> <span class="cm-variable-2">x</span> <span class="cm-operator">*</span> <span class="cm-variable-2">x</span>;
 };
 
@@ -75,7 +75,7 @@ instrucción (como en el ejemplo previo).</p>
 <p><a class=p_ident id="p_l5IBusH/jt" href="#p_l5IBusH/jt"></a>Una función puede tener varios parámetros
 o puede no tener ninguno. En el siguiente ejemplo <code>hazRuido</code> no tiene
 parámetros, mientras que <code>potencia</code> tiene dos:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_f0YI3AJsrk" href="#c_f0YI3AJsrk"></a><span class="cm-keyword">var</span> <span class="cm-variable">hazRuido</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_PhpHebglvs" href="#c_PhpHebglvs"></a><span class="cm-keyword">var</span> <span class="cm-variable">hazRuido</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Pling!"</span>);
 };
 
@@ -99,7 +99,7 @@ pasa a esta sentencia, inmediatamente salta fuera de la función actual
 y pasa el valor retornado a la código que llamó la función. La palabra
 reservada <code>return</code> sin una expresión después de ella hará que la función
 devuelva <code>undefined</code>.</p>
-<h2><a class=h_ident id="h_amIMEhTu+c" href="#h_amIMEhTu+c"></a>Parámetros y ámbitos</h2>
+<h2><a class=h_ident id="h_/j9cpgCIAd" href="#h_/j9cpgCIAd"></a>Parámetros y ámbitos</h2>
 <p><a class=p_ident id="p_5frcwVH1y6" href="#p_5frcwVH1y6"></a>Los
 parametros para una función se comportan como variables normales,
 pero su valor inicial esta dado por <em>quien llama</em> a la función, no por
@@ -122,7 +122,7 @@ dos funciones que asignan un valor a la variable <code>x</code>. La primera decl
 la variable como local y de esta manera cambia únicamente la variable que
 creó. La segunda no declara <code>x</code> localmente, así que la <code>x</code> dentro de ella
 hace referencia a la <code>x</code> definida al principio del ejemplo.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_GH2xYj7azv" href="#c_GH2xYj7azv"></a><span class="cm-keyword">var</span> <span class="cm-variable">x</span> <span class="cm-operator">=</span> <span class="cm-string">"fuera"</span>;
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_t6r1Ly4V9u" href="#c_t6r1Ly4V9u"></a><span class="cm-keyword">var</span> <span class="cm-variable">x</span> <span class="cm-operator">=</span> <span class="cm-string">"fuera"</span>;
 
 <span class="cm-keyword">var</span> <span class="cm-variable">f1</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
   <span class="cm-keyword">var</span> <span class="cm-def">x</span> <span class="cm-operator">=</span> <span class="cm-string">"dentro de f1"</span>;
@@ -145,13 +145,13 @@ ver efectos extraños de código no relacionado causando problemas en el valor
 de tu variable. Al tratar tus variables locales a la función, el lenguaje
 hace posible leer y entender las funciones como un pequeños universos,
 sin tener que preocuparse de todo el código a la vez.</p>
-<h2 id="scoping"><a class=h_ident id="h_it+kYuuR73" href="#h_it+kYuuR73"></a>Ámbitos Anidados</h2>
+<h2 id="scoping"><a class=h_ident id="h_8IuXtX4cyd" href="#h_8IuXtX4cyd"></a>Ámbitos Anidados</h2>
 <p><a class=p_ident id="p_OdtfoYXR2P" href="#p_OdtfoYXR2P"></a>JavaScript distingue nos solo entre variables <em>globales</em> y <em>locales</em>
 Las funciones pueden ser creadas dentro de otras funciones,
 produciendo distindos grados de                                   localidad.</p>
 <p><a class=p_ident id="p_ET4L8vHq9N" href="#p_ET4L8vHq9N"></a>Por ejemplo, esta función sin sentido, tiene dos
 funciones dentro de ella:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Lk/0agSAFq" href="#c_Lk/0agSAFq"></a><span class="cm-keyword">var</span> <span class="cm-variable">paisaje</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+s4uhK/Pdh" href="#c_+s4uhK/Pdh"></a><span class="cm-keyword">var</span> <span class="cm-variable">landscape</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>() {
   <span class="cm-keyword">var</span> <span class="cm-def">resultado</span> <span class="cm-operator">=</span> <span class="cm-string">""</span>;
   <span class="cm-keyword">var</span> <span class="cm-def">meseta</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">tamano</span>) {
     <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">cuenta</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">cuenta</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">size</span>; <span class="cm-variable-2">cuenta</span><span class="cm-operator">++</span>)
@@ -225,7 +225,7 @@ normal a la que se le puede asignar otro valor, como sigue:</p>
 <p><a class=p_ident id="p_Frk45di2F4" href="#p_Frk45di2F4"></a>En
 <a href="05_higher_order.html#higher_order">Capítulo 5</a>, hablaremos de las
 maravillosas cosas que puedes hacer al pasar valores función a otras funciones.</p>
-<h2><a class=h_ident id="h_tL4D7etcu3" href="#h_tL4D7etcu3"></a>Notación de Declaración</h2>
+<h2><a class=h_ident id="h_rtLO1VRkaG" href="#h_rtLO1VRkaG"></a>Notación de Declaración</h2>
 <p><a class=p_ident id="p_3tXwhzuEAU" href="#p_3tXwhzuEAU"></a>Existe una
 forma más corta de decir “<code>var square = function…</code>”. La palabra reservada
 <code>function</code> puede ser usada al principio de una sentencia, como sigue:</p>
@@ -256,7 +256,7 @@ diferentes navegadores hacen diferentes cosas tradicionalmente en esa
 situación, y el último estándar de hecho lo prohibe. Si quieres que
 tus programas sean consistentes, usa las sentencia de declaración de función
 en el bloque más externo de tu función o programa.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_x+G463250z" href="#c_x+G463250z"></a><span class="cm-keyword">function</span> <span class="cm-variable">ejemplo</span>() {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_QN3lvbu5/f" href="#c_QN3lvbu5/f"></a><span class="cm-keyword">function</span> <span class="cm-variable">ejemplo</span>() {
   <span class="cm-keyword">function</span> <span class="cm-def">a</span>() {} <span class="cm-comment">// Bien</span>
   <span class="cm-keyword">if</span> (<span class="cm-variable">alguna_condicion</span>) {
     <span class="cm-keyword">function</span> <span class="cm-def">b</span>() {} <span class="cm-comment">// ¡Peligro!</span>
@@ -266,7 +266,7 @@ en el bloque más externo de tu función o programa.</p>
 <p><a class=p_ident id="p_MIcX+dVOJH" href="#p_MIcX+dVOJH"></a> Será útil mirar más de
 cerca la forma en que el control se mueve a través de las funciones.
 Aquí hay un simple programa que hace unas cuantas llamadas a funciones.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2mhgGbOeXv" href="#c_2mhgGbOeXv"></a><span class="cm-keyword">function</span> <span class="cm-variable">saluda</span>(<span class="cm-def">a_quien</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_8PGOSyeMCT" href="#c_8PGOSyeMCT"></a><span class="cm-keyword">function</span> <span class="cm-variable">saluda</span>(<span class="cm-def">a_quien</span>) {
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Hola "</span> <span class="cm-operator">+</span> <span class="cm-variable-2">a_quien</span>);
 }
 <span class="cm-variable">saluda</span>(<span class="cm-string">"Harry"</span>);
@@ -302,7 +302,7 @@ al preguntarle algo realmente difícil a la computadora, lo que causa un ir y ve
 infinito entre funciones. Más bien, <em>sería</em> infinito, si la computadora
 tuviera una pila infinita. Como son las cosas, nos quedaremos sin espacio,
 o "volaremos la pila".</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_AhBAx37CuW" href="#c_AhBAx37CuW"></a><span class="cm-keyword">function</span> <span class="cm-variable">gallina</span>() {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_uPWQH04xFq" href="#c_uPWQH04xFq"></a><span class="cm-keyword">function</span> <span class="cm-variable">gallina</span>() {
   <span class="cm-keyword">return</span> <span class="cm-variable">huevo</span>();
 }
 <span class="cm-keyword">function</span> <span class="cm-variable">huevo</span>() {
@@ -313,7 +313,7 @@ o "volaremos la pila".</p>
 <h2><a class=h_ident id="h_jNCGCF3rFb" href="#h_jNCGCF3rFb"></a>Argumentos Opcionales</h2>
 <p><a class=p_ident id="p_H9TL95isqo" href="#p_H9TL95isqo"></a>El siguiente código es permitido y se ejecuta sin
 ningún problema:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_U6A9mZYPyZ" href="#c_U6A9mZYPyZ"></a><span class="cm-variable">alert</span>(<span class="cm-string">"Hola"</span>, <span class="cm-string">"Buenas Noches"</span>, <span class="cm-string">"¿Cómo estás?"</span>);</pre>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_UPSbJDifZC" href="#c_UPSbJDifZC"></a><span class="cm-variable">alert</span>(<span class="cm-string">"Hola"</span>, <span class="cm-string">"Buenas Noches"</span>, <span class="cm-string">"¿Cómo estás?"</span>);</pre>
 <p><a class=p_ident id="p_h45iKuBld5" href="#p_h45iKuBld5"></a>La función <code>alert</code> oficialmente acepta sólo un argumento.
 Aún así, cuando la llamas como aquí, no se queja. Simplemente ignora los otros
 argumentos y te muestra "Hola".</p>
@@ -329,7 +329,7 @@ comportamiento es que puede ser usado para tener una función que
 tome parámetros "opcionales". Por ejemplo, la siguiente versión de
 <code>potencia</code> puede ser llamada con dos argumentos o uno solo, caso en el que
 el exponente se asume como dos, y la función se comporta como <code>cuadrado</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZanpM9q23d" href="#c_ZanpM9q23d"></a><span class="cm-keyword">function</span> <span class="cm-variable">potencia</span>(<span class="cm-def">base</span>, <span class="cm-def">exponente</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_LD4Sj3i8I7" href="#c_LD4Sj3i8I7"></a><span class="cm-keyword">function</span> <span class="cm-variable">potencia</span>(<span class="cm-def">base</span>, <span class="cm-def">exponente</span>) {
   <span class="cm-keyword">if</span> (<span class="cm-variable-2">exponente</span> <span class="cm-operator">==</span> <span class="cm-atom">undefined</span>)
     <span class="cm-variable-2">exponente</span> <span class="cm-operator">=</span> <span class="cm-number">2</span>;
   <span class="cm-keyword">var</span> <span class="cm-def">resultado</span> <span class="cm-operator">=</span> <span class="cm-number">1</span>;
@@ -348,7 +348,7 @@ obetener la lista exacta de argumentos que se le pasaron. Esto es útil
 porque permite a una función aceptar un número indeterminado de argumentos.
 Por ejemplo, <code>console.log</code> hace uso de esto: imprime todos los valores que
 se le pasaron.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_rwDFIqBrDl" href="#c_rwDFIqBrDl"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"R"</span>, <span class="cm-number">2</span>, <span class="cm-string">"D"</span>, <span class="cm-number">2</span>);
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_SAWJJx22Hi" href="#c_SAWJJx22Hi"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"R"</span>, <span class="cm-number">2</span>, <span class="cm-string">"D"</span>, <span class="cm-number">2</span>);
 <span class="cm-comment">// → R 2 D 2</span></pre>
 <h2><a class=h_ident id="h_hOd+yVxaku" href="#h_hOd+yVxaku"></a>Closure</h2>
 <p><a class=p_ident id="p_eDid6K5Fi2" href="#p_eDid6K5Fi2"></a> La habilidad de tratar Funciones
@@ -359,7 +359,7 @@ cuando la función que las creó ya no está activa?</p>
 <p><a class=p_ident id="p_Kb5dHADISx" href="#p_Kb5dHADISx"></a>El siguiente código muestra un ejemplo de esto. Define una funnción,
 <code>envuelveValor</code>, que crea una variable local. Después devuelve una
 función que accede y devuelve esta variable local.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_F1jDyB51/z" href="#c_F1jDyB51/z"></a><span class="cm-keyword">function</span> <span class="cm-variable">envuelveValor</span>(<span class="cm-def">n</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7n3J0Eg6bX" href="#c_7n3J0Eg6bX"></a><span class="cm-keyword">function</span> <span class="cm-variable">envuelveValor</span>(<span class="cm-def">n</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">variableLocal</span> <span class="cm-operator">=</span> <span class="cm-variable-2">n</span>;
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>() { <span class="cm-keyword">return</span> <span class="cm-variable-2">variableLocal</span>; };
 }
@@ -383,7 +383,7 @@ tiempos de vida de las variables, además permite algunos usos creativos
 de las funciones.</p>
 <p><a class=p_ident id="p_CeJ9uPCSdy" href="#p_CeJ9uPCSdy"></a> Con un pequeño cambio, podemos podemos hacer
 del ejemplo anterior funciones que multiplicquen por un número arbitrario.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_p48VPEMIYL" href="#c_p48VPEMIYL"></a><span class="cm-keyword">function</span> <span class="cm-variable">multiplicador</span>(<span class="cm-def">factor</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_eVIzr0O0aq" href="#c_eVIzr0O0aq"></a><span class="cm-keyword">function</span> <span class="cm-variable">multiplicador</span>(<span class="cm-def">factor</span>) {
   <span class="cm-keyword">return</span> <span class="cm-keyword">function</span>(<span class="cm-def">numero</span>) {
     <span class="cm-keyword">return</span> <span class="cm-variable-2">numero</span> <span class="cm-operator">*</span> <span class="cm-variable-2">factor</span>;
   };
@@ -407,13 +407,13 @@ guardado en esta variable, haciendo que el código congelado (<code>return numer
 se active. Este todavía tiene acceso a la variable <code>factor</code> de la llamada a
 <code>multiplicador</code> que lo creó, y además obtiene acceso al argumento que se pasa
 cuando se activa el código, 5, a través de su parámetro <code>numero</code>.</p>
-<h2><a class=h_ident id="h_TDpZBcOUPE" href="#h_TDpZBcOUPE"></a>Recursión</h2>
+<h2><a class=h_ident id="h_ge3a45K3m3" href="#h_ge3a45K3m3"></a>Recursión</h2>
 <p><a class=p_ident id="p_LLUe70k/Vn" href="#p_LLUe70k/Vn"></a>Es perfectamente correcto que
 una función se llame a sí misma, mientras tenga cuidado de no desbordar la pila.
 Una función que se llama a sí misma se llama <em>recursiva</em>. La recursión permite
 que algunas funciones se escriban con un estilo diferente. Tomemos por ejemplo,
 esta implementación alternativa de <code>potencia</code>:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MAKKXW2qQR" href="#c_MAKKXW2qQR"></a><span class="cm-keyword">function</span> <span class="cm-variable">potencia</span>(<span class="cm-def">base</span>, <span class="cm-def">exponente</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_pXU95sVLKi" href="#c_pXU95sVLKi"></a><span class="cm-keyword">function</span> <span class="cm-variable">potencia</span>(<span class="cm-def">base</span>, <span class="cm-def">exponente</span>) {
   <span class="cm-keyword">if</span> (<span class="cm-variable-2">exponente</span> <span class="cm-operator">==</span> <span class="cm-number">0</span>)
     <span class="cm-keyword">return</span> <span class="cm-number">1</span>;
   <span class="cm-keyword">else</span>
@@ -470,7 +470,7 @@ secuencia de sumas y multipliclaciones que producen ese número?
 Por ejemplo, el número 13 puede ser producido al multiplicar por 3 primero
 y después sumar 5 dos veces, mientras que el número 15 no puede ser producido.</p>
 <p><a class=p_ident id="p_6eI6hyPXeT" href="#p_6eI6hyPXeT"></a>Aquí hay una solución recursiva:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Eg4adhDpWx" href="#c_Eg4adhDpWx"></a><span class="cm-keyword">function</span> <span class="cm-variable">encontrarSolucion</span>(<span class="cm-def">objetivo</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_LTNX6gswp4" href="#c_LTNX6gswp4"></a><span class="cm-keyword">function</span> <span class="cm-variable">encontrarSolucion</span>(<span class="cm-def">objetivo</span>) {
   <span class="cm-keyword">function</span> <span class="cm-def">encontrar</span>(<span class="cm-def">inicio</span>, <span class="cm-def">historia</span>) {
     <span class="cm-keyword">if</span> (<span class="cm-variable-2">inicio</span> <span class="cm-operator">==</span> <span class="cm-variable-2">objetivo</span>)
       <span class="cm-keyword">return</span> <span class="cm-variable-2">historia</span>;
@@ -666,7 +666,7 @@ así que la velocidad de cómputo puede ser una razón para evitar la pureza.</p
 resevada <code>function</code>, cuando se usa como una expresión, puede crear un
 valor función. Cuando es usada como sentencia, puede ser usada para declarar
 una variable y darle una función como valor.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qdfvqil5Tj" href="#c_qdfvqil5Tj"></a><span class="cm-comment">// Crear un valor función f</span>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_tdsBd7SpAk" href="#c_tdsBd7SpAk"></a><span class="cm-comment">// Crear un valor función f</span>
 <span class="cm-keyword">var</span> <span class="cm-variable">f</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">a</span>) {
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable-2">a</span> <span class="cm-operator">+</span> <span class="cm-number">2</span>);
 };
@@ -685,13 +685,13 @@ No tendrás que repetir lo mismo tanto, y las funciones pueden hacer un
 programa más legible al agrupar el código en partes conceptuales, de la misma
 forma que capítulos y secciones ayudan a organizar el texto regular.</p>
 <h2><a class=h_ident id="h_tkm7ntLto1" href="#h_tkm7ntLto1"></a>Ejercicios</h2>
-<h3><a class=h_ident id="h_S5ZSiXfuBO" href="#h_S5ZSiXfuBO"></a>Mínimo</h3>
+<h3><a class=h_ident id="h_mzHH/MSSBA" href="#h_mzHH/MSSBA"></a>Mínimo</h3>
 <p><a class=p_ident id="p_DS+hYPK4wR" href="#p_DS+hYPK4wR"></a>El
 <a href="02_program_structure.html#return_values">capítulo anterior</a>
 intordujo la función estándar <code>Math.min</code> que devuelve su argumento más pequeño.
 Ahora nosotros mismos podemos hacer eso. Escribe una función <code>min</code> que
 tome dos argumentos y devuelva el mínimo.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZmtjfT3jiE" href="#c_ZmtjfT3jiE"></a><span class="cm-comment">// Tu código va aquí.</span>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HP3RRtekyu" href="#c_HP3RRtekyu"></a><span class="cm-comment">// Tu código va aquí.</span>
 
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">min</span>(<span class="cm-number">0</span>, <span class="cm-number">10</span>));
 <span class="cm-comment">// → 0</span>
@@ -704,7 +704,7 @@ función válida, empieza por copiar uno de los ejemplos del capítulo
 y modificarlo.</p>
 <p><a class=p_ident id="p_3FPsRcNlGb" href="#p_3FPsRcNlGb"></a>Una función puede contener múltiples <code>return</code>.</p>
 </div></div>
-<h3><a class=h_ident id="h_TDpZBcOUPE" href="#h_TDpZBcOUPE"></a>Recursión</h3>
+<h3><a class=h_ident id="h_ge3a45K3m3" href="#h_ge3a45K3m3"></a>Recursión</h3>
 <p><a class=p_ident id="p_BzLEOgMptN" href="#p_BzLEOgMptN"></a>Hemos visto que
 <code>%</code> (el operador de sobrante) puede ser usado para probar si un número
 es par o impar usando <code>% 2</code> para checar si es divisible por dos. Aquí
@@ -732,7 +732,7 @@ La función debería aceptar un <code>numero</code> como parámetro y regresar u
 <p><a class=p_ident id="p_Zgrb/40n8P" href="#p_Zgrb/40n8P"></a>Pruebala con 50 y 75. Observa cómo se
 comporta con -1. ¿Por qué? ¿Puedes pensar en alguna forma de
 componer esto?</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wdQ/v4Y+SY" href="#c_wdQ/v4Y+SY"></a><span class="cm-comment">// Tu código va aquí.</span>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_IGT5k+xuzA" href="#c_IGT5k+xuzA"></a><span class="cm-comment">// Tu código va aquí.</span>
 
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">esPar</span>(<span class="cm-number">50</span>));
 <span class="cm-comment">// → true</span>
@@ -770,7 +770,7 @@ hay en la cadena.</p>
 como <code>cuentaFs</code>, con la diferencia de que tome un segundo caracter que
 indique el caracter que será contado(en vez de sólo caracteres “F”).
 Reescribe <code>cuentaFs</code> para hacer uso de esta nueva función.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wPvp++nw9A" href="#c_wPvp++nw9A"></a><span class="cm-comment">// Tu código va a aquí.</span>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_k6NCOV+AbY" href="#c_k6NCOV+AbY"></a><span class="cm-comment">// Tu código va a aquí.</span>
 
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">cuentaFs</span>(<span class="cm-string">"FFC"</span>));
 <span class="cm-comment">// → 2</span>

@@ -219,11 +219,19 @@ LifelikeWorld.prototype.letAct = function(critter, vector) {
       this.grid.set(vector, null);
   }
 };
+    ----
+(((electronic life)))(((function,as value)))(((call method)))(((this)))El nuevo método _letAct_ comprueba primero si se ha devuelto una acción, si existe una (función de controlador) para este tipo de acción y, por último, si ese controlador devuelve _true_, lo que indica que se ha tratado correctamente la acción. 
 
-actionTypes.grow = function(critter) {
-  critter.energy += 0.5;
-  return true;
-};
+Tenga en cuenta el uso de _call_ para dar al manejador acceso al mundo a través de _this_.
+Si la acción no funcionó por alguna razón, la acción predeterminada es que la criatura simplemente espere. Pierde un quinto punto de energía, y si su nivel de energía es igual o menor que cero, la criatura muere y se borra de la cuadrícula.
+
+== Manejadores de acciones ==
+
+(((photosynthesis)))La acción más simple que una criatura puede realizar es "crecer" (_grow_), usada por las plantas. Cuando se devuelve un objeto de acción como _{type: "grow"}_, se llamará al siguiente método del controlador:
+
+// include_code
+
+[source,javascript]
 
 actionTypes.move = function(critter, vector, action) {
   var dest = this.checkDestination(action, vector);
