@@ -190,7 +190,7 @@
 }
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">findDate</span>(<span class="cm-string">"30-1-2003"</span>));
 <span class="cm-comment">// → Thu Jan 30 2003 00:00:00 GMT+0100 (CET)</span></pre>
-<h2><a class=h_ident id="h_26ixny78VY" href="#h_26ixny78VY"></a>Word and string boundaries</h2>
+<h2><a class=h_ident id="h_26ixny78VY" href="#h_26ixny78VY"></a>Limitar palabras y cadenas</h2>
 <p><a class=p_ident id="p_F5bbhTiM7z" href="#p_F5bbhTiM7z"></a>Desafortunadamente, <code>_findDate_</code> también obtendra fechas sin sentido del tipo 00-1-3000 de la cadena <em>"100-1-30000"</em>. Una coincidencia puede ocurrir en cualquier parte de la cadena, por lo que en este caso, sólo comenzará en el segundo carácter y finalizará en el segundo al último carácter.</p>
 <p><a class=p_ident id="p_RlQsbUbd6S" href="#p_RlQsbUbd6S"></a>Si queremos hacer que la coincidencia abarque toda la cadena, podemos agregar los marcadores <em><code><sup></code>_ y _<code>$</code>_. El _<code></sup></code>_ coincide con el inicio de la cadena de entrada, mientras que _<code>$</code>_ coincide con el final. Por lo tanto, _<code>/<sup>\d+$/</code>_ coincide con una cadena compuesta enteramente de uno o más dígitos, _<code>/</sup>!/</code>_ coincide con cualquier cadena que comience con un signo de exclamación y _<code>/x^/</code></em> no coincide con ninguna cadena (no puede haber una <em><code>x</code></em> antes el comienzo de la cadena).</p>
 <p><a class=p_ident id="p_h+UmRPAPSb" href="#p_h+UmRPAPSb"></a>Si, por el contrario, sólo queremos asegurarnos de que la fecha empiece y termine en un límite de palabra, podemos usar el marcador <em><code>\b</code></em>. Un límite de palabra puede ser el comienzo o el final de la cadena o cualquier punto de la cadena que tenga un carácter de palabra (como en <em><code>\w</code></em>) en un lado y un carácter <em><code>nonword</code></em> en el otro.</p>
@@ -264,7 +264,8 @@ Estamos en la posición 10 (el final de la cadena) y puede coincidir sólo con u
 <p><a class=p_ident id="p_hZ65XlatCK" href="#p_hZ65XlatCK"></a>Si intenta hacer coincidir una serie larga de ceros y unos sin ningún carácter <em>b</em>, el <em>matcher</em> primero pasará por el bucle interno hasta que se quede sin dígitos. Entonces advierte que no hay <em>b</em>, por lo que retrocede una posición, pasa por el bucle externo una vez, y se da de nuevo, tratando de retroceder fuera del bucle interior una vez más. Seguirá intentando cada ruta posible a través de estos dos bucles. Esto significa que la cantidad de trabajo se duplica con cada carácter adicional. Para incluso sólo unas pocas docenas de caracteres, el <em>matcheo</em> resultante puede ser prácticamente eterno.</p>
 <h2><a class=h_ident id="h_nATt9slvSb" href="#h_nATt9slvSb"></a>El método de reemplazo</h2>
 <p><a class=p_ident id="p_1ySwSsfW/X" href="#p_1ySwSsfW/X"></a>Los valores de cadena tienen un método <code>_replace_</code>, que se puede usar para reemplazar parte de la cadena con otra cadena.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_8iM5G9/Do0" href="#c_8iM5G9/Do0"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"papa"</span>.<span class="cm-property">replace</span>(<span class="cm-string">"p"</span>, <span class="cm-string">"m"</span>));
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_8iM5G9/Do0" href="#c_8iM5G9/Do0"></a>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"papa"</span>.<span class="cm-property">replace</span>(<span class="cm-string">"p"</span>, <span class="cm-string">"m"</span>));
 <span class="cm-comment">// → mapa</span></pre>
 <p><a class=p_ident id="p_yz3fu0YgA5" href="#p_yz3fu0YgA5"></a>El primer argumento también puede ser una expresión regular, en cuyo caso la primera coincidencia de la expresión regular se sustituye. Cuando se agrega una opción <code>_g_</code> (global) a la expresión regular, <em>todas</em> las coincidencias de la cadena se reemplazarán, no sólo la primera.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Z04SvRJ7Hv" href="#c_Z04SvRJ7Hv"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Borobudur"</span>.<span class="cm-property">replace</span>(<span class="cm-string-2">/[ou]/</span>, <span class="cm-string">"a"</span>));
@@ -322,315 +323,401 @@ Estamos en la posición 10 (el final de la cadena) y puede coincidir sólo con u
 }
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">stripComments</span>(<span class="cm-string">"1 /* a */+/* b */ 1"</span>));
 <span class="cm-comment">// → 1 + 1</span>
-<span class="cm-operator">--?-</span>
 
-<span class="cm-variable">Una</span> <span class="cm-variable">gran</span> <span class="cm-variable">cantidad</span> <span class="cm-variable">de</span> <span class="cm-variable">errores</span> ((<span class="cm-variable">_bug_</span>)) <span class="cm-variable">en</span> <span class="cm-variable">los</span> <span class="cm-variable">programas</span> <span class="cm-variable">de</span> <span class="cm-variable">expresión</span> <span class="cm-variable">regular</span> <span class="cm-variable">se</span> <span class="cm-variable">puede</span> <span class="cm-variable">detectar</span> <span class="cm-variable">al</span> <span class="cm-variable">comprobar</span> <span class="cm-variable">el</span> <span class="cm-variable">uso</span> <span class="cm-variable">indebido</span> <span class="cm-variable">de</span> <span class="cm-variable">este</span> <span class="cm-variable">comportamiento</span> <span class="cm-variable">codicioso</span> <span class="cm-variable">de</span> <span class="cm-variable">un</span> <span class="cm-variable">operador</span> <span class="cm-variable">de</span> <span class="cm-variable">repetición</span>. <span class="cm-property">Cuando</span> <span class="cm-variable">utilice</span> <span class="cm-variable">un</span> <span class="cm-variable">operador</span> <span class="cm-variable">de</span> <span class="cm-variable">repetición</span>, <span class="cm-variable">considere</span> <span class="cm-variable">primero</span> <span class="cm-variable">la</span> <span class="cm-variable">variante</span> <span class="cm-variable">de</span> <span class="cm-variable">cambiar</span> <span class="cm-variable">su</span> <span class="cm-variable">comportamiento</span> <span class="cm-variable">con</span> <span class="cm-string-2">`_?_`</span>.
+</pre>
+<p>Una gran cantidad de errores en los programas de expresiones regulares se puede remontar a involuntariamente usando un operador de codiciosos, donde uno no codicioso funcionaría mejor. Cuando se utiliza un operador de repetición, considere la variante no codicioso primero.</p>
 
-<span class="cm-operator">==</span> <span class="cm-variable">Creación</span> <span class="cm-variable">dinámica</span> <span class="cm-variable">de</span> <span class="cm-variable">objetos</span> <span class="cm-variable">RegExp</span> <span class="cm-operator">==</span>
+<h2>Dinámicamente la creación de objetos RegExp</h2>
 
-(((<span class="cm-variable">regular</span> <span class="cm-variable">expression</span>,<span class="cm-variable">creation</span>)))(((<span class="cm-variable">underscore</span> <span class="cm-variable">character</span>)))(((<span class="cm-variable">RegExp</span>
-<span class="cm-variable">constructor</span>)))<span class="cm-variable">Hay</span> <span class="cm-variable">casos</span> <span class="cm-variable">en</span> <span class="cm-variable">los</span> <span class="cm-variable">que</span> <span class="cm-variable">puede</span> <span class="cm-variable">que</span> <span class="cm-variable">no</span> <span class="cm-variable">conozca</span> <span class="cm-variable">el</span> <span class="cm-variable">patrón</span> <span class="cm-variable">exacto</span> <span class="cm-variable">que</span> <span class="cm-variable">necesita</span> <span class="cm-variable">para</span> <span class="cm-variable">_matchear_</span> <span class="cm-variable">en</span> <span class="cm-variable">el</span> <span class="cm-variable">momento</span> <span class="cm-variable">que</span> <span class="cm-variable">está</span> <span class="cm-variable">escribiendo</span> <span class="cm-variable">su</span> <span class="cm-variable">código</span>. <span class="cm-property">Digamos</span> <span class="cm-variable">que</span> <span class="cm-variable">desea</span> <span class="cm-variable">buscar</span> <span class="cm-variable">el</span> <span class="cm-variable">nombre</span> <span class="cm-variable">del</span> <span class="cm-variable">usuario</span> <span class="cm-variable">en</span> <span class="cm-variable">un</span> <span class="cm-variable">fragmento</span> <span class="cm-variable">de</span> <span class="cm-variable">texto</span> <span class="cm-variable">y</span> <span class="cm-variable">adjuntarlo</span> <span class="cm-variable">en</span> <span class="cm-variable">caracteres</span> <span class="cm-variable">de</span> <span class="cm-variable">subrayado</span> <span class="cm-variable">para</span> <span class="cm-variable">que</span> <span class="cm-variable">se</span> <span class="cm-variable">destaque</span>. <span class="cm-property">Dado</span> <span class="cm-variable">que</span> <span class="cm-variable">sabrá</span> <span class="cm-variable">el</span> <span class="cm-variable">nombre</span> <span class="cm-variable">sólo</span> <span class="cm-variable">una</span> <span class="cm-variable">vez</span> <span class="cm-variable">que</span> <span class="cm-variable">el</span> <span class="cm-variable">programa</span> <span class="cm-variable">se</span> <span class="cm-variable">esté</span> <span class="cm-variable">ejecutando</span>, <span class="cm-variable">no</span> <span class="cm-variable">podrá</span> <span class="cm-variable">utilizar</span> <span class="cm-variable">la</span> <span class="cm-variable">notación</span> <span class="cm-variable">basada</span> <span class="cm-variable">en</span> <span class="cm-variable">barras</span>.
-
-<span class="cm-property">Pero</span> <span class="cm-variable">puede</span> <span class="cm-variable">construir</span> <span class="cm-variable">una</span> <span class="cm-variable">cadena</span> <span class="cm-variable">y</span> <span class="cm-variable">usar</span> <span class="cm-variable">el</span> <span class="cm-variable">constructor</span> <span class="cm-string-2">`_RegExp_`</span>. <span class="cm-property">He</span> <span class="cm-variable">aquí</span> <span class="cm-variable">un</span> <span class="cm-variable">ejemplo</span>:
-
-[<span class="cm-variable">source</span>,<span class="cm-variable">javascript</span>]</pre>
-<p><a class=p_ident id="p_M7cjk3YxzJ" href="#p_M7cjk3YxzJ"></a>var name = "harry";
-var text = "Harry is a suspicious character.";
-var regexp = new RegExp("\\b(" + name + ")\\b", "gi");
-console.log(text.replace(regexp, "<em>$1</em>"));</p>
-<pre>(((regular expression,flags)))(((backslash character)))Al crear los `_\b_` ((_boundary_)) marcadores de frontera, tenemos que usar dos barras invertidas porque las estamos escribiendo en una cadena normal, no una expresión regular con barra inclinada. El segundo argumento para el constructor `_RegExp_` contiene las opciones para la expresión regular, en este caso `_"gi"_` para global y sin distinción entre mayúsculas y minúsculas.
-
-¿Pero qué ocurre si el nombre es `_"dea+hl[]rd"_`, un nombre posble si nuestro usuario es un ((nerd)) adolescente? Esto daría lugar a una expresión regular absurda, que no coincidirá con el nombre del usuario.
-
-(((backslash character)))(((escaping,in regexps)))(((regular
-expression,escaping)))Para evitar esto, podemos agregar barras inversas antes de cualquier carácter en el que no confiamos. Agregar barras invertidas antes de caracteres alfabéticos es una mala idea porque cosas como `_\b_` y `_\n_` tienen un significado especial. Pero escapar de todo lo que no es alfanumérico o espacio en blanco es seguro.
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_CSh8iPqSgd" href="#p_CSh8iPqSgd"></a>var name = "dea+hl[]rd";
-var text = "This dea+hl[]rd guy is super annoying.";
-var escaped = name.replace(/[^\w\s]/g, "\\$&amp;");
-var regexp = new RegExp("\\b(" + escaped + ")\\b", "gi");
-console.log(text.replace(regexp, "<em>$1</em>"));</p>
-<pre>== El método search (búsqueda) ==
-
-(((searching)))(((regular expression,methods)))(((indexOf
-method)))(((search method)))El método `_indexOf_` de cadenas no se puede llamar desde una expresión regular. Pero hay otro método, `_search_`, que se puede invocar en una expresión regular. Al igual que `_indexOf_`, devuelve el primer índice en el que se encontró la expresión o devolverá _-1_ si no encontró nada.
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_O/QOtjjx6I" href="#p_O/QOtjjx6I"></a>console.log("  word".search(/\S/));
-
-console.log("    ".search(/\S/));</p>
-<pre>Desafortunadamente, no hay manera de indicar que el _matcheo_ comience en un determinado indice (como si podemos hacerlo con el segundo argumento en `_indexOf_`).
-
-== La propiedad lastIndex ==
-
-(((exec method)))(((regular expression)))El método `_exec_` tampoco proporciona una manera comoda de iniciar una búsqueda desde una posición dada en la cadena, pero al menos si proporciona una manera incómoda de hacerlo.
-
-(((regular expression,matching)))(((matching)))(((source
-property)))(((lastIndex property)))Los objetos de expresión regular tienen propiedades. Una de estas propiedades es `_source_`, que contiene la cadena original de la que se creó la expresión. Otra propiedad es `_lastIndex_`, que controla, solo en algunas circunstancias, donde se iniciará la próxima partida.
+<p>Hay casos en los que usted puede no saber el patrón exacto que necesita para que coincida en contra cuando se escribe el código. Digamos que quiere buscar el nombre del usuario en un trozo de texto y encerrarlo en caracteres de subrayado para hacer que se destaque. Ya que va a conocer el nombre de una sola vez el programa se está ejecutando, no se puede utilizar la notación basada en la barra.</p>
+<p>En ese caso, se puede utilizar una <code>string</code> y usar el constructor <code>RegExp</code>. He aquí un ejemplo:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_P/kkkfGkoX" href="#c_P/kkkfGkoX"></a><span class="cm-keyword">var</span> <span class="cm-variable">name</span> <span class="cm-operator">=</span> <span class="cm-string">"harry"</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">text</span> <span class="cm-operator">=</span> <span class="cm-string">"Harry is a suspicious character."</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">regexp</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">RegExp</span>(<span class="cm-string">"\\b("</span> <span class="cm-operator">+</span> <span class="cm-variable">name</span> <span class="cm-operator">+</span> <span class="cm-string">")\\b"</span>, <span class="cm-string">"gi"</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">text</span>.<span class="cm-property">replace</span>(<span class="cm-variable">regexp</span>, <span class="cm-string">"_$1_"</span>));
+<span class="cm-comment">// → _Harry_ is a suspicious character.</span></pre>
 
 
-(((interface,design)))(((exec method)))(((regular
-expression,global)))Esas circunstancias son que la expresión regular debe tener activada la opción global (`_g_`), y la coincidencia debe pasar a través del método `_exec_`. Una vez más, una solución más lógica habría sido simplemente permitir que un argumento extra fuera pasado a `_exec_`, pero la cordura no es una característica de la interfaz de expresión regular de JavaScript.
 
-[source,javascript]</pre>
-<p><a class=p_ident id="p_PxXplI8oja" href="#p_PxXplI8oja"></a>var pattern = /y/g;
-pattern.lastIndex = 3;
-var match = pattern.exec("xyzzy");
-console.log(match.index);
+<p>Al indicar los límites <code>\b</code>, tenemos que usar doble barra invertida porque estamos trabajando con un <code>string</code>, en vez de con una expresión regular. El segundo argumento del constructor <code>RegExp</code> contiene las opciones para la expresión, en este caso  <code>"gi"</code> para global y sin distinción entre mayúsculas y minúsculas </p>
 
-console.log(pattern.lastIndex);</p>
-<pre>(((side effect)))(((lastIndex property)))Si el resultado fue satisfactorio, la llamada a `_exec_` actualiza automáticamente la propiedad `_lastIndex_` para apuntar después de la coincidencia. Si no se encontró ninguna coincidencia, `_lastIndex_` se pone de nuevo a cero, que es también el valor que tiene en un objeto de expresión regular de nueva construcción.
+<p>
+¿Pero qué ocurre si el nombre es <code>"dea+hl[]rd"</code>, un nombre posible si nuestro usuario es un ((nerd)) adolescente? Esto daría lugar a una expresión regular absurda, que no coincidirá con el nombre del usuario.
+</p>
 
-(((bug)))Cuando se utiliza un valor de expresión regular global para varias llamadas `_exec_`, estas actualizaciones automáticas a la propiedad `_lastIndex_` pueden causar problemas. Su expresión regular podría iniciarse accidentalmente en un índice que quedó de una llamada anterior.
+<p>Para evitar esto, podemos agregar barras inversas antes de cualquier carácter en el que no confiamos. Agregar barras invertidas antes de caracteres alfabéticos es una mala idea porque cosas como <code>\b</code> y <code>\n</code> tienen un significado especial. Pero escapar de todo lo que no es alfanumérico o espacio en blanco es seguro.</p>
 
-[source,javascript]</pre>
-<p><a class=p_ident id="p_UBsAIaP/mU" href="#p_UBsAIaP/mU"></a>var digit = /\d/g;
-console.log(digit.exec("here it is: 1"));
+</pre>
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_GzFvfl17S9" href="#c_GzFvfl17S9"></a><span class="cm-keyword">var</span> <span class="cm-variable">name</span> <span class="cm-operator">=</span> <span class="cm-string">"dea+hl[]rd"</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">text</span> <span class="cm-operator">=</span> <span class="cm-string">"This dea+hl[]rd guy is super annoying."</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">escaped</span> <span class="cm-operator">=</span> <span class="cm-variable">name</span>.<span class="cm-property">replace</span>(<span class="cm-string-2">/[^\w\s]/g</span>, <span class="cm-string">"\\$&amp;"</span>);
+<span class="cm-keyword">var</span> <span class="cm-variable">regexp</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">RegExp</span>(<span class="cm-string">"\\b("</span> <span class="cm-operator">+</span> <span class="cm-variable">escaped</span> <span class="cm-operator">+</span> <span class="cm-string">")\\b"</span>, <span class="cm-string">"gi"</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">text</span>.<span class="cm-property">replace</span>(<span class="cm-variable">regexp</span>, <span class="cm-string">"_$1_"</span>));
+<span class="cm-comment">// → This _dea+hl[]rd_ guy is super annoying.</span></pre>
 
-console.log(digit.exec("and now: 1"));</p>
-<pre>(((regular expression,global)))(((match method)))Otro efecto interesante de la opción global es que cambia la forma en que funciona el método de coincidencia en cadenas (`_match_`). Cuando se llama con una expresión global, en lugar de devolver una matriz similar a la devuelta por `_exec_`, `_match_` encontrará todas las coincidencias del patrón en la cadena y devuelve una matriz que contiene las cadenas coincidentes.
+<h2>El método search</h2>
+<p>El método <code>indexOf</code> de cadenas no se puede llamar desde una expresión regular. Pero hay otro método, <code>search</code>, que se puede invocar en una expresión regular. Al igual que <code>indexOf</code>, devuelve el primer índice en el que se encontró la expresión o devolverá <code>-1</code> si no encontró nada.</p>
 
-[source,javascript]</pre>
-<p><a class=p_ident id="p_0JgIB+EsUn" href="#p_0JgIB+EsUn"></a>console.log("Banana".match(/an/g));</p>
-<pre>Así que tenga cuidado con las expresiones regulares globales. Los casos en los que son necesarios (las llamadas a `_replace_` y los lugares donde se desea utilizar explícitamente `_lastIndex_`) suelen ser los únicos lugares donde debería utilizarlos.
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_fi8qjwGs44" href="#c_fi8qjwGs44"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"  word"</span>.<span class="cm-property">search</span>(<span class="cm-string-2">/\S/</span>));
+<span class="cm-comment">// → 2</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"    "</span>.<span class="cm-property">search</span>(<span class="cm-string-2">/\S/</span>));
+<span class="cm-comment">// → -1</span></pre>
 
-=== Bucle de matchs ===
+<p>Desafortunadamente, no hay manera de indicar que el <em>matcheo</em> comience en un determinado indice (como si podemos hacerlo con el segundo argumento en <code>indexOf</code>).</p>
 
-(((lastIndex property)))(((exec method)))(((loop)))Un patrón común es escanear todas las instancias de un patrón en una cadena, de una manera que nos da acceso al objeto de coincidencia en el cuerpo del bucle, usando `_lastIndex_` y `_exec_`.
+<h2>La propiedad lastIndex</h2> 
 
-[source,javascript]</pre>
-<p><a class=p_ident id="p_rMTP1r9QLI" href="#p_rMTP1r9QLI"></a>var input = "A string with 3 numbers in it... 42 and 88.";
-var number = /\b(\d+)\b/g;
-var match;
-while (match = number.exec(input))
-  console.log("Found", match[1], "at", match.index);</p>
-<pre>(((while loop)))(((= operator)))Esto hace uso del hecho de que el valor de una expresión de asignación (`_=_`) es el valor asignado. Por lo tanto, utilizando `_match = number.exec(input)_` como condición en la sentencia `_while_`, realizamos la coincidencia al comienzo de cada iteración, guardamos su resultado en una ((variable)) y detenemos el bucle (_loop_) cuando no se encuentran más coincidencias.
+<p>El método <code>exec</code> tampoco proporciona una manera comoda de iniciar una búsqueda desde una posición dada en la cadena, pero al menos si proporciona una manera incómoda de hacerlo.</p>
 
-[[ini]]
-== Análisis de un archivo INI ==
+<p>Los objetos de expresión regular tienen propiedades. Una de estas propiedades es <code>source</code>, que contiene la cadena original de la que se creó la expresión. Otra propiedad es <code>lastIndex</code>, que controla, solo en algunas circunstancias, donde se iniciará la próxima partida.</p>
 
-(((comment)))(((file format)))(((enemies example)))(((ini file)))Para concluir el capítulo, veremos un problema que requiere expresiones regulares. Imagina que estamos escribiendo un programa para recolectar automáticamente información sobre nuestros enemigos desde ((Internet)). (En realidad, no escribiremos ese programa aquí, solo la parte que lee el archivo de configuración. Sentimos decepcionarlo.) El archivo de configuración se verá así:
+<p>Esas circunstancias son que la expresión regular debe tener activada la opción global (<code>g</code>), y la coincidencia debe pasar a través del método <code>exec</code>. Una vez más, una solución más lógica habría sido simplemente permitir que un argumento extra fuera pasado a <code>exec</code>, pero la cordura no es una característica de la interfaz de expresión regular de JavaScript.</p>
 
-[source,text/plain]</pre>
-<p><a class=p_ident id="p_V/pInK0AZM" href="#p_V/pInK0AZM"></a>searchengine=http://www.google.com/search?q=$1
-spitefulness=9.7</p>
-<p><a class=p_ident id="p_hsGPDjN1Fy" href="#p_hsGPDjN1Fy"></a>; comments are preceded by a semicolon...
-; each section concerns an individual enemy</p>
-<p><a class=p_ident id="p_NkpihWectb" href="#p_NkpihWectb"></a>fullname=Larry Doe
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_7FwJtU2E26" href="#c_7FwJtU2E26"></a><span class="cm-keyword">var</span> <span class="cm-variable">pattern</span> <span class="cm-operator">=</span> <span class="cm-string-2">/y/g</span>;
+<span class="cm-variable">pattern</span>.<span class="cm-property">lastIndex</span> <span class="cm-operator">=</span> <span class="cm-number">3</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">match</span> <span class="cm-operator">=</span> <span class="cm-variable">pattern</span>.<span class="cm-property">exec</span>(<span class="cm-string">"xyzzy"</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">match</span>.<span class="cm-property">index</span>);
+<span class="cm-comment">// → 4</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">pattern</span>.<span class="cm-property">lastIndex</span>);
+<span class="cm-comment">// → 5</span></pre>
+
+<p>Si el resultado fue satisfactorio, la llamada a <code>exec</code> actualiza automáticamente la propiedad <code>lastIndex</code> para apuntar después de la coincidencia. Si no se encontró ninguna coincidencia, <code>lastIndex</code> se pone de nuevo a cero, que es también el valor que tiene en un objeto de expresión regular de nueva construcción.</p>
+
+<p>Cuando se utiliza un valor de expresión regular global para varias llamadas <code>exec</code>, estas actualizaciones automáticas a la propiedad <code>lastIndex</code> pueden causar problemas. Su expresión regular podría iniciarse accidentalmente en un índice que quedó de una llamada anterior.</p>
+
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_11gVF/3Pva" href="#c_11gVF/3Pva"></a><span class="cm-keyword">var</span> <span class="cm-variable">digit</span> <span class="cm-operator">=</span> <span class="cm-string-2">/\d/g</span>;
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">digit</span>.<span class="cm-property">exec</span>(<span class="cm-string">"here it is: 1"</span>));
+<span class="cm-comment">// → ["1"]</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">digit</span>.<span class="cm-property">exec</span>(<span class="cm-string">"and now: 1"</span>));
+<span class="cm-comment">// → null</span></pre>
+
+
+
+<p>Otro efecto interesante de la opción global es que cambia la forma en que funciona el método de coincidencia en cadenas (<code>match</code>). Cuando se llama con una expresión global, en lugar de devolver una matriz similar a la devuelta por <code>exec</code>, <code>match</code> encontrará todas las coincidencias del patrón en la cadena y devuelve una matriz que contiene las cadenas coincidentes.</p>
+
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_9QAmqAqiUu" href="#c_9QAmqAqiUu"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Banana"</span>.<span class="cm-property">match</span>(<span class="cm-string-2">/an/g</span>));
+<span class="cm-comment">// → ["an", "an"]</span></pre>
+  
+ <p> Así que tenga cuidado con las expresiones regulares globales. Los casos en los que son necesarios (las llamadas a
+   <code>replace</code> y los lugares donde se desea utilizar explícitamente <code>lastIndex</code>) suelen ser los únicos lugares donde debería utilizarlos.</p>
+
+<h2>Bucle de matchs</h2>
+
+<p>Un patrón común es escanear todas las instancias de un patrón en una cadena, de forma que nos da acceso al objeto de coincidencia en el cuerpo del bucle, usando <code>lastIndex</code> y <code>exec</code>.</p>
+
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_rOhT0RpnbZ" href="#c_rOhT0RpnbZ"></a><span class="cm-keyword">var</span> <span class="cm-variable">input</span> <span class="cm-operator">=</span> <span class="cm-string">"Una cadena con 3 números en su interior ... 42 y 88"</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">number</span> <span class="cm-operator">=</span> <span class="cm-string-2">/\b(\d+)\b/g</span>;
+<span class="cm-keyword">var</span> <span class="cm-variable">match</span>;
+<span class="cm-keyword">while</span> (<span class="cm-variable">match</span> <span class="cm-operator">=</span> <span class="cm-variable">number</span>.<span class="cm-property">exec</span>(<span class="cm-variable">input</span>))
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Encontrado"</span>, <span class="cm-variable">match</span>[<span class="cm-number">1</span>], <span class="cm-string">"en"</span>, <span class="cm-variable">match</span>.<span class="cm-property">index</span>);
+<span class="cm-comment">// → Encontrado 3 en 15</span>
+<span class="cm-comment">//   Encontrado 42 en 44</span>
+<span class="cm-comment">//   Encontrado 88 en 49</span></pre>
+
+
+<p>Esto hace uso del hecho de que el valor de una expresión de asignación (<code> = </code>) es el valor asignado. Por lo tanto, utilizando <code>match = number.exec(input)</code> como condición en la sentencia <code>while</code>, realizamos la coincidencia al comienzo de cada iteración, guardamos su resultado en una variable y detenemos el bucle cuando no se encuentran más coincidencias.</p>
+
+<h2>Análisis de un archivo INI</h2>
+
+<p> Para concluir el capítulo, veremos un problema que requiere expresiones regulares. Imagina que estamos escribiendo un programa para recolectar automáticamente información sobre nuestros enemigos desde Internet. (En realidad, no escribiremos ese programa aquí, solo la parte que lee el archivo de configuración. Sentimos decepcionarlo.) El archivo de configuración se verá así:</p>
+
+<pre data-language="text/plain" class="snippet cm-s-default"><a class="c_ident" id="c_OXIK3oNw6Q" href="#c_OXIK3oNw6Q"></a>searchengine=http://www.google.com/search?q=$1
+spitefulness=9.7
+
+; Los comentarios están precedidos por un punto y coma ...
+; Cada sección se refiere a un enemigo individual
+[larry]
+fullname=Larry Doe
 type=kindergarten bully
-website=http://www.geocities.com/CapeCanaveral/11451</p>
-<p><a class=p_ident id="p_WHQDBp+3X5" href="#p_WHQDBp+3X5"></a>fullname=Gargamel
+website=http://www.geocities.com/CapeCanaveral/11451
+
+[gargamel]
+fullname=Gargamel
 type=evil sorcerer
-outputdir=/home/marijn/enemies/gargamel</p>
-<pre>(((grammar)))Las reglas exactas para este formato (que en realidad es un formato ampliamente utilizado, generalmente llamado archivo INI) son las siguientes:
+outputdir=/home/marijn/enemies/gargamel</pre>
 
-- Las líneas en blanco y líneas que comienzan con punto y coma son ignoradas.
+<p>Las reglas exactas para este formato (que en realidad es un formato ampliamente utilizado, generalmente llamado archivo INI) son las siguientes:</p>
+<div class="ulist">
+  <ul>
+    <li>Las líneas en blanco y líneas que comienzan con punto y coma son ignoradas.</li>
+   <li>Líneas envueltas en llaves <code>[ ]</code> inician una nueva sección.</li>
+   <li>Las líneas que contienen un identificador alfanumérico seguido de un carácter = añaden una configuración a la sección actual.</li>
+   <li>Cualquier otra cosa es inválida.</li>
+</ul>
+</div>
+<p>
+Nuestra tarea es convertir una cadena como ésta en una matriz de objetos, cada uno con una propiedad <code>name</code> y una matriz de configuraciones. Necesitaremos un objeto para cada sección y otro para la configuración global en la parte superior.
+</p>
+<p>Dado que el formato tiene que ser procesado línea por línea, dividir el archivo en líneas separadas es un buen comienzo. No obstante, algunos sistemas operativos utilizan no sólo un carácter de nueva línea para separar líneas, sino un carácter de retorno de carro seguido de una nueva línea (<code>"\r\n"</code>). Dado que el método <code>split</code> también permite que una expresión regular sea su argumento, podemos dividir en una expresión regular como <code>/\r?\n/</code> para dividir de una manera que permita tanto <code>"\n"</code> como <code>"\r\n"</code> entre líneas.</p>
 
-- Líneas envueltas en llaves (_[]_) inician una nueva sección.
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_4pk9fouX3a" href="#c_4pk9fouX3a"></a><span class="cm-keyword">function</span> <span class="cm-variable">parseINI</span>(<span class="cm-def">string</span>) {
+  <span class="cm-comment">// Cree el objeto en primer nivel</span>
+  <span class="cm-keyword">var</span> <span class="cm-def">currentSection</span> <span class="cm-operator">=</span> {<span class="cm-property">name</span>: <span class="cm-atom">null</span>, <span class="cm-property">fields</span>: []};
+  <span class="cm-keyword">var</span> <span class="cm-def">categories</span> <span class="cm-operator">=</span> [<span class="cm-variable-2">currentSection</span>];
 
-- Las líneas que contienen un identificador alfanumérico seguido de un carácter = añaden una configuración a la sección actual.
+  <span class="cm-variable-2">string</span>.<span class="cm-property">split</span>(<span class="cm-string-2">/\r?\n/</span>).<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">line</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">match</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-string-2">/^\s*(;.*)?$/</span>.<span class="cm-property">test</span>(<span class="cm-variable-2">line</span>)) {
+      <span class="cm-keyword">return</span>;
+    } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">match</span> <span class="cm-operator">=</span> <span class="cm-variable-2">line</span>.<span class="cm-property">match</span>(<span class="cm-string-2">/^\[(.*)\]$/</span>)) {
+      <span class="cm-variable-2">currentSection</span> <span class="cm-operator">=</span> {<span class="cm-property">name</span>: <span class="cm-variable-2">match</span>[<span class="cm-number">1</span>], <span class="cm-property">fields</span>: []};
+      <span class="cm-variable-2">categories</span>.<span class="cm-property">push</span>(<span class="cm-variable-2">currentSection</span>);
+    } <span class="cm-keyword">else</span> <span class="cm-keyword">if</span> (<span class="cm-variable-2">match</span> <span class="cm-operator">=</span> <span class="cm-variable-2">line</span>.<span class="cm-property">match</span>(<span class="cm-string-2">/^(\w+)=(.*)$/</span>)) {
+      <span class="cm-variable-2">currentSection</span>.<span class="cm-property">fields</span>.<span class="cm-property">push</span>({<span class="cm-property">name</span>: <span class="cm-variable-2">match</span>[<span class="cm-number">1</span>],
+                                  <span class="cm-property">value</span>: <span class="cm-variable-2">match</span>[<span class="cm-number">2</span>]});
+    } <span class="cm-keyword">else</span> {
+      <span class="cm-keyword">throw</span> <span class="cm-keyword">new</span> <span class="cm-variable">Error</span>(<span class="cm-string">"Line '"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">line</span> <span class="cm-operator">+</span> <span class="cm-string">"' is invalid."</span>);
+    }
+  });
 
-- Cualquier otra cosa es inválida.
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">categories</span>;
+}</pre>
 
-Nuestra tarea es convertir una cadena como ésta en una matriz de objetos, cada uno con una propiedad `_name_` y una matriz de configuraciones. Necesitaremos un objeto para cada sección y otro para la configuración global en la parte superior.
-
-(((carriage return)))(((line break)))(((newline character)))Dado que el formato tiene que ser procesado línea por línea, dividir el archivo en líneas separadas es un buen comienzo. No obstante, algunos sistemas operativos utilizan no sólo un carácter de nueva línea para separar líneas, sino un carácter de retorno de carro seguido de una nueva línea (`_"\r\n"_`). Dado que el método `_split_` también permite que una expresión regular sea su argumento, podemos dividir en una expresión regular como `_/\r?\n/_` para dividir de una manera que permita tanto `_"\n"_` como `_"\r\n"_` entre líneas.
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_QPXUSnnfk0" href="#p_QPXUSnnfk0"></a>function parseINI(string) {
-  // Start with an object to hold the top-level fields
-  var categories = [currentSection];</p>
-<div class="literalblock">
-<div class="content monospaced">
-<pre>string.split(/\r?\n/).forEach(function(line) {
-  var match;
-  if (/^\s*(;.*)?$/.test(line)) {
-    return;
-  } else if (match = line.match(/^\[(.*)\]$/)) {
-    currentSection = {name: match[1], fields: []};
-    categories.push(currentSection);
-  } else if (match = line.match(/^(\w+)=(.*)$/)) {
-    currentSection.fields.push({name: match[1],
-                                value: match[2]});
-  } else {
-    throw new Error("Line '" + line + "' is invalid.");
-  }
-});</pre>
 </div></div>
 <div class="literalblock">
 <div class="content monospaced">
 <pre>  return categories;
 }</pre>
 </div></div>
-<pre>(((parseINI function)))(((parsing)))Este código pasa por todas las líneas del archivo, actualizando el objeto "_currentSection_" a medida que avanza. En primer lugar, comprueba si la línea se puede ignorar, utilizando la expresión `_/^\s*(;.*)?$/_`. ¿Ves cómo funciona? La parte entre los paréntesis coincidirá con los comentarios, y el signo `_?_` se asegurará de que también coincida con las líneas que contienen sólo espacios en blanco.
+<p>Este código pasa por todas las líneas del archivo, actualizando el objeto "_currentSection_" a medida que avanza. En primer lugar, comprueba si la línea se puede ignorar, utilizando la expresión <code>/^\s*(;.*)?$/</code>. ¿Ves cómo funciona? La parte entre los paréntesis coincidirá con los comentarios, y el signo <code>?</code> se asegurará de que también coincida con las líneas que contienen sólo espacios en blanco.</p>
+<p>
+Cuando la línea no es un comentario, el código comprueba si la línea inicia una nueva sección. Si es así, crea un nuevo objeto de sección actual, al que se añadirán los ajustes siguientes.</p>
+<p>
+La última posibilidad significativa es que la línea es un ajuste normal, por lo que nuestro código lo agregará al objeto de sección actual.</p>
 
-Cuando la línea no es un comentario, el código comprueba si la línea inicia una nueva sección. Si es así, crea un nuevo objeto de sección actual, al que se añadirán los ajustes siguientes.
+<p>Si una línea no coincide con ninguno de estos formularios, la función produce un error.</p>
+<p>Tenga en cuenta el uso recurrente de <code>^</code> y <code>$</code> para asegurarse de que la expresión coincide con toda la línea, no sólo parte de ella. Dejando estos resultados en código que funciona sobre todo, pero se comporta extrañamente para algunos tipos de _input_, lo que puede originar un error difícil de rastrear.</p>
+<p>El patrón <code>if (match = string.match(...))</code> es similar al truco de usar una asignación como condición para <code>while</code>. A menudo no estaremos seguros de que nuestra llamada al matchear tendrá éxito, por lo que se puede acceder al objeto resultante sólo dentro de una instrucción if que las pruebas de ello. Para no romper la agradable cadena que forma la sentencia <code>if</code>, asignamos el resultado de la coincidencia a una variable e inmediatamente utilizamos esa asignación como el test en la sentencia <code>if</code>.
+</p>
 
-La última posibilidad significativa es que la línea es un ajuste normal, por lo que nuestro código lo agregará al objeto de sección actual.
+<h2>Caracteres internacionales</h2> 
 
-Si una línea no coincide con ninguno de estos formularios, la función produce un error.
+<p>Debido a la implementación simplista inicial de JavaScript y al hecho de que este enfoque se estableció como base del comportamiento estándar, las expresiones regulares de JavaScript son bastante torpes acerca de los caracteres que no aparecen en el idioma inglés. Por ejemplo, en lo que se refiere a las expresiones regulares de JavaScript, un "carácter de texto"  es sólo uno de los 26 caracteres del alfabeto latino (mayúsculas o minúsculas) y, por alguna razón, el carácter underscore (_). Caracteres como <em>é</em> o <em>β</em>, que definitivamente son caracteres de texto, no coincidirán con <code>\w</code>` (y coincidirán con  <code>\W</code>, carácter para no texto).</p>
 
-(((caret character)))(((dollar sign)))(((boundary)))Tenga en cuenta el uso recurrente de `_^_` y `_$_` para asegurarse de que la expresión coincide con toda la línea, no sólo parte de ella. Dejando estos resultados en código que funciona sobre todo, pero se comporta extrañamente para algunos tipos de _input_, lo que puede originar un error difícil de rastrear.
+<p>Por un extraño accidente histórico, <code>\s</code> (espacio en blanco) no tiene este problema y coincide con todos los caracteres que el estándar _Unicode_ considera espacios en blanco, incluyendo cosas como el espacio no separable y el separador de vocales mongol.</p>
 
-(((if keyword)))(((assignment)))(((= operator)))El patrón `_if (match = string.match(...))_` es similar al truco de usar una asignación como condición para `_while_`. A menudo no estaremos seguros de que nuestra llamada a `_matchear_` tendrá éxito, por lo que se puede acceder al objeto resultante sólo dentro de una instrucción if que las pruebas de ello. Para no romper la agradable cadena que forma la sentencia `_if_`, asignamos el resultado de la coincidencia a una variable e inmediatamente utilizamos esa asignación como el `_test_` en la sentencia `_if_`.
+<p>Algunas implementaciones de expresiones regulares en otros lenguajes de programación tienen sintaxis para coincidir con categorías de caracteres Unicode específicas, como "todas las letras mayúsculas", "todos los signos de puntuación" o "caracteres de control". Hay planes para agregar soporte para JavaScript de estas categorías, pero por desgracia parece que no en un futuro próximo.</p>
 
-== Caracteres internacionales ==
-
-(((internationalization)))(((Unicode)))(((regular expression,internationalization)))Debido a la implementación simplista inicial de JavaScript y al hecho de que este enfoque se estableció como base del comportamiento estándar, las expresiones regulares de JavaScript son bastante torpes acerca de los caracteres que no aparecen en el idioma inglés. Por ejemplo, en lo que se refiere a las expresiones regulares de JavaScript, un "_carácter para texto_" (_word character_) es sólo uno de los 26 caracteres del alfabeto latino (mayúsculas o minúsculas) y, por alguna razón, el carácter underscore (_). Caracteres como _é_ o _β_, que definitivamente son _caracteres de texto_, no coincidirán con `_\w_` (y coincidirán con  `_\W_`, carácter para no texto (_nonword category_)).
-
-(((whitespace)))Por un extraño accidente histórico, `_\s_` (espacio en blanco) no tiene este problema y coincide con todos los caracteres que el estándar _Unicode_ considera espacios en blanco, incluyendo cosas como el espacio no separable y el separador de vocales mongol.
-
-(((character category)))Algunas implementaciones de expresiones regulares en otros lenguajes de programación tienen sintaxis para coincidir con categorías de caracteres Unicode específicas, como "todas las letras mayúsculas", "todos los signos de puntuación" o "caracteres de control". Hay planes para agregar soporte para JavaScript de estas categorías, pero por desgracia parece que no en un futuro próximo.
-
-[[summary_regexp]]
-== Resumen ==
-
+<h2 id="summary_regexp">Resumen</h2> 
+<p>
 Las expresiones regulares son objetos que representan patrones en cadenas. Utilizan su propia sintaxis para expresar estos patrones.
+</p>
 
-[cols="1,5"]
-|====
-|`/abc/`     |Una secuencia de caracteres
-|`/[abc]/`   |Cualquier carácter en un conjunto de caracteres
-|`/[^abc]/`  |Cualquier carácter que no este en un conjunto de caracteres
-|`/[0-9]/`   |Cualqier carácter en un rango de caracteres
-|`/x+/`      |Una o mas ocurrencias del patron `x`
-|`/x+?/`     |Una o mas ocurrencias, no codiciosos
-|`/x*/`      |Cero o mas ocurrencias
-|`/x?/`      |Cero o una ocurrencia
-|`/x{2,4}/`  |Entre dos o cuatro ocurrencias
-|`/(abc)/`   |Un grupo
-|++/a{brvbar}b{brvbar}c/++ |Cualqiera de estos patrones
-|`/\d/`      |Cualquier carácter digital
-|`/\w/`      |Cualquier carácter alfanúmerico (“word character”)
-|`/\s/`      |Cualquier carácter de espacio en blanco
-|`/./`       |Cualquier carácter excepto nuevas líneas
-|`/\b/`      |Limite de palabra
-|`/^/`       |Inicio de la entrada
-|`/$/`       |Fin de la entrada
-|====
 
-Una expresión regular tiene un método `_test_` para comprobar si una cadena dada tiene coincidencias con ella. También tiene un método `_exec_` que, cuando se encuentra una coincidencia, devuelve una matriz que contiene todos los grupos coincidentes. Dicha matriz tiene una propiedad de índice (`_index_`) que indica dónde se inició la coincidencia.
+<table>
+<tbody><tr>
+<td><code>/abc/</code></td>
+<td>Una secuencia de caracteres</td>
+</tr>
+<tr>
+<td><code>/[abc]/</code></td>
+<td>Cualquier carácter en un conjunto de caracteres</td>
+</tr>
+<tr>
+<td><code>/[^abc]/</code></td>
+<td>Cualquier carácter que <em>no</em> este en un conjunto de caracteres</td>
+</tr>
+<tr>
+<td><code>/[0-9]/</code></td>
+<td>Cualquier carácter en un rango de caracteres</td>
+</tr>
+<tr>
+<td><code>/x+/</code></td>
+<td>Una o más ocurrencias del patrón <code>x</code></td>
+</tr>
+<tr>
+<td><code>/x+?/</code></td>
+<td>Una o mas ocurrencias, no codiciosos</td>
+</tr>
+<tr>
+<td><code>/x*/</code></td>
+<td>Cero o mas ocurrencias</td>
+</tr>
+<tr>
+<td><code>/x?/</code></td>
+<td>Cero o una ocurrencia</td>
+</tr>
+<tr>
+<td><code>/x{2,4}/</code></td>
+<td>Entre dos o cuatro ocurrencias</td>
+</tr>
+<tr>
+<td><code>/(abc)/</code></td>
+<td>Un grupo</td>
+</tr>
+<tr>
+<td><code>/a|b|c/</code></td>
+<td>Cualqiera de estos patrones</td>
+</tr>
+<tr>
+<td><code>/\d/</code></td>
+<td>Cualquier carácter digital</td>
+</tr>
+<tr>
+<td><code>/\w/</code></td>
+<td>Cualquier carácter alfanúmerico (“word character”)</td>
+</tr>
+<tr>
+<td><code>/\s/</code></td>
+<td>Cualquier carácter de espacio en blanco</td>
+</tr>
+<tr>
+<td><code>/./</code></td>
+<td>Cualquier carácter excepto nuevas líneas</td>
+</tr>
+<tr>
+<td><code>/\b/</code></td>
+<td>Limite de palabra</td>
+</tr>
+<tr>
+<td><code>/^/</code></td>
+<td>Inicio de la entrada</td>
+</tr>
+<tr>
+<td><code>/$/</code></td>
+<td>Fin de entrada</td>
+</tr>
+</tbody></table>
 
-Las cadenas tienen un método `_match_` para buscar coincidencia con una expresión regular y un método `_search_` para realizar busquedas, que devuelve sólo la posición inicial de la coincidencia. El método `_replace_`  puede reemplazar las coincidencias (los _matcheos_) de un patrón con una cadena de reemplazo. Como alternativa puedes crear una función `_replace_`,  y así crear una cadena de reemplazo basada en el texto de coincidencia y los grupos coincidentes.
+<p>Una expresión regular tiene un método <code>test</code> para comprobar si una cadena dada tiene coincidencias con ella. También tiene un método <code>exec</code> que, cuando se encuentra una coincidencia, devuelve una matriz que contiene todos los grupos coincidentes. Dicha matriz tiene una propiedad de índice (<code>index</code>) que indica dónde se inició la coincidencia.</p>
 
-Las expresiones regulares pueden tener opciones, que se escriben después de la barra de cierre (_|_). La opción `_i_` hace que el _matcheo_ sea insensible a mayusculas y minusculas (case insensitive), mientras que la opción `_g_` hace que la expresión sea global, eso genera, entre otras cosas, hace que el método _replace_ reemplace todas las instancias en lugar de sólo la primera.
+<p>Las cadenas tienen un método <code>match</code> para buscar coincidencia con una expresión regular y un método <code>search</code> para realizar busquedas, que devuelve sólo la posición inicial de la coincidencia. El método <code>replace</code>  puede reemplazar las coincidencias (los _matcheos_) de un patrón con una cadena de reemplazo. Como alternativa puedes crear una función <code>replace</code>,  y así crear una cadena de reemplazo basada en el texto de coincidencia y los grupos coincidentes.</p>
 
-El constructor `_RegExp_` se puede utilizar para crear un valor de expresión regular a partir de una cadena.
+<p>Las expresiones regulares pueden tener opciones, que se escriben después de la barra de cierre (_/_). La opción <code>i</code> hace que el matcheo sea insensible a mayusculas y minusculas (case insensitive), mientras que la opción <code>g</code> hace que la expresión sea global, eso genera, entre otras cosas, hace que el método <code>replace</code> reemplace todas las instancias en lugar de sólo la primera.</p>
 
-Las expresiones regulares son una herramienta muy afilada con un comando torpe. Ello simplifican algunas tareas pero pueden volverse incontrolables cuando se aplican a problemas complejos. Parte de saber cómo usarlos es resistir el impulso de intentar utilizarlas en los casos incorrectos.
+<p>El constructor <code>RegExp</code> se puede utilizar para crear un valor de expresión regular a partir de una cadena.</p>
 
-== Ejercicios ==
+<p>Las expresiones regulares son una herramienta muy afilada con un comando torpe. Ello simplifican algunas tareas pero pueden volverse incontrolables cuando se aplican a problemas complejos. Parte de saber cómo usarlos es resistir el impulso de intentar utilizarlas en los casos incorrectos.</p>
 
-(((debugging)))(((bug)))Es casi inevitable que cuando haga estos ejercicios, se confunda y se frustre por el comportamiento inexplicable de alguna expresión regular. A veces, ayuda a introducir su expresión en una herramienta en línea como https://www.debuggex.com/[_debuggex.com_] para ver si su solución corresponde con lo que usted buscaba y experimentar con la forma en que ésta responde a distintas cadenas.
 
-=== Regexp golf ===
+<h2> Ejercicios </h2>
 
-(((program size)))(((code golf)))(((regexp golf (exercise))))_Code
-golf_ es un término usado en un juego que busca expresar un programa determinado en la mínima cantidad de caracteres posible. Del mismo modo, _regexp golf_ es la práctica de escribir una expresión regular tan pequeña como sea posible para que coincida con un patrón dado, y sólo ese patrón.
+<p>Es casi inevitable que cuando haga estos ejercicios, se confunda y se frustre por el comportamiento inexplicable de alguna expresión regular. A veces, ayuda a introducir su expresión en una herramienta en línea como <a href="https://www.debuggex.com/">debuggex.com</a> para ver si su solución corresponde con lo que usted buscaba y experimentar con la forma en que ésta responde a distintas cadenas.</p>
 
-(((boundary)))(((matching)))Para cada uno de los siguientes elementos, escriba una expresión regular que compruebe si alguna de las subcadenas se produce en una cadena. La expresión regular debe coincidir sólo con cadenas que contengan una de las subcadenas descritas. No se preocupe por los límites de palabras a menos que se mencionen explícitamente. Cuando logre que su expresión funcione, vea si puede lograr reducir la expresión.
+<h3> Regexp golf </h3>
 
- 1. _car_ and _cat_
- 2. _pop_ and _prop_
- 3. _ferret_, _ferry_, y _ferrari_
- 4. Cualquier palabra que termine en _ious_
- 5. Un carácter de espacio en blanco seguido de un punto, coma, dos puntos o punto y coma
- 6. Una palabra de más de seis letras
- 7. Una palabra sin la letra _e_
+<p>
+<em>Code golf</em> es un término usado en un juego que busca expresar un programa determinado en la mínima cantidad de caracteres posible. Del mismo modo, _regexp golf_ es la práctica de escribir una expresión regular tan pequeña como sea posible para que coincida con un patrón dado, y sólo ese patrón.</p>
 
-Consulte la tabla del link:09_regexp.html#summary_regexp[resumen del capítulo] para obtener ayuda. Pruebe cada solución con unas cuantas cadenas de prueba.
+<p>Para cada uno de los siguientes elementos, escriba una expresión regular que compruebe si alguna de las subcadenas se produce en una cadena. La expresión regular debe coincidir sólo con cadenas que contengan una de las subcadenas descritas. No se preocupe por los límites de palabras a menos que se mencionen explícitamente. Cuando logre que su expresión funcione, vea si puede lograr reducir la expresión.</p>
 
-[source,javascript]</pre>
-<p><a class=p_ident id="p_MCdLD6w46O" href="#p_MCdLD6w46O"></a>verify(/.../,
-       ["my car", "bad cats"],
-       ["camper", "high art"]);</p>
-<p><a class=p_ident id="p_vz0fYrHsvc" href="#p_vz0fYrHsvc"></a>verify(/.../,
-       ["pop culture", "mad props"],
-       ["plop"]);</p>
-<p><a class=p_ident id="p_L8zgc/xw3C" href="#p_L8zgc/xw3C"></a>verify(/.../,
-       ["ferret", "ferry", "ferrari"],
-       ["ferrum", "transfer A"]);</p>
-<p><a class=p_ident id="p_JlToDRhp3H" href="#p_JlToDRhp3H"></a>verify(/.../,
-       ["how delicious", "spacious room"],
-       ["ruinous", "consciousness"]);</p>
-<p><a class=p_ident id="p_rV4l40fheU" href="#p_rV4l40fheU"></a>verify(/.../,
-       ["bad punctuation ."],
-       ["escape the dot"]);</p>
-<p><a class=p_ident id="p_rQTgaN9tq2" href="#p_rQTgaN9tq2"></a>verify(/.../,
-       ["hottentottententen"],
-       ["no", "hotten totten tenten"]);</p>
-<p><a class=p_ident id="p_HdBDti0Ss0" href="#p_HdBDti0Ss0"></a>verify(/.../,
-       ["red platypus", "wobbling nest"],
-       ["earth bed", "learning ape"]);</p>
-<p><a class=p_ident id="p_7epxM8Pe2x" href="#p_7epxM8Pe2x"></a>function verify(regexp, yes, no) {
-  // Ignore unfinished exercises
-  if (regexp.source == "...") return;
-  yes.forEach(function(s) {
-    if (!regexp.test(s))
-      console.log("Failure to match <em>" + s + "</em>");
+<ol>
+    <li><em>car</em> and <em>cat</em></li>
+    <li><em>pop</em> and <em>prop</em></li>
+    <li><em>ferret</em>, <em>ferry</em>, y <em>ferrari</em></li>
+    <li>Cualquier palabra que termine en <em>ious</em></li>
+    <li> carácter de espacio en blanco seguido de un punto, coma, dos puntos o punto y coma</li>
+    <li> Una palabra de más de seis letras</li>
+    <li>Una palabra sin la letra <em>e</em></li>
+</ol>
+
+<p>Consulte la tabla del <a href="09_regexp.html#summary_regexp">[resumen del capítulo]</a> para obtener ayuda. Pruebe cada solución con unas cuantas cadenas de prueba.</p>
+
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_PjFdBrmWuQ" href="#c_PjFdBrmWuQ"></a><span class="cm-comment">// Fill in the regular expressions</span>
+
+<span class="cm-variable">verify</span>(<span class="cm-string-2">/.../</span>,
+       [<span class="cm-string">"my car"</span>, <span class="cm-string">"bad cats"</span>],
+       [<span class="cm-string">"camper"</span>, <span class="cm-string">"high art"</span>]);
+
+<span class="cm-variable">verify</span>(<span class="cm-string-2">/.../</span>,
+       [<span class="cm-string">"pop culture"</span>, <span class="cm-string">"mad props"</span>],
+       [<span class="cm-string">"plop"</span>]);
+
+<span class="cm-variable">verify</span>(<span class="cm-string-2">/.../</span>,
+       [<span class="cm-string">"ferret"</span>, <span class="cm-string">"ferry"</span>, <span class="cm-string">"ferrari"</span>],
+       [<span class="cm-string">"ferrum"</span>, <span class="cm-string">"transfer A"</span>]);
+
+<span class="cm-variable">verify</span>(<span class="cm-string-2">/.../</span>,
+       [<span class="cm-string">"how delicious"</span>, <span class="cm-string">"spacious room"</span>],
+       [<span class="cm-string">"ruinous"</span>, <span class="cm-string">"consciousness"</span>]);
+
+<span class="cm-variable">verify</span>(<span class="cm-string-2">/.../</span>,
+       [<span class="cm-string">"bad punctuation ."</span>],
+       [<span class="cm-string">"escape the dot"</span>]);
+
+<span class="cm-variable">verify</span>(<span class="cm-string-2">/.../</span>,
+       [<span class="cm-string">"hottentottententen"</span>],
+       [<span class="cm-string">"no"</span>, <span class="cm-string">"hotten totten tenten"</span>]);
+
+<span class="cm-variable">verify</span>(<span class="cm-string-2">/.../</span>,
+       [<span class="cm-string">"red platypus"</span>, <span class="cm-string">"wobbling nest"</span>],
+       [<span class="cm-string">"earth bed"</span>, <span class="cm-string">"learning ape"</span>]);
+
+
+<span class="cm-keyword">function</span> <span class="cm-variable">verify</span>(<span class="cm-def">regexp</span>, <span class="cm-def">yes</span>, <span class="cm-def">no</span>) {
+  <span class="cm-comment">// Ignore unfinished exercises</span>
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">regexp</span>.<span class="cm-property">source</span> <span class="cm-operator">==</span> <span class="cm-string">"..."</span>) <span class="cm-keyword">return</span>;
+  <span class="cm-variable-2">yes</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">s</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">regexp</span>.<span class="cm-property">test</span>(<span class="cm-variable-2">s</span>))
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Failure to match '"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">s</span> <span class="cm-operator">+</span> <span class="cm-string">"'"</span>);
   });
-  no.forEach(function(s) {
-    if (regexp.test(s))
-      console.log("Unexpected match for <em>" + s + "</em>");
+  <span class="cm-variable-2">no</span>.<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">s</span>) {
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">regexp</span>.<span class="cm-property">test</span>(<span class="cm-variable-2">s</span>))
+      <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Unexpected match for '"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">s</span> <span class="cm-operator">+</span> <span class="cm-string">"'"</span>);
   });
-}</p>
-<pre>=== Estilo de citas ===
+}</pre>
 
-(((quoting style (exercise))))(((single-quote
-character)))(((double-quote character)))Imagine que ha escrito una historia en Ingles y ha usado comillas simples para marcar partes del diálogo. Ahora desea reemplazar todas las citas de diálogo con comillas dobles, manteniendo las comillas simples que se usan en contracciones.
+<h3>Estilo de citas</h3> 
 
-(((replace method)))Piense en un patrón que distinga estos dos tipos de comillado y cree una llamada al método `_replace_` que haga la sustitución adecuada.
+<p>Imagine que ha escrito una historia en Ingles y ha usado comillas simples para marcar partes del diálogo. Ahora desea reemplazar todas las citas de diálogo con comillas dobles, manteniendo las comillas simples que se usan en contracciones.</p>
 
-// test: no
+<p>Piense en un patrón que distinga estos dos tipos de comillado y cree una llamada al método <code>replace</code> que haga la sustitución adecuada.</p>
 
-[source,javascript]</pre>
-<p><a class=p_ident id="p_USRHz+/pPQ" href="#p_USRHz+/pPQ"></a>var text = "<em>I&#8217;m the cook,</em> he said, <em>it&#8217;s my job.</em>";
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_XWzNC0bK4D" href="#c_XWzNC0bK4D"></a><span class="cm-keyword">var</span> <span class="cm-variable">text</span> <span class="cm-operator">=</span> <span class="cm-string">"'I'm the cook,' he said, 'it's my job.'"</span>;
+<span class="cm-comment">// Change this call.</span>
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">text</span>.<span class="cm-property">replace</span>(<span class="cm-string-2">/A/g</span>, <span class="cm-string">"B"</span>));
+<span class="cm-comment">// → "I'm the cook," he said, "it's my job."</span></pre>
 
-console.log(text.replace(/A/g, "B"));</p>
-<pre>!!pista!!
 
-(((quoting style (exercise))))(((boundary)))La solución más obvia es reemplazar las citas con un carácter sin palabras al menos en uno de los lados. Algo como `_/\W'|'\W/_`, pero también tenga en cuenta el principio y el final de cada línea.
+<div class="solution">
+  <div class="solution-text">
 
-(((grouping)))(((replace method)))Además, debe asegurarse de que el reemplazo también incluya los caracteres que coincidan con el patrón `_\W_` para que no se eliminen. Esto se puede hacer envolviéndolos entre paréntesis e incluyendo sus grupos en la cadena de reemplazo (`_$1_`, `_$2_`). Los grupos que no coincidan serán reemplazados por nada.
 
-!!pista!!
+    </div>
+</div>
 
-=== Numbers again ===
+<p>La solución más obvia es reemplazar las citas con un carácter sin palabras al menos en uno de los lados. Algo como <code>/\W'|'\W/</code>, pero también tenga en cuenta el principio y el final de cada línea.</p>
+<p>Además, debe asegurarse de que el reemplazo también incluya los caracteres que coincidan con el patrón <code>\W</code> para que no se eliminen. Esto se puede hacer envolviéndolos entre paréntesis e incluyendo sus grupos en la cadena de reemplazo (<code>$1</code>, <code>$2</code>). Los grupos que no coincidan serán reemplazados por nada.</p>
 
-(((number)))Una serie de dígitos puede ser igualada por la expresión regular simple `_/\d+/_`.
 
-(((sign)))(((fractional number)))(((syntax)))(((minus)))(((plus character)))(((exponent)))(((scientific notation)))(((period character)))Escriba una expresión que coincida sólo con los números válidos para JavaScript. Debe soportar un signo positivo o negativo adicional delante del número, el punto decimal y la notación de exponente `_5e-3_` o ++_1E10_++- tambien con la opcion de un signo delante del exponente. Observe también que no es necesario que haya dígitos delante o después del punto, pero el número no puede ser solamente un punto, es decir, `_.5_` y `_5._` son números JavaScript válidos, pero un punto solitario no lo es.Write an expression that matches only JavaScript-style
+<h3>Números de nuevo</h3>
 
-// test: no
+<p>Una serie de dígitos puede ser igualada por la expresión regular simple <code>/\d+/</code>.</p>
 
-[source,javascript]</pre>
-<p><a class=p_ident id="p_wFs+28Yvte" href="#p_wFs+28Yvte"></a>var number = /^...$/;</p>
-<p><a class=p_ident id="p_x4yaaMOyWZ" href="#p_x4yaaMOyWZ"></a>["1", "-1", "<code>15", "1.55", ".5", "5.", "1.3e2", "1E-4",
- "1e+12"].forEach(function(s) {
-  if (!number.test(s))
-    console.log("Failed to match <em>" + s + "</em>");
+<p>Escriba una expresión que coincida sólo con los números válidos para JavaScript. Debe soportar un signo positivo o negativo adicional delante del número, el punto decimal y la notación de exponente --<code>5e-3</code> o <code>1E10</code>-- tambien con la opcion de un signo delante del exponente. Observe también que no es necesario que haya dígitos delante o después del punto, pero el número no puede ser solamente un punto, es decir, <code>.5</code> y <code>5.</code> son números JavaScript válidos, pero un punto solitario no lo es.</p>
+
+
+<pre data-language="javascript" class="snippet cm-s-default"><a class="c_ident" id="c_svZIRqtX/7" href="#c_svZIRqtX/7"></a><span class="cm-comment">// Fill in this regular expression.</span>
+<span class="cm-keyword">var</span> <span class="cm-variable">number</span> <span class="cm-operator">=</span> <span class="cm-string-2">/^...$/</span>;
+
+<span class="cm-comment">// Tests:</span>
+[<span class="cm-string">"1"</span>, <span class="cm-string">"-1"</span>, <span class="cm-string">"+15"</span>, <span class="cm-string">"1.55"</span>, <span class="cm-string">".5"</span>, <span class="cm-string">"5."</span>, <span class="cm-string">"1.3e2"</span>, <span class="cm-string">"1E-4"</span>,
+ <span class="cm-string">"1e+12"</span>].<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">s</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable">number</span>.<span class="cm-property">test</span>(<span class="cm-variable-2">s</span>))
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Failed to match '"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">s</span> <span class="cm-operator">+</span> <span class="cm-string">"'"</span>);
 });
-["1a", "</code>-1", "1.2.3", "1+1", "1e4.5", ".5.", "1f5",
- "."].forEach(function(s) {
-  if (number.test(s))
-    console.log("Incorrectly accepted <em>" + s + "</em>");
-});</p>
-<pre>!!pista!!
+[<span class="cm-string">"1a"</span>, <span class="cm-string">"+-1"</span>, <span class="cm-string">"1.2.3"</span>, <span class="cm-string">"1+1"</span>, <span class="cm-string">"1e4.5"</span>, <span class="cm-string">".5."</span>, <span class="cm-string">"1f5"</span>,
+ <span class="cm-string">"."</span>].<span class="cm-property">forEach</span>(<span class="cm-keyword">function</span>(<span class="cm-def">s</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-variable">number</span>.<span class="cm-property">test</span>(<span class="cm-variable-2">s</span>))
+    <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"Incorrectly accepted '"</span> <span class="cm-operator">+</span> <span class="cm-variable-2">s</span> <span class="cm-operator">+</span> <span class="cm-string">"'"</span>);
+});</pre>
 
-(((regular expression,escaping)))(((backslash character)))En primer lugar, no se olvide de la barra invertida delante del punto.
+<div class="solution">
+  <div class="solution-text">
+<p>En primer lugar, no se olvide de la barra invertida delante del punto.</p>
 
-Se puede hacer coincidir el signo opcional delante del número, así como delante del exponente, con `_[+\-]?_` o `_(\+|-|)_` (más, menos o nada).
+<p>Se puede hacer coincidir el signo opcional delante del número, así como delante del exponente, con <code>[+\-]?</code> o <code>(\+|-|)</code> (más, menos o nada).</p>
+<p>La parte más complicada del ejercicio es el problema de coincidir con <code>"5."</code> y <code>".5"</code> sin igualar también <code>"."</code> . Para ello, una buena solución es utilizar el operador <code>|</code> para separar los dos casos: uno o más dígitos opcionalmente seguido por un punto y cero o más dígitos o un punto seguido por uno o más dígitos.</p>
 
-(((pipe character)))La parte más complicada del ejercicio es el problema de coincidir con `_"5."_` y `_".5"_` sin igualar también `_"."_` . Para ello, una buena solución es utilizar el operador `_|_` para separar los dos casos: uno o más dígitos opcionalmente seguido por un punto y cero o más dígitos o un punto seguido por uno o más dígitos.
+<p>Por último, para que en el caso del carácter <em>e</em> no distinga entre mayúsculas y minúsculas, agregue una opción <code>i</code> a la expresión regular o utilice <code>[eE]</code>.</p>
+  </div>
+</div>
 
-(((exponent)))(((case sensitivity)))(((regular
-expression,flags)))Por último, para que en el caso del carácter _e_ no distinga entre mayúsculas y minúsculas, agregue una opción `_i_` a la expresión regular o utilice `_[eE]_`.
 
-!!pista!!</pre>
 <nav>
   <a href="08_error.html" title="capítulo previo">◀</a>
   <a href="index.html" title="cover">◆</a>
   <a href="10_modules.html" title="capítulo siguiente">▶</a>
 </nav>
 </article>
+
