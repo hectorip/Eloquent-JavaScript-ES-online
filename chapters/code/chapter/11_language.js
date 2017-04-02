@@ -92,8 +92,8 @@ specialForms["while"] = function(args, env) {
   while (evaluate(args[0], env) !== false)
     evaluate(args[1], env);
 
-  // Since undefined does not exist in Egg, we return false,
-  // for lack of a meaningful result.
+  // Como undefined no existe en Egg, devolvemos false,
+  // para la falta de resultados válidos
   return false;
 };
 

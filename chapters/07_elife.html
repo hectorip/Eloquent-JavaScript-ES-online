@@ -294,25 +294,6 @@ En los capítulos de proyecto, dejaré de abrumarte con teoría nueva por un bre
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">world</span>.<span class="cm-property">toString</span>());
 }
 <span class="cm-comment">// → … five turns of moving critters</span></pre>
-<div class="literalblock">
-<div class="content monospaced">
-<pre>ifdef::book_target[]</pre>
-</div></div>
-<p><a class=p_ident id="p_9j8Ya7SaDm" href="#p_9j8Ya7SaDm"></a>Los primeros dos mapas que se muestran será algo similar a esto:</p>
-<pre>############################  ############################
-#      #    #             ##  #      #    #             ##
-#                   o      #  #                          #
-#          #####           #  #          #####     o     #
-##         #   #    ##     #  ##         #   #    ##     #
-###           ##     #     #  ###           ##     #     #
-#           ###      #     #  #           ###      #     #
-#   ####                   #  #   ####                   #
-#   ##                     #  #   ##                     #
-#    #       o         ### #  #o   #                 ### #
-#o   #          o          #  #    #       o o           #
-############################  ############################</pre>
-<p><a class=p_ident id="p_E3Ge6DhV+K" href="#p_E3Ge6DhV+K"></a> ¡Ellos mueven! Para obtener una visión más interactiva de estas
-criaturas que se arrastran y rebotan en las paredes, abra este capítulo en la versión on-line del libro <a href="http://eloquentjavascript.net"><em>eloquentjavascript.net</em></a>.</p>
 <p><a class=p_ident id="p_TNzyra+CrL" href="#p_TNzyra+CrL"></a>Sin embargo, imprimir muchas copias del mapa es una manera bastante desagradable de observar un mundo. Es por eso que el <em>sandbox</em> proporciona una función <em>animateWorld</em> que ejecutará un mundo como una animación en pantalla, moviéndose tres veces por segundo, hasta que pulse el botón de parada.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_GWmwbCld+R" href="#c_GWmwbCld+R"></a><span class="cm-variable">animateWorld</span>(<span class="cm-variable">world</span>);
 <span class="cm-comment">// → … life!</span></pre>
@@ -362,7 +343,7 @@ criaturas que se arrastran y rebotan en las paredes, abra este capítulo en la v
 <p><a class=p_ident id="p_1QSKL1OAvm" href="#p_1QSKL1OAvm"></a>Si los bichos sólo se mueven y comen unos a otros, el mundo pronto sucumbirá a la ley de entropía creciente, se quedará sin energía, y se convertirá en un desierto sin vida. Para evitar que esto suceda (demasiado rápido, al menos), añadimos plantas al mundo. Las plantas no se mueven. Simplemente utilizan la fotosíntesis para crecer (es decir, aumentar su energía) y reproducirse.</p>
 <p><a class=p_ident id="p_Hf3ozTi/bG" href="#p_Hf3ozTi/bG"></a>Para que esto funcione, necesitaremos un mundo con un método <em>letAct</em> diferente. Podríamos simplemente reemplazar el método del (prototipo <em>world</em>), pero me he vuelto muy apegado a nuestra simulación con las criaturas que siguen a la pared y odiaría romper ese viejo mundo.</p>
 <p><a class=p_ident id="p_mEflbI/g7U" href="#p_mEflbI/g7U"></a>Una solución es usar la (herencia). Creamos un nuevo (constructor), <em>LifelikeWorld</em>, cuyo prototipo se basa en el (prototipo World) pero que anula el método <em>letAct</em>. El nuevo método <em>letAct</em> delega el trabajo de realizar una acción a varias funciones almacenadas en el objeto <em>actionTypes</em>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HJ+VruHxeI" href="#c_HJ+VruHxeI"></a><span class="cm-keyword">function</span> <span class="cm-variable">LifelikeWorld</span>(<span class="cm-def">map</span>, <span class="cm-def">legend</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Xq/SMOEf8t" href="#c_Xq/SMOEf8t"></a><span class="cm-keyword">function</span> <span class="cm-variable">LifelikeWorld</span>(<span class="cm-def">map</span>, <span class="cm-def">legend</span>) {
   <span class="cm-variable">World</span>.<span class="cm-property">call</span>(<span class="cm-keyword">this</span>, <span class="cm-variable-2">map</span>, <span class="cm-variable-2">legend</span>);
 }
 <span class="cm-variable">LifelikeWorld</span>.<span class="cm-property">prototype</span> <span class="cm-operator">=</span> <span class="cm-variable">Object</span>.<span class="cm-property">create</span>(<span class="cm-variable">World</span>.<span class="cm-property">prototype</span>);
@@ -380,147 +361,176 @@ criaturas que se arrastran y rebotan en las paredes, abra este capítulo en la v
     <span class="cm-keyword">if</span> (<span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">0</span>)
       <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">vector</span>, <span class="cm-atom">null</span>);
   }
-};
-    <span class="cm-operator">----</span>
-(((<span class="cm-variable">electronic</span> <span class="cm-variable">life</span>)))(((<span class="cm-keyword">function</span>,<span class="cm-variable">as</span> <span class="cm-variable">value</span>)))(((<span class="cm-variable">call</span> <span class="cm-variable">method</span>)))(((<span class="cm-keyword">this</span>)))<span class="cm-variable">El</span> <span class="cm-variable">nuevo</span> <span class="cm-variable">método</span> <span class="cm-variable">_letAct_</span> <span class="cm-variable">comprueba</span> <span class="cm-variable">primero</span> <span class="cm-variable">si</span> <span class="cm-variable">se</span> <span class="cm-variable">ha</span> <span class="cm-variable">devuelto</span> <span class="cm-variable">una</span> <span class="cm-variable">acción</span>, <span class="cm-variable">si</span> <span class="cm-variable">existe</span> <span class="cm-variable">una</span> (<span class="cm-variable">función</span> <span class="cm-variable">de</span> <span class="cm-variable">controlador</span>) <span class="cm-variable">para</span> <span class="cm-variable">este</span> <span class="cm-variable">tipo</span> <span class="cm-variable">de</span> <span class="cm-variable">acción</span> <span class="cm-variable">y</span>, <span class="cm-variable">por</span> <span class="cm-variable">último</span>, <span class="cm-variable">si</span> <span class="cm-variable">ese</span> <span class="cm-variable">controlador</span> <span class="cm-variable">devuelve</span> <span class="cm-variable">_true_</span>, <span class="cm-variable">lo</span> <span class="cm-variable">que</span> <span class="cm-variable">indica</span> <span class="cm-variable">que</span> <span class="cm-variable">se</span> <span class="cm-variable">ha</span> <span class="cm-variable">tratado</span> <span class="cm-variable">correctamente</span> <span class="cm-variable">la</span> <span class="cm-variable">acción</span>.
-
-<span class="cm-property">Tenga</span> <span class="cm-variable">en</span> <span class="cm-variable">cuenta</span> <span class="cm-variable">el</span> <span class="cm-variable">uso</span> <span class="cm-variable">de</span> <span class="cm-variable">_call_</span> <span class="cm-variable">para</span> <span class="cm-variable">dar</span> <span class="cm-variable">al</span> <span class="cm-variable">manejador</span> <span class="cm-variable">acceso</span> <span class="cm-variable">al</span> <span class="cm-variable">mundo</span> <span class="cm-variable">a</span> <span class="cm-variable">través</span> <span class="cm-variable">de</span> <span class="cm-variable">_this_</span>.
-<span class="cm-property">Si</span> <span class="cm-variable">la</span> <span class="cm-variable">acción</span> <span class="cm-variable">no</span> <span class="cm-variable">funcionó</span> <span class="cm-variable">por</span> <span class="cm-variable">alguna</span> <span class="cm-variable">razón</span>, <span class="cm-variable">la</span> <span class="cm-variable">acción</span> <span class="cm-variable">predeterminada</span> <span class="cm-variable">es</span> <span class="cm-variable">que</span> <span class="cm-variable">la</span> <span class="cm-variable">criatura</span> <span class="cm-variable">simplemente</span> <span class="cm-variable">espere</span>. <span class="cm-property">Pierde</span> <span class="cm-variable">un</span> <span class="cm-variable">quinto</span> <span class="cm-variable">punto</span> <span class="cm-variable">de</span> <span class="cm-variable">energía</span>, <span class="cm-variable">y</span> <span class="cm-variable">si</span> <span class="cm-variable">su</span> <span class="cm-variable">nivel</span> <span class="cm-variable">de</span> <span class="cm-variable">energía</span> <span class="cm-variable">es</span> <span class="cm-variable">igual</span> <span class="cm-variable">o</span> <span class="cm-variable">menor</span> <span class="cm-variable">que</span> <span class="cm-variable">cero</span>, <span class="cm-variable">la</span> <span class="cm-variable">criatura</span> <span class="cm-variable">muere</span> <span class="cm-variable">y</span> <span class="cm-variable">se</span> <span class="cm-variable">borra</span> <span class="cm-variable">de</span> <span class="cm-variable">la</span> <span class="cm-variable">cuadrícula</span>.
-
-<span class="cm-operator">==</span> <span class="cm-variable">Manejadores</span> <span class="cm-variable">de</span> <span class="cm-variable">acciones</span> <span class="cm-operator">==</span>
-
-(((<span class="cm-variable">photosynthesis</span>)))<span class="cm-variable">La</span> <span class="cm-variable">acción</span> <span class="cm-variable">más</span> <span class="cm-variable">simple</span> <span class="cm-variable">que</span> <span class="cm-variable">una</span> <span class="cm-variable">criatura</span> <span class="cm-variable">puede</span> <span class="cm-variable">realizar</span> <span class="cm-variable">es</span> <span class="cm-string">"crecer"</span> (<span class="cm-variable">_grow_</span>), <span class="cm-variable">usada</span> <span class="cm-variable">por</span> <span class="cm-variable">las</span> <span class="cm-variable">plantas</span>. <span class="cm-property">Cuando</span> <span class="cm-variable">se</span> <span class="cm-variable">devuelve</span> <span class="cm-variable">un</span> <span class="cm-variable">objeto</span> <span class="cm-variable">de</span> <span class="cm-variable">acción</span> <span class="cm-variable">como</span> <span class="cm-variable">_</span>{<span class="cm-variable">type</span>: <span class="cm-string">"grow"</span>}<span class="cm-variable">_</span>, <span class="cm-variable">se</span> <span class="cm-variable">llamará</span> <span class="cm-variable">al</span> <span class="cm-variable">siguiente</span> <span class="cm-variable">método</span> <span class="cm-variable">del</span> <span class="cm-variable">controlador</span>:
-
-<span class="cm-comment">// include_code</span>
-
-[<span class="cm-variable">source</span>,<span class="cm-variable">javascript</span>]</pre>
-<p><a class=p_ident id="p_tx5umJEbbL" href="#p_tx5umJEbbL"></a>actionTypes.grow = function(critter) {
-  critter.energy += 0.5;
-  return true;
-};</p>
-<pre>Crecer siempre tiene éxito y añade medio punto al nivel de energía (_energy_) de la planta.
-Moverse es más complicado.
-
-// include_code
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_rI0bJXMEpc" href="#p_rI0bJXMEpc"></a>actionTypes.move = function(critter, vector, action) {
-  var dest = this.checkDestination(action, vector);
-  if (dest == null ||
-      critter.energy &#8656; 1 ||
-      this.grid.get(dest) != null)
-    return false;
-  critter.energy -= 1;
-  this.grid.set(vector, null);
-  this.grid.set(dest, critter);
-  return true;
-};</p>
-<pre>(((validation)))Esta acción comprueba primero, utilizando el método _checkDestination_ definido anteriormente, si la acción proporciona un destino válido. Si no, o si el destino no está vacío, o si el _critter_ carece de la energía requerida, _move_ devuelve false para indicar que no se tomó ninguna acción. De lo contrario, se mueve el _critter_ y resta el costo de la energía.
-
-(((food)))Además de moverse, las criaturas pueden comer.
-
-// include_code
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_/C9CPGYi0S" href="#p_/C9CPGYi0S"></a>actionTypes.eat = function(critter, vector, action) {
-  var dest = this.checkDestination(action, vector);
-  var atDest = dest != null &amp;&amp; this.grid.get(dest);
-  if (!atDest || atDest.energy == null)
-    return false;
-  critter.energy += atDest.energy;
-  this.grid.set(dest, null);
-  return true;
-};</p>
-<pre>(((validation)))Comer otra criatura (_critter_) también implica proporcionar un cuadrado de destino válido. Esta vez, el destino no debe estar vacío y debe contener algo con energía, como un _critter_ (pero no una pared - las paredes no son comestibles). Si es así, la energía de la comida es transferida al comedor, y la víctima es removida de la cuadrícula.
-
-(((reproduction)))Y finalmente, permitimos que nuestras criaturas se reproduzcan.
-
-// include_code
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_FHNQG2s/HZ" href="#p_FHNQG2s/HZ"></a>actionTypes.reproduce = function(critter, vector, action) {
-  var baby = elementFromChar(this.legend,
-                             critter.originChar);
-  var dest = this.checkDestination(action, vector);
-  if (dest == null ||
-      critter.energy &#8656; 2 * baby.energy ||
-      this.grid.get(dest) != null)
-    return false;
-  critter.energy -= 2 * baby.energy;
-  this.grid.set(dest, baby);
-  return true;
-};</p>
-<pre>(((electronic life)))Reproducirse cuesta dos veces el nivel de energía de un _critter_ recién nacido. Así que primero creamos un bebé (hipotético) usando _elementFromChar_ en el propio carácter de origen del _critter_. Una vez que tenemos un bebé, podemos encontrar su nivel de energía y probar si el padre tiene suficiente energía para llevarlo con éxito al mundo. También necesitamos un destino válido (y vacío).
-
-(((reproduction)))Si todo está bien, el bebé es puesto en la cuadrícula (ya no es hipotético), y la energía se gasta.
-
-== Llenar el nuevo mundo ==
-
-(((Plant type)))(((electronic life)))Ahora tenemos un marco (_framework_) para simular estas criaturas en forma más realista. Podríamos poner las criaturas del viejo mundo en ella, pero sólo morirían ya que no tienen una propiedad de energía. Así que hagamos nuevos. Primero escribiremos una planta (_Plant_), que es una forma de vida bastante simple.
-
-// include_code
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_6kMmmzGyNU" href="#p_6kMmmzGyNU"></a>function Plant() {
-  this.energy = 3 + Math.random() * 4;
+};</pre>
+<p><a class=p_ident id="p_1YGA51EDNJ" href="#p_1YGA51EDNJ"></a>El nuevo método <em>letAct</em> comprueba primero si se ha devuelto una acción, si existe una (función de controlador) para este tipo de acción y, por último, si ese controlador devuelve <em>true</em>, lo que indica que se ha tratado correctamente la acción.</p>
+<p><a class=p_ident id="p_x80C/HfKgK" href="#p_x80C/HfKgK"></a>Tenga en cuenta el uso de <em>call</em> para dar al manejador acceso al mundo a través de <em>this</em>.
+Si la acción no funcionó por alguna razón, la acción predeterminada es que la criatura simplemente espere. Pierde un quinto punto de energía, y si su nivel de energía es igual o menor que cero, la criatura muere y se borra de la cuadrícula.</p>
+<h2><a class=h_ident id="h_e5+Tgf3i6/" href="#h_e5+Tgf3i6/"></a>Manejadores de acciones</h2>
+<p><a class=p_ident id="p_2jmj7l5rSw" href="#p_2jmj7l5rSw"></a></p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wHH+c78jV5" href="#c_wHH+c78jV5"></a><span class="cm-variable">actionTypes</span>.<span class="cm-property">grow</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>) {
+  <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">+=</span> <span class="cm-number">0.5</span>;
+  <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+};</pre>
+<p><a class=p_ident id="p_1Xlwfe6icP" href="#p_1Xlwfe6icP"></a>Crecer siempre tiene éxito y añade medio punto al nivel de energía (<em>energy</em>) de la planta.
+Moverse es más complicado.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_EgcpmD74TO" href="#c_EgcpmD74TO"></a><span class="cm-variable">actionTypes</span>.<span class="cm-property">move</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>, <span class="cm-def">action</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">dest</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">checkDestination</span>(<span class="cm-variable-2">action</span>, <span class="cm-variable-2">vector</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">dest</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span> <span class="cm-operator">||</span>
+      <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">1</span> <span class="cm-operator">||</span>
+      <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">dest</span>) <span class="cm-operator">!=</span> <span class="cm-atom">null</span>)
+    <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+  <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">-=</span> <span class="cm-number">1</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">vector</span>, <span class="cm-atom">null</span>);
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">dest</span>, <span class="cm-variable-2">critter</span>);
+  <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+};</pre>
+<p><a class=p_ident id="p_4rU9og3M2Z" href="#p_4rU9og3M2Z"></a>Esta acción comprueba primero, utilizando el método <em>checkDestination</em> definido anteriormente, si la acción proporciona un destino válido. Si no, o si el destino no está vacío, o si el <em>critter</em> carece de la energía requerida, <em>move</em> devuelve false para indicar que no se tomó ninguna acción. De lo contrario, se mueve el <em>critter</em> y resta el costo de la energía.</p>
+<p><a class=p_ident id="p_+Bbdnx9/+j" href="#p_+Bbdnx9/+j"></a>Además de moverse, las criaturas pueden comer.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_cQhl6uK2Jo" href="#c_cQhl6uK2Jo"></a><span class="cm-variable">actionTypes</span>.<span class="cm-property">eat</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>, <span class="cm-def">action</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">dest</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">checkDestination</span>(<span class="cm-variable-2">action</span>, <span class="cm-variable-2">vector</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">atDest</span> <span class="cm-operator">=</span> <span class="cm-variable-2">dest</span> <span class="cm-operator">!=</span> <span class="cm-atom">null</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">dest</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-operator">!</span><span class="cm-variable-2">atDest</span> <span class="cm-operator">||</span> <span class="cm-variable-2">atDest</span>.<span class="cm-property">energy</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span>)
+    <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+  <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">+=</span> <span class="cm-variable-2">atDest</span>.<span class="cm-property">energy</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">dest</span>, <span class="cm-atom">null</span>);
+  <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+};</pre>
+<p><a class=p_ident id="p_ahgoSzGjZw" href="#p_ahgoSzGjZw"></a>Comer otra criatura (<em>critter</em>) también implica proporcionar un cuadrado de destino válido. Esta vez, el destino no debe estar vacío y debe contener algo con energía, como un <em>critter</em> (pero no una pared - las paredes no son comestibles). Si es así, la energía de la comida es transferida al comedor, y la víctima es removida de la cuadrícula.</p>
+<p><a class=p_ident id="p_376Zmtnq+i" href="#p_376Zmtnq+i"></a>Y finalmente, permitimos que nuestras criaturas se reproduzcan.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_0hQdcXq3OA" href="#c_0hQdcXq3OA"></a><span class="cm-variable">actionTypes</span>.<span class="cm-property">reproduce</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">critter</span>, <span class="cm-def">vector</span>, <span class="cm-def">action</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">baby</span> <span class="cm-operator">=</span> <span class="cm-variable">elementFromChar</span>(<span class="cm-keyword">this</span>.<span class="cm-property">legend</span>,
+                             <span class="cm-variable-2">critter</span>.<span class="cm-property">originChar</span>);
+  <span class="cm-keyword">var</span> <span class="cm-def">dest</span> <span class="cm-operator">=</span> <span class="cm-keyword">this</span>.<span class="cm-property">checkDestination</span>(<span class="cm-variable-2">action</span>, <span class="cm-variable-2">vector</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">dest</span> <span class="cm-operator">==</span> <span class="cm-atom">null</span> <span class="cm-operator">||</span>
+      <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">&lt;=</span> <span class="cm-number">2</span> <span class="cm-operator">*</span> <span class="cm-variable-2">baby</span>.<span class="cm-property">energy</span> <span class="cm-operator">||</span>
+      <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">get</span>(<span class="cm-variable-2">dest</span>) <span class="cm-operator">!=</span> <span class="cm-atom">null</span>)
+    <span class="cm-keyword">return</span> <span class="cm-atom">false</span>;
+  <span class="cm-variable-2">critter</span>.<span class="cm-property">energy</span> <span class="cm-operator">-=</span> <span class="cm-number">2</span> <span class="cm-operator">*</span> <span class="cm-variable-2">baby</span>.<span class="cm-property">energy</span>;
+  <span class="cm-keyword">this</span>.<span class="cm-property">grid</span>.<span class="cm-property">set</span>(<span class="cm-variable-2">dest</span>, <span class="cm-variable-2">baby</span>);
+  <span class="cm-keyword">return</span> <span class="cm-atom">true</span>;
+};</pre>
+<p><a class=p_ident id="p_v9g2QPegnu" href="#p_v9g2QPegnu"></a>Reproducirse cuesta dos veces el nivel de energía de un <em>critter</em> recién nacido. Así que primero creamos un bebé (hipotético) usando <em>elementFromChar</em> en el propio carácter de origen del <em>critter</em>. Una vez que tenemos un bebé, podemos encontrar su nivel de energía y probar si el padre tiene suficiente energía para llevarlo con éxito al mundo. También necesitamos un destino válido (y vacío).</p>
+<p><a class=p_ident id="p_vovoQdfwDb" href="#p_vovoQdfwDb"></a>Si todo está bien, el bebé es puesto en la cuadrícula (ya no es hipotético), y la energía se gasta.</p>
+<h2><a class=h_ident id="h_vSsa2oSOhH" href="#h_vSsa2oSOhH"></a>Llenar el nuevo mundo</h2>
+<p><a class=p_ident id="p_tf0dWD9mWv" href="#p_tf0dWD9mWv"></a>Ahora tenemos un marco (<em>framework</em>) para simular estas criaturas en forma más realista. Podríamos poner las criaturas del viejo mundo en ella, pero sólo morirían ya que no tienen una propiedad de energía. Así que hagamos nuevos. Primero escribiremos una planta (<em>Plant</em>), que es una forma de vida bastante simple.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_RQsOcWcml/" href="#c_RQsOcWcml/"></a><span class="cm-keyword">function</span> <span class="cm-variable">Plant</span>() {
+  <span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">=</span> <span class="cm-number">3</span> <span class="cm-operator">+</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">4</span>;
 }
-Plant.prototype.act = function(view) {
-  if (this.energy &gt; 15) {
-    var space = view.find(" ");
-    if (space)
+<span class="cm-variable">Plant</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">view</span>) {
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">></span> <span class="cm-number">15</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">space</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>);
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">space</span>)
+      <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"reproduce"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">space</span>};
   }
-  if (this.energy &lt; 20)
-};</p>
-<pre>(((reproduction)))(((photosynthesis)))(((random
-number)))(((Math.random function)))Las plantas comienzan con un nivel de energía entre 3 y 7, aleatorizado para que no se reproduzcan todos en el mismo turno (_turn_). Cuando una planta alcanza 15 puntos de energía y hay un espacio vacío cerca, se reproduce en ese espacio vacío. Si una planta no puede reproducirse, simplemente crece hasta alcanzar el nivel de energía 20.
-
-(((critter)))(((PlantEater type)))(((herbivore)))(((food chain)))Ahora definimos un comedor de plantas (_PlantEater_).
-
-// include_code
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_UTXpnxldQC" href="#p_UTXpnxldQC"></a>function PlantEater() {
-  this.energy = 20;
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">&lt;</span> <span class="cm-number">20</span>)
+    <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"grow"</span>};
+};</pre>
+<p><a class=p_ident id="p_zPs/IRyuZQ" href="#p_zPs/IRyuZQ"></a>Las plantas comienzan con un nivel de energía entre 3 y 7, aleatorizado para que no se reproduzcan todos en el mismo turno (<em>turn</em>). Cuando una planta alcanza 15 puntos de energía y hay un espacio vacío cerca, se reproduce en ese espacio vacío. Si una planta no puede reproducirse, simplemente crece hasta alcanzar el nivel de energía 20.</p>
+<p><a class=p_ident id="p_c1V22pZg9i" href="#p_c1V22pZg9i"></a>Ahora definimos un comedor de plantas (<em>PlantEater</em>).</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ddgWDpbvSl" href="#c_ddgWDpbvSl"></a><span class="cm-keyword">function</span> <span class="cm-variable">PlantEater</span>() {
+  <span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">=</span> <span class="cm-number">20</span>;
 }
-PlantEater.prototype.act = function(view) {
-  var space = view.find(" ");
-  if (this.energy &gt; 60 &amp;&amp; space)
-  var plant = view.find("*");
-  if (plant)
-  if (space)
-};</p>
-<pre>Usaremos el carácter _*_ para las plantas (_Plant_), así que eso es lo que esta criatura buscará cuando busque comida.
+<span class="cm-variable">PlantEater</span>.<span class="cm-property">prototype</span>.<span class="cm-property">act</span> <span class="cm-operator">=</span> <span class="cm-keyword">function</span>(<span class="cm-def">view</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">space</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">" "</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-keyword">this</span>.<span class="cm-property">energy</span> <span class="cm-operator">></span> <span class="cm-number">60</span> <span class="cm-operator">&amp;&amp;</span> <span class="cm-variable-2">space</span>)
+    <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"reproduce"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">space</span>};
+  <span class="cm-keyword">var</span> <span class="cm-def">plant</span> <span class="cm-operator">=</span> <span class="cm-variable-2">view</span>.<span class="cm-property">find</span>(<span class="cm-string">"*"</span>);
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">plant</span>)
+    <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"eat"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">plant</span>};
+  <span class="cm-keyword">if</span> (<span class="cm-variable-2">space</span>)
+    <span class="cm-keyword">return</span> {<span class="cm-property">type</span>: <span class="cm-string">"move"</span>, <span class="cm-property">direction</span>: <span class="cm-variable-2">space</span>};
+};</pre>
+<p><a class=p_ident id="p_Y4G1MERxuA" href="#p_Y4G1MERxuA"></a>Usaremos el carácter <em>*</em> para las plantas (<em>Plant</em>), así que eso es lo que esta criatura buscará cuando busque comida.</p>
+<h2><a class=h_ident id="h_6ZzD42SQnU" href="#h_6ZzD42SQnU"></a>Darle vida</h2>
+<p><a class=p_ident id="p_7XORgUXmSV" href="#p_7XORgUXmSV"></a>Y eso nos da suficientes elementos para probar nuestro nuevo mundo. Imagínese el siguiente mapa como un valle cubierto de hierba con una manada de herbívoros en ella, algunas rocas y una exuberante vegetación en todas partes.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_uxbbeqRjLM" href="#c_uxbbeqRjLM"></a><span class="cm-keyword">var</span> <span class="cm-variable">valley</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">LifelikeWorld</span>(
+  [<span class="cm-string">"############################"</span>,
+   <span class="cm-string">"#####                 ######"</span>,
+   <span class="cm-string">"##   ***                **##"</span>,
+   <span class="cm-string">"#   *##**         **  O  *##"</span>,
+   <span class="cm-string">"#    ***     O    ##**    *#"</span>,
+   <span class="cm-string">"#       O         ##***    #"</span>,
+   <span class="cm-string">"#                 ##**     #"</span>,
+   <span class="cm-string">"#   O       #*             #"</span>,
+   <span class="cm-string">"#*          #**       O    #"</span>,
+   <span class="cm-string">"#***        ##**    O    **#"</span>,
+   <span class="cm-string">"##****     ###***       *###"</span>,
+   <span class="cm-string">"############################"</span>],
+  {<span class="cm-string cm-property">"#"</span>: <span class="cm-variable">Wall</span>,
+   <span class="cm-string cm-property">"O"</span>: <span class="cm-variable">PlantEater</span>,
+   <span class="cm-string cm-property">"*"</span>: <span class="cm-variable">Plant</span>}
+);</pre>
+<p><a class=p_ident id="p_iltJo+QaPI" href="#p_iltJo+QaPI"></a>Veamos ver ocurre cuando ejecutamos este codigo.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ryt21fIzYu" href="#c_ryt21fIzYu"></a><span class="cm-variable">animateWorld</span>(<span class="cm-variable">valley</span>);</pre>
+<p><a class=p_ident id="p_6atbm4+wdq" href="#p_6atbm4+wdq"></a>La mayoría de las veces, las plantas se multiplican y se expanden con bastante rapidez, pero luego la abundancia de alimentos causa una explosión poblacional de los herbívoros, que proceden a eliminar todas o casi todas las plantas, resultando en un hambre masiva de las criaturas. A veces, el ecosistema se recupera y comienza otro ciclo. En otras ocasiones, una de las especies muere completamente. Si son los herbívoros, todo el espacio se llenará de plantas. Si son las plantas, las criaturas restantes mueren de hambre, y el valle se convierte en una tierra baldía desolada. Ah, la crueldad de la naturaleza.</p>
+<h2><a class=h_ident id="h_tkm7ntLto1" href="#h_tkm7ntLto1"></a>Ejercicios</h2>
+<h3><a class=h_ident id="h_H1sJZuYS+n" href="#h_H1sJZuYS+n"></a>Estupidez artificial</h3>
+<p><a class=p_ident id="p_jw1DXjVumM" href="#p_jw1DXjVumM"></a>Tener extinguidos a los habitantes de nuestro mundo después de unos minutos es algo deprimente. Para hacer frente a esto, podríamos tratar de crear un comedor de plantas más inteligente (<em>smarter plant eater</em>).</p>
+<p><a class=p_ident id="p_/xq+FCTjvg" href="#p_/xq+FCTjvg"></a>Hay varios problemas obvios con nuestros herbívoros. En primer lugar, son terriblemente codiciosos, tragan cada planta que ven hasta que han borrado toda la vida vegetal. En segundo lugar, su movimiento al azar (recuerde que el método <em>view.find:</em> devuelve una dirección al azar cuando coinciden varias direcciones) hace que tropiecen ineficazmente y mueren de hambre si no encuentran ninguna planta cerca. Y finalmente, se reproducen muy rápido, lo que hace que los ciclos entre la abundancia y el hambre sean bastante intensos.</p>
+<p><a class=p_ident id="p_QbkmlKcMft" href="#p_QbkmlKcMft"></a>Crea un nuevo tipo de <em>critter</em> intentando abordar uno o más de estos puntos y sustituyelo por el antiguo tipo <em>PlantEater</em> en el mundo del valle. Haga algunos ajustes mas si lo ve necesario.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7OKWiyCd1B" href="#c_7OKWiyCd1B"></a><span class="cm-comment">// Your code here</span>
+<span class="cm-keyword">function</span> <span class="cm-variable">SmartPlantEater</span>() {}
 
-== Darle vida ==
+<span class="cm-variable">animateWorld</span>(<span class="cm-keyword">new</span> <span class="cm-variable">LifelikeWorld</span>(
+  [<span class="cm-string">"############################"</span>,
+   <span class="cm-string">"#####                 ######"</span>,
+   <span class="cm-string">"##   ***                **##"</span>,
+   <span class="cm-string">"#   *##**         **  O  *##"</span>,
+   <span class="cm-string">"#    ***     O    ##**    *#"</span>,
+   <span class="cm-string">"#       O         ##***    #"</span>,
+   <span class="cm-string">"#                 ##**     #"</span>,
+   <span class="cm-string">"#   O       #*             #"</span>,
+   <span class="cm-string">"#*          #**       O    #"</span>,
+   <span class="cm-string">"#***        ##**    O    **#"</span>,
+   <span class="cm-string">"##****     ###***       *###"</span>,
+   <span class="cm-string">"############################"</span>],
+  {<span class="cm-string cm-property">"#"</span>: <span class="cm-variable">Wall</span>,
+   <span class="cm-string cm-property">"O"</span>: <span class="cm-variable">SmartPlantEater</span>,
+   <span class="cm-string cm-property">"*"</span>: <span class="cm-variable">Plant</span>}
+));</pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_Fx0/RF+KRx" href="#p_Fx0/RF+KRx"></a>El problema de la codicia puede ser atacado de varias maneras. Las criaturas podrían dejar de comer cuando alcanzan un cierto nivel de energía. O pueden comer sólo cada N vueltas (manteniendo un contador de las vueltas desde su última comida en una propiedad en el objeto de criatura). O, para asegurarse de que las plantas nunca se extingan por completo, los animales podrían negarse a comer una planta a menos que vean por lo menos una planta cercana (usando el método findAll en la vista). Una combinación de estos, o alguna estrategia totalmente diferente, también podría funcionar</p>
+<p><a class=p_ident id="p_Fx0/RF+KRx" href="#p_Fx0/RF+KRx"></a>El problema de la codicia puede ser atacado de varias maneras. Las criaturas podrían dejar de comer cuando alcanzan un cierto nivel de energía (<em>energy</em>). O pueden comer sólo cada <em>N</em> vueltas (manteniendo un contador de las vueltas desde su última comida en una propiedad en el objeto <em>critters</em>). O, para asegurarse de que las plantas nunca se extingan por completo, los animales podrían negarse a comer una planta a menos que vean por lo menos una planta cercana (usando el método <em>findAll</em> en la vista). Una combinación de estos, o alguna estrategia totalmente diferente, también podría funcionar.</p>
+<p><a class=p_ident id="p_GX6M1pNkjn" href="#p_GX6M1pNkjn"></a>Hacer que los bichos se muevan más eficazmente se podría hacer copiando una de las estrategias de movimiento de las criaturas en nuestro viejo mundo sin energías. Tanto el comportamiento de rebote (<em>bouncing</em>) como el comportamiento de seguimiento de la pared (<em>wall-following</em>) mostraron un rango de movimiento mucho más amplio que el escalonamiento completamente aleatorio.</p>
+<p><a class=p_ident id="p_sopfPiJhH/" href="#p_sopfPiJhH/"></a>Hacer que las criaturas se reproduzcan más lentamente es trivial. Sólo aumentar el nivel mínimo de energía en la que se reproducen. Por supuesto, hacer el ecosistema más estable también lo hace más aburrido. Si tienes un puñado de criaturas gordas e inmóviles reproducirse pero siempre comiendo en un mar de plantas, tienes un ecosistema muy estable, pero muy aburrido.</p>
+</div></div>
+<h3><a class=h_ident id="h_UN+e8gZzwB" href="#h_UN+e8gZzwB"></a>Depredadores</h3>
+<p><a class=p_ident id="p_VrAI6i9MYz" href="#p_VrAI6i9MYz"></a>Cualquier ecosistema serio tiene una cadena alimentaria más larga que un solo eslabón. Escriba otro <em>critter</em> que sobreviva comiendose al <em>critter</em>  herbívoro. Usted notará que la estabilidad es aún más difícil de lograr ahora que hay ciclos en múltiples niveles. Trate de encontrar una estrategia para hacer que el ecosistema funcione sin problemas durante al menos un tiempo.</p>
+<p><a class=p_ident id="p_+3m5QcrRJJ" href="#p_+3m5QcrRJJ"></a>Una cosa que ayudará es hacer el mundo más grande. De esta manera, los auges o bajas de la población local son menos propensos a eliminar completamente una especie, y hay espacio para la población de presas relativamente grande que se necesita para mantener una pequeña población de depredadores.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ub1nEhU4ti" href="#c_ub1nEhU4ti"></a><span class="cm-comment">// Your code here</span>
+<span class="cm-keyword">function</span> <span class="cm-variable">Tiger</span>() {}
 
-(((electronic life)))Y eso nos da suficientes elementos para probar nuestro nuevo mundo. Imagínese el siguiente mapa como un valle cubierto de hierba con una manada de herbívoros en ella, algunas rocas y una exuberante vegetación en todas partes.
-
-// include_code
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_TA8OTSutN3" href="#p_TA8OTSutN3"></a>var valley = new LifelikeWorld(
-  ["#####",
-   "                 #",
-   "   <strong>*                </strong>",
-   "   <strong><strong>         </strong>  O  *",
-   "#    <strong></strong>     O    </strong>    <strong>",
-   "       O         <strong></strong>    ",
-   "                 </strong>     ",
-   "   O       *             #",
-   "*          <strong>       O    #",
-   "</strong>*        <strong>    O    </strong>",
-   "<strong><strong>*     #</strong></strong>       <strong>",
-   "######"],
-  {"#": Wall,
-   "O": PlantEater,
-   "</strong>": Plant}
-);</p>
-<pre>(((animation)))(((simulation)))Veamos ver ocurre cuando ejecutamos este codigo.
-(!book These snapshots illustrate a typical run of this world.!)
-
-
-// start_code
-// test: no
-
-[source,javascript]</pre>
-<p><a class=p_ident id="p_k7PSxV+AIP" href="#p_k7PSxV+AIP"></a>animateWorld(valley);</p>
+<span class="cm-variable">animateWorld</span>(<span class="cm-keyword">new</span> <span class="cm-variable">LifelikeWorld</span>(
+  [<span class="cm-string">"####################################################"</span>,
+   <span class="cm-string">"#                 ####         ****              ###"</span>,
+   <span class="cm-string">"#   *  @  ##                 ########       OO    ##"</span>,
+   <span class="cm-string">"#   *    ##        O O                 ****       *#"</span>,
+   <span class="cm-string">"#       ##*                        ##########     *#"</span>,
+   <span class="cm-string">"#      ##***  *         ****                     **#"</span>,
+   <span class="cm-string">"#* **  #  *  ***      #########                  **#"</span>,
+   <span class="cm-string">"#* **  #      *               #   *              **#"</span>,
+   <span class="cm-string">"#     ##              #   O   #  ***          ######"</span>,
+   <span class="cm-string">"#*            @       #       #   *        O  #    #"</span>,
+   <span class="cm-string">"#*                    #  ######                 ** #"</span>,
+   <span class="cm-string">"###          ****          ***                  ** #"</span>,
+   <span class="cm-string">"#       O                        @         O       #"</span>,
+   <span class="cm-string">"#   *     ##  ##  ##  ##               ###      *  #"</span>,
+   <span class="cm-string">"#   **         #              *       #####  O     #"</span>,
+   <span class="cm-string">"##  **  O   O  #  #    ***  ***        ###      ** #"</span>,
+   <span class="cm-string">"###               #   *****                    ****#"</span>,
+   <span class="cm-string">"####################################################"</span>],
+  {<span class="cm-string cm-property">"#"</span>: <span class="cm-variable">Wall</span>,
+   <span class="cm-string cm-property">"@"</span>: <span class="cm-variable">Tiger</span>,
+   <span class="cm-string cm-property">"O"</span>: <span class="cm-variable">SmartPlantEater</span>, <span class="cm-comment">// from previous exercise</span>
+   <span class="cm-string cm-property">"*"</span>: <span class="cm-variable">Plant</span>}
+));</pre>
+<div class=solution><div class=solution-text>
+<p><a class=p_ident id="p_/WrVho3Vwk" href="#p_/WrVho3Vwk"></a>Muchos de los mismos trucos que trabajaron para el ejercicio anterior también se aplican aquí. Se recomienda hacer que los depredadores sean grandes (mucha energía) y que se reproduzcan lentamente. Eso los hará menos vulnerables a los períodos de hambre cuando los herbívoros son escasos.</p>
+<p><a class=p_ident id="p_peTHaSk90P" href="#p_peTHaSk90P"></a>Más allá de mantenerse vivo, mantener vivo su alimento es el principal objetivo de un depredador. Encuentre alguna manera de hacer que los depredadores cazan de manera más agresiva cuando hay muchos herbívoros y cazan más lentamente (o no) cuando la presa es rara. Dado que los comedores de plantas se mueven, el simple truco de comer uno solo cuando otros están cerca no es probable que funcione, eso sucederá tan rara vez que su depredador se muera de hambre. Pero usted podría seguir la pista de observaciones en vueltas anteriores, en una cierta estructura de datos guardada en los objetos del depredador, y tenerla basar su comportamiento (<em>behavior</em>) en lo que ha visto recientemente.</p>
+</div></div>
+<nav>
+  <a href="06_object.html" title="capítulo previo">◀</a>
+  <a href="index.html" title="cover">◆</a>
+  <a href="08_error.html" title="capítulo siguiente">▶</a>
+</nav>
+</article>
