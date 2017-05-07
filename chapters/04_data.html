@@ -383,26 +383,26 @@ y la segunda variable (pizza) es verdadera (1). En este ejemplo, <em>n</em><sub>
 de todas las medidas en donde la primera variable es verdadera, que es 5 en la tabla de
 ejemplo. De la misma manera, <em>n</em><sub>•0</sub>
 se refiere a la suma de medidas en donde la segunda variable es falsa.</p>
-<p><a class=p_ident id="p_cvbLyHyQHg" href="#p_cvbLyHyQHg"></a> Así que para la tabla de la pizza,
+<p><a class=p_ident id="p_2RxEbX413+" href="#p_2RxEbX413+"></a> Así que para la tabla de la pizza,
 la parte de arriba de la línea de división (el dividendo) sería 1×76 - 4×9 = 40,
 y la parte de debajo de la línea (el divisor) sería la raíz cuadrada de
 5×85×10×80, o √340000. Esto da como resultado
-<em>ϕ</em> ≈ 0.069, que es muy pequeño. Comer pizza no parece tener influencia en las transformaciones.pizza))</p>
-<h2><a class=h_ident id="h_YwedOm6SqZ" href="#h_YwedOm6SqZ"></a>Computing correlation</h2>
-<p><a class=p_ident id="p_jn2nhCXEpR" href="#p_jn2nhCXEpR"></a>We can represent a
-two-by-two table in JavaScript with a four-element array (<code>[76, 9,
-4, 1]</code>). We could also use other representations, such as an array
-containing two two-element arrays (<code>[[76, 9], [4, 1]]</code>) or an object
-with property names like <code>"11"</code> and <code>"01"</code>, but the flat array is
-simple and makes the expressions that access the table pleasantly
-short. We&#8217;ll interpret the indices to the array as two-bit
-binary number, where the leftmost (most significant) digit refers
-to the squirrel variable and the rightmost (least significant) digit
-refers to the event variable. For example, the binary number <code>10</code>
-refers to the case where Jacques did turn into a squirrel, but the
-event (say, "pizza") didn&#8217;t occur. This happened four times. And since
-binary <code>10</code> is 2 in decimal notation, we will store this number at
-index 2 of the array.</p>
+<em>ϕ</em> ≈ 0.069, que es muy pequeño. Comer pizza no parece tener influencia en las transformaciones.</p>
+<h2><a class=h_ident id="h_SBM8Hsf97Y" href="#h_SBM8Hsf97Y"></a>Calculando correlaciones</h2>
+<p><a class=p_ident id="p_Qw3t7bWwW/" href="#p_Qw3t7bWwW/"></a>Podemos representar una
+tabla de dos por dos en JavaScript con un array de 4 elementos
+(<code>[76, 9, 4, 1]</code>). Podríamos también usar otras representaciones, como
+un array que contenga dos arrays de dos elementos cada uno (<code>[[76, 9], [4, 1]]</code>) o como
+un objeto con nombre de propiedades como <code>"11"</code> y <code>"01"</code>, pero el array
+plano es simple y hace que las expresiones de acceso a la tabla sean
+convenientemente cortas. Interpretaremos los índices del array como
+un número binario de dos bits, en donde el dígito más a la izquierda
+(el más siginificativo) se refiere a la variable de la ardilla y el más a
+la derecha (menos significativo) se refiere a la variable del evento. Por ejemplo,
+el número binario <code>10</code> se refiere al caso en que Jacques se convirtió en
+ardilla, pero el evento (digamos, "pizza"), no ocurrió. Esto pasó 4 veces. Y como
+el binario <code>10</code> es 2 en notación decimal, guardaremos ese número en el índice 2
+del array.</p>
 <p><a class=p_ident id="p_napfsNS5sk" href="#p_napfsNS5sk"></a>This is the function that
 computes the <em>ϕ</em> coefficient from such an array:</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_kurq8z94si" href="#c_kurq8z94si"></a><span class="cm-keyword">function</span> <span class="cm-variable">phi</span>(<span class="cm-def">table</span>) {
