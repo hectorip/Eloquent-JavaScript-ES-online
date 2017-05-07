@@ -7,12 +7,12 @@ function agregarEntrada(eventos, meVolviArdilla) {
   });
 }
 
-function phi(table) {
-  return (table[3] * table[0] - table[2] * table[1]) /
-    Math.sqrt((table[2] + table[3]) *
-              (table[0] + table[1]) *
-              (table[1] + table[3]) *
-              (table[0] + table[2]));
+function phi(tabla) {
+  return (tabla[3] * tabla[0] - tabla[2] * tabla[1]) /
+    Math.sqrt((tabla[2] + tabla[3]) *
+              (tabla[0] + tabla[1]) *
+              (tabla[1] + tabla[3]) *
+              (tabla[0] + tabla[2]));
 }
 
 function hasEvent(event, entry) {

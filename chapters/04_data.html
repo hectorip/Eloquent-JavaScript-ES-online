@@ -403,14 +403,14 @@ el número binario <code>10</code> se refiere al caso en que Jacques se convirti
 ardilla, pero el evento (digamos, "pizza"), no ocurrió. Esto pasó 4 veces. Y como
 el binario <code>10</code> es 2 en notación decimal, guardaremos ese número en el índice 2
 del array.</p>
-<p><a class=p_ident id="p_napfsNS5sk" href="#p_napfsNS5sk"></a>This is the function that
-computes the <em>ϕ</em> coefficient from such an array:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_kurq8z94si" href="#c_kurq8z94si"></a><span class="cm-keyword">function</span> <span class="cm-variable">phi</span>(<span class="cm-def">table</span>) {
-  <span class="cm-keyword">return</span> (<span class="cm-variable-2">table</span>[<span class="cm-number">3</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">table</span>[<span class="cm-number">0</span>] <span class="cm-operator">-</span> <span class="cm-variable-2">table</span>[<span class="cm-number">2</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">table</span>[<span class="cm-number">1</span>]) <span class="cm-operator">/</span>
-    <span class="cm-variable">Math</span>.<span class="cm-property">sqrt</span>((<span class="cm-variable-2">table</span>[<span class="cm-number">2</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
-              (<span class="cm-variable-2">table</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">1</span>]) <span class="cm-operator">*</span>
-              (<span class="cm-variable-2">table</span>[<span class="cm-number">1</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
-              (<span class="cm-variable-2">table</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">2</span>]));
+<p><a class=p_ident id="p_d6oKbtCBbB" href="#p_d6oKbtCBbB"></a>Esta es la función que calcula el coeficiente
+<em>ϕ</em> del ese array:</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_LgDDHQN3vf" href="#c_LgDDHQN3vf"></a><span class="cm-keyword">function</span> <span class="cm-variable">phi</span>(<span class="cm-def">tabla</span>) {
+  <span class="cm-keyword">return</span> (<span class="cm-variable-2">tabla</span>[<span class="cm-number">3</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">tabla</span>[<span class="cm-number">0</span>] <span class="cm-operator">-</span> <span class="cm-variable-2">tabla</span>[<span class="cm-number">2</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">tabla</span>[<span class="cm-number">1</span>]) <span class="cm-operator">/</span>
+    <span class="cm-variable">Math</span>.<span class="cm-property">sqrt</span>((<span class="cm-variable-2">tabla</span>[<span class="cm-number">2</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tabla</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tabla</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tabla</span>[<span class="cm-number">1</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tabla</span>[<span class="cm-number">1</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tabla</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
+              (<span class="cm-variable-2">tabla</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">tabla</span>[<span class="cm-number">2</span>]));
 }
 
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">phi</span>([<span class="cm-number">76</span>, <span class="cm-number">9</span>, <span class="cm-number">4</span>, <span class="cm-number">1</span>]));
