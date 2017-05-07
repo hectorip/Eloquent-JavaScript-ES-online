@@ -347,7 +347,7 @@ el día.</p>
 <p><a class=p_ident id="p_ITwYvwUuID" href="#p_ITwYvwUuID"></a>Una vez que tiene suficientes datos, quiere calcular la correlación
 entre su ardillamiento y cada uno de los eventos e, idealmente, aprender
 algo útil de esas correlaciones.</p>
-<p><a class=p_ident id="p_Bjlk82HE6g" href="#p_Bjlk82HE6g"></a>La_Correlación_ es una medida de dependencia entre
+<p><a class=p_ident id="p_Tdp8x+hDZh" href="#p_Tdp8x+hDZh"></a>La <em>Correlación</em> es una medida de dependencia entre
 variables (“variables” en el sentido de la estadística, no en el de
 JavaScript). Es expresada usualmente como un coeficiente que va del -1 al
 1. Una correlación de 0 significa que las variables no están relacionadas, mientras
@@ -376,20 +376,18 @@ tabla:</p>
   </td>
 </tr></table>
 </div>
-<p><a class=p_ident id="p_WPl/XNNv2K" href="#p_WPl/XNNv2K"></a>The notation <em>n</em><sub>01</sub> indicates the
-number of measurements where the first variable (squirrelness) is false
-(0) and the second variable (pizza) is true (1). In this
-example, <em>n</em><sub>01</sub> is 9.</p>
-<p><a class=p_ident id="p_pweIXp0GRF" href="#p_pweIXp0GRF"></a>The value <em>n</em><sub>1•</sub> refers to the
-sum of all measurements where the first variable is true, which is 5
-in the example table. Likewise, <em>n</em><sub>•0</sub>
-refers to the sum of the measurements where the second variable is false.</p>
-<p><a class=p_ident id="p_ACMn7uvFzz" href="#p_ACMn7uvFzz"></a>So for the pizza table, the part
-above the division line (the dividend) would be 1×76 - 4×9 = 40, and
-the part below it (the divisor) would be the square root of
-5×85×10×80, or √340000. This
-comes out to <em>ϕ</em> ≈ 0.069, which is tiny. Eating pizza does not
-appear to have influence on the transformations.</p>
+<p><a class=p_ident id="p_8O75zvTqw1" href="#p_8O75zvTqw1"></a>La notación <em>n</em><sub>01</sub> indica el
+número de medidas en el que la primer vairiable (ardillificación) es falsa (0)
+y la segunda variable (pizza) es verdadera (1). En este ejemplo, <em>n</em><sub>01</sub> es 9.</p>
+<p><a class=p_ident id="p_6JDZ7pY+nU" href="#p_6JDZ7pY+nU"></a>El valor <em>n</em><sub>1•</sub> se refiere a la suma
+de todas las medidas en donde la primera variable es verdadera, que es 5 en la tabla de
+ejemplo. De la misma manera, <em>n</em><sub>•0</sub>
+se refiere a la suma de medidas en donde la segunda variable es falsa.</p>
+<p><a class=p_ident id="p_cvbLyHyQHg" href="#p_cvbLyHyQHg"></a> Así que para la tabla de la pizza,
+la parte de arriba de la línea de división (el dividendo) sería 1×76 - 4×9 = 40,
+y la parte de debajo de la línea (el divisor) sería la raíz cuadrada de
+5×85×10×80, o √340000. Esto da como resultado
+<em>ϕ</em> ≈ 0.069, que es muy pequeño. Comer pizza no parece tener influencia en las transformaciones.pizza))</p>
 <h2><a class=h_ident id="h_YwedOm6SqZ" href="#h_YwedOm6SqZ"></a>Computing correlation</h2>
 <p><a class=p_ident id="p_jn2nhCXEpR" href="#p_jn2nhCXEpR"></a>We can represent a
 two-by-two table in JavaScript with a four-element array (<code>[76, 9,
