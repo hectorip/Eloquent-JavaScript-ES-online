@@ -90,7 +90,7 @@ de vuelta a números para acceder a ellos.</p>
 tipo de dato específico para almacenar secuencias de valores. Se le llama
 <em>arreglo</em> (array) y se escribe como una lista de valores entre corchetes, separados
 por comas.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MoF26V5jo5" href="#c_MoF26V5jo5"></a><span class="cm-keyword">var</span> <span class="cm-variable">listaDeNumeros</span> <span class="cm-operator">=</span> [<span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">5</span>, <span class="cm-number">7</span>, <span class="cm-number">11</span>];
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DJ8HZWEYTP" href="#c_DJ8HZWEYTP"></a><span class="cm-keyword">var</span> <span class="cm-variable">listaDeNumeros</span> <span class="cm-operator">=</span> [<span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">5</span>, <span class="cm-number">7</span>, <span class="cm-number">11</span>];
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listaDeNumeros</span>[<span class="cm-number">1</span>]);
 <span class="cm-comment">// → 3</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">listaDeNumeros</span>[<span class="cm-number">1</span> <span class="cm-operator">-</span> <span class="cm-number">1</span>]);
@@ -117,7 +117,7 @@ funciones relacionadas con las matemáticas).</p>
 <p><a class=p_ident id="p_+scqPh9V5v" href="#p_+scqPh9V5v"></a>Casi todos los valores de JavaScript tienen
 propiedades. Las excepciones son <code>null</code> y <code>undefined</code>. Si intentas acceder una
 propiedad de alguno de estos valores inválidos recibirás un error.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ZEvFsOQLc8" href="#c_ZEvFsOQLc8"></a><span class="cm-atom">null</span>.<span class="cm-property">length</span>;
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_B83MTxU7nK" href="#c_B83MTxU7nK"></a><span class="cm-atom">null</span>.<span class="cm-property">length</span>;
 <span class="cm-comment">// → TypeError: Cannot read property 'length' of null</span></pre>
 <p><a class=p_ident id="p_7d7s0A0x5C" href="#p_7d7s0A0x5C"></a>Las dos maneras comunes de acceder a propiedades
 en Javascript son con un punto y con corchetes. Ambas <code>valor.x</code> y <code>valor[x]</code>
@@ -143,11 +143,11 @@ La propiedad <code>length</code> (longitud) de un arreglo nos dice cuantos eleme
 nombre de propiedad es un nombre de variable válido, y conocemos su nombre por
 anticipado, así que para encontrar la longitud de un arreglo, comúnmente
 escribiremos <code>arreglo.length</code> ya que es más fácil de escribir que <code>arreglo["length"]</code>.</p>
-<h2 id="methods"><a class=h_ident id="h_PmdOYH9y71" href="#h_PmdOYH9y71"></a>Métodos</h2>
+<h2 id="methods"><a class=h_ident id="h_OYddlNFqr1" href="#h_OYddlNFqr1"></a>Métodos</h2>
 <p><a class=p_ident id="p_VI/iacvm4D" href="#p_VI/iacvm4D"></a>Ambos objetos, las cadenas y
 los arreglos contienen, adicionalmente a la propiedad <code>length</code> (longitud), varias
 propiedades que refieren a valores que son funciones.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Crc8UwFnzX" href="#c_Crc8UwFnzX"></a><span class="cm-keyword">var</span> <span class="cm-variable">doh</span> <span class="cm-operator">=</span> <span class="cm-string">"Doh"</span>;
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_4uDA4DT8/Q" href="#c_4uDA4DT8/Q"></a><span class="cm-keyword">var</span> <span class="cm-variable">doh</span> <span class="cm-operator">=</span> <span class="cm-string">"Doh"</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-keyword">typeof</span> <span class="cm-variable">doh</span>.<span class="cm-property">toUpperCase</span>);
 <span class="cm-comment">// → function</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">doh</span>.<span class="cm-property">toUpperCase</span>());
@@ -163,7 +163,7 @@ el <a href="06_object.html#obj_methods">Capítulo 6</a>.</p>
 del valor al que pertenecen. Así, "<code>toUpperCase</code> es un método de una cadena".</p>
 <p id="array_methods"><a class=p_ident id="p_BM3xpho82E" href="#p_BM3xpho82E"></a>Este ejemplo demuestra
 algunos métodos que los objetos arrays tienen:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Ymu7GdxtdT" href="#c_Ymu7GdxtdT"></a><span class="cm-keyword">var</span> <span class="cm-variable">mack</span> <span class="cm-operator">=</span> [];
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Lr0RiBqCp8" href="#c_Lr0RiBqCp8"></a><span class="cm-keyword">var</span> <span class="cm-variable">mack</span> <span class="cm-operator">=</span> [];
 <span class="cm-variable">mack</span>.<span class="cm-property">push</span>(<span class="cm-string">"Mack"</span>);
 <span class="cm-variable">mack</span>.<span class="cm-property">push</span>(<span class="cm-string">"the"</span>, <span class="cm-string">"Knife"</span>);
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mack</span>);
@@ -190,7 +190,7 @@ valor y poner estos valores agrupados en un array de entradas del registro.</p>
 <p><a class=p_ident id="p_oeA3xDAjHt" href="#p_oeA3xDAjHt"></a>Los valores del tipo <em>objeto</em> son colecciones arbitrarias
 de propiedades, y podemos añadir o remover estas propiedades a placer.
 Una manera de crear un objeto es usando la notación de llaves.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_s5Ouk9PhYE" href="#c_s5Ouk9PhYE"></a><span class="cm-keyword">var</span> <span class="cm-variable">dia1</span> <span class="cm-operator">=</span> {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3PcXIAo68I" href="#c_3PcXIAo68I"></a><span class="cm-keyword">var</span> <span class="cm-variable">dia1</span> <span class="cm-operator">=</span> {
   <span class="cm-property">ardilla</span>: <span class="cm-atom">false</span>,
   <span class="cm-property">eventos</span>: [<span class="cm-string">"trabajo"</span>, <span class="cm-string">"toqué un arbol"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"correr"</span>,
            <span class="cm-string">"televisión"</span>]
@@ -210,7 +210,7 @@ y saltos de línea no son afectan. Cunado un objeto tiene múltiples líneas,
 indentarlas como en el ejemplo previo mejora la legibilidad. Las propiedades
 que tengan nombres que no sean nombres de variable válidos o números válidos
 tienen que estar entrecomilladas.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_qCSUuJmkj7" href="#c_qCSUuJmkj7"></a><span class="cm-keyword">var</span> <span class="cm-variable">descripciones</span> <span class="cm-operator">=</span> {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_lgCb8CmCs5" href="#c_lgCb8CmCs5"></a><span class="cm-keyword">var</span> <span class="cm-variable">descripciones</span> <span class="cm-operator">=</span> {
   <span class="cm-property">trabajo</span>: <span class="cm-string">"Fui al trabajo"</span>,
   <span class="cm-string cm-property">"toqué un arbol"</span>: <span class="cm-string">"Toqué el arbol del vecino"</span>
 };</pre>
@@ -239,7 +239,7 @@ de los cuales tiene un nombre escrito en él.</p>
 tentáculo a este pulpo. Es un operador unario que, cuando es aplicado a una
 expresión de acceso a una propiedad, eliminará la propiedad nombrada del objeto.
 Esto no es algo que se haga comúnmente, pero es posible.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_zjBVN74mOj" href="#c_zjBVN74mOj"></a><span class="cm-keyword">var</span> <span class="cm-variable">unObjeto</span> <span class="cm-operator">=</span> {<span class="cm-property">izq</span>: <span class="cm-number">1</span>, <span class="cm-property">der</span>: <span class="cm-number">2</span>};
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_iBFU/mrO8m" href="#c_iBFU/mrO8m"></a><span class="cm-keyword">var</span> <span class="cm-variable">unObjeto</span> <span class="cm-operator">=</span> {<span class="cm-property">izq</span>: <span class="cm-number">1</span>, <span class="cm-property">der</span>: <span class="cm-number">2</span>};
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">unObjeto</span>.<span class="cm-property">izq</span>);
 <span class="cm-comment">// → 1</span>
 <span class="cm-keyword">delete</span> <span class="cm-variable">unObjeto</span>.<span class="cm-property">izq</span>;
@@ -265,7 +265,7 @@ todos sus tentáculos en una fila limpia, etiquetados con números.</p>
 </div>
 <p><a class=p_ident id="p_M/klGP/xw3" href="#p_M/klGP/xw3"></a>Así que podemos representar el
 diario de Jacques coomo un array de objetos.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_7pBK7ktb3z" href="#c_7pBK7ktb3z"></a><span class="cm-keyword">var</span> <span class="cm-variable">diario</span> <span class="cm-operator">=</span> [
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_bfbU1yyn3q" href="#c_bfbU1yyn3q"></a><span class="cm-keyword">var</span> <span class="cm-variable">diario</span> <span class="cm-operator">=</span> [
   {<span class="cm-property">eventos</span>: [<span class="cm-string">"trabajo"</span>, <span class="cm-string">"tocar un arbol"</span>, <span class="cm-string">"pizza"</span>,
             <span class="cm-string">"correr"</span>, <span class="cm-string">"televisión"</span>],
    <span class="cm-property">ardilla</span>: <span class="cm-atom">false</span>},
@@ -296,7 +296,7 @@ números,, 120 y 120, podemos considerar que son precisamente el mismo número
 independientemente si se refieren o no a los mismos bits físicos. Pero
 con los objetos, hay una diferencia entre tener la dos referencias al mismo objeto y tener dos objetos que contienen las mismas propiedades.
 Considera el siguiente código:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Wz+Bp98GTU" href="#c_Wz+Bp98GTU"></a><span class="cm-keyword">var</span> <span class="cm-variable">objeto1</span> <span class="cm-operator">=</span> {<span class="cm-property">valor</span>: <span class="cm-number">10</span>};
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_SY037Zq/5A" href="#c_SY037Zq/5A"></a><span class="cm-keyword">var</span> <span class="cm-variable">objeto1</span> <span class="cm-operator">=</span> {<span class="cm-property">valor</span>: <span class="cm-number">10</span>};
 <span class="cm-keyword">var</span> <span class="cm-variable">objeto2</span> <span class="cm-operator">=</span> <span class="cm-variable">objeto1</span>;
 <span class="cm-keyword">var</span> <span class="cm-variable">objeto3</span> <span class="cm-operator">=</span> {<span class="cm-property">valor</span>: <span class="cm-number">10</span>};
 
@@ -323,7 +323,7 @@ tienen contenidos idénticos. No existe comparación "profunda" construida en
 JavaScript, la cual se basa en el contenido de los objetos, pero puedes
 escribirla tú mismo (que será uno de los
 <a href="04_data.html#exercise_deep_compare">ejercicios</a> al final de este capítulo).</p>
-<h2><a class=h_ident id="h_xzZeKSY/lk" href="#h_xzZeKSY/lk"></a>El registro del licántropo</h2>
+<h2><a class=h_ident id="h_yM11hOP1fJ" href="#h_yM11hOP1fJ"></a>El registro del licántropo</h2>
 <p><a class=p_ident id="p_8/0TGF5auf" href="#p_8/0TGF5auf"></a>Así,
 Jacques inicia su intérprete de JavaScript y configura el entorno
 que necesita para llevar su diario.</p>
@@ -338,7 +338,7 @@ que necesita para llevar su diario.</p>
 <p><a class=p_ident id="p_NqldmGIIn/" href="#p_NqldmGIIn/"></a>Y después, cada noche a las 10, o algunas veces la mañana siguiente,
 después de haber bajado de la parte superior de su librero, registra
 el día.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3TBrjVPy48" href="#c_3TBrjVPy48"></a><span class="cm-variable">agregarEntrada</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"toqué un árbol"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"correr"</span>,
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_efshPU6xpf" href="#c_efshPU6xpf"></a><span class="cm-variable">agregarEntrada</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"toqué un árbol"</span>, <span class="cm-string">"pizza"</span>, <span class="cm-string">"correr"</span>,
           <span class="cm-string">"televisión"</span>], <span class="cm-atom">false</span>);
 <span class="cm-variable">agregarEntrada</span>([<span class="cm-string">"trabajo"</span>, <span class="cm-string">"helado"</span>, <span class="cm-string">"coliflor"</span>, <span class="cm-string">"lasagna"</span>,
           <span class="cm-string">"toqué un árbol"</span>, <span class="cm-string">"me lavé los dientes"</span>], <span class="cm-atom">false</span>);
@@ -347,24 +347,23 @@ el día.</p>
 <p><a class=p_ident id="p_ITwYvwUuID" href="#p_ITwYvwUuID"></a>Una vez que tiene suficientes datos, quiere calcular la correlación
 entre su ardillamiento y cada uno de los eventos e, idealmente, aprender
 algo útil de esas correlaciones.</p>
-<p><a class=p_ident id="p_EedDVNQ30H" href="#p_EedDVNQ30H"></a><em>Correlation</em> is a measure of dependence between
-variables (“variables” in the statistical sense, not the
-JavaScript sense). It is usually expressed as a coefficient that
-ranges from -1 to 1. Zero correlation means the variables are not
-related, whereas a correlation of one indicates that the two are
-perfectly related—if you know one, you also know the other. Negative
-one also means that the variables are perfectly related but that they
-are opposites—when one is true, the other is false.</p>
-<p><a class=p_ident id="p_4Rv6gGntx7" href="#p_4Rv6gGntx7"></a>For binary (Boolean) variables, the <em>phi</em>
-coefficient (<em>ϕ</em>) provides a good measure of correlation and is
-relatively easy to compute. To compute <em>ϕ</em>, we need a table <em>n</em>
-that contains the number of times the various combinations of the two
-variables were observed. For example, we could take the event of
-eating pizza and put that in a table like this:</p>
+<p><a class=p_ident id="p_Bjlk82HE6g" href="#p_Bjlk82HE6g"></a>La_Correlación_ es una medida de dependencia entre
+variables (“variables” en el sentido de la estadística, no en el de
+JavaScript). Es expresada usualmente como un coeficiente que va del -1 al
+1. Una correlación de 0 significa que las variables no están relacionadas, mientras
+que una correlación de uno indica que están perfectamente relacionadas: si conoces una,
+entonces conoces la otra. El uno negativo también significa que están perfectamente
+relacionadas pero que son opuestas, cuando una es verdadera, la otra es falsa.</p>
+<p><a class=p_ident id="p_3jzk2lT9ms" href="#p_3jzk2lT9ms"></a> Para variables binarias (Booleanas), el coeficiente <em>phi</em>
+(<em>ϕ</em>) da una buena medida de correlación y es relativamente fácil de calcular.
+Para calcular <em>ϕ</em> necesitamos una tabla <em>n</em> que contine el número de veces
+que varias combinaciones de variables fueron observadas. Por ejemplo, podríamos
+tomar el evento de comer pizza y ponerlo en la tabla de la siguiente manera:</p>
 <div class="image">
-  <img src="img/pizza-squirrel.svg" alt="Eating pizza versus turning into a squirrel">
+  <img src="img/pizza-squirrel.svg" alt="Comer pizza vs convertirse en ardilla.">
 </div>
-<p><a class=p_ident id="p_82L/EowL1c" href="#p_82L/EowL1c"></a><em>ϕ</em> can be computed using the following formula, where <em>n</em> refers to the table:</p>
+<p><a class=p_ident id="p_Pp3q5u7ieE" href="#p_Pp3q5u7ieE"></a><em>ϕ</em> puede ser calculado usando la siguiente fórmula, en donde <em>n</em> se refiere a la
+tabla:</p>
 <div>
 <style scoped="scoped">sub { font-size: 60%; }</style>
 <table style="border-collapse: collapse; margin-left: 1em;"><tr>
@@ -408,7 +407,7 @@ binary <code>10</code> is 2 in decimal notation, we will store this number at
 index 2 of the array.</p>
 <p><a class=p_ident id="p_napfsNS5sk" href="#p_napfsNS5sk"></a>This is the function that
 computes the <em>ϕ</em> coefficient from such an array:</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_S1PE4hukUi" href="#c_S1PE4hukUi"></a><span class="cm-keyword">function</span> <span class="cm-variable">phi</span>(<span class="cm-def">table</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_kurq8z94si" href="#c_kurq8z94si"></a><span class="cm-keyword">function</span> <span class="cm-variable">phi</span>(<span class="cm-def">table</span>) {
   <span class="cm-keyword">return</span> (<span class="cm-variable-2">table</span>[<span class="cm-number">3</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">table</span>[<span class="cm-number">0</span>] <span class="cm-operator">-</span> <span class="cm-variable-2">table</span>[<span class="cm-number">2</span>] <span class="cm-operator">*</span> <span class="cm-variable-2">table</span>[<span class="cm-number">1</span>]) <span class="cm-operator">/</span>
     <span class="cm-variable">Math</span>.<span class="cm-property">sqrt</span>((<span class="cm-variable-2">table</span>[<span class="cm-number">2</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">3</span>]) <span class="cm-operator">*</span>
               (<span class="cm-variable-2">table</span>[<span class="cm-number">0</span>] <span class="cm-operator">+</span> <span class="cm-variable-2">table</span>[<span class="cm-number">1</span>]) <span class="cm-operator">*</span>
@@ -434,7 +433,7 @@ where it is stored in the <code>JOURNAL</code> variable, and in a downloadable
 table for a specific event from this journal, we must loop over
 all the entries and tally up how many times the event occurs in
 relation to squirrel transformations.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_eFskSRBd2j" href="#c_eFskSRBd2j"></a><span class="cm-keyword">function</span> <span class="cm-variable">hasEvent</span>(<span class="cm-def">event</span>, <span class="cm-def">entry</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_zCS39l9qoi" href="#c_zCS39l9qoi"></a><span class="cm-keyword">function</span> <span class="cm-variable">hasEvent</span>(<span class="cm-def">event</span>, <span class="cm-def">entry</span>) {
   <span class="cm-keyword">return</span> <span class="cm-variable-2">entry</span>.<span class="cm-property">events</span>.<span class="cm-property">indexOf</span>(<span class="cm-variable-2">event</span>) <span class="cm-operator">!=</span> <span class="cm-operator">-</span><span class="cm-number">1</span>;
 }
 
@@ -479,7 +478,7 @@ and the computer would be doing more work than necessary.</p>
 event types. We can use the square bracket access notation to create
 and read the properties and can use the <code>in</code> operator to test whether
 a given property exists.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_0q+8ig85i+" href="#c_0q+8ig85i+"></a><span class="cm-keyword">var</span> <span class="cm-variable">map</span> <span class="cm-operator">=</span> {};
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3/W5rqFVOs" href="#c_3/W5rqFVOs"></a><span class="cm-keyword">var</span> <span class="cm-variable">map</span> <span class="cm-operator">=</span> {};
 <span class="cm-keyword">function</span> <span class="cm-variable">storePhi</span>(<span class="cm-def">event</span>, <span class="cm-def">phi</span>) {
   <span class="cm-variable">map</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">phi</span>;
 }
@@ -503,7 +502,7 @@ array, so we cannot use a normal <code>for</code> loop. JavaScript provides a
 loop construct specifically for going over the properties of an
 object. It looks a little like a normal <code>for</code> loop but distinguishes
 itself by the use of the word <code>in</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_fVra/BEVfu" href="#c_fVra/BEVfu"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">map</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_6gN7jQD267" href="#c_6gN7jQD267"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">map</span>)
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"The correlation for '"</span> <span class="cm-operator">+</span> <span class="cm-variable">event</span> <span class="cm-operator">+</span>
               <span class="cm-string">"' is "</span> <span class="cm-operator">+</span> <span class="cm-variable">map</span>[<span class="cm-variable">event</span>]);
 <span class="cm-comment">// → The correlation for 'pizza' is 0.069</span>
@@ -515,7 +514,7 @@ events in that entry. We keep an object <code>phis</code> that has correlation
 coefficients for all the event types we have seen so far. Whenever we
 run across a type that isn&#8217;t in the <code>phis</code> object yet, we compute its
 correlation and add it to the object.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NNtQBmsHS2" href="#c_NNtQBmsHS2"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_XWKz7pnQgN" href="#c_XWKz7pnQgN"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">journal</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
   <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">entry</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">journal</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">entry</span><span class="cm-operator">++</span>) {
     <span class="cm-keyword">var</span> <span class="cm-def">events</span> <span class="cm-operator">=</span> <span class="cm-variable-2">journal</span>[<span class="cm-variable-2">entry</span>].<span class="cm-property">events</span>;
@@ -532,7 +531,7 @@ correlation and add it to the object.</p>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">correlations</span>.<span class="cm-property">pizza</span>);
 <span class="cm-comment">// → 0.068599434</span></pre>
 <p><a class=p_ident id="p_XUj02Go7DR" href="#p_XUj02Go7DR"></a>Let&#8217;s see what came out.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9AY4PathBr" href="#c_9AY4PathBr"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlations</span>)
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9yz0E9p7aB" href="#c_9yz0E9p7aB"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlations</span>)
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">event</span> <span class="cm-operator">+</span> <span class="cm-string">": "</span> <span class="cm-operator">+</span> <span class="cm-variable">correlations</span>[<span class="cm-variable">event</span>]);
 <span class="cm-comment">// → carrot:   0.0140970969</span>
 <span class="cm-comment">// → exercise: 0.0685994341</span>
@@ -545,7 +544,7 @@ carrots, bread, or pudding apparently does not trigger
 squirrel-lycanthropy. It <em>does</em> seem to occur somewhat more often on
 weekends, however. Let&#8217;s filter the results to show only correlations
 greater than 0.1 or less than -0.1.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_TLJ4VeMVj7" href="#c_TLJ4VeMVj7"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlations</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_n5ah9P3y8e" href="#c_n5ah9P3y8e"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlations</span>) {
   <span class="cm-keyword">var</span> <span class="cm-variable">correlation</span> <span class="cm-operator">=</span> <span class="cm-variable">correlations</span>[<span class="cm-variable">event</span>];
   <span class="cm-keyword">if</span> (<span class="cm-variable">correlation</span> <span class="cm-operator">></span> <span class="cm-number">0.1</span> <span class="cm-operator">||</span> <span class="cm-variable">correlation</span> <span class="cm-operator">&lt;</span> <span class="cm-operator">-</span><span class="cm-number">0.1</span>)
     <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">event</span> <span class="cm-operator">+</span> <span class="cm-string">": "</span> <span class="cm-operator">+</span> <span class="cm-variable">correlation</span>);
@@ -562,7 +561,7 @@ than the others. Eating peanuts has a strong positive effect on
 the chance of turning into a squirrel, whereas brushing his teeth has
 a significant negative effect.</p>
 <p><a class=p_ident id="p_xpRHDuufcX" href="#p_xpRHDuufcX"></a>Interesting. Let&#8217;s try something.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_xlu1nixXWv" href="#c_xlu1nixXWv"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">JOURNAL</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wPh8Dw9Oh6" href="#c_wPh8Dw9Oh6"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">JOURNAL</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
   <span class="cm-keyword">var</span> <span class="cm-variable">entry</span> <span class="cm-operator">=</span> <span class="cm-variable">JOURNAL</span>[<span class="cm-variable">i</span>];
   <span class="cm-keyword">if</span> (<span class="cm-variable">hasEvent</span>(<span class="cm-string">"peanuts"</span>, <span class="cm-variable">entry</span>) <span class="cm-operator">&amp;&amp;</span>
      <span class="cm-operator">!</span><span class="cm-variable">hasEvent</span>(<span class="cm-string">"brushed teeth"</span>, <span class="cm-variable">entry</span>))
@@ -610,7 +609,7 @@ front instead of the back of the list.</p>
 <p><a class=p_ident id="p_V9yB5Z4xWA" href="#p_V9yB5Z4xWA"></a>The <code>indexOf</code> method has a sibling called <code>lastIndexOf</code>,
 which starts searching for the given element at the end of the array
 instead of the front.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_li2m9Gen8Q" href="#c_li2m9Gen8Q"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">2</span>, <span class="cm-number">1</span>].<span class="cm-property">indexOf</span>(<span class="cm-number">2</span>));
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9xeZrv5iIu" href="#c_9xeZrv5iIu"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">2</span>, <span class="cm-number">1</span>].<span class="cm-property">indexOf</span>(<span class="cm-number">2</span>));
 <span class="cm-comment">// → 1</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">2</span>, <span class="cm-number">1</span>].<span class="cm-property">lastIndexOf</span>(<span class="cm-number">2</span>));
 <span class="cm-comment">// → 3</span></pre>
@@ -620,7 +619,7 @@ indicates where to start searching from.</p>
 is <code>slice</code>, which takes a start index and an end index and returns an
 array that has only the elements between those indices. The start
 index is inclusive, the end index exclusive.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_uRogoaHL4B" href="#c_uRogoaHL4B"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">0</span>, <span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>].<span class="cm-property">slice</span>(<span class="cm-number">2</span>, <span class="cm-number">4</span>));
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+Pb+Yu6BdE" href="#c_+Pb+Yu6BdE"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">0</span>, <span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>].<span class="cm-property">slice</span>(<span class="cm-number">2</span>, <span class="cm-number">4</span>));
 <span class="cm-comment">// → [2, 3]</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>([<span class="cm-number">0</span>, <span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>, <span class="cm-number">4</span>].<span class="cm-property">slice</span>(<span class="cm-number">2</span>));
 <span class="cm-comment">// → [2, 3, 4]</span></pre>
@@ -633,7 +632,7 @@ strings. The following example shows both <code>concat</code> and <code>slice</c
 action. It takes an array and an index, and it returns a new array
 that is a copy of the original array with the element at the given
 index removed.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_ai2SwbDs5w" href="#c_ai2SwbDs5w"></a><span class="cm-keyword">function</span> <span class="cm-variable">remove</span>(<span class="cm-def">array</span>, <span class="cm-def">index</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_P4XHOiO6e8" href="#c_P4XHOiO6e8"></a><span class="cm-keyword">function</span> <span class="cm-variable">remove</span>(<span class="cm-def">array</span>, <span class="cm-def">index</span>) {
   <span class="cm-keyword">return</span> <span class="cm-variable-2">array</span>.<span class="cm-property">slice</span>(<span class="cm-number">0</span>, <span class="cm-variable-2">index</span>)
     .<span class="cm-property">concat</span>(<span class="cm-variable-2">array</span>.<span class="cm-property">slice</span>(<span class="cm-variable-2">index</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>));
 }
@@ -643,7 +642,7 @@ index removed.</p>
 <p><a class=p_ident id="p_ZbMq0Cy4Fu" href="#p_ZbMq0Cy4Fu"></a>We can read properties like <code>length</code> and
 <code>toUpperCase</code> from string values. But if you try to add a new
 property, it doesn&#8217;t stick.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_kuUv1PH55x" href="#c_kuUv1PH55x"></a><span class="cm-keyword">var</span> <span class="cm-variable">myString</span> <span class="cm-operator">=</span> <span class="cm-string">"Fido"</span>;
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_TjC7RNwptm" href="#c_TjC7RNwptm"></a><span class="cm-keyword">var</span> <span class="cm-variable">myString</span> <span class="cm-operator">=</span> <span class="cm-string">"Fido"</span>;
 <span class="cm-variable">myString</span>.<span class="cm-property">myProperty</span> <span class="cm-operator">=</span> <span class="cm-string">"value"</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">myString</span>.<span class="cm-property">myProperty</span>);
 <span class="cm-comment">// → undefined</span></pre>
@@ -655,25 +654,25 @@ immutable and cannot be changed.</p>
 properties. Every string value has a number of methods. The most
 useful ones are probably <code>slice</code> and <code>indexOf</code>, which resemble the
 array methods of the same name.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_rZojswAQFV" href="#c_rZojswAQFV"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"coconuts"</span>.<span class="cm-property">slice</span>(<span class="cm-number">4</span>, <span class="cm-number">7</span>));
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_HnK8OClqMj" href="#c_HnK8OClqMj"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"coconuts"</span>.<span class="cm-property">slice</span>(<span class="cm-number">4</span>, <span class="cm-number">7</span>));
 <span class="cm-comment">// → nut</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"coconut"</span>.<span class="cm-property">indexOf</span>(<span class="cm-string">"u"</span>));
 <span class="cm-comment">// → 5</span></pre>
 <p><a class=p_ident id="p_RUd6q+Q4dc" href="#p_RUd6q+Q4dc"></a>One difference is that a string&#8217;s <code>indexOf</code> can take a string
 containing more than one character, whereas the corresponding array
 method looks only for a single element.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_sW/DJiLrM1" href="#c_sW/DJiLrM1"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"one two three"</span>.<span class="cm-property">indexOf</span>(<span class="cm-string">"ee"</span>));
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_rLMjIrZ6TV" href="#c_rLMjIrZ6TV"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"one two three"</span>.<span class="cm-property">indexOf</span>(<span class="cm-string">"ee"</span>));
 <span class="cm-comment">// → 11</span></pre>
 <p><a class=p_ident id="p_iSAQfJDhu8" href="#p_iSAQfJDhu8"></a>The <code>trim</code> method removes whitespace
 (spaces, newlines, tabs, and similar characters) from the start and
 end of a string.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_Bm4kTTYcF2" href="#c_Bm4kTTYcF2"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"  okay \n "</span>.<span class="cm-property">trim</span>());
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+59fWpnlNH" href="#c_+59fWpnlNH"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"  okay \n "</span>.<span class="cm-property">trim</span>());
 <span class="cm-comment">// → okay</span></pre>
 <p><a class=p_ident id="p_J4kiFmHyRO" href="#p_J4kiFmHyRO"></a>We have already seen the string type&#8217;s
 <code>length</code> property. Accessing the individual characters in a string can
 be done with the <code>charAt</code> method but also by simply reading numeric
 properties, like you&#8217;d do for an array.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_+uFPZG6blX" href="#c_+uFPZG6blX"></a><span class="cm-keyword">var</span> <span class="cm-variable">string</span> <span class="cm-operator">=</span> <span class="cm-string">"abc"</span>;
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_m6+yDdVBSn" href="#c_m6+yDdVBSn"></a><span class="cm-keyword">var</span> <span class="cm-variable">string</span> <span class="cm-operator">=</span> <span class="cm-string">"abc"</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">string</span>.<span class="cm-property">length</span>);
 <span class="cm-comment">// → 3</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">string</span>.<span class="cm-property">charAt</span>(<span class="cm-number">0</span>));
@@ -699,7 +698,7 @@ so on.</p>
 you&#8217;re right, it <em>is</em> a lot like an array. But this object,
 unfortunately, does not have any array methods (like <code>slice</code> or
 <code>indexOf</code>), so it is a little harder to use than a real array.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_MLV9gPSdx9" href="#c_MLV9gPSdx9"></a><span class="cm-keyword">function</span> <span class="cm-variable">argumentCounter</span>() {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_DkiKhdVpsZ" href="#c_DkiKhdVpsZ"></a><span class="cm-keyword">function</span> <span class="cm-variable">argumentCounter</span>() {
   <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"You gave me"</span>, <span class="cm-variable-2">arguments</span>.<span class="cm-property">length</span>, <span class="cm-string">"arguments."</span>);
 }
 <span class="cm-variable">argumentCounter</span>(<span class="cm-string">"Straw man"</span>, <span class="cm-string">"Tautology"</span>, <span class="cm-string">"Ad hominem"</span>);
@@ -753,7 +752,7 @@ number π (pi)—or at least the closest approximation that fits in a
 JavaScript number—is available as <code>Math.PI</code>. (There is an old
 programming tradition of writing the names of constant values in
 all caps.)</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_2uZIZgWSsu" href="#c_2uZIZgWSsu"></a><span class="cm-keyword">function</span> <span class="cm-variable">randomPointOnCircle</span>(<span class="cm-def">radius</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_jVEDhgK+XA" href="#c_jVEDhgK+XA"></a><span class="cm-keyword">function</span> <span class="cm-variable">randomPointOnCircle</span>(<span class="cm-def">radius</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">angle</span> <span class="cm-operator">=</span> <span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">2</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">PI</span>;
   <span class="cm-keyword">return</span> {<span class="cm-property">x</span>: <span class="cm-variable-2">radius</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">cos</span>(<span class="cm-variable-2">angle</span>),
           <span class="cm-property">y</span>: <span class="cm-variable-2">radius</span> <span class="cm-operator">*</span> <span class="cm-variable">Math</span>.<span class="cm-property">sin</span>(<span class="cm-variable-2">angle</span>)};
@@ -767,7 +766,7 @@ don&#8217;t worry. When they are used in this book, in
 uses <code>Math.random</code>. This is a function that returns a new
 pseudorandom number between zero (inclusive) and one (exclusive)
 every time you call it.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wJKP6sIzSp" href="#c_wJKP6sIzSp"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NbplV6vA2g" href="#c_NbplV6vA2g"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
 <span class="cm-comment">// → 0.36993729369714856</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>());
 <span class="cm-comment">// → 0.727367032552138</span>
@@ -786,7 +785,7 @@ that the next “random” number produced will be different.</p>
 number instead of a fractional one, we can use <code>Math.floor</code> (which
 rounds down to the nearest whole number) on the result of
 <code>Math.random</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_bBGTtB+AvR" href="#c_bBGTtB+AvR"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">10</span>));
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_UvYBav4xt5" href="#c_UvYBav4xt5"></a><span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">Math</span>.<span class="cm-property">floor</span>(<span class="cm-variable">Math</span>.<span class="cm-property">random</span>() <span class="cm-operator">*</span> <span class="cm-number">10</span>));
 <span class="cm-comment">// → 2</span></pre>
 <p><a class=p_ident id="p_52aDRkOsyH" href="#p_52aDRkOsyH"></a>Multiplying the random number by 10 gives us a number greater than or
 equal to zero, and below 10. Since <code>Math.floor</code> rounds down, this
@@ -801,7 +800,7 @@ global variables live, can also be approached as an object in
 JavaScript. Each global variable is present as a property of this
 object. In browsers, the global scope object is stored in the
 <code>window</code> variable.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3k/DIzi9mB" href="#c_3k/DIzi9mB"></a><span class="cm-keyword">var</span> <span class="cm-variable">myVar</span> <span class="cm-operator">=</span> <span class="cm-number">10</span>;
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_YaSzv1qE8W" href="#c_YaSzv1qE8W"></a><span class="cm-keyword">var</span> <span class="cm-variable">myVar</span> <span class="cm-operator">=</span> <span class="cm-number">10</span>;
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"myVar"</span> <span class="cm-keyword">in</span> <span class="cm-variable">window</span>);
 <span class="cm-comment">// → true</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">window</span>.<span class="cm-property">myVar</span>);
@@ -843,7 +842,7 @@ elements go up by increments of one, corresponding to the old
 behavior. The function call <code>range(1, 10, 2)</code> should return <code>[1, 3, 5,
 7, 9]</code>. Make sure it also works with negative step values so that
 <code>range(5, 2, -1)</code> produces <code>[5, 4, 3, 2]</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_BUhKzmRiGU" href="#c_BUhKzmRiGU"></a><span class="cm-comment">// Your code here.</span>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_/BQ7zA128c" href="#c_/BQ7zA128c"></a><span class="cm-comment">// Your code here.</span>
 
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">range</span>(<span class="cm-number">1</span>, <span class="cm-number">10</span>));
 <span class="cm-comment">// → [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span>
@@ -887,7 +886,7 @@ order to reverse its elements. Neither may use the standard
 the notes about side effects and pure functions in the
 <a href="03_functions.html#pure">previous chapter</a>, which variant do you
 expect to be useful in more situations? Which one is more efficient?</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_F3JsLaIs+m" href="#c_F3JsLaIs+m"></a><span class="cm-comment">// Your code here.</span>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_at6e0JhJjg" href="#c_at6e0JhJjg"></a><span class="cm-comment">// Your code here.</span>
 
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">reverseArray</span>([<span class="cm-string">"A"</span>, <span class="cm-string">"B"</span>, <span class="cm-string">"C"</span>]));
 <span class="cm-comment">// → ["C", "B", "A"];</span>
@@ -954,7 +953,7 @@ element at the given position in the list, or <code>undefined</code> when there
 is no such element.</p>
 <p><a class=p_ident id="p_IZMCvYT0l2" href="#p_IZMCvYT0l2"></a>If you haven&#8217;t already, also write a recursive version
 of <code>nth</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_F73m7OkLk8" href="#c_F73m7OkLk8"></a><span class="cm-comment">// Your code here.</span>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_lGyZZnlBgy" href="#c_lGyZZnlBgy"></a><span class="cm-comment">// Your code here.</span>
 
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">arrayToList</span>([<span class="cm-number">10</span>, <span class="cm-number">20</span>]));
 <span class="cm-comment">// → {value: 10, rest: {value: 20, rest: null}}</span>
@@ -1001,7 +1000,7 @@ by looking at their properties, you can use the <code>typeof</code> operator. If
 it produces <code>"object"</code> for both values, you should do a deep
 comparison. But you have to take one silly exception into account: by
 a historical accident, <code>typeof null</code> also produces <code>"object"</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_JMI8a18DSU" href="#c_JMI8a18DSU"></a><span class="cm-comment">// Your code here.</span>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_sxBAJyq2QR" href="#c_sxBAJyq2QR"></a><span class="cm-comment">// Your code here.</span>
 
 <span class="cm-keyword">var</span> <span class="cm-variable">obj</span> <span class="cm-operator">=</span> {<span class="cm-property">here</span>: {<span class="cm-property">is</span>: <span class="cm-string">"an"</span>}, <span class="cm-property">object</span>: <span class="cm-number">2</span>};
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">deepEqual</span>(<span class="cm-variable">obj</span>, <span class="cm-variable">obj</span>));
