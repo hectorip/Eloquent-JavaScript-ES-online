@@ -15,19 +15,19 @@ function phi(tabla) {
               (tabla[0] + tabla[2]));
 }
 
-function hasEvent(event, entry) {
-  return entry.events.indexOf(event) != -1;
+function tieneEvento(evento, entrada) {
+  return entrada.eventos.indexOf(evento) != -1;
 }
 
-function tableFor(event, journal) {
-  var table = [0, 0, 0, 0];
-  for (var i = 0; i < journal.length; i++) {
-    var entry = journal[i], index = 0;
-    if (hasEvent(event, entry)) index += 1;
-    if (entry.squirrel) index += 2;
-    table[index] += 1;
+function tablaPara(evento, diario) {
+  var tabla = [0, 0, 0, 0];
+  for (var i = 0; i < diario.length; i++) {
+    var entrada = diario[i], index = 0;
+    if (tieneEvento(evento, entrada)) index += 1;
+    if (entrada.ardilla) index += 2;
+    tabla[index] += 1;
   }
-  return table;
+  return tabla;
 }
 
 function gatherCorrelations(journal) {

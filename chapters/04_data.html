@@ -422,31 +422,31 @@ de JavaScript estándar. Tenemos que sumar los dos campos de la tabla
 para obtener campos como n<sub>1•</sub>
 porque la suma de las filas o columnas no están guardadas directamente en
 nuestra estructura de datos.</p>
-<p><a class=p_ident id="p_0u/DATumDu" href="#p_0u/DATumDu"></a>Jacques kept his journal for three months. The
-resulting data set is available in the coding sandbox for this
-chapter,
-where it is stored in the <code>JOURNAL</code> variable, and in a downloadable
+<p><a class=p_ident id="p_FCp4IfHHeq" href="#p_FCp4IfHHeq"></a>Jacques mantuvo su diario por tres meses. El
+set de datos resultante está disponible en el área de código para
+este capítulo,
+en donde está guardada la variable <code>DIARIO</code>, y como descarga en
 <a href="http://eloquentjavascript.net/code/jacques_journal.js">file</a>.</p>
-<p><a class=p_ident id="p_sM+4QT8FKs" href="#p_sM+4QT8FKs"></a>To extract a two-by-two
-table for a specific event from this journal, we must loop over
-all the entries and tally up how many times the event occurs in
-relation to squirrel transformations.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_zCS39l9qoi" href="#c_zCS39l9qoi"></a><span class="cm-keyword">function</span> <span class="cm-variable">hasEvent</span>(<span class="cm-def">event</span>, <span class="cm-def">entry</span>) {
-  <span class="cm-keyword">return</span> <span class="cm-variable-2">entry</span>.<span class="cm-property">events</span>.<span class="cm-property">indexOf</span>(<span class="cm-variable-2">event</span>) <span class="cm-operator">!=</span> <span class="cm-operator">-</span><span class="cm-number">1</span>;
+<p><a class=p_ident id="p_xl4xeJ0C9q" href="#p_xl4xeJ0C9q"></a>Para extraer una tabla de 2 x 2
+po un evento específico de este diario, tenemos que iterar sobre todas las
+entradas y contar cuántas veces el evento ocurre en relación con las
+transformaciones a ardilla.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_IaaMNwIxBE" href="#c_IaaMNwIxBE"></a><span class="cm-keyword">function</span> <span class="cm-variable">tieneEvento</span>(<span class="cm-def">evento</span>, <span class="cm-def">entrada</span>) {
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">entrada</span>.<span class="cm-property">eventos</span>.<span class="cm-property">indexOf</span>(<span class="cm-variable-2">evento</span>) <span class="cm-operator">!=</span> <span class="cm-operator">-</span><span class="cm-number">1</span>;
 }
 
-<span class="cm-keyword">function</span> <span class="cm-variable">tableFor</span>(<span class="cm-def">event</span>, <span class="cm-def">journal</span>) {
-  <span class="cm-keyword">var</span> <span class="cm-def">table</span> <span class="cm-operator">=</span> [<span class="cm-number">0</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>];
-  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">journal</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
-    <span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> <span class="cm-variable-2">journal</span>[<span class="cm-variable-2">i</span>], <span class="cm-def">index</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
-    <span class="cm-keyword">if</span> (<span class="cm-variable">hasEvent</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">entry</span>)) <span class="cm-variable-2">index</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
-    <span class="cm-keyword">if</span> (<span class="cm-variable-2">entry</span>.<span class="cm-property">squirrel</span>) <span class="cm-variable-2">index</span> <span class="cm-operator">+=</span> <span class="cm-number">2</span>;
-    <span class="cm-variable-2">table</span>[<span class="cm-variable-2">index</span>] <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+<span class="cm-keyword">function</span> <span class="cm-variable">tablaPara</span>(<span class="cm-def">evento</span>, <span class="cm-def">diario</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-def">tabla</span> <span class="cm-operator">=</span> [<span class="cm-number">0</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>, <span class="cm-number">0</span>];
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">diario</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">entrada</span> <span class="cm-operator">=</span> <span class="cm-variable-2">diario</span>[<span class="cm-variable-2">i</span>], <span class="cm-def">index</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable">tieneEvento</span>(<span class="cm-variable-2">evento</span>, <span class="cm-variable-2">entrada</span>)) <span class="cm-variable-2">index</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
+    <span class="cm-keyword">if</span> (<span class="cm-variable-2">entrada</span>.<span class="cm-property">ardilla</span>) <span class="cm-variable-2">index</span> <span class="cm-operator">+=</span> <span class="cm-number">2</span>;
+    <span class="cm-variable-2">tabla</span>[<span class="cm-variable-2">index</span>] <span class="cm-operator">+=</span> <span class="cm-number">1</span>;
   }
-  <span class="cm-keyword">return</span> <span class="cm-variable-2">table</span>;
+  <span class="cm-keyword">return</span> <span class="cm-variable-2">tabla</span>;
 }
 
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tableFor</span>(<span class="cm-string">"pizza"</span>, <span class="cm-variable">JOURNAL</span>));
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">tabalaPara</span>(<span class="cm-string">"pizza"</span>, <span class="cm-variable">DIARIO</span>));
 <span class="cm-comment">// → [76, 9, 4, 1]</span></pre>
 <p><a class=p_ident id="p_3pgyJn7mEy" href="#p_3pgyJn7mEy"></a>The <code>hasEvent</code> function tests
 whether an entry contains a given event. Arrays have an <code>indexOf</code>
