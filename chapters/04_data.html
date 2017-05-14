@@ -463,47 +463,44 @@ categoría en la tabla.</p>
 individuales. El único paso que queda es encontrar la correlación para
 cada tipo de evento registrado y ver si algo sobresale. Pero, ¿cómo debereiamos guardar
 esas correlaciones una vez que las calculamos?</p>
-<h2><a class=h_ident id="h_mrW9RQxlGk" href="#h_mrW9RQxlGk"></a>Objects as maps</h2>
-<p><a class=p_ident id="p_IdpwDMsKm8" href="#p_IdpwDMsKm8"></a>One possible way is to store
-all the correlations in an array, using objects with <code>name</code> and
-<code>value</code> properties. But that makes looking up the correlation for a
-given event somewhat cumbersome: you&#8217;d have to loop over the whole
-array to find the object with the right <code>name</code>. We could wrap this
-lookup process in a function, but we would still be writing more code,
-and the computer would be doing more work than necessary.</p>
-<p id="object_map"><a class=p_ident id="p_cZSsd9wDlN" href="#p_cZSsd9wDlN"></a>A better way is to use object properties named after the
-event types. We can use the square bracket access notation to create
-and read the properties and can use the <code>in</code> operator to test whether
-a given property exists.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_3/W5rqFVOs" href="#c_3/W5rqFVOs"></a><span class="cm-keyword">var</span> <span class="cm-variable">map</span> <span class="cm-operator">=</span> {};
-<span class="cm-keyword">function</span> <span class="cm-variable">storePhi</span>(<span class="cm-def">event</span>, <span class="cm-def">phi</span>) {
-  <span class="cm-variable">map</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">phi</span>;
+<h2><a class=h_ident id="h_SmBng4WDtC" href="#h_SmBng4WDtC"></a>Objetos como mapas</h2>
+<p><a class=p_ident id="p_79KPS4Fkbe" href="#p_79KPS4Fkbe"></a>Una camino posible es guardar
+todas las correlaciones en un array, usando objetos con propiedades <code>nombre</code> y <code>valor</code>.
+Pero eso hace que buscar la correlación por un evnto dado sea un poco difícil: tienes que
+iterar sobre el array completo para buscar el objeto con el <code>nombre</code> correcto. Podemos
+poner este código en una función, pero seguiríamos escribiendo más código, y la computadora
+estaría haciendo más trabajo del necesario.</p>
+<p id="object_map"><a class=p_ident id="p_e8of/6y2Xe" href="#p_e8of/6y2Xe"></a>Una mejor forma es usar propiedades de
+un objeto nombradas como los tipos de eventos. Podemos usar la notación de acceso de corchetes (paréntesis cuadrados)
+para crear y leer las propiedades y el operador <code>in</code> para verificar si una propiedad existe.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_sZqiwicYRn" href="#c_sZqiwicYRn"></a><span class="cm-keyword">var</span> <span class="cm-variable">mapa</span> <span class="cm-operator">=</span> {};
+<span class="cm-keyword">function</span> <span class="cm-variable">giardarPhi</span>(<span class="cm-def">evento</span>, <span class="cm-def">phi</span>) {
+  <span class="cm-variable">mapa</span>[<span class="cm-variable-2">evento</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">phi</span>;
 }
 
-<span class="cm-variable">storePhi</span>(<span class="cm-string">"pizza"</span>, <span class="cm-number">0.069</span>);
-<span class="cm-variable">storePhi</span>(<span class="cm-string">"toqué un árbol"</span>, <span class="cm-operator">-</span><span class="cm-number">0.081</span>);
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"pizza"</span> <span class="cm-keyword">in</span> <span class="cm-variable">map</span>);
+<span class="cm-variable">giardarPhi</span>(<span class="cm-string">"pizza"</span>, <span class="cm-number">0.069</span>);
+<span class="cm-variable">giardarPhi</span>(<span class="cm-string">"toqué un árbol"</span>, <span class="cm-operator">-</span><span class="cm-number">0.081</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"pizza"</span> <span class="cm-keyword">in</span> <span class="cm-variable">mapa</span>);
 <span class="cm-comment">// → true</span>
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">map</span>[<span class="cm-string">"touched tree"</span>]);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mapa</span>[<span class="cm-string">"touched tree"</span>]);
 <span class="cm-comment">// → -0.081</span></pre>
-<p><a class=p_ident id="p_OlrE0O0+IT" href="#p_OlrE0O0+IT"></a>A <em>map</em> is a way to go from values in one
-domain (in this case, event names) to corresponding values in another
-domain (in this case, <em>ϕ</em> coefficients).</p>
-<p><a class=p_ident id="p_Geo6ELctAH" href="#p_Geo6ELctAH"></a>There are a few potential problems with using objects like this, which
-we will discuss in <a href="06_object.html#prototypes">Chapter 6</a>, but for
-the time being, we won&#8217;t worry about those.</p>
-<p><a class=p_ident id="p_esSmj3VTX0" href="#p_esSmj3VTX0"></a>What if
-we want to find all the events for which we have stored a coefficient?
-The properties don&#8217;t form a predictable series, like they would in an
-array, so we cannot use a normal <code>for</code> loop. JavaScript provides a
-loop construct specifically for going over the properties of an
-object. It looks a little like a normal <code>for</code> loop but distinguishes
-itself by the use of the word <code>in</code>.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_6gN7jQD267" href="#c_6gN7jQD267"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">map</span>)
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"The correlation for '"</span> <span class="cm-operator">+</span> <span class="cm-variable">event</span> <span class="cm-operator">+</span>
-              <span class="cm-string">"' is "</span> <span class="cm-operator">+</span> <span class="cm-variable">map</span>[<span class="cm-variable">event</span>]);
-<span class="cm-comment">// → The correlation for 'pizza' is 0.069</span>
-<span class="cm-comment">// → The correlation for 'touched tree' is -0.081</span></pre>
+<p><a class=p_ident id="p_oPFGkLPdlx" href="#p_oPFGkLPdlx"></a>Un <em>mapa</em> es una manera de ir de valores en
+un dominio (en este caso nombres de eventos) a valores correspondientes
+en otro dominio (en este caso  coeficientes <em>ϕ</em>).</p>
+<p><a class=p_ident id="p_Rv/ZadqUq+" href="#p_Rv/ZadqUq+"></a>Existen algunos problemas potenciales al usar objetos como este, que discutiremos
+en el <a href="06_object.html#prototypes">Capítulo 6</a>, pero por ahora, no nos preocupemos de
+eso.</p>
+<p><a class=p_ident id="p_FVza8w/jAc" href="#p_FVza8w/jAc"></a> ¿Y si queremos hallar
+todos los eventos para los que tenemos guardados un coeficiente? Las propiedades
+no forman una serie predecible, como lo harían en un array, así que no
+podemos usar un <code>for</code> normal. JavaScript tiene un construcción iterativa
+específicamente para funcionar sobre las propiedades de un objeto. Luce un poco como
+un loop <code>for</code> normal pero se distingue por el uso de la palabra <code>in</code>.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_6mq9acjzgS" href="#c_6mq9acjzgS"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">evento</span> <span class="cm-keyword">in</span> <span class="cm-variable">mapa</span>)
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"La correlación para '"</span> <span class="cm-operator">+</span> <span class="cm-variable">evento</span> <span class="cm-operator">+</span>
+              <span class="cm-string">"' es "</span> <span class="cm-operator">+</span> <span class="cm-variable">mapa</span>[<span class="cm-variable">evento</span>]);
+<span class="cm-comment">// → La correlación para 'pizza' is 0.069</span>
+<span class="cm-comment">// → La correlación para 'toqué un arbol' es -0.081</span></pre>
 <h2 id="analysis"><a class=h_ident id="h_Lg5n7mjqw/" href="#h_Lg5n7mjqw/"></a>The final analysis</h2>
 <p><a class=p_ident id="p_o0qm2V9nGm" href="#p_o0qm2V9nGm"></a>To find all the types of events that are present in the
 data set, we simply process each entry in turn and then loop over the
