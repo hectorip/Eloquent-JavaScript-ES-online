@@ -30,14 +30,14 @@ function tablaPara(evento, diario) {
   return tabla;
 }
 
-function gatherCorrelations(journal) {
+function gatherCorrelations(diario) {
   var phis = {};
-  for (var entry = 0; entry < journal.length; entry++) {
-    var events = journal[entry].events;
+  for (var entry = 0; entry < diario.length; entry++) {
+    var events = diario[entry].events;
     for (var i = 0; i < events.length; i++) {
       var event = events[i];
       if (!(event in phis))
-        phis[event] = phi(tableFor(event, journal));
+        phis[event] = phi(tableFor(event, diario));
     }
   }
   return phis;
