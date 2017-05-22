@@ -30,26 +30,26 @@ function tablaPara(evento, diario) {
   return tabla;
 }
 
-function gatherCorrelations(diario) {
+function juntarCorrelaciones(diario) {
   var phis = {};
-  for (var entry = 0; entry < diario.length; entry++) {
-    var events = diario[entry].events;
-    for (var i = 0; i < events.length; i++) {
-      var event = events[i];
-      if (!(event in phis))
-        phis[event] = phi(tableFor(event, diario));
+  for (var entrada = 0; entrada < diario.length; entrada++) {
+    var eventos = diario[entrada].eventos;
+    for (var i = 0; i < eventos.length; i++) {
+      var evento = eventos[i];
+      if (!(evento in phis))
+        phis[evento] = phi(tablaPara(evento, diario));
     }
   }
   return phis;
 }
 
-var correlations = gatherCorrelations(JOURNAL);
+var correlaciones = juntarCorrelaciones(DIARIO);
 
 for (var i = 0; i < JOURNAL.length; i++) {
-  var entry = JOURNAL[i];
-  if (hasEvent("peanuts", entry) &&
-     !hasEvent("brushed teeth", entry))
-    entry.events.push("peanut teeth");
+  var entrada = JOURNAL[i];
+  if (hasEvent("peanuts", entrada) &&
+     !hasEvent("brushed teeth", entrada))
+    entrada.events.push("peanut teeth");
 }
 
 var list = {

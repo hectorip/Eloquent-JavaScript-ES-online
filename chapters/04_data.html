@@ -473,13 +473,13 @@ estaría haciendo más trabajo del necesario.</p>
 <p id="object_map"><a class=p_ident id="p_e8of/6y2Xe" href="#p_e8of/6y2Xe"></a>Una mejor forma es usar propiedades de
 un objeto nombradas como los tipos de eventos. Podemos usar la notación de acceso de corchetes (paréntesis cuadrados)
 para crear y leer las propiedades y el operador <code>in</code> para verificar si una propiedad existe.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_sZqiwicYRn" href="#c_sZqiwicYRn"></a><span class="cm-keyword">var</span> <span class="cm-variable">mapa</span> <span class="cm-operator">=</span> {};
-<span class="cm-keyword">function</span> <span class="cm-variable">giardarPhi</span>(<span class="cm-def">evento</span>, <span class="cm-def">phi</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_NOiZ+Gw7gk" href="#c_NOiZ+Gw7gk"></a><span class="cm-keyword">var</span> <span class="cm-variable">mapa</span> <span class="cm-operator">=</span> {};
+<span class="cm-keyword">function</span> <span class="cm-variable">guardarPhi</span>(<span class="cm-def">evento</span>, <span class="cm-def">phi</span>) {
   <span class="cm-variable">mapa</span>[<span class="cm-variable-2">evento</span>] <span class="cm-operator">=</span> <span class="cm-variable-2">phi</span>;
 }
 
-<span class="cm-variable">giardarPhi</span>(<span class="cm-string">"pizza"</span>, <span class="cm-number">0.069</span>);
-<span class="cm-variable">giardarPhi</span>(<span class="cm-string">"toqué un árbol"</span>, <span class="cm-operator">-</span><span class="cm-number">0.081</span>);
+<span class="cm-variable">guardarPhi</span>(<span class="cm-string">"pizza"</span>, <span class="cm-number">0.069</span>);
+<span class="cm-variable">guardarPhi</span>(<span class="cm-string">"toqué un árbol"</span>, <span class="cm-operator">-</span><span class="cm-number">0.081</span>);
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-string">"pizza"</span> <span class="cm-keyword">in</span> <span class="cm-variable">mapa</span>);
 <span class="cm-comment">// → true</span>
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">mapa</span>[<span class="cm-string">"touched tree"</span>]);
@@ -507,36 +507,36 @@ en turno y después iteramos en los eventos de esa entrada. Mantenemos un objeto
 <code>phis</code> que tiene los coeficientes de correlación para todos los tipos de eventos que
 hemos visto hasta ahora. Cuando encontramos un tipo de evento que no está en el
 objeto <code>phis</code> todavía, calculamos la correlación y la añadimos al objeto.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_c0XWBWzy0x" href="#c_c0XWBWzy0x"></a><span class="cm-keyword">function</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-def">diario</span>) {
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_QT6WjkJsaa" href="#c_QT6WjkJsaa"></a><span class="cm-keyword">function</span> <span class="cm-variable">juntarCorrelaciones</span>(<span class="cm-def">diario</span>) {
   <span class="cm-keyword">var</span> <span class="cm-def">phis</span> <span class="cm-operator">=</span> {};
-  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">entry</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">entry</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">diario</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">entry</span><span class="cm-operator">++</span>) {
-    <span class="cm-keyword">var</span> <span class="cm-def">events</span> <span class="cm-operator">=</span> <span class="cm-variable-2">diario</span>[<span class="cm-variable-2">entry</span>].<span class="cm-property">events</span>;
-    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">events</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
-      <span class="cm-keyword">var</span> <span class="cm-def">event</span> <span class="cm-operator">=</span> <span class="cm-variable-2">events</span>[<span class="cm-variable-2">i</span>];
-      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">event</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
-        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">event</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-variable-2">event</span>, <span class="cm-variable-2">diario</span>));
+  <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">entrada</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">entrada</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">diario</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">entrada</span><span class="cm-operator">++</span>) {
+    <span class="cm-keyword">var</span> <span class="cm-def">eventos</span> <span class="cm-operator">=</span> <span class="cm-variable-2">diario</span>[<span class="cm-variable-2">entrada</span>].<span class="cm-property">eventos</span>;
+    <span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-def">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable-2">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable-2">eventos</span>.<span class="cm-property">length</span>; <span class="cm-variable-2">i</span><span class="cm-operator">++</span>) {
+      <span class="cm-keyword">var</span> <span class="cm-def">evento</span> <span class="cm-operator">=</span> <span class="cm-variable-2">eventos</span>[<span class="cm-variable-2">i</span>];
+      <span class="cm-keyword">if</span> (<span class="cm-operator">!</span>(<span class="cm-variable-2">evento</span> <span class="cm-keyword">in</span> <span class="cm-variable-2">phis</span>))
+        <span class="cm-variable-2">phis</span>[<span class="cm-variable-2">evento</span>] <span class="cm-operator">=</span> <span class="cm-variable">phi</span>(<span class="cm-variable">tablaPara</span>(<span class="cm-variable-2">evento</span>, <span class="cm-variable-2">diario</span>));
     }
   }
   <span class="cm-keyword">return</span> <span class="cm-variable-2">phis</span>;
 }
 
-<span class="cm-keyword">var</span> <span class="cm-variable">correlations</span> <span class="cm-operator">=</span> <span class="cm-variable">gatherCorrelations</span>(<span class="cm-variable">JOURNAL</span>);
-<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">correlations</span>.<span class="cm-property">pizza</span>);
+<span class="cm-keyword">var</span> <span class="cm-variable">correlaciones</span> <span class="cm-operator">=</span> <span class="cm-variable">juntarCorrelaciones</span>(<span class="cm-variable">DIARIO</span>);
+<span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">correlaciones</span>.<span class="cm-property">pizza</span>);
 <span class="cm-comment">// → 0.068599434</span></pre>
-<p><a class=p_ident id="p_XUj02Go7DR" href="#p_XUj02Go7DR"></a>Let&#8217;s see what came out.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_9yz0E9p7aB" href="#c_9yz0E9p7aB"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlations</span>)
-  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">event</span> <span class="cm-operator">+</span> <span class="cm-string">": "</span> <span class="cm-operator">+</span> <span class="cm-variable">correlations</span>[<span class="cm-variable">event</span>]);
-<span class="cm-comment">// → carrot:   0.0140970969</span>
-<span class="cm-comment">// → exercise: 0.0685994341</span>
-<span class="cm-comment">// → weekend:  0.1371988681</span>
-<span class="cm-comment">// → bread:   -0.0757554019</span>
+<p><a class=p_ident id="p_8Ukj0RobPr" href="#p_8Ukj0RobPr"></a>Veamos lo que resulta.</p>
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_prQJOi1gUA" href="#c_prQJOi1gUA"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">eventos</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlaciones</span>)
+  <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">eventos</span> <span class="cm-operator">+</span> <span class="cm-string">": "</span> <span class="cm-operator">+</span> <span class="cm-variable">correlaciones</span>[<span class="cm-variable">eventos</span>]);
+<span class="cm-comment">// → zanahoria:   0.0140970969</span>
+<span class="cm-comment">// → ejercicio: 0.0685994341</span>
+<span class="cm-comment">// → fin de semana:  0.1371988681</span>
+<span class="cm-comment">// → pan:   -0.0757554019</span>
 <span class="cm-comment">// → pudding: -0.0648203724</span>
-<span class="cm-comment">// and so on...</span></pre>
-<p><a class=p_ident id="p_TiI6dIjE18" href="#p_TiI6dIjE18"></a>Most correlations seem to lie close to zero. Eating
-carrots, bread, or pudding apparently does not trigger
-squirrel-lycanthropy. It <em>does</em> seem to occur somewhat more often on
-weekends, however. Let&#8217;s filter the results to show only correlations
-greater than 0.1 or less than -0.1.</p>
+<span class="cm-comment">// y así...</span></pre>
+<p><a class=p_ident id="p_faxM9AZjy9" href="#p_faxM9AZjy9"></a>La mayoría de las correlaciones están cerca de cero.
+Comer zanahorias, pan o pudding aparentemente no desencadenan la licantropía
+de la ardilla. Sin embargo, parece que <em>sí</em> ocurre más frecuentemente los
+fines de semana de alguna manera. Filtremos los resultados para mostrar
+sólo las correlaciones mayores que 0.1 o menores que -0.1.</p>
 <pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_n5ah9P3y8e" href="#c_n5ah9P3y8e"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">event</span> <span class="cm-keyword">in</span> <span class="cm-variable">correlations</span>) {
   <span class="cm-keyword">var</span> <span class="cm-variable">correlation</span> <span class="cm-operator">=</span> <span class="cm-variable">correlations</span>[<span class="cm-variable">event</span>];
   <span class="cm-keyword">if</span> (<span class="cm-variable">correlation</span> <span class="cm-operator">></span> <span class="cm-number">0.1</span> <span class="cm-operator">||</span> <span class="cm-variable">correlation</span> <span class="cm-operator">&lt;</span> <span class="cm-operator">-</span><span class="cm-number">0.1</span>)
@@ -554,11 +554,11 @@ than the others. Eating peanuts has a strong positive effect on
 the chance of turning into a squirrel, whereas brushing his teeth has
 a significant negative effect.</p>
 <p><a class=p_ident id="p_xpRHDuufcX" href="#p_xpRHDuufcX"></a>Interesting. Let&#8217;s try something.</p>
-<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_wPh8Dw9Oh6" href="#c_wPh8Dw9Oh6"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">JOURNAL</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
-  <span class="cm-keyword">var</span> <span class="cm-variable">entry</span> <span class="cm-operator">=</span> <span class="cm-variable">JOURNAL</span>[<span class="cm-variable">i</span>];
-  <span class="cm-keyword">if</span> (<span class="cm-variable">hasEvent</span>(<span class="cm-string">"peanuts"</span>, <span class="cm-variable">entry</span>) <span class="cm-operator">&amp;&amp;</span>
-     <span class="cm-operator">!</span><span class="cm-variable">hasEvent</span>(<span class="cm-string">"brushed teeth"</span>, <span class="cm-variable">entry</span>))
-    <span class="cm-variable">entry</span>.<span class="cm-property">events</span>.<span class="cm-property">push</span>(<span class="cm-string">"peanut teeth"</span>);
+<pre data-language="javascript" class="snippet cm-s-default"><a class=c_ident id="c_487BHxil7i" href="#c_487BHxil7i"></a><span class="cm-keyword">for</span> (<span class="cm-keyword">var</span> <span class="cm-variable">i</span> <span class="cm-operator">=</span> <span class="cm-number">0</span>; <span class="cm-variable">i</span> <span class="cm-operator">&lt;</span> <span class="cm-variable">JOURNAL</span>.<span class="cm-property">length</span>; <span class="cm-variable">i</span><span class="cm-operator">++</span>) {
+  <span class="cm-keyword">var</span> <span class="cm-variable">entrada</span> <span class="cm-operator">=</span> <span class="cm-variable">JOURNAL</span>[<span class="cm-variable">i</span>];
+  <span class="cm-keyword">if</span> (<span class="cm-variable">hasEvent</span>(<span class="cm-string">"peanuts"</span>, <span class="cm-variable">entrada</span>) <span class="cm-operator">&amp;&amp;</span>
+     <span class="cm-operator">!</span><span class="cm-variable">hasEvent</span>(<span class="cm-string">"brushed teeth"</span>, <span class="cm-variable">entrada</span>))
+    <span class="cm-variable">entrada</span>.<span class="cm-property">events</span>.<span class="cm-property">push</span>(<span class="cm-string">"peanut teeth"</span>);
 }
 <span class="cm-variable">console</span>.<span class="cm-property">log</span>(<span class="cm-variable">phi</span>(<span class="cm-variable">tableFor</span>(<span class="cm-string">"peanut teeth"</span>, <span class="cm-variable">JOURNAL</span>)));
 <span class="cm-comment">// → 1</span></pre>
